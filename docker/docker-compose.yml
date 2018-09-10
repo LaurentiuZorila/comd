@@ -1,0 +1,47 @@
+laur-mysql:
+  image: mysql:5.5
+  container_name: laur-mysql
+  environment:
+    - MYSQL_ROOT_PASSWORD=laur
+    - MYSQL_DATABASE=laur
+    - MYSQL_USER=laur
+    - MYSQL_PASSWORD=laur
+    - MYSQL_PORT=3306
+    - MYSQL_HOST=localhost
+
+laur-php:
+  build: .
+  dockerfile: php/Dockerfile
+  container_name: laur-php
+  volumes:
+    - ../web:/var/www/web
+  links:
+    - laur-mysql
+  environment:
+      PHP_php5enmod: 'bcmath gd gmp intl ldap mbstring mysqli pcntl pdo_mysql zip'
+
+laur-webserver:
+  image: phpdockerio/nginx:latest
+  container_name: laur-webserver
+  volumes:
+      - ../web:/var/www/web
+      - ./ssl:/etc/nginx/ssl
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+  ports:
+   - "80:80"
+  links:
+   - laur-php
+
+laur-phpmyadmin:
+  image: phpmyadmin/phpmyadmin
+  container_name: laur-phpmyadmin
+  environment:
+    - PMA_ARBITRARY=1
+    - PMA_HOST=laur-mysql
+  restart: always
+  ports:
+    - 81:80
+  volumes:
+    - /sessions
+  links:
+    - laur-mysql
