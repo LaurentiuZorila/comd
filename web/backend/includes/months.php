@@ -3,7 +3,7 @@ spl_autoload_register(function($class) {
     require_once '../classes/'. $class . '.php';
 });
 
-$employees_id   = 295;
+$employees_id   = $_GET['employees_id'];
 $prefix         = 'cmd_';
 // Get office id for selected user, form employees table
 $offices_id = DB::getInstance()->get('cmd_employees', ['id', '=', $employees_id], ['offices_id'])->first();
@@ -25,9 +25,11 @@ foreach ($prefixTables as $prefixTable) {
 // Transform numeric months in textual months
 foreach ($allMonths as $months) {
     foreach ($months as $month) {
+        $numberMonths[] = $month;
         $textualMonths[] = Profile::getMonthsList()[$month];
+        $month = array_combine($numberMonths, $textualMonths);
     }
 }
 
 // remove duplicates and print Json
-echo json_encode(array_unique($textualMonths));
+echo json_encode(array_unique($month));

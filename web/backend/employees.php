@@ -58,7 +58,7 @@ include 'includes/navbar.php';
                                     foreach ($allUsersDetails as $usersDetail) { ?>
                                         <tr>
                                             <th scope="row"><?php echo $x; ?></th>
-                                            <td><?php echo $usersDetail->name; ?></td>
+                                            <td><a href="employees_data.php?employees_id=<?php echo $usersDetail->id; ?>"><?php echo $usersDetail->name; ?></a></td>
                                             <td><?php echo Tables::getDetails('cmd_users', ['id', '=', $usersDetail->user_id], 'name'); ?></td>
                                             <td><?php echo Tables::getDetails('cmd_offices', ['id', '=', $usersDetail->offices_id], 'name'); ?></td>
                                             <td><?php echo Tables::getDetails('cmd_departments', ['id', '=', $usersDetail->departments_id], 'name') ;?></td>

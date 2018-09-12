@@ -61,8 +61,6 @@ class DB
         }
         return self::$_instance;
     }
-
-
     /**
      * @return PDO
      */
@@ -78,7 +76,6 @@ class DB
     {
         return call_user_func_array([$this->getPdo(), 'exec'], func_get_args());
     }
-
 
     /**
      * @param $sql
@@ -247,11 +244,9 @@ class DB
      * @param array $columns
      * @return bool|DB
      */
-    public function average($table, $where, $column = 'quantity')
+    public function average($table, $where, $column = '')
     {
-        $action = sprintf('SELECT AVG(%s) as average', $column);
-        $average = $this->action($action, $table, $where);
-        return $average;
+        return $this->action(sprintf('SELECT AVG(%s) as average', $column), $table, $where);
     }
 
 

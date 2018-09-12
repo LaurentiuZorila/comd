@@ -16,6 +16,20 @@ class Values
 
 
     /**
+     * @param $items
+     * @param string $column
+     * @return mixed
+     * @uses use only on first() method
+     */
+    public static function columnValue ($items)
+    {
+        foreach ($items as $item) {
+            return $item;
+        }
+    }
+
+
+    /**
      * @return bool
      */
     public static function checkValues ($items)
@@ -46,18 +60,15 @@ class Values
     }
 
 
-    /**
-     * @param $items
-     * @return int
-     */
-    public static function totalCommonTables ($items)
+    public static function sumAll ($items, $column)
     {
         $array = [];
         foreach ($items as $item) {
-            array_push($array, $item->quantity);
+            $array[] = $item->$column;
         }
         return array_sum($array);
     }
+
 
 
     /**

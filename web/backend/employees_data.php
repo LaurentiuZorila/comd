@@ -31,37 +31,39 @@ if (Input::exists()) {
 
         if (count($errors) == 0) {
             // All tables
-            $employeesDetails    = DB::getInstance()->get('cmd_employees', ['id', '=', $id], ['offices_id', 'name', 'user_id'])->first();
+            $employeesDetails   = DB::getInstance()->get('cmd_employees', ['id', '=', $id], ['offices_id', 'name', 'user_id'])->first();
             $allOfficesData     = DB::getInstance()->get('cmd_offices', array('id', '=', $employeesDetails->offices_id))->first();
 //            $teamLeader         = DB::getInstance()->get('cmd_users', ['id', '=', $employeesDetails->user_id], ['name'])->first();
 //            $teamLeaderName     = $teamLeader->name;
             $teamLeaderName     = Tables::getDetails('cmd_users', ['id', '=', $employeesDetails->user_id], 'name');
-            $employeesName       = $employeesDetails->name;
+            $employeesName      = $employeesDetails->name;
             $monthName          = Profile::getMonthsList()[$month];
 
             // arrays with tables (with and without prefix)
             foreach (Values::toArray($allOfficesData->tables) as $value) {
-                $noPrefixTables[] = $value;
-                $tables[] = $prefix . trim($value);
+                $noPrefixTables[]   = $value;
+                $tables[]           = $prefix . trim($value);
             }
 
             // Conditions for action
             $where = [
                 ['year', '=', $year],
                 'AND',
-                ['customer_id', '=', $id],
+                ['employees_id', '=', $id],
                 'AND',
                 ['month', '=', $month]
             ];
 
             // array with tables without prefix
             foreach ($noPrefixTables as $noPrefixTable) {
-                $key[]  = $noPrefixTable;
+                $key[] = $noPrefixTable;
             }
 
             foreach ($tables as $table) {
                 // quantity for all tables
-                $values[] = Values::columnValues(DB::getInstance()->get($table, $where, ['quantity'])->results(), 'quantity');
+                if (is_null(Values::columnValues(DB::getInstance()->get($table, $where, ['quantity']), 'quantity'))) {
+                    $values[] = Values::columnValues(DB::getInstance()->get($table, $where, ['quantity'])->results(), 'quantity');
+                }
             }
 
             // Array with tables and values(quantity)
@@ -76,7 +78,7 @@ if (Input::exists()) {
 
 
 // FOR GET
-if (!empty(Input::get('customer_id')) && !Input::exists()) {
+if (!empty(Input::get('employees_id')) && !Input::exists()) {
 
 }
 
@@ -108,7 +110,7 @@ include 'includes/navbar.php';
         <div class="container-fluid">
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item active">Profile</li>
+                <li class="breadcrumb-item active">Employees data</li>
             </ul>
         </div>
         <section class="no-padding-top no-padding-bottom">
@@ -128,7 +130,7 @@ include 'includes/navbar.php';
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('teams'))) { ?>
-                                    <div class="invalid-feedback mb-3">Please select team.</div>
+                                    <div class="invalid-feedback mb-3">Team field are required!</div>
                                 <?php }?>
                             </div>
                             <div class="col-sm-6">
@@ -137,7 +139,7 @@ include 'includes/navbar.php';
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('employees'))) { ?>
-                                    <div class="invalid-feedback mb-3 ">Please select employees.</div>
+                                    <div class="invalid-feedback mb-3 ">Employees field are required!</div>
                                 <?php }?>
                             </div>
                             <div class="col-sm-6">
@@ -147,7 +149,7 @@ include 'includes/navbar.php';
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('year'))) { ?>
-                                    <div class="invalid-feedback mb-3">Please select year.</div>
+                                    <div class="invalid-feedback mb-3">Year field are required!</div>
                                 <?php }?>
                             </div>
                             <div class="col-sm-6">
@@ -159,7 +161,7 @@ include 'includes/navbar.php';
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('month'))) { ?>
-                                    <div class="invalid-feedback mb-3">Please select month.</div>
+                                    <div class="invalid-feedback mb-3">Month field are required!</div>
                                 <?php }?>
                             </div>
                             <div class="col-sm-2">

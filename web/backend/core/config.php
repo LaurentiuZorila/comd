@@ -15,6 +15,8 @@ return [
     'session' => array(
         'session_name'    => 'user',
         'session_user'    => 'user_id',
-        'token_name'      => 'token'
+        'token_name'      => 'token_name',
+        'token_hash'      => 'token_hash',
+        'token_id'        => 'token_id'
     )
 ];

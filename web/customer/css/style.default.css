@@ -58,6 +58,10 @@ a {
   background: #7127AC;
 }
 
+.dashtext-5 {
+  color: #e6495d !important;
+}
+
 .text-bold {
   font-weight: 700;
 }

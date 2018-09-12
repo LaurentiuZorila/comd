@@ -20,6 +20,7 @@ foreach ($tables as $table) {
 foreach ($data as $values) {
     foreach ($values as $value) {
         $year[] = $value->year;
+        $year = array_combine($year, $year);
     }
 }
 

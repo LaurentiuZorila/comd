@@ -2,7 +2,7 @@
 ?>
 
 <script>
-    var LINECHART1 = $('#all_data');
+    var LINECHART1 = $('#profile_chart');
     var lineChartExample = new Chart(LINECHART1, {
         type: 'bar',
         options: {
@@ -21,15 +21,12 @@
                     display: true,
                     gridLines: {
                         color: 'transparent'
-                    },
-                    ticks: {
-                        beginAtZero: true
                     }
                 }]
             },
         },
         data: {
-            labels: <?php echo Js::key($allData); ?>,
+            labels: <?php echo $chartNames; ?>,
             datasets: [
                 {
                     label: "<?php echo Profile::getMonthsList()[$month]; ?>",
@@ -51,7 +48,7 @@
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 10,
-                    data: [<?php echo Js::values($allData); ?>],
+                    data: [<?php echo $chartValues; ?>],
                     spanGaps: false
                 }]
         }

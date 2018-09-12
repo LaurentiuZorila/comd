@@ -6,9 +6,7 @@
             $("#theme-stylesheet").attr("href", "css/" + $(this).val() + ".css");
         });
     });
-</script>
 
-<script>
     $( "select[name='teams']" ).change(function () {
         var userID = $(this).val();
         if(userID) {
@@ -27,9 +25,7 @@
             $('select[name="employees"]').empty();
         }
     });
-</script>
 
-<script>
     $( "select[name='teams']" ).change(function () {
         var userID = $(this).val();
         if(userID) {
@@ -48,9 +44,7 @@
             $('select[name="year"]').empty();
         }
     });
-</script>
 
-<script>
     $( "select[name='employees']" ).change(function () {
         var employeesID = $(this).val();
         if(employeesID) {
