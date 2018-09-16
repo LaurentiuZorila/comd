@@ -21,7 +21,7 @@ if (Input::exists('get')) {
     $officeName     = DB::getInstance()->get('cmd_offices', ['id', '=', $staffProfile->offices_id], ['name'])->first();
 
     $prefix         = 'cmd_';
-    $commonTables   = ['unpaid', 'furlought', 'absentees'];
+    $commonTables   = ['unpaid', 'furlough', 'absentees'];
     $icon           = ['icon-line-chart', 'icon-dashboard', 'icon-chart'];
 
     foreach ($commonTables as $table) {
@@ -201,6 +201,7 @@ include 'includes/navbar.php';
                 </div>
             </div>
         </section>
+        <?php if (Input::exists() && count($errors) === 0) { ?>
         <section>
             <div class="col-md-12">
                 <div class="pie-chart chart block">
@@ -210,7 +211,7 @@ include 'includes/navbar.php';
                 </div>
             </div>
         </section>
-        <?php
+        <?php }
         include 'includes/footer.php';
         ?>
     </div>

@@ -9,7 +9,7 @@ if (!$user->isLoggedIn()) {
 // Names for select list
 $users = DB::getInstance()->get('users', array('user_id', '=', $user->userId()))->results();
 
-$furlought = DB::getInstance()->get('furlought', array('user_id', '=', $user->userId()))->results();
+$furlough = DB::getInstance()->get('furlough', array('user_id', '=', $user->userId()))->results();
 
 $absentees = DB::getInstance()->get('absentees', array('user_id', '=', $user->userId()))->results();
 

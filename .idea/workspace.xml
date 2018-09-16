@@ -2,31 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="710b7c0a-dd02-4dee-91a7-595e34acec84" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/web/backend/all_staff.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/charts/employees_data_chart.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/charts/employees_data_chart.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/classes/DB.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/classes/DB.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/classes/Token.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/classes/Token.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/classes/Values.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/classes/Values.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/core/config.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/core/config.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/css/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/css/custom.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/css/style.blue.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/css/style.default.css" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/css/style.default.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/css/style.green.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/css/style.pink.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/css/style.red.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/css/style.sea.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/css/style.violet.css" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/css/style.violet.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/employees.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/employees.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/employees_data.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/employees_data.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/includes/ajax.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/includes/ajax.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/includes/months.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/includes/months.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/backend/charts.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/charts.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/backend/charts/index_charts.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/charts/index_charts.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/backend/classes/Math.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/classes/Math.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/backend/includes/sidebar.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/includes/sidebar.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/includes/years.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/includes/years.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/backend/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/leader_profile.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/css/style.default.css" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/css/style.default.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/css/style.violet.css" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/css/style.violet.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/backend/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/login.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/backend/staff_profile.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/staff_profile.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/backend/update_database.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/update_database.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/customer/charts.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/charts.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/customer/charts/target_chart.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/charts/target_chart.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/customer/classes/DB.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/classes/DB.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/customer/classes/Math.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/classes/Math.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/customer/classes/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/classes/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/customer/classes/Values.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/classes/Values.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/customer/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/customer/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/login.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/customer/tables.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/tables.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/customer/update_database.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/update_database.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/customer/user_data.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/user_data.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -55,7 +51,7 @@
     <session id="1142869590">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="30" />
+          <entry key="project.closed" value="31" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.1" value="1" />
           <entry key="project.open.time.12" value="1" />
@@ -71,22 +67,22 @@
           <entry key="project.open.time.25" value="1" />
           <entry key="project.open.time.26" value="4" />
           <entry key="project.open.time.28" value="1" />
-          <entry key="project.open.time.29" value="1" />
+          <entry key="project.open.time.29" value="2" />
           <entry key="project.open.time.30" value="2" />
           <entry key="project.open.time.31" value="2" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="31" />
+          <entry key="project.opened" value="32" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="conf" value="1" />
-          <entry key="css" value="17" />
+          <entry key="css" value="19" />
           <entry key="groovy" value="1" />
-          <entry key="html" value="2" />
-          <entry key="js" value="8" />
+          <entry key="html" value="3" />
+          <entry key="js" value="12" />
           <entry key="json" value="4" />
-          <entry key="php" value="333" />
+          <entry key="php" value="432" />
           <entry key="rnc" value="1" />
           <entry key="sql" value="6" />
           <entry key="yml" value="8" />
@@ -94,11 +90,11 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="CSS" value="17" />
-          <entry key="HTML" value="2" />
+          <entry key="CSS" value="19" />
+          <entry key="HTML" value="3" />
           <entry key="JSON" value="3" />
-          <entry key="JavaScript" value="8" />
-          <entry key="PHP" value="333" />
+          <entry key="JavaScript" value="12" />
+          <entry key="PHP" value="432" />
           <entry key="RNG Compact" value="1" />
           <entry key="SQL" value="5" />
           <entry key="Scratch" value="2" />
@@ -112,7 +108,8 @@
           <entry key="css" value="317" />
           <entry key="dummy" value="15" />
           <entry key="html" value="11" />
-          <entry key="php" value="40940" />
+          <entry key="js" value="11" />
+          <entry key="php" value="52684" />
           <entry key="sql" value="1" />
           <entry key="yml" value="56" />
         </counts>
@@ -120,8 +117,9 @@
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="CSS" value="317" />
-          <entry key="HTML" value="39" />
-          <entry key="PHP" value="40838" />
+          <entry key="HTML" value="41" />
+          <entry key="JavaScript" value="11" />
+          <entry key="PHP" value="52580" />
           <entry key="PLAIN_TEXT" value="15" />
           <entry key="SQL" value="75" />
           <entry key="YAML" value="56" />
@@ -131,41 +129,87 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/web/backend/includes/ajax_user_profile.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="21" column="7" selection-start-line="21" selection-start-column="7" selection-end-line="21" selection-end-column="7" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/web/backend/staff_profile.php">
+        <entry file="file://$PROJECT_DIR$/web/frontend/index.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="13" lean-forward="true" selection-start-line="13" selection-end-line="13" />
+            <state relative-caret-position="284">
+              <caret line="436" column="26" selection-start-line="436" selection-start-column="26" selection-end-line="436" selection-end-column="26" />
               <folding>
-                <element signature="n#style#0;n#canvas#0;n#div#0;n#section#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="e#4140#4147#1#HTML" expanded="true" />
+                <element signature="n#section#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
+                <element signature="n#section#2;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
+                <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#section#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#1;n#div#0;n#div#0;n#section#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#canvas#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#section#3;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#canvas#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#1;n#div#0;n#div#0;n#section#3;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#canvas#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#2;n#div#0;n#div#0;n#section#3;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/web/backend/index.php">
+        <entry file="file://$PROJECT_DIR$/web/frontend/charts/commonDataSingle.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="324">
-              <caret line="255" column="18" lean-forward="true" selection-start-line="255" selection-start-column="18" selection-end-line="256" selection-end-column="57" />
+            <state relative-caret-position="881">
+              <caret line="94" column="9" selection-start-line="94" selection-start-column="9" selection-end-line="94" selection-end-column="9" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/web/backend/charts/profile_chart.php">
+        <entry file="file://$PROJECT_DIR$/web/frontend/charts/commonDataMultiple.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="750">
-              <caret line="50" column="51" selection-start-line="50" selection-start-column="51" selection-end-line="50" selection-end-column="51" />
+            <state relative-caret-position="239">
+              <caret line="65" column="29" lean-forward="true" selection-start-line="65" selection-start-column="29" selection-end-line="65" selection-end-column="29" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/frontend/js/charts-home.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="234">
+              <caret line="472" column="24" selection-start-line="472" selection-start-column="24" selection-end-line="472" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/frontend/charts/employees_chart.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="59" lean-forward="true" selection-start-line="4" selection-end-line="59" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/frontend/classes/ProfileDetails.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="223">
+              <caret line="121" column="67" selection-start-line="121" selection-start-column="61" selection-end-line="121" selection-end-column="67" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/frontend/classes/Js.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-25">
+              <caret line="18" column="5" lean-forward="true" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/frontend/includes/errors.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="15" column="18" lean-forward="true" selection-start-line="15" selection-start-column="18" selection-end-line="15" selection-end-column="18" />
+              <folding>
+                <element signature="e#638#645#1#HTML" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -181,26 +225,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>update</find>
-      <find>$department</find>
-      <find>_isLoggedIn</find>
-      <find>_count</find>
-      <find>countUsers</find>
-      <find>_sessionUserId</find>
-      <find>barChartCustom1</find>
-      <find>doughnutChartCustom1</find>
-      <find>pieChartCustom1</find>
-      <find>customer</find>
-      <find>year</find>
-      <find>month</find>
-      <find>Values::value</find>
-      <find>Js::values</find>
-      <find>$table</find>
-      <find>$officeId</find>
-      <find>lineChartCustom1</find>
-      <find>barChartCustom3</find>
-      <find>Profile::value</find>
-      <find>_db</find>
       <find>new Va</find>
       <find>first</find>
       <find>employes</find>
@@ -211,9 +235,32 @@
       <find>generateRan</find>
       <find>generate</find>
       <find>generateRa</find>
+      <find>$users</find>
+      <find>$prefix</find>
+      <find>_sessionName</find>
+      <find>_isLoggedIn</find>
+      <find>_data</find>
+      <find>_sessionDepartmentId</find>
+      <find>Furlought</find>
+      <find>furlought</find>
+      <find>loginOk</find>
+      <find>$countWhere</find>
+      <find>columnValues</find>
+      <find>salesBarChart2</find>
+      <find>lineChartCustom1</find>
+      <find>barChartCustom3</find>
+      <find>month</find>
+      <find>$year</find>
+      <find>salesBarChart1</find>
+      <find>pieChartHome3</find>
+      <find>absenteesChart</find>
+      <find>visitPieChart</find>
     </findStrings>
     <replaceStrings>
       <replace />
+      <replace>Furlough</replace>
+      <replace>furlough</replace>
+      <replace>$sum</replace>
     </replaceStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/web/customer/js</dir>
@@ -221,6 +268,8 @@
       <dir>$PROJECT_DIR$/web/backend/charts</dir>
       <dir>$PROJECT_DIR$/web/backend</dir>
       <dir>$PROJECT_DIR$/web</dir>
+      <dir>$PROJECT_DIR$</dir>
+      <dir>$PROJECT_DIR$/web/frontend</dir>
     </dirStrings>
   </component>
   <component name="Git.Settings">
@@ -229,42 +278,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/web/backend/staff_tables.php" />
-        <option value="$PROJECT_DIR$/web/backend/includes/staff_tables.php" />
-        <option value="$PROJECT_DIR$/web/backend/user_data.php" />
-        <option value="$PROJECT_DIR$/web/backend/classes/Export.php" />
-        <option value="$PROJECT_DIR$/web/backend/export.php" />
-        <option value="$PROJECT_DIR$/web/backend/classes/Profile.php" />
-        <option value="$PROJECT_DIR$/web/backend/classes/Department.php" />
-        <option value="$PROJECT_DIR$/web/backend/classes/Details.php" />
-        <option value="$PROJECT_DIR$/web/backend/classes/Tables.php" />
-        <option value="$PROJECT_DIR$/web/backend/charts/employes_data_chart.php" />
-        <option value="$PROJECT_DIR$/web/backend/classes/Js.php" />
-        <option value="$PROJECT_DIR$/web/backend/includes/staff_employees.php" />
-        <option value="$PROJECT_DIR$/web/backend/classes/Create.php" />
-        <option value="$PROJECT_DIR$/web/backend/includes/years.php" />
-        <option value="$PROJECT_DIR$/web/backend/includes/months.php" />
-        <option value="$PROJECT_DIR$/web/backend/employees.php" />
-        <option value="$PROJECT_DIR$/web/backend/leader_profile.php" />
-        <option value="$PROJECT_DIR$/web/backend/css/alerts.css" />
-        <option value="$PROJECT_DIR$/web/backend/css/custom.css" />
-        <option value="$PROJECT_DIR$/web/backend/css/style.green.css" />
-        <option value="$PROJECT_DIR$/web/backend/css/style.default.css" />
-        <option value="$PROJECT_DIR$/web/customer/css/style.default.css" />
-        <option value="$PROJECT_DIR$/web/customer/css/style.violet.css" />
-        <option value="$PROJECT_DIR$/web/backend/includes/head.php" />
-        <option value="$PROJECT_DIR$/web/backend/includes/errors.php" />
-        <option value="$PROJECT_DIR$/web/backend/index.php" />
-        <option value="$PROJECT_DIR$/web/backend/classes/Values.php" />
-        <option value="$PROJECT_DIR$/web/backend/employees_data.php" />
-        <option value="$PROJECT_DIR$/web/backend/includes/sidebar.php" />
-        <option value="$PROJECT_DIR$/web/backend/includes/staff_profile_years.php" />
-        <option value="/private/var/folders/sn/q414lk5j5j57gcx4tm57w9gr0000gn/T/fz3temp-2/Backupmanager.php" />
-        <option value="$PROJECT_DIR$/web/backend/core/config.php" />
-        <option value="$PROJECT_DIR$/web/backend/classes/Token.php" />
-        <option value="$PROJECT_DIR$/web/backend/includes/profile_years.php" />
-        <option value="$PROJECT_DIR$/web/backend/includes/ajax.php" />
-        <option value="$PROJECT_DIR$/web/backend/includes/profile_months.php" />
         <option value="$PROJECT_DIR$/web/backend/includes/ajax_user_profile.php" />
         <option value="$PROJECT_DIR$/web/backend/css/style.violet.css" />
         <option value="$PROJECT_DIR$/web/backend/classes/DB.php" />
@@ -278,8 +291,44 @@
         <option value="$PROJECT_DIR$/web/backend/all_staff.php" />
         <option value="$PROJECT_DIR$/web/backend/charts/employees_data_chart.php" />
         <option value="$PROJECT_DIR$/web/backend/charts/index_charts.php" />
-        <option value="$PROJECT_DIR$/web/backend/charts/profile_chart.php" />
+        <option value="$PROJECT_DIR$/web/backend/includes/sidebar.php" />
         <option value="$PROJECT_DIR$/web/backend/staff_profile.php" />
+        <option value="$PROJECT_DIR$/web/customer/classes/User.php" />
+        <option value="$PROJECT_DIR$/web/customer/classes/Values.php" />
+        <option value="$PROJECT_DIR$/web/customer/charts/target_chart.php" />
+        <option value="$PROJECT_DIR$/web/customer/classes/DB.php" />
+        <option value="$PROJECT_DIR$/web/backend/update_database.php" />
+        <option value="$PROJECT_DIR$/web/customer/update_database.php" />
+        <option value="$PROJECT_DIR$/web/customer/index.php" />
+        <option value="$PROJECT_DIR$/web/customer/tables.php" />
+        <option value="$PROJECT_DIR$/web/customer/user_data.php" />
+        <option value="$PROJECT_DIR$/login_area.php" />
+        <option value="$PROJECT_DIR$/common/login_area.php" />
+        <option value="$PROJECT_DIR$/index.php" />
+        <option value="$PROJECT_DIR$/web/common/login_area.php" />
+        <option value="$PROJECT_DIR$/web/backend/login.php" />
+        <option value="$PROJECT_DIR$/web/customer/login.php" />
+        <option value="$PROJECT_DIR$/web/backend/charts/profile_chart.php" />
+        <option value="$PROJECT_DIR$/web/index.php" />
+        <option value="$PROJECT_DIR$/web/error/404.php" />
+        <option value="$PROJECT_DIR$/web/frontend/logout.php" />
+        <option value="$PROJECT_DIR$/web/frontend/classes/Redirect.php" />
+        <option value="$PROJECT_DIR$/web/frontend/classes/Profile.php" />
+        <option value="$PROJECT_DIR$/web/frontend/core/config.php" />
+        <option value="$PROJECT_DIR$/web/frontend/login.php" />
+        <option value="$PROJECT_DIR$/web/frontend/classes/User.php" />
+        <option value="$PROJECT_DIR$/web/frontend/charts/target_chart.php" />
+        <option value="$PROJECT_DIR$/web/common/index.php" />
+        <option value="$PROJECT_DIR$/web/frontend/includes/sidebar.php" />
+        <option value="$PROJECT_DIR$/web/frontend/classes/DB.php" />
+        <option value="$PROJECT_DIR$/web/frontend/classes/Values.php" />
+        <option value="$PROJECT_DIR$/web/frontend/classes/Js.php" />
+        <option value="$PROJECT_DIR$/web/frontend/charts/employees_chart.php" />
+        <option value="$PROJECT_DIR$/web/frontend/classes/ProfileDetails.php" />
+        <option value="$PROJECT_DIR$/web/frontend/includes/errors.php" />
+        <option value="$PROJECT_DIR$/web/frontend/js/charts-home.js" />
+        <option value="$PROJECT_DIR$/web/frontend/charts/commonDataMultiple.php" />
+        <option value="$PROJECT_DIR$/web/frontend/index.php" />
       </list>
     </option>
   </component>
@@ -294,6 +343,7 @@
       <path value="$PROJECT_DIR$/bootstrap-notify-master/package.json" />
       <path value="$PROJECT_DIR$/web/backend/sweetalert/package.json" />
       <path value="$PROJECT_DIR$/web/customer/sweetalert/package.json" />
+      <path value="$PROJECT_DIR$/web/frontend/sweetalert/package.json" />
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds">
@@ -307,6 +357,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -323,34 +374,54 @@
               <item name="comd" type="b2602c69:ProjectViewProjectNode" />
               <item name="comd" type="462c0819:PsiDirectoryNode" />
               <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="backend" type="462c0819:PsiDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="comd" type="b2602c69:ProjectViewProjectNode" />
               <item name="comd" type="462c0819:PsiDirectoryNode" />
               <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="backend" type="462c0819:PsiDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
               <item name="charts" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="comd" type="b2602c69:ProjectViewProjectNode" />
               <item name="comd" type="462c0819:PsiDirectoryNode" />
               <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="backend" type="462c0819:PsiDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
+              <item name="classes" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="comd" type="b2602c69:ProjectViewProjectNode" />
+              <item name="comd" type="462c0819:PsiDirectoryNode" />
+              <item name="web" type="462c0819:PsiDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="comd" type="b2602c69:ProjectViewProjectNode" />
+              <item name="comd" type="462c0819:PsiDirectoryNode" />
+              <item name="web" type="462c0819:PsiDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
               <item name="includes" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="comd" type="b2602c69:ProjectViewProjectNode" />
               <item name="comd" type="462c0819:PsiDirectoryNode" />
               <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="backend" type="462c0819:PsiDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
+              <item name="js" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="comd" type="b2602c69:ProjectViewProjectNode" />
+              <item name="comd" type="462c0819:PsiDirectoryNode" />
+              <item name="web" type="462c0819:PsiDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
               <item name="notification" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -362,11 +433,16 @@
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.PHP" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/web" />
+      <recent name="$PROJECT_DIR$/common" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/web/frontend" />
+      <recent name="$PROJECT_DIR$/web/common" />
+      <recent name="$PROJECT_DIR$/common" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/web/backend" />
-      <recent name="$PROJECT_DIR$/web/backend/includes" />
-      <recent name="$PROJECT_DIR$/web/customer/notification" />
-      <recent name="$PROJECT_DIR$/web/customer" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -445,18 +521,19 @@
       <workItem from="1536333823961" duration="5338000" />
       <workItem from="1536403458703" duration="19472000" />
       <workItem from="1536559519295" duration="40678000" />
-      <workItem from="1536732408568" duration="21232000" />
+      <workItem from="1536732408568" duration="27970000" />
+      <workItem from="1536818894242" duration="52930000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="297575000" />
+    <option name="totallyTimeSpent" value="357243000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="813" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.30758226" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26752505" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -469,7 +546,7 @@
       <window_info anchor="bottom" id="Docker" order="7" weight="0.32871014" />
       <window_info anchor="bottom" id="Database Changes" order="8" weight="0.32871014" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49713877" visible="true" weight="0.3772538" />
+      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49713877" visible="true" weight="0.29126215" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5028612" side_tool="true" weight="0.2857143" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -484,338 +561,354 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/web/backend/classes/Tables.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="1" lean-forward="true" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/includes/staff_tables.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="25" lean-forward="true" selection-start-line="15" selection-start-column="25" selection-end-line="15" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/classes/Create.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="339">
-          <caret line="43" column="37" selection-start-line="43" selection-start-column="37" selection-end-line="43" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/includes/staff_employees.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="29" lean-forward="true" selection-start-line="16" selection-start-column="29" selection-end-line="16" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/includes/months.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="55" lean-forward="true" selection-start-line="16" selection-start-column="55" selection-end-line="16" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/css/alerts.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="18" selection-start-line="1" selection-start-column="18" selection-end-line="1" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/css/font.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-330" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/css/style.blue.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-147" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/css/custom.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="1" lean-forward="true" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/customer/css/style.violet.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="44">
-          <caret line="33" column="28" lean-forward="true" selection-start-line="33" selection-start-column="28" selection-end-line="33" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/css/style.default.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="338">
-          <caret line="62" column="1" selection-start-line="62" selection-start-column="1" selection-end-line="62" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/customer/css/style.default.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2631">
-          <caret line="70" column="1" lean-forward="true" selection-start-line="70" selection-start-column="1" selection-end-line="70" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/includes/head.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="49" selection-start-line="21" selection-start-column="49" selection-end-line="21" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/employees.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="70" column="34" lean-forward="true" selection-start-line="70" selection-start-column="34" selection-end-line="70" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/classes/User.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="110" column="9" lean-forward="true" selection-start-line="110" selection-start-column="9" selection-end-line="110" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/includes/navbar.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2100">
-          <caret line="140" column="17" lean-forward="true" selection-start-line="140" selection-start-column="17" selection-end-line="140" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/includes/errors.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/web/backend/includes/sidebar.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+        <state relative-caret-position="390">
+          <caret line="26" column="60" selection-start-line="26" selection-start-column="60" selection-end-line="26" selection-end-column="60" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/includes/staff_profile_years.php" />
+    <entry file="file://$PROJECT_DIR$/web/customer/classes/User.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="599">
+          <caret line="117" lean-forward="true" selection-start-line="117" selection-end-line="117" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/customer/charts/target_chart.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="309">
+          <caret line="24" column="21" selection-start-line="24" selection-start-column="21" selection-end-line="24" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/web/backend/classes/Values.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="27" selection-start-line="9" selection-start-column="27" selection-end-line="9" selection-end-column="27" />
+        <state relative-caret-position="435">
+          <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/classes/Export.php">
+    <entry file="file://$PROJECT_DIR$/web/customer/classes/Js.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="38" lean-forward="true" selection-start-line="5" selection-start-column="38" selection-end-line="5" selection-end-column="38" />
+        <state relative-caret-position="297">
+          <caret line="155" column="8" selection-start-line="155" selection-start-column="8" selection-end-line="158" selection-end-column="9" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/classes/Input.php">
+    <entry file="file://$PROJECT_DIR$/web/customer/classes/DB.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
-          <caret line="43" column="27" selection-start-line="43" selection-start-column="27" selection-end-line="43" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///private/var/folders/sn/q414lk5j5j57gcx4tm57w9gr0000gn/T/fz3temp-2/CreateBackupSnapshot.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-841" />
-      </provider>
-    </entry>
-    <entry file="file:///private/var/folders/sn/q414lk5j5j57gcx4tm57w9gr0000gn/T/fz3temp-2/Backupmanager.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
-          <caret line="120" column="27" lean-forward="true" selection-start-line="120" selection-start-column="27" selection-end-line="120" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/classes/Session.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="201">
-          <caret line="39" column="5" lean-forward="true" selection-start-line="39" selection-start-column="5" selection-end-line="39" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/classes/Token.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="24" column="5" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/core/config.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="39" lean-forward="true" selection-start-line="19" selection-start-column="39" selection-end-line="19" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/includes/ajax.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="404">
-          <caret line="64" column="7" selection-start-line="64" selection-start-column="7" selection-end-line="64" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/includes/years.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="8" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/includes/profile_years.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" selection-start-line="5" selection-end-line="18" selection-end-column="24" />
+        <state relative-caret-position="362">
+          <caret line="155" column="61" selection-start-line="155" selection-start-column="61" selection-end-line="155" selection-end-column="61" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/web/backend/employees_data.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1258">
+        <state relative-caret-position="1102">
           <caret line="118" column="20" selection-start-line="118" selection-start-column="20" selection-end-line="171" selection-end-column="27" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/css/style.green.css">
+    <entry file="file://$PROJECT_DIR$/web/backend/update_database.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1897">
-          <caret line="193" column="2" lean-forward="true" selection-start-line="193" selection-start-column="2" selection-end-line="193" selection-end-column="16" />
+        <state relative-caret-position="15">
+          <caret line="1" column="29" selection-start-line="1" selection-start-column="29" selection-end-line="1" selection-end-column="29" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/includes/ajax_user_profile.php">
+    <entry file="file://$PROJECT_DIR$/web/customer/classes/Values.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="7" selection-start-line="21" selection-start-column="7" selection-end-line="21" selection-end-column="7" />
+        <state relative-caret-position="411">
+          <caret line="69" column="23" lean-forward="true" selection-start-line="69" selection-start-column="23" selection-end-line="69" selection-end-column="23" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/includes/rating.php">
+    <entry file="file://$PROJECT_DIR$/web/customer/classes/Profile.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="13" column="27" selection-start-line="13" selection-start-column="27" selection-end-line="13" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/common/vendor/jquery/core.js">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/rating/one_star.php">
+    <entry file="file://$PROJECT_DIR$/web/customer/tables.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-269">
+          <caret line="66" column="41" selection-start-line="66" selection-start-column="41" selection-end-line="66" selection-end-column="41" />
+          <folding>
+            <element signature="n#style#0;n#th#1;n#tr#0;n#thead#0;n#table#0;n#div#1;n#div#0;n#div#1;n#div#0;n#div#0;n#section#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/customer/update_database.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="246">
+          <caret line="111" column="61" selection-start-line="111" selection-start-column="61" selection-end-line="111" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/customer/user_data.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="135" column="65" selection-start-line="135" selection-start-column="65" selection-end-line="135" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/common/css/font.css">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/backend/includes/head.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="30" column="7" selection-start-line="3" selection-end-line="30" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/backend/login.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="79">
+          <caret line="31" selection-start-line="31" selection-end-line="33" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/customer/login.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="290">
+          <caret line="33" column="2" selection-start-line="33" selection-start-column="2" selection-end-line="33" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
-          <caret line="3" column="31" selection-start-line="3" selection-start-column="31" selection-end-line="3" selection-end-column="31" />
+          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/rating/two_star.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="31" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/rating/default.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="2" lean-forward="true" selection-end-line="8" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/rating/three_star.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="2" lean-forward="true" selection-start-line="8" selection-start-column="2" selection-end-line="8" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/rating/four_star.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="31" selection-end-line="8" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/rating/five_star.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="2" lean-forward="true" selection-start-line="8" selection-start-column="2" selection-end-line="8" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/all_staff.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-604">
-          <caret line="4" column="2" lean-forward="true" selection-start-line="4" selection-start-column="2" selection-end-line="4" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/css/style.violet.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="30" column="1" selection-start-line="30" selection-start-column="1" selection-end-line="30" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/classes/DB.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="154" column="5" lean-forward="true" selection-start-line="154" selection-start-column="5" selection-end-line="154" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/includes/profile_months.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="19" lean-forward="true" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/charts/employees_data_chart.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="32" lean-forward="true" selection-start-line="12" selection-start-column="32" selection-end-line="12" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/charts/index_charts.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" column="21" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/notification/error.php">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/notification/post_not_found.php">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/web/backend/charts/profile_chart.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="750">
-          <caret line="50" column="51" selection-start-line="50" selection-start-column="51" selection-end-line="50" selection-end-column="51" />
+        <state relative-caret-position="90">
+          <caret line="6" column="18" selection-start-line="6" selection-start-column="15" selection-end-line="6" selection-end-column="18" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/index.php">
+    <entry file="file://$PROJECT_DIR$/web/index.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="255" column="18" lean-forward="true" selection-start-line="255" selection-start-column="18" selection-end-line="256" selection-end-column="57" />
+        <state relative-caret-position="45">
+          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/error/error-404.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/error/404.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="14" lean-forward="true" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/logout.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="9" selection-start-line="4" selection-start-column="9" selection-end-line="4" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/classes/Redirect.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="21" selection-start-line="21" selection-end-line="22" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/classes/Session.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="55">
+          <caret line="23" lean-forward="true" selection-start-line="23" selection-end-line="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/tables.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="87">
+          <caret line="8" column="13" lean-forward="true" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="108" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/classes/User.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="395">
+          <caret line="216" column="7" lean-forward="true" selection-start-line="216" selection-start-column="7" selection-end-line="216" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/classes/Profile.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="39" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/classes/Math.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/includes/head.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="367">
+          <caret line="30" column="7" lean-forward="true" selection-start-line="3" selection-end-line="30" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/common/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="51" column="34" selection-start-line="51" selection-start-column="34" selection-end-line="51" selection-end-column="34" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/web/backend/staff_profile.php">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="56">
+          <caret line="102" selection-start-line="102" selection-end-line="112" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/backend/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1316">
+          <caret line="98" column="20" lean-forward="true" selection-start-line="84" selection-start-column="10" selection-end-line="98" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/customer/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2325">
+          <caret line="129" column="70" selection-start-line="129" selection-start-column="70" selection-end-line="129" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/includes/sidebar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="51" selection-start-line="22" selection-start-column="51" selection-end-line="22" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/classes/Values.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" selection-start-line="4" selection-end-line="15" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/charts/employees_chart.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="59" lean-forward="true" selection-start-line="4" selection-end-line="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/js/charts-custom.js">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
-          <caret line="13" lean-forward="true" selection-start-line="13" selection-end-line="13" />
+          <caret line="483" column="7" lean-forward="true" selection-start-line="395" selection-start-column="4" selection-end-line="483" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/core/config.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="46" selection-start-line="19" selection-start-column="46" selection-end-line="19" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/classes/DB.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="244">
+          <caret line="274" lean-forward="true" selection-start-line="274" selection-end-line="274" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/login.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="50" column="21" lean-forward="true" selection-start-line="50" selection-start-column="21" selection-end-line="50" selection-end-column="21" />
           <folding>
-            <element signature="n#style#0;n#canvas#0;n#div#0;n#section#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="e#1698#1705#1#HTML" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/notification/error.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/backend/includes/errors.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/classes/Js.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-25">
+          <caret line="18" column="5" lean-forward="true" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/includes/errors.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="18" lean-forward="true" selection-start-line="15" selection-start-column="18" selection-end-line="15" selection-end-column="18" />
+          <folding>
+            <element signature="e#638#645#1#HTML" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/js/charts-home.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="472" column="24" selection-start-line="472" selection-start-column="24" selection-end-line="472" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/charts/commonDataSingle.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="881">
+          <caret line="94" column="9" selection-start-line="94" selection-start-column="9" selection-end-line="94" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/classes/ProfileDetails.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="223">
+          <caret line="121" column="67" selection-start-line="121" selection-start-column="61" selection-end-line="121" selection-end-column="67" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/charts/commonDataMultiple.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="239">
+          <caret line="65" column="29" lean-forward="true" selection-start-line="65" selection-start-column="29" selection-end-line="65" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="284">
+          <caret line="436" column="26" selection-start-line="436" selection-start-column="26" selection-end-line="436" selection-end-column="26" />
+          <folding>
+            <element signature="e#4140#4147#1#HTML" expanded="true" />
+            <element signature="n#section#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
+            <element signature="n#section#2;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
+            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#section#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#1;n#div#0;n#div#0;n#section#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#canvas#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#section#3;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#canvas#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#1;n#div#0;n#div#0;n#section#3;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#canvas#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#2;n#div#0;n#div#0;n#section#3;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>

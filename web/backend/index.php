@@ -12,7 +12,7 @@ $allStaff = DB::getInstance()->get('cmd_users', ['supervisors_id', '=', $user->u
 $allUsers = DB::getInstance()->get('cmd_employees', ['departments_id', '=', $user->userId()])->results();
 
 // Total for all department
-$furlought  = DB::getInstance()->get('cmd_furlought', ['departments_id', '=', $user->userId()], ['quantity'])->results();
+$furlough  = DB::getInstance()->get('cmd_furlough', ['departments_id', '=', $user->userId()], ['quantity'])->results();
 $absentees  = DB::getInstance()->get('cmd_absentees', ['departments_id', '=', $user->userId()], ['quantity'])->results();
 $unpaid     = DB::getInstance()->get('cmd_unpaid',    ['departments_id', '=', $user->userId()], ['quantity'])->results();
 
@@ -41,8 +41,8 @@ if (Input::exists()) {
 
             // Array with all results for one FTE
             $chartData      = DB::getInstance()->get($table, $where, ['quantity', 'name'])->results();
-            // Total furlought , absentees, unpaid for selected user
-            $userFurlought  = DB::getInstance()->get('cmd_furlought', $where)->results();
+            // Total furlough , absentees, unpaid for selected user
+            $userFurlough  = DB::getInstance()->get('cmd_furlough', $where)->results();
             $userAbsentees  = DB::getInstance()->get('cmd_absentees', $where)->results();
             $userUnpaid     = DB::getInstance()->get('cmd_unpaid', $where)->results();
 
@@ -216,9 +216,9 @@ include 'includes/head.php';
                 <div class="statistic-block block">
                   <div class="progress-details d-flex align-items-end justify-content-between">
                     <div class="title">
-                      <div class="icon"><i class="icon-list-1"></i></div><strong>Total user furlought</strong>
+                      <div class="icon"><i class="icon-list-1"></i></div><strong>Total user furlough</strong>
                     </div>
-                    <div class="number dashtext-3"><?php echo escape(Values::sumAll($furlought, 'quantity')); ?></div>
+                    <div class="number dashtext-3"><?php echo escape(Values::sumAll($furlough, 'quantity')); ?></div>
                   </div>
                   <div class="progress progress-template">
                     <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>

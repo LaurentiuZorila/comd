@@ -7,27 +7,36 @@ if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
 }
 
-// Names for select list
-$users = DB::getInstance()->get('users', array('user_id', '=', $user->userId()))->results();
+// Count all employees
+$countUsers = DB::getInstance()->get('cmd_employees', ['user_id', '=', $user->userId()])->count();
+// User data
+$userData   = DB::getInstance()->get('cmd_users', ['id', '=', $user->userId()])->first();
 
-$furlought = DB::getInstance()->get('furlought', array('user_id', '=', $user->userId()))->results();
+// Quantity for common tables
+$furlough  = DB::getInstance()->get('cmd_furlough', ['user_id', '=', $user->userId()], ['quantity'])->results();
+$absentees  = DB::getInstance()->get('cmd_absentees', ['user_id', '=', $user->userId()], ['quantity'])->results();
+$unpaid     = DB::getInstance()->get('cmd_unpaid', ['user_id', '=', $user->userId()], ['quantity'])->results();
 
-$absentees = DB::getInstance()->get('absentees', array('user_id', '=', $user->userId()))->results();
 
-$allTables = DB::getInstance()->get('department', array('user_id', '=', $user->userId()))->results();
+// tables for user
+$allTables  = DB::getInstance()->get('cmd_offices', ['id', '=', $userData->offices_id], ['tables'])->first();
+$prefix     = 'cmd_';
 
-foreach (Values::tables($allTables) as $value) {
-    $tables[] = trim($value);
+// Array with tables for user
+foreach (Values::table($allTables) as $value) {
+    $tables[$prefix . $value] = trim($value);
 }
 
+
 if (Input::exists()) {
-        $year = Input::post('year');
-        $month = Input::post('month');
-        $user_id = $user->userId();
-        $table = Input::post('table');
+        $year       = Input::post('year');
+        $month      = Input::post('month');
+        $user_id    = $user->userId();
+        $table      = trim(Input::post('table'));
         $errors = [];
         $quantitySum = [];
-        if (empty($month) || empty($year)) {
+
+        if (empty($month) || empty($year) || empty($table)) {
             $errors = [1];
         }
 
@@ -79,28 +88,29 @@ include 'includes/head.php';
             <h2 class="h5 no-margin-bottom">Dashboard</h2>
           </div>
         </div>
-          <section class="no-padding-top no-padding-bottom">
-              <div class="col-lg-12">
-                  <div class="block">
-                      <form method="post">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="title"><strong>Filters</strong></div>
+        <section class="no-padding-top no-padding-bottom">
+            <div class="col-lg-12">
+              <div class="block">
+                  <form method="post">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="title"><strong>Filters</strong></div>
+                        </div>
+                            <div class="col-sm-4">
+                                <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} else { echo 'mb-3';}?>">
+                                    <option value="">Select Year</option>
+                                    <?php
+                                    foreach (Profile::getYearsList() as $year) { ?>
+                                        <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
+                                    <?php } ?>
+                                </select>
+                                <?php
+                                if (Input::exists() && empty(Input::post('year'))) { ?>
+                                    <div class="invalid-feedback">Select year!</div>
+                                <?php }?>
                             </div>
-                          <div class="col-sm-4">
-                              <select name="year" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} ?>">
-                                  <option value="">Select Year</option>
-                                  <?php
-                                  foreach (Profile::getYearsList() as $year) { ?>
-                                      <option><?php echo $year; ?></option>
-                                  <?php } ?>
-                              </select>
-                              <?php
-                              if (Input::exists() && empty(Input::post('year'))) { ?>
-                                  <div class="invalid-feedback">Please select year.</div>
-                              <?php }?>
-                          </div>
-                          <div class="col-sm-4">
+
+                            <div class="col-sm-4">
                               <select name="month" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} ?>">
                                   <option value="">Select Month</option>
                                   <?php foreach (Profile::getMonthsList() as $key => $value) { ?>
@@ -111,12 +121,13 @@ include 'includes/head.php';
                               if (Input::exists() && empty(Input::post('month'))) { ?>
                                   <div class="invalid-feedback">Please select month.</div>
                               <?php }?>
-                          </div>
+                            </div>
+
                             <div class="col-sm-4">
                                 <select name="table" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} ?>">
                                     <option value="">Select Table</option>
-                                    <?php foreach ($tables as $table) { ?>
-                                        <option value="<?php echo $table; ?>"><?php echo $table; ?></option>
+                                    <?php foreach ($tables as $key => $table) { ?>
+                                        <option value="<?php echo $key; ?>"><?php echo strtoupper($table); ?></option>
                                     <?php } ?>
                                 </select>
                                 <?php
@@ -124,57 +135,74 @@ include 'includes/head.php';
                                     <div class="invalid-feedback">Please select table.</div>
                                 <?php }?>
                             </div>
+
                             <div class="col-sm-2">
                                 <input value="Submit" class="btn btn-outline-secondary" type="submit">
                                 <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
                             </div>
-                        </div>
-                      </form>
-                  </div>
+                    </div>
+                  </form>
               </div>
-          </section>
+            </div>
+        </section>
         <section class="no-padding-top no-padding-bottom">
           <div class="container-fluid">
             <div class="row">
-              <div class="col-md-4 col-sm-6">
-                <div class="statistic-block block">
-                  <div class="progress-details d-flex align-items-end justify-content-between">
-                    <div class="title">
-                      <div class="icon"><i class="icon-user-1"></i></div><strong>Total users</strong>
+                <div class="col-md-3 col-sm-6">
+                    <div class="statistic-block block">
+                      <div class="progress-details d-flex align-items-end justify-content-between">
+                        <div class="title">
+                          <div class="icon"><i class="icon-user-1"></i></div><strong>Total users</strong>
+                        </div>
+                        <div class="number dashtext-1"><?php echo $countUsers; ?></div>
+                      </div>
+                      <div class="progress progress-template">
+                        <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-1"></div>
+                      </div>
                     </div>
-                    <div class="number dashtext-1"><?php echo escape(Values::countUsers($users)); ?></div>
-                  </div>
-                  <div class="progress progress-template">
-                    <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-1"></div>
-                  </div>
                 </div>
-              </div>
-              <div class="col-md-4 col-sm-6">
-                <div class="statistic-block block">
-                  <div class="progress-details d-flex align-items-end justify-content-between">
-                    <div class="title">
-                      <div class="icon"><i class="icon-info"></i></div><strong>Total user absentees</strong>
+
+                <div class="col-md-3 col-sm-6">
+                    <div class="statistic-block block">
+                      <div class="progress-details d-flex align-items-end justify-content-between">
+                        <div class="title">
+                          <div class="icon"><i class="icon-info"></i></div><strong>Total absentees</strong>
+                        </div>
+                        <div class="number dashtext-3"><?php echo escape(Values::totalAbsentees($absentees)); ?></div>
+                      </div>
+                      <div class="progress progress-template">
+                        <div role="progressbar" style="width: 100%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
+                      </div>
                     </div>
-                    <div class="number dashtext-3"><?php echo escape(Values::totalAbsentees($absentees)); ?></div>
-                  </div>
-                  <div class="progress progress-template">
-                    <div role="progressbar" style="width: 100%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
-                  </div>
                 </div>
-              </div>
-              <div class="col-md-4 col-sm-6">
-                <div class="statistic-block block">
-                  <div class="progress-details d-flex align-items-end justify-content-between">
-                    <div class="title">
-                      <div class="icon"><i class="icon-list-1"></i></div><strong>Total user furlought</strong>
+
+                <div class="col-md-3 col-sm-6">
+                    <div class="statistic-block block">
+                      <div class="progress-details d-flex align-items-end justify-content-between">
+                        <div class="title">
+                          <div class="icon"><i class="icon-list-1"></i></div><strong>Total furlough</strong>
+                        </div>
+                        <div class="number dashtext-3"><?php echo escape(Values::totalFurloughs($furlough)); ?></div>
+                      </div>
+                      <div class="progress progress-template">
+                        <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
+                      </div>
                     </div>
-                    <div class="number dashtext-2"><?php echo escape(Values::totalFurloughts($furlought)); ?></div>
-                  </div>
-                  <div class="progress progress-template">
-                    <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
-                  </div>
                 </div>
-              </div>
+
+                <div class="col-md-3 col-sm-6">
+                    <div class="statistic-block block">
+                        <div class="progress-details d-flex align-items-end justify-content-between">
+                            <div class="title">
+                                <div class="icon"><i class="icon-list-1"></i></div><strong>Total unpaid</strong>
+                            </div>
+                            <div class="number dashtext-3"><?php echo escape(Values::totalFurloughs($unpaid)); ?></div>
+                        </div>
+                        <div class="progress progress-template">
+                            <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
           </div>
         </section>
@@ -192,25 +220,6 @@ include 'includes/head.php';
                           </div>
                       </div>
                   </section>
-<!--                  <section class="no-padding-bottom">-->
-<!--                      <div class="container-fluid">-->
-<!--                          <div class="row">-->
-<!--                              <div class="col-lg-4">-->
-<!--                                  <div class="bar-chart block no-margin-bottom">-->
-<!--                                      <canvas id="abstentees_chart"></canvas>-->
-<!--                                  </div>-->
-<!--                                  <div class="bar-chart block">-->
-<!--                                      <canvas id="furlought_chart"></canvas>-->
-<!--                                  </div>-->
-<!--                              </div>-->
-<!--                              <div class="col-lg-8">-->
-<!--                                  <div class="line-cahrt block">-->
-<!--                                      <canvas id="quality_chart"></canvas>-->
-<!--                                  </div>-->
-<!--                              </div>-->
-<!--                          </div>-->
-<!--                      </div>-->
-<!--                  </section>-->
               <?php }
           }?>
           <!--        ********************       CHARTS   END      ********************   -->
@@ -266,13 +275,15 @@ include 'includes/head.php';
 <!--            </div>-->
             <?php
             if (Input::exists()) {
-                if (count($errors) ==0) {
+                if (count($errors) === 0) {
                     $x = 1;
-                    $year = Input::post('year');
-                    $month = Input::post('month');
-                    $table = Input::post('table');
-                    $names = [];
-                    $quantity = [];
+                    $year       = Input::post('year');
+                    $month      = Input::post('month');
+                    $noPrefTbl  = Input::post('table');
+                    $table      = Input::post('table');
+                    $table      = 'cmd_' . $table;
+                    $names      = [];
+                    $quantity   = [];
 
                     $where = [
                         ['year', '=', $year],
@@ -308,7 +319,7 @@ include 'includes/head.php';
                                 <div class="col-lg-4">
                                     <div class="details d-flex">
                                         <div class="item" data-toggle="tooltip" data-placement="top"
-                                             title="<?php echo ucfirst($table); ?>"><i
+                                             title="<?php echo ucfirst($noPrefTbl); ?>"><i
                                                     class="icon-chart"></i><strong><?php echo $value; ?></strong>
                                         </div>
                                     </div>
@@ -364,7 +375,7 @@ include 'includes/head.php';
   </script>
   <?php
   if (Input::exists()) {
-      if (count($errors) == 0) {
+      if (count($errors) === 0) {
           include 'charts/target_chart.php';
       } else {
           include 'notification/error.php';

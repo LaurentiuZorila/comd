@@ -32,7 +32,7 @@ class Values
      * @param $items
      * @return int
      */
-    public static function totalFurloughts($items)
+    public static function totalFurloughs($items)
     {
         $array = [];
         foreach ($items as $item) {
@@ -57,11 +57,27 @@ class Values
     }
 
 
+    /**
+     * @param $items
+     * @return array
+     * @uses only on results() methods
+     */
     public static function tables($items)
     {
         foreach ($items as $item) {
                 $values = explode(',', $item->tables);
         }
         return $values;
+    }
+
+
+    /**
+     * @param $items
+     * @return array
+     * @uses only on first() methods
+     */
+    public static function table($items)
+    {
+        return $values = explode(', ', $items->tables);
     }
 }

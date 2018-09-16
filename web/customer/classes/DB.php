@@ -245,36 +245,6 @@ class DB
 
     }
 
-    /**
-     * @param $table
-     * @param $fields
-     * @param $conditions
-     * @return bool
-     */
-    public function updateJoin($table, $fields, $conditions)
-    {
-        $set = [];
-        foreach ($fields as $name => $value) {
-            $set[] = $name . ' = ?';
-        }
-        $set = implode(', ', $set);
-
-        $where = [];
-        foreach ($conditions as $name => $value) {
-            $where[] = $name . '= ?';
-        }
-        $where = implode(', ', $where);
-
-        $sql = sprintf('UPDATE %s SET %s WHERE %s', $table, $set, $where);
-
-        if (!$this->query($sql, $fields, $conditions)->error()) {
-            return true;
-        }
-
-        return false;
-
-    }
-
 
     /**
      * @param $table

@@ -46,7 +46,7 @@ class Math
      * @param int $shift
      * @return string
      */
-    public static function averageFurlought($items, $shift = 8)
+    public static function averageFurlough($items, $shift = 8)
     {
         $values = [];
 
@@ -55,12 +55,12 @@ class Math
         }
 
         if ($shift == 8) {
-            $furlought = 21;
+            $furlough = 21;
         } elseif ($shift = 6) {
-            $furlought = 25;
+            $furlough = 25;
         }
 
-        $average = array_sum($values) * 100 / $furlought;
+        $average = array_sum($values) * 100 / $furlough;
         return number_format($average, 2);
 
     }

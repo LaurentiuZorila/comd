@@ -25,7 +25,6 @@ if (!$user->isLoggedIn()) {
         <li><a href="all_staff.php"> <i class="icon-user-1"></i>All staff</a></li>
         <li><a href="#update" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i>Update data</a>
             <ul id="update" class="collapse list-unstyled ">
-                <li><a href="update_database.php"><i class="icon-dashboard"></i>Update database</a></li>
                 <li><a href="update_users_profile.php"> <i class="icon-user"></i>Update users </a></li>
             </ul>
         </li>

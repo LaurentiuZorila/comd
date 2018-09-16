@@ -52,13 +52,13 @@
         },
         data: {
             labels: [
-                "Furlought",
+                "Furlough",
                 "Absentees",
                 "Unpaid"
             ],
             datasets: [
                 {
-                    data: [<?php echo Values::sumAll($userFurlought, 'quantity'). ', ' . Values::sumAll($userAbsentees, 'quantity'). ', ' . Values::sumAll($userUnpaid, 'quantity'); ?>],
+                    data: [<?php echo Values::sumAll($userFurlough, 'quantity'). ', ' . Values::sumAll($userAbsentees, 'quantity'). ', ' . Values::sumAll($userUnpaid, 'quantity'); ?>],
                     borderWidth: 0,
                     backgroundColor: [
                         "#864DD9",

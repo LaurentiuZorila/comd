@@ -89,7 +89,7 @@ class User
     public function find($user)
     {
         $field = (is_numeric($user)) ? 'id' : 'username';
-        $data = $this->_db->get('staff', array($field, '=', $user));
+        $data = $this->_db->get('cmd_users', array($field, '=', $user));
 
         if ($data->count()) {
             $this->_data = $data->first();
@@ -112,7 +112,7 @@ class User
 
         if (password_verify($password, $this->data()->password)) {
             Session::put($this->_sessionName, $this->data()->id);
-            Session::put($this->_sessionUserId, $this->data()->user_id);
+            Session::put($this->_sessionUserId, $this->data()->id);
             return true;
         }
 
