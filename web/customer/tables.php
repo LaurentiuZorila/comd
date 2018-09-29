@@ -1,33 +1,34 @@
 <?php
 require_once 'core/init.php';
-$user = new User();
+$user = new CustomerUser();
+$data = new CustomerProfile();
 
 // User data
-$userData = DB::getInstance()->get('cmd_users', ['id', '=', $user->userId()])->first();
+
 
 // All tables
-$allTables = DB::getInstance()->get('cmd_offices', ['id', '=', $userData->offices_id], ['tables'])->first();
+$allTables = $data->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['tables'], false);
+$allTables = explode(',', trim($allTables->tables));
 
 // Conditions for action
 $year   = date('Y');
 $month  = 1;
-$prefix = 'cmd_';
+$prefix = Params::PREFIX;
 
 $where = [
     ['year', '=', $year],
     'AND',
-    ['user_id', '=', $user->userId()],
+    ['offices_id', '=', $user->officesId()],
     'AND',
     ['month', '=', $month]
 ];
 
-foreach (Values::table($allTables) as $value) {
-    $tables[$prefix . $value] = trim($value);
+foreach ($allTables as $value) {
+    $tables[$prefix . trim($value)] = trim($value);
 }
 
 foreach ($tables as $key => $table) {
-    $allRecords[$table] = DB::getInstance()->get($key, $where, ['id', 'name', 'quantity'])->results();
-    $quantity[$table] = DB::getInstance()->get($key, $where, ['quantity'])->results();
+    $allRecords[$table] = $data->records($key, $where, ['employees_id', 'name', 'quantity']);
 }
 
 
@@ -60,7 +61,7 @@ include 'includes/navbar.php';
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.php">Home</a></li>
                 <li class="breadcrumb-item active">All users</li>
-                <li class="breadcrumb-item active"><?php echo 'Data for month: '.Profile::getMonthsList()[$month]; ?></li>
+                <li class="breadcrumb-item active"><?php echo 'Data for month: '. Common::getMonths()[$month]; ?></li>
             </ul>
         </div>
         <section class="no-padding-top">
@@ -89,7 +90,7 @@ include 'includes/navbar.php';
                                         foreach ($records as $record) { ?>
                                             <tr role="row" class="odd">
                                                 <td class="sorting_1"><a
-                                                            href="user_data.php?id=<?php echo $record->id; ?>&table=<?php echo $key; ?>"
+                                                            href="user_data.php?id=<?php echo $record->employees_id; ?>&table=<?php echo $key; ?>"
                                                             class="text-muted"><?php echo $record->name; ?></a></td>
                                                 <td><?php echo $record->quantity; ?></td>
                                             </tr>

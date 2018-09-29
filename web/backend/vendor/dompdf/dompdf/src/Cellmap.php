@@ -13,7 +13,7 @@ use Dompdf\FrameDecorator\TableCell as TableCellFrameDecorator;
 /**
  * Maps table cells to the table grid.
  *
- * This class resolves borders in tables with collapsed borders and helps
+ * This commonClasses resolves borders in tables with collapsed borders and helps
  * place row & column spanned table cells.
  *
  * @package dompdf

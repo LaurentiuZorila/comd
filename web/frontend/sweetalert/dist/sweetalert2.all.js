@@ -26,7 +26,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
+    throw new TypeError("Cannot call a commonClasses as a function");
   }
 };
 
@@ -464,7 +464,7 @@ var isNodeEnv = function isNodeEnv() {
   return typeof window === 'undefined' || typeof document === 'undefined';
 };
 
-var sweetHTML = ('\n <div aria-labelledby="' + swalClasses.title + '" aria-describedby="' + swalClasses.content + '" class="' + swalClasses.popup + '" tabindex="-1">\n   <div class="' + swalClasses.header + '">\n     <ul class="' + swalClasses.progresssteps + '"></ul>\n     <div class="' + swalClasses.icon + ' ' + iconTypes.error + '">\n       <span class="swal2-x-mark"><span class="swal2-x-mark-line-left"></span><span class="swal2-x-mark-line-right"></span></span>\n     </div>\n     <div class="' + swalClasses.icon + ' ' + iconTypes.question + '">\n       <span class="' + swalClasses['icon-text'] + '">?</span>\n      </div>\n     <div class="' + swalClasses.icon + ' ' + iconTypes.warning + '">\n       <span class="' + swalClasses['icon-text'] + '">!</span>\n      </div>\n     <div class="' + swalClasses.icon + ' ' + iconTypes.info + '">\n       <span class="' + swalClasses['icon-text'] + '">i</span>\n      </div>\n     <div class="' + swalClasses.icon + ' ' + iconTypes.success + '">\n       <div class="swal2-success-circular-line-left"></div>\n       <span class="swal2-success-line-tip"></span> <span class="swal2-success-line-long"></span>\n       <div class="swal2-success-ring"></div> <div class="swal2-success-fix"></div>\n       <div class="swal2-success-circular-line-right"></div>\n     </div>\n     <img class="' + swalClasses.image + '" />\n     <h2 class="' + swalClasses.title + '" id="' + swalClasses.title + '"></h2>\n     <button type="button" class="' + swalClasses.close + '">\xD7</button>\n   </div>\n   <div class="' + swalClasses.content + '">\n     <div id="' + swalClasses.content + '"></div>\n     <input class="' + swalClasses.input + '" />\n     <input type="file" class="' + swalClasses.file + '" />\n     <div class="' + swalClasses.range + '">\n       <input type="range" />\n       <output></output>\n     </div>\n     <select class="' + swalClasses.select + '"></select>\n     <div class="' + swalClasses.radio + '"></div>\n     <label for="' + swalClasses.checkbox + '" class="' + swalClasses.checkbox + '">\n       <input type="checkbox" />\n       <span class="' + swalClasses.label + '"></span>\n     </label>\n     <textarea class="' + swalClasses.textarea + '"></textarea>\n     <div class="' + swalClasses.validationerror + '" id="' + swalClasses.validationerror + '"></div>\n   </div>\n   <div class="' + swalClasses.actions + '">\n     <button type="button" class="' + swalClasses.confirm + '">OK</button>\n     <button type="button" class="' + swalClasses.cancel + '">Cancel</button>\n   </div>\n   <div class="' + swalClasses.footer + '">\n   </div>\n </div>\n').replace(/(^|\n)\s*/g, '');
+var sweetHTML = ('\n <div aria-labelledby="' + swalClasses.title + '" aria-describedby="' + swalClasses.content + '" commonClasses="' + swalClasses.popup + '" tabindex="-1">\n   <div commonClasses="' + swalClasses.header + '">\n     <ul commonClasses="' + swalClasses.progresssteps + '"></ul>\n     <div commonClasses="' + swalClasses.icon + ' ' + iconTypes.error + '">\n       <span commonClasses="swal2-x-mark"><span commonClasses="swal2-x-mark-line-left"></span><span commonClasses="swal2-x-mark-line-right"></span></span>\n     </div>\n     <div commonClasses="' + swalClasses.icon + ' ' + iconTypes.question + '">\n       <span commonClasses="' + swalClasses['icon-text'] + '">?</span>\n      </div>\n     <div commonClasses="' + swalClasses.icon + ' ' + iconTypes.warning + '">\n       <span commonClasses="' + swalClasses['icon-text'] + '">!</span>\n      </div>\n     <div commonClasses="' + swalClasses.icon + ' ' + iconTypes.info + '">\n       <span commonClasses="' + swalClasses['icon-text'] + '">i</span>\n      </div>\n     <div commonClasses="' + swalClasses.icon + ' ' + iconTypes.success + '">\n       <div commonClasses="swal2-success-circular-line-left"></div>\n       <span commonClasses="swal2-success-line-tip"></span> <span commonClasses="swal2-success-line-long"></span>\n       <div commonClasses="swal2-success-ring"></div> <div commonClasses="swal2-success-fix"></div>\n       <div commonClasses="swal2-success-circular-line-right"></div>\n     </div>\n     <img commonClasses="' + swalClasses.image + '" />\n     <h2 commonClasses="' + swalClasses.title + '" id="' + swalClasses.title + '"></h2>\n     <button type="button" commonClasses="' + swalClasses.close + '">\xD7</button>\n   </div>\n   <div commonClasses="' + swalClasses.content + '">\n     <div id="' + swalClasses.content + '"></div>\n     <input commonClasses="' + swalClasses.input + '" />\n     <input type="file" commonClasses="' + swalClasses.file + '" />\n     <div commonClasses="' + swalClasses.range + '">\n       <input type="range" />\n       <output></output>\n     </div>\n     <select commonClasses="' + swalClasses.select + '"></select>\n     <div commonClasses="' + swalClasses.radio + '"></div>\n     <label for="' + swalClasses.checkbox + '" commonClasses="' + swalClasses.checkbox + '">\n       <input type="checkbox" />\n       <span commonClasses="' + swalClasses.label + '"></span>\n     </label>\n     <textarea commonClasses="' + swalClasses.textarea + '"></textarea>\n     <div commonClasses="' + swalClasses.validationerror + '" id="' + swalClasses.validationerror + '"></div>\n   </div>\n   <div commonClasses="' + swalClasses.actions + '">\n     <button type="button" commonClasses="' + swalClasses.confirm + '">OK</button>\n     <button type="button" commonClasses="' + swalClasses.cancel + '">Cancel</button>\n   </div>\n   <div commonClasses="' + swalClasses.footer + '">\n   </div>\n </div>\n').replace(/(^|\n)\s*/g, '');
 
 /*
  * Add modal + backdrop to DOM
@@ -947,7 +947,7 @@ function fire() {
 }
 
 /**
- * Extends a Swal class making it able to be instantiated without the `new` keyword (and thus without `Swal.fire`)
+ * Extends a Swal commonClasses making it able to be instantiated without the `new` keyword (and thus without `Swal.fire`)
  * @param ParentSwal
  * @returns {NoNewKeywordSwal}
  */
@@ -1352,7 +1352,7 @@ var WeakMap$1 = typeof WeakMap === 'function' ? WeakMap : function (s, dP, hOP) 
  * This is the approach that Babel will probably take to implement private methods/fields
  *   https://github.com/tc39/proposal-private-methods
  *   https://github.com/babel/babel/pull/7555
- * Once we have the changes from that PR in Babel, and our core class fits reasonable in *one module*
+ * Once we have the changes from that PR in Babel, and our core commonClasses fits reasonable in *one module*
  *   then we can use that language feature.
  */
 
@@ -1600,7 +1600,7 @@ function setParameters(params) {
     popup.style.background = params.background;
   }
   var popupBackgroundColor = window.getComputedStyle(popup).getPropertyValue('background-color');
-  var successIconParts = popup.querySelectorAll('[class^=swal2-success-circular-line], .swal2-success-fix');
+  var successIconParts = popup.querySelectorAll('[commonClasses^=swal2-success-circular-line], .swal2-success-fix');
   for (var i = 0; i < successIconParts.length; i++) {
     successIconParts[i].style.backgroundColor = popupBackgroundColor;
   }
@@ -2137,7 +2137,7 @@ function _main(userParams) {
         }
       }
 
-      // set class
+      // set commonClasses
       inputContainer.className = inputClass;
       if (innerParams.inputClass) {
         addClass(inputContainer, innerParams.inputClass);
@@ -2763,12 +2763,12 @@ if (typeof window !== 'undefined' && window.Sweetalert2){  window.swal = window.
 "    .swal2-popup.swal2-toast .swal2-icon.swal2-success .swal2-success-ring {\n" +
 "      width: 2em;\n" +
 "      height: 2em; }\n" +
-"    .swal2-popup.swal2-toast .swal2-icon.swal2-error [class^='swal2-x-mark-line'] {\n" +
+"    .swal2-popup.swal2-toast .swal2-icon.swal2-error [commonClasses^='swal2-x-mark-line'] {\n" +
 "      top: .875em;\n" +
 "      width: 1.375em; }\n" +
-"      .swal2-popup.swal2-toast .swal2-icon.swal2-error [class^='swal2-x-mark-line'][class$='left'] {\n" +
+"      .swal2-popup.swal2-toast .swal2-icon.swal2-error [commonClasses^='swal2-x-mark-line'][commonClasses$='left'] {\n" +
 "        left: .3125em; }\n" +
-"      .swal2-popup.swal2-toast .swal2-icon.swal2-error [class^='swal2-x-mark-line'][class$='right'] {\n" +
+"      .swal2-popup.swal2-toast .swal2-icon.swal2-error [commonClasses^='swal2-x-mark-line'][commonClasses$='right'] {\n" +
 "        right: .3125em; }\n" +
 "  .swal2-popup.swal2-toast .swal2-actions {\n" +
 "    height: auto;\n" +
@@ -2781,14 +2781,14 @@ if (typeof window !== 'undefined' && window.Sweetalert2){  window.swal = window.
 "      box-shadow: 0 0 0 0.0625em #fff, 0 0 0 0.125em rgba(50, 100, 150, 0.4); }\n" +
 "  .swal2-popup.swal2-toast .swal2-success {\n" +
 "    border-color: #a5dc86; }\n" +
-"    .swal2-popup.swal2-toast .swal2-success [class^='swal2-success-circular-line'] {\n" +
+"    .swal2-popup.swal2-toast .swal2-success [commonClasses^='swal2-success-circular-line'] {\n" +
 "      position: absolute;\n" +
 "      width: 2em;\n" +
 "      height: 2.8125em;\n" +
 "      -webkit-transform: rotate(45deg);\n" +
 "              transform: rotate(45deg);\n" +
 "      border-radius: 50%; }\n" +
-"      .swal2-popup.swal2-toast .swal2-success [class^='swal2-success-circular-line'][class$='left'] {\n" +
+"      .swal2-popup.swal2-toast .swal2-success [commonClasses^='swal2-success-circular-line'][commonClasses$='left'] {\n" +
 "        top: -.25em;\n" +
 "        left: -.9375em;\n" +
 "        -webkit-transform: rotate(-45deg);\n" +
@@ -2796,7 +2796,7 @@ if (typeof window !== 'undefined' && window.Sweetalert2){  window.swal = window.
 "        -webkit-transform-origin: 2em 2em;\n" +
 "                transform-origin: 2em 2em;\n" +
 "        border-radius: 4em 0 0 4em; }\n" +
-"      .swal2-popup.swal2-toast .swal2-success [class^='swal2-success-circular-line'][class$='right'] {\n" +
+"      .swal2-popup.swal2-toast .swal2-success [commonClasses^='swal2-success-circular-line'][commonClasses$='right'] {\n" +
 "        top: -.25em;\n" +
 "        left: .9375em;\n" +
 "        -webkit-transform-origin: 0 2em;\n" +
@@ -2810,13 +2810,13 @@ if (typeof window !== 'undefined' && window.Sweetalert2){  window.swal = window.
 "      left: .4375em;\n" +
 "      width: .4375em;\n" +
 "      height: 2.6875em; }\n" +
-"    .swal2-popup.swal2-toast .swal2-success [class^='swal2-success-line'] {\n" +
+"    .swal2-popup.swal2-toast .swal2-success [commonClasses^='swal2-success-line'] {\n" +
 "      height: .3125em; }\n" +
-"      .swal2-popup.swal2-toast .swal2-success [class^='swal2-success-line'][class$='tip'] {\n" +
+"      .swal2-popup.swal2-toast .swal2-success [commonClasses^='swal2-success-line'][commonClasses$='tip'] {\n" +
 "        top: 1.125em;\n" +
 "        left: .1875em;\n" +
 "        width: .75em; }\n" +
-"      .swal2-popup.swal2-toast .swal2-success [class^='swal2-success-line'][class$='long'] {\n" +
+"      .swal2-popup.swal2-toast .swal2-success [commonClasses^='swal2-success-line'][commonClasses$='long'] {\n" +
 "        top: .9375em;\n" +
 "        right: .1875em;\n" +
 "        width: 1.375em; }\n" +
@@ -3396,7 +3396,7 @@ if (typeof window !== 'undefined' && window.Sweetalert2){  window.swal = window.
 "    .swal2-icon.swal2-error .swal2-x-mark {\n" +
 "      position: relative;\n" +
 "      flex-grow: 1; }\n" +
-"    .swal2-icon.swal2-error [class^='swal2-x-mark-line'] {\n" +
+"    .swal2-icon.swal2-error [commonClasses^='swal2-x-mark-line'] {\n" +
 "      display: block;\n" +
 "      position: absolute;\n" +
 "      top: 2.3125em;\n" +
@@ -3404,11 +3404,11 @@ if (typeof window !== 'undefined' && window.Sweetalert2){  window.swal = window.
 "      height: .3125em;\n" +
 "      border-radius: .125em;\n" +
 "      background-color: #f27474; }\n" +
-"      .swal2-icon.swal2-error [class^='swal2-x-mark-line'][class$='left'] {\n" +
+"      .swal2-icon.swal2-error [commonClasses^='swal2-x-mark-line'][commonClasses$='left'] {\n" +
 "        left: 1.0625em;\n" +
 "        -webkit-transform: rotate(45deg);\n" +
 "                transform: rotate(45deg); }\n" +
-"      .swal2-icon.swal2-error [class^='swal2-x-mark-line'][class$='right'] {\n" +
+"      .swal2-icon.swal2-error [commonClasses^='swal2-x-mark-line'][commonClasses$='right'] {\n" +
 "        right: 1em;\n" +
 "        -webkit-transform: rotate(-45deg);\n" +
 "                transform: rotate(-45deg); }\n" +
@@ -3423,14 +3423,14 @@ if (typeof window !== 'undefined' && window.Sweetalert2){  window.swal = window.
 "    color: #87adbd; }\n" +
 "  .swal2-icon.swal2-success {\n" +
 "    border-color: #a5dc86; }\n" +
-"    .swal2-icon.swal2-success [class^='swal2-success-circular-line'] {\n" +
+"    .swal2-icon.swal2-success [commonClasses^='swal2-success-circular-line'] {\n" +
 "      position: absolute;\n" +
 "      width: 3.75em;\n" +
 "      height: 7.5em;\n" +
 "      -webkit-transform: rotate(45deg);\n" +
 "              transform: rotate(45deg);\n" +
 "      border-radius: 50%; }\n" +
-"      .swal2-icon.swal2-success [class^='swal2-success-circular-line'][class$='left'] {\n" +
+"      .swal2-icon.swal2-success [commonClasses^='swal2-success-circular-line'][commonClasses$='left'] {\n" +
 "        top: -.4375em;\n" +
 "        left: -2.0635em;\n" +
 "        -webkit-transform: rotate(-45deg);\n" +
@@ -3438,7 +3438,7 @@ if (typeof window !== 'undefined' && window.Sweetalert2){  window.swal = window.
 "        -webkit-transform-origin: 3.75em 3.75em;\n" +
 "                transform-origin: 3.75em 3.75em;\n" +
 "        border-radius: 7.5em 0 0 7.5em; }\n" +
-"      .swal2-icon.swal2-success [class^='swal2-success-circular-line'][class$='right'] {\n" +
+"      .swal2-icon.swal2-success [commonClasses^='swal2-success-circular-line'][commonClasses$='right'] {\n" +
 "        top: -.6875em;\n" +
 "        left: 1.875em;\n" +
 "        -webkit-transform: rotate(-45deg);\n" +
@@ -3465,20 +3465,20 @@ if (typeof window !== 'undefined' && window.Sweetalert2){  window.swal = window.
 "      -webkit-transform: rotate(-45deg);\n" +
 "              transform: rotate(-45deg);\n" +
 "      z-index: 1; }\n" +
-"    .swal2-icon.swal2-success [class^='swal2-success-line'] {\n" +
+"    .swal2-icon.swal2-success [commonClasses^='swal2-success-line'] {\n" +
 "      display: block;\n" +
 "      position: absolute;\n" +
 "      height: .3125em;\n" +
 "      border-radius: .125em;\n" +
 "      background-color: #a5dc86;\n" +
 "      z-index: 2; }\n" +
-"      .swal2-icon.swal2-success [class^='swal2-success-line'][class$='tip'] {\n" +
+"      .swal2-icon.swal2-success [commonClasses^='swal2-success-line'][commonClasses$='tip'] {\n" +
 "        top: 2.875em;\n" +
 "        left: .875em;\n" +
 "        width: 1.5625em;\n" +
 "        -webkit-transform: rotate(45deg);\n" +
 "                transform: rotate(45deg); }\n" +
-"      .swal2-icon.swal2-success [class^='swal2-success-line'][class$='long'] {\n" +
+"      .swal2-icon.swal2-success [commonClasses^='swal2-success-line'][commonClasses$='long'] {\n" +
 "        top: 2.375em;\n" +
 "        right: .5em;\n" +
 "        width: 2.9375em;\n" +
@@ -3519,7 +3519,7 @@ if (typeof window !== 'undefined' && window.Sweetalert2){  window.swal = window.
 "    background: #3085d6;\n" +
 "    z-index: 10; }\n" +
 "\n" +
-"[class^='swal2'] {\n" +
+"[commonClasses^='swal2'] {\n" +
 "  -webkit-tap-highlight-color: transparent; }\n" +
 "\n" +
 ".swal2-show {\n" +

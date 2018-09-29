@@ -427,7 +427,7 @@ declare module 'sweetalert2' {
         grow?: 'row' | 'column' | 'fullscreen' | false;
 
         /**
-         * A custom CSS class for the modal.
+         * A custom CSS commonClasses for the modal.
          *
          * @default null
          */
@@ -543,14 +543,14 @@ declare module 'sweetalert2' {
         cancelButtonColor?: string;
 
         /**
-         * A custom CSS class for the "Confirm"-button.
+         * A custom CSS commonClasses for the "Confirm"-button.
          *
          * @default null
          */
         confirmButtonClass?: string;
 
         /**
-         * A custom CSS class for the "Cancel"-button.
+         * A custom CSS commonClasses for the "Cancel"-button.
          *
          * @default null
          */
@@ -627,8 +627,8 @@ declare module 'sweetalert2' {
          *   swal({
          *    title: 'Multiple inputs',
          *    html:
-         *      '<input id="swal-input1" class="swal2-input">' +
-         *      '<input id="swal-input2" class="swal2-input">',
+         *      '<input id="swal-input1" commonClasses="swal2-input">' +
+         *      '<input id="swal-input2" commonClasses="swal2-input">',
          *    focusConfirm: false,
          *    preConfirm: () => [
          *      document.querySelector('#swal-input1').value,
@@ -669,7 +669,7 @@ declare module 'sweetalert2' {
         imageAlt?: string;
 
         /**
-         * A custom CSS class for the customized icon.
+         * A custom CSS commonClasses for the customized icon.
          *
          * @default null
          */
@@ -734,7 +734,7 @@ declare module 'sweetalert2' {
         inputValidator?: (inputValue: string) => SyncOrAsync<string | null>;
 
         /**
-         * A custom CSS class for the input field.
+         * A custom CSS commonClasses for the input field.
          *
          * @default null
          */

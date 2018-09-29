@@ -26,7 +26,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
+    throw new TypeError("Cannot call a commonClasses as a function");
   }
 };
 
@@ -464,7 +464,7 @@ var isNodeEnv = function isNodeEnv() {
   return typeof window === 'undefined' || typeof document === 'undefined';
 };
 
-var sweetHTML = ('\n <div aria-labelledby="' + swalClasses.title + '" aria-describedby="' + swalClasses.content + '" class="' + swalClasses.popup + '" tabindex="-1">\n   <div class="' + swalClasses.header + '">\n     <ul class="' + swalClasses.progresssteps + '"></ul>\n     <div class="' + swalClasses.icon + ' ' + iconTypes.error + '">\n       <span class="swal2-x-mark"><span class="swal2-x-mark-line-left"></span><span class="swal2-x-mark-line-right"></span></span>\n     </div>\n     <div class="' + swalClasses.icon + ' ' + iconTypes.question + '">\n       <span class="' + swalClasses['icon-text'] + '">?</span>\n      </div>\n     <div class="' + swalClasses.icon + ' ' + iconTypes.warning + '">\n       <span class="' + swalClasses['icon-text'] + '">!</span>\n      </div>\n     <div class="' + swalClasses.icon + ' ' + iconTypes.info + '">\n       <span class="' + swalClasses['icon-text'] + '">i</span>\n      </div>\n     <div class="' + swalClasses.icon + ' ' + iconTypes.success + '">\n       <div class="swal2-success-circular-line-left"></div>\n       <span class="swal2-success-line-tip"></span> <span class="swal2-success-line-long"></span>\n       <div class="swal2-success-ring"></div> <div class="swal2-success-fix"></div>\n       <div class="swal2-success-circular-line-right"></div>\n     </div>\n     <img class="' + swalClasses.image + '" />\n     <h2 class="' + swalClasses.title + '" id="' + swalClasses.title + '"></h2>\n     <button type="button" class="' + swalClasses.close + '">\xD7</button>\n   </div>\n   <div class="' + swalClasses.content + '">\n     <div id="' + swalClasses.content + '"></div>\n     <input class="' + swalClasses.input + '" />\n     <input type="file" class="' + swalClasses.file + '" />\n     <div class="' + swalClasses.range + '">\n       <input type="range" />\n       <output></output>\n     </div>\n     <select class="' + swalClasses.select + '"></select>\n     <div class="' + swalClasses.radio + '"></div>\n     <label for="' + swalClasses.checkbox + '" class="' + swalClasses.checkbox + '">\n       <input type="checkbox" />\n       <span class="' + swalClasses.label + '"></span>\n     </label>\n     <textarea class="' + swalClasses.textarea + '"></textarea>\n     <div class="' + swalClasses.validationerror + '" id="' + swalClasses.validationerror + '"></div>\n   </div>\n   <div class="' + swalClasses.actions + '">\n     <button type="button" class="' + swalClasses.confirm + '">OK</button>\n     <button type="button" class="' + swalClasses.cancel + '">Cancel</button>\n   </div>\n   <div class="' + swalClasses.footer + '">\n   </div>\n </div>\n').replace(/(^|\n)\s*/g, '');
+var sweetHTML = ('\n <div aria-labelledby="' + swalClasses.title + '" aria-describedby="' + swalClasses.content + '" commonClasses="' + swalClasses.popup + '" tabindex="-1">\n   <div commonClasses="' + swalClasses.header + '">\n     <ul commonClasses="' + swalClasses.progresssteps + '"></ul>\n     <div commonClasses="' + swalClasses.icon + ' ' + iconTypes.error + '">\n       <span commonClasses="swal2-x-mark"><span commonClasses="swal2-x-mark-line-left"></span><span commonClasses="swal2-x-mark-line-right"></span></span>\n     </div>\n     <div commonClasses="' + swalClasses.icon + ' ' + iconTypes.question + '">\n       <span commonClasses="' + swalClasses['icon-text'] + '">?</span>\n      </div>\n     <div commonClasses="' + swalClasses.icon + ' ' + iconTypes.warning + '">\n       <span commonClasses="' + swalClasses['icon-text'] + '">!</span>\n      </div>\n     <div commonClasses="' + swalClasses.icon + ' ' + iconTypes.info + '">\n       <span commonClasses="' + swalClasses['icon-text'] + '">i</span>\n      </div>\n     <div commonClasses="' + swalClasses.icon + ' ' + iconTypes.success + '">\n       <div commonClasses="swal2-success-circular-line-left"></div>\n       <span commonClasses="swal2-success-line-tip"></span> <span commonClasses="swal2-success-line-long"></span>\n       <div commonClasses="swal2-success-ring"></div> <div commonClasses="swal2-success-fix"></div>\n       <div commonClasses="swal2-success-circular-line-right"></div>\n     </div>\n     <img commonClasses="' + swalClasses.image + '" />\n     <h2 commonClasses="' + swalClasses.title + '" id="' + swalClasses.title + '"></h2>\n     <button type="button" commonClasses="' + swalClasses.close + '">\xD7</button>\n   </div>\n   <div commonClasses="' + swalClasses.content + '">\n     <div id="' + swalClasses.content + '"></div>\n     <input commonClasses="' + swalClasses.input + '" />\n     <input type="file" commonClasses="' + swalClasses.file + '" />\n     <div commonClasses="' + swalClasses.range + '">\n       <input type="range" />\n       <output></output>\n     </div>\n     <select commonClasses="' + swalClasses.select + '"></select>\n     <div commonClasses="' + swalClasses.radio + '"></div>\n     <label for="' + swalClasses.checkbox + '" commonClasses="' + swalClasses.checkbox + '">\n       <input type="checkbox" />\n       <span commonClasses="' + swalClasses.label + '"></span>\n     </label>\n     <textarea commonClasses="' + swalClasses.textarea + '"></textarea>\n     <div commonClasses="' + swalClasses.validationerror + '" id="' + swalClasses.validationerror + '"></div>\n   </div>\n   <div commonClasses="' + swalClasses.actions + '">\n     <button type="button" commonClasses="' + swalClasses.confirm + '">OK</button>\n     <button type="button" commonClasses="' + swalClasses.cancel + '">Cancel</button>\n   </div>\n   <div commonClasses="' + swalClasses.footer + '">\n   </div>\n </div>\n').replace(/(^|\n)\s*/g, '');
 
 /*
  * Add modal + backdrop to DOM
@@ -947,7 +947,7 @@ function fire() {
 }
 
 /**
- * Extends a Swal class making it able to be instantiated without the `new` keyword (and thus without `Swal.fire`)
+ * Extends a Swal commonClasses making it able to be instantiated without the `new` keyword (and thus without `Swal.fire`)
  * @param ParentSwal
  * @returns {NoNewKeywordSwal}
  */
@@ -1352,7 +1352,7 @@ var WeakMap$1 = typeof WeakMap === 'function' ? WeakMap : function (s, dP, hOP) 
  * This is the approach that Babel will probably take to implement private methods/fields
  *   https://github.com/tc39/proposal-private-methods
  *   https://github.com/babel/babel/pull/7555
- * Once we have the changes from that PR in Babel, and our core class fits reasonable in *one module*
+ * Once we have the changes from that PR in Babel, and our core commonClasses fits reasonable in *one module*
  *   then we can use that language feature.
  */
 
@@ -1600,7 +1600,7 @@ function setParameters(params) {
     popup.style.background = params.background;
   }
   var popupBackgroundColor = window.getComputedStyle(popup).getPropertyValue('background-color');
-  var successIconParts = popup.querySelectorAll('[class^=swal2-success-circular-line], .swal2-success-fix');
+  var successIconParts = popup.querySelectorAll('[commonClasses^=swal2-success-circular-line], .swal2-success-fix');
   for (var i = 0; i < successIconParts.length; i++) {
     successIconParts[i].style.backgroundColor = popupBackgroundColor;
   }
@@ -2137,7 +2137,7 @@ function _main(userParams) {
         }
       }
 
-      // set class
+      // set commonClasses
       inputContainer.className = inputClass;
       if (innerParams.inputClass) {
         addClass(inputContainer, innerParams.inputClass);

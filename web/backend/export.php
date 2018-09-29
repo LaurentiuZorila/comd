@@ -5,11 +5,11 @@ require_once 'vendor/autoload.php';
 
 use Dompdf\Dompdf;
 
-// instantiate and use the dompdf class
+// instantiate and use the dompdf commonClasses
 $dompdf = new Dompdf();
 $dompdf->loadHtml('
-            <div class="container-fluid">
-            <h2 class="h5 no-margin-bottom">Dashboard</h2>
+            <div commonClasses="container-fluid">
+            <h2 commonClasses="h5 no-margin-bottom">Dashboard</h2>
             </div>
 ');
 

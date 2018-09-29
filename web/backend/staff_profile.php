@@ -1,42 +1,54 @@
 <?php
 require_once 'core/init.php';
+$user   = new BackendUser();
+$data   = new BackendProfile();
 
-//if (!Token::check(Input::get('token'))) {
-//        Redirect::to('index.php');
-//}
+if (!$user->isLoggedIn()) {
+    Redirect::to('login.php');
+}
 
 
-$id         = Input::get('id');
-$user       = DB::getInstance()->get('cmd_users', ['id', '=', Input::get('id')])->first();
-$name       = $user->name;
-$allTables  = DB::getInstance()->get('cmd_offices', ['id', '=', $user->offices_id], ['tables'])->first();
-$allTables  = Values::toArray(trim($allTables->tables));
+$leadId         = Input::get('lead_id');
+$officeId       = Input::get('office_id');
+// Lead data
+$lead       = $data->records($data::TBL_TEAM_LEAD, ['id', '=', $leadId], ['name', 'id', 'offices_id', 'supervisors_id'], false);
+// Lead name
+$leadName   = $lead->name;
+// All tables
+$allTables  = $data->records($data::TBL_OFFICE, ['id', '=', $lead->offices_id], ['tables'], false)->tables;
+$allTables  = explode(',', $allTables);
 
 
 if (Input::exists('get')) {
-    $id             = Input::get('id');
-    $staffProfile   = DB::getInstance()->get('cmd_users', ['id', '=', $id])->first();
-    $totalEmployees = DB::getInstance()->get('cmd_employees', ['user_id', '=', $id])->count();
-    $departmentName = DB::getInstance()->get('cmd_departments', ['id', '=', $staffProfile->supervisors_id], ['name'])->first();
-    $officeName     = DB::getInstance()->get('cmd_offices', ['id', '=', $staffProfile->offices_id], ['name'])->first();
+    $leadId             = Input::get('lead_id');
+    $officeId           = Input::get('office_id');
+    // Staff details
+    $leadProfile        = $data->records($data::TBL_TEAM_LEAD, ['id', '=', $leadId],['name', 'id', 'supervisors_id', 'offices_id'], false);
+    // Count employees
+    $totalEmployees     = $data->count($data::TBL_EMPLOYEES, ['offices_id', '=', $officeId]);
+    // Department name
+    $departmentName     = $data->records($data::TBL_DEPARTMENT, ['id', '=', $leadProfile->supervisors_id], ['name'], false)->name;
+    // Office name
+    $officeName         = $data->records($data::TBL_OFFICE, ['id', '=', $leadProfile->offices_id], ['name'], false)->name;
+    // Icons for tables
+    $icon               = ['icon-line-chart', 'icon-dashboard', 'icon-chart'];
 
-    $prefix         = 'cmd_';
-    $commonTables   = ['unpaid', 'furlough', 'absentees'];
-    $icon           = ['icon-line-chart', 'icon-dashboard', 'icon-chart'];
 
-    foreach ($commonTables as $table) {
-        $data[] = Values::sumAll(DB::getInstance()->get($prefix.$table, ['user_id', '=', $id], ['quantity'])->results(), 'quantity');
+    foreach (BackendProfile::TBL_COMMON_PREFIX as $table) {
+        $commonData[] = $data->sum($table, ['offices_id', '=', $officeId], 'quantity');
     }
+
     // Array with tables and sum of quantity for each table
-    $dataCommonTables = array_combine($commonTables, $data);
+    $dataCommonTables = array_combine($data::TBL_COMMON, $commonData);
+
 
 }
 
 if (Input::exists()) {
-    $user_id = Input::get('id');
-    $table = 'cmd_' . trim(Input::post('table'));
-    $year = Input::post('year');
-    $month = Input::post('month');
+    $officeId   = Input::get('office_id');
+    $table      = $data::PREFIX . trim(Input::post('table'));
+    $year       = Input::post('year');
+    $month      = Input::post('month');
 
     if (empty($month) || empty($year) || empty($table)) {
         $errors = [1];
@@ -47,15 +59,15 @@ if (Input::exists()) {
         $where = [
             ['year', '=', $year],
             'AND',
-            ['user_id', '=', $user_id],
+            ['offices_id', '=', $officeId],
             'AND',
             ['month', '=', $month]
         ];
 
         // Array with all results for one FTE
-        $chartData = DB::getInstance()->get($table, $where, ['quantity', 'name'])->results();
-        $chartNames = Js::toJson(Js::chartLabel($chartData));
-        $chartValues = Js::chartValues($chartData);
+        $chartData      = $data->records($table, $where, ['quantity', 'name']);
+        $chartNames     = Js::toJson(Js::chartLabel($chartData, 'name'));
+        $chartValues    = Js::chartValues($chartData, 'quantity');
 
         foreach ($chartData as $value) {
             $quantitySum[] = $value->quantity;
@@ -105,11 +117,11 @@ include 'includes/navbar.php';
                 <div class="row">
                     <div class="col-lg-12">
                         <p>
-                            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
                                 Filters
                             </button>
                         </p>
-                        <div class="collapse" id="collapseExample">
+                        <div class="<?php if (Input::exists() && count($errors) == 0 && count($errorNoData) == 0) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
                             <div class="card card-body">
                                 <form method="post">
                                     <div class="row">
@@ -128,7 +140,7 @@ include 'includes/navbar.php';
                                         <div class="col-sm-4">
                                             <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
                                                 <option value="">Select Year</option>
-                                                <?php foreach (Profile::getYearsList() as $year) { ?>
+                                                <?php foreach (Common::getYearsList() as $year) { ?>
                                                 <option value="<?php echo  $year; ?>"><?php echo $year; ?></option>
                                                 <?php } ?>
                                             </select>
@@ -159,10 +171,10 @@ include 'includes/navbar.php';
                     <div class="col-lg-12">
                         <div class="card card-profile">
                             <div class="card-header">
-                                <h4 class="text-gray-light text-center"><?php echo $name; ?></h4>
+                                <h4 class="text-gray-light text-center"><?php echo $leadName; ?></h4>
                             </div>
                             <div class="card-body text-center">
-                                <p class=""><?php echo escape($departmentName->name) . ' - ' .escape($officeName->name); ?></p>
+                                <p class=""><?php echo escape($departmentName) . ' - ' .escape($officeName); ?></p>
                             </div>
                         </div>
                     </div>
@@ -204,9 +216,26 @@ include 'includes/navbar.php';
         <?php if (Input::exists() && count($errors) === 0) { ?>
         <section>
             <div class="col-md-12">
-                <div class="pie-chart chart block">
-                    <div class="pie-chart chart margin-bottom-sm"><div style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;" class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
-                        <canvas id="profile_chart" style="display: block; width: 494px; height: 203px;" width="494" height="203" class="chartjs-render-monitor"></canvas>
+                <div class="card text-center">
+                    <div class="card-header pt-2">
+                        <ul class="nav nav-pills card-header-pills">
+                            <li class="nav-item"><button class="btn btn-primary mr-1 bar" id="bar" type="button">Bar</button></li>
+                            <li class="nav-item"><button class="btn btn-outline-primary line" id="line" type="button">Line</button></li>
+                        </ul>
+                    </div>
+                    <div class="pie-chart chart block">
+                        <div class="pie-chart chart margin-bottom-sm">
+                            <div style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;" class="chartjs-size-monitor">
+                                <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                                    <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+                                </div>
+                                <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                                    <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+                                </div>
+                            </div>
+                            <canvas id="profile_bar_chart" style="display: block; width: 494px; height: 213px;" width="494" height="213" class="chartjs-render-monitor"></canvas>
+                            <canvas id="profile_line_chart" style="display: none; width: 494px; height: 211px;" width="494" height="211" class="chartjs-render-monitor"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -227,6 +256,21 @@ include 'includes/navbar.php';
 <script src="js/front.js"></script>
 <!--  Sweet alert   -->
 <script src="sweetalert/dist/sweetalert2.min.js"></script>
+<script>
+    $("#bar").click(function(){
+        $('.line').removeClass('btn-primary').addClass('btn-outline-primary');
+        $('.bar').removeClass('btn-outline-primary').addClass('btn-primary');
+        $("#profile_bar_chart").show();
+        $("#profile_line_chart").hide();
+    });
+
+    $("#line").click(function(){
+        $('.bar').removeClass('btn-primary').addClass('btn-outline-primary');
+        $('.line').removeClass('btn-outline-primary').addClass('btn-primary');
+        $("#profile_line_chart").show();
+        $("#profile_bar_chart").hide();
+    });
+</script>
 <?php
 include 'includes/ajax_user_profile.php';
 

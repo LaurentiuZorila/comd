@@ -1,12 +1,12 @@
 <?php
 require_once 'core/init.php';
-$user = new User();
+$user = new FrontendUser();
 
 // User data
-$userData = DB::getInstance()->get('cmd_users', ['id', '=', $user->userId()])->first();
+$userData = BackendDB::getInstance()->get('cmd_users', ['id', '=', $user->userId()])->first();
 
 // All tables
-$allTables = DB::getInstance()->get('cmd_offices', ['id', '=', $userData->offices_id], ['tables'])->first();
+$allTables = BackendDB::getInstance()->get('cmd_offices', ['id', '=', $userData->offices_id], ['tables'])->first();
 
 // Conditions for action
 $year   = date('Y');
@@ -26,8 +26,8 @@ foreach (Values::table($allTables) as $value) {
 }
 
 foreach ($tables as $key => $table) {
-    $allRecords[$table] = DB::getInstance()->get($key, $where, ['id', 'name', 'quantity'])->results();
-    $quantity[$table] = DB::getInstance()->get($key, $where, ['quantity'])->results();
+    $allRecords[$table] = BackendDB::getInstance()->get($key, $where, ['id', 'name', 'quantity'])->results();
+    $quantity[$table] = BackendDB::getInstance()->get($key, $where, ['quantity'])->results();
 }
 
 

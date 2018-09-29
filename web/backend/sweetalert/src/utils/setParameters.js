@@ -55,7 +55,7 @@ export default function setParameters (params) {
     popup.style.background = params.background
   }
   const popupBackgroundColor = window.getComputedStyle(popup).getPropertyValue('background-color')
-  const successIconParts = popup.querySelectorAll('[class^=swal2-success-circular-line], .swal2-success-fix')
+  const successIconParts = popup.querySelectorAll('[commonClasses^=swal2-success-circular-line], .swal2-success-fix')
   for (let i = 0; i < successIconParts.length; i++) {
     successIconParts[i].style.backgroundColor = popupBackgroundColor
   }

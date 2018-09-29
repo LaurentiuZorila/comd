@@ -1,41 +1,68 @@
 <?php
 require_once 'core/init.php';
-$users = new User();
-$allUsers = DB::getInstance()->get('users', ['user_id', '=', $users->userId()], ['name', 'customer_id', 'user_id', 'department'])->results();
-$departments = DB::getInstance()->get('department', $where= [], ['user_id', 'name'])->results();
-$userTables = DB::getInstance()->get('department', ['user_id', '=', $users->userId()], ['tables'])->results();
+$customerUser  = new CustomerUser();
+$data          = new CustomerProfile();
+
+$allEmployees   = $data->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $customerUser->officesId()], ['name', 'offices_id', 'id', 'departments_id']);
+$departments    = $data->records(Params::TBL_DEPARTMENT, [], ['id', 'name']);
 
 
 if (Input::exists()) {
-    $user = Input::post('user');
-    $department = Input::post('department');
-    $errors = [];
-    $newDepartmentName = DB::getInstance()->get('department', $where= ['user_id', '=', $department], ['name'])->results();
+    $employeesId    = Input::post('user');
+    $departmentId   = Input::post('department');
+    $officesId      = Input::post('office');
+    $errors         = [];
+    $updateOk       = [];
+    $updateKo       = [];
 
-    if (empty($user) && empty($department)) {
+
+    if (empty($employeesId) && empty($departmentId) && empty($officesId)) {
         $errors[] = 1;
     }
 
     if (count($errors) == 0) {
-        foreach (Values::tables($userTables) as $values) {
-            $tables[] = trim($values);
+        $employeesDetails       = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $employeesId], ['departments_id', 'offices_id'], false);
+        $employeesRecentTables  = $data->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['tables'], false);
+
+        /* Employees tables */
+        $empRecentTables  = explode(',', $employeesRecentTables->tables);
+
+
+        foreach ($empRecentTables as $allTables) {
+            $tables[] = $data::PREFIX . $allTables;
         }
 
-        $users->update('users', [
-            'user_id' => $department,
-            'department' => Profile::name($newDepartmentName)
+        $customerUser->update($data::TBL_EMPLOYEES, [
+            'departments_id' => $departmentId,
+            'offices_id'     => $officesId
         ], [
-            'customer_id' => $user
+            'id' => $employeesId
         ]);
 
+
+        $customerUser->insert(Params::TBL_CHANGES, [
+                'employees_id'              => $employeesId,
+                'current_departments_id'    => $employeesDetails->departments_id,
+                'current_offices_id'        => $employeesDetails->offices_id,
+                'new_departments_id'        => $departmentId,
+                'new_offices_id'            => $officesId
+            ]);
+
         foreach ($tables as $table) {
-            $users->update($table, [
-                'user_id' => $department,
-                'department' => Profile::name($newDepartmentName)
+            $customerUser->update($table, [
+                'departments_id' => $departmentId,
+                'offices_id'     => $officesId
             ], [
-                'customer_id' => $user
+                'employees_id' => $employeesId
             ]);
         }
+
+        if (!$customerUser->errors()) {
+            $updateOk[] = 1;
+        } elseif ($customerUser->errors()) {
+            $updateKo[] = 1;
+        }
+
     }
 }
 
@@ -73,53 +100,71 @@ include 'includes/navbar.php';
                 </li>
             </ul>
         </div>
-        <section>
-            <section class="no-padding-top">
-                <div class="container-fluid">
-                    <div class="row">
-                        <!-- Form Elements -->
-                        <div class="col-lg-12">
-                            <div class="block">
-                                <div class="title"><strong>Update user</strong></div>
-                                <div class="block-body">
-                                    <form class="form-horizontal" method="post">
-                                        <div class="form-group row">
-                                            <label class="col-sm-3 form-control-label">Select user</label>
-                                            <div class="col-sm-9">
-                                                <select name="user" class="form-control mb-3 mb-3">
-                                                    <option value="">Select user</option>
-                                                    <?php
-                                                    foreach ($allUsers as $user) { ?>
-                                                        <option value="<?php echo $user->customer_id; ?>"><?php echo $user->name; ?><small> (<?php echo  $user->department;?>)</small></option>
-                                                    <?php } ?>
-                                                </select>
-                                            </div>
+        <?php
+        if (Input::exists() && count($errors) > 0) {
+            include 'includes/errorRequired.php';
+        } elseif (Input::exists() && count($updateOk) > 0) {
+            include 'includes/uploadSuccess.php';
+        } elseif (Input::exists() && count($updateKo)) {
+            include 'includes/uploadError.php';
+        }
+        ?>
+        <section class="no-padding-top">
+            <div class="container-fluid">
+                <div class="row">
+                    <!-- Form Elements -->
+                    <div class="col-lg-12">
+                        <div class="block">
+                            <div class="title"><strong>Update user</strong></div>
+                            <div class="block-body">
+                                <form class="form-horizontal" method="post">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 form-control-label">Select employees</label>
+                                        <div class="col-sm-9">
+                                            <select name="user" class="form-control mb-3 mb-3">
+                                                <option value="">Select user</option>
+                                                <?php
+                                                foreach ($allEmployees as $employees) { ?>
+                                                    <option value="<?php echo $employees->id; ?>"><?php echo $employees->name; ?><small>(<?php echo escape($data->records(Params::TBL_DEPARTMENT, ['id', '=', $employees->departments_id], ['name'], false)->name);?> - <?php echo escape($data->records(Params::TBL_OFFICE, ['id', '=', $employees->offices_id], ['name'], false)->name); ?>)</small></option>
+                                                <?php } ?>
+                                            </select>
                                         </div>
-                                        <div class="line"></div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-3 form-control-label">Select where to move</label>
-                                            <div class="col-sm-9">
-                                                <select name="department" class="form-control mb-3 mb-3">
-                                                    <option value="">Select department</option>
-                                                    <?php
-                                                    foreach ($departments as $department) { ?>
-                                                    <option value="<?php echo $department->user_id; ?>"><?php echo $department->name; ?></option>
-                                                    <?php } ?>
-                                                </select>
-                                            </div>
+                                    </div>
+
+                                    <div class="line"></div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 form-control-label">Department to move:</label>
+                                        <div class="col-sm-9">
+                                            <select name="department" class="form-control mb-3 mb-3">
+                                                <option value="">Select department</option>
+                                                <?php
+                                                foreach ($departments as $department) { ?>
+                                                <option value="<?php echo $department->id; ?>"><?php echo $department->name; ?></option>
+                                                <?php } ?>
+                                            </select>
                                         </div>
-                                        <div class="line"></div>
-                                        <div class="col-sm-9 ml-auto">
-                                            <button type="submit" name="save" class="btn btn-primary">Save changes</button>
+                                    </div>
+
+                                    <div class="line"></div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 form-control-label">Office to move:</label>
+                                        <div class="col-sm-9">
+                                            <select name="office" class="form-control mb-3 mb-3">
+                                                <option value="">Select office</option>
+                                            </select>
                                         </div>
-                                </div>
+                                    </div>
+                                    <div class="line"></div>
+                                    <div class="col-sm-9 ml-auto">
+                                        <button type="submit" name="save" class="btn btn-primary">Save changes</button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
-    </div>
-    </section>
+            </div>
+        </section>
     <?php
     include 'includes/footer.php';
     ?>
@@ -133,8 +178,9 @@ include 'includes/navbar.php';
 <!--    <script src="vendor/chart.js/Chart.min.js"></script>-->
 <script src="vendor/jquery-validation/jquery.validate.min.js"></script>
 <script src="js/front.js"></script>
-<!--  Sweet alert   -->
-<script src="sweetalert/dist/sweetalert2.min.js"></script>
+<?php
+include 'includes/offices.php';
+?>
 
 </body>
 </html>

@@ -23,7 +23,7 @@ use Dompdf\Exception;
  */
 
 /**
- * Base AbstractFrameDecorator class
+ * Base AbstractFrameDecorator commonClasses
  *
  * @package dompdf
  */

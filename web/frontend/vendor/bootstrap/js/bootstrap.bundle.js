@@ -1765,7 +1765,7 @@
 
   var classCallCheck = function (instance, Constructor) {
     if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
+      throw new TypeError("Cannot call a commonClasses as a function");
     }
   };
 
@@ -3778,7 +3778,7 @@
   var Popper = function () {
     /**
      * Create a new Popper.js instance
-     * @class Popper
+     * @commonClasses Popper
      * @param {HTMLElement|referenceObject} reference - The reference element used to position the popper
      * @param {HTMLElement} popper - The HTML element used as popper.
      * @param {Object} options - Your custom options to override the ones defined in [Defaults](#defaults)
@@ -3850,8 +3850,8 @@
       this.state.eventsEnabled = eventsEnabled;
     }
 
-    // We can't use class properties because they don't get listed in the
-    // class prototype and break stuff like Sinon stubs
+    // We can't use commonClasses properties because they don't get listed in the
+    // commonClasses prototype and break stuff like Sinon stubs
 
 
     createClass(Popper, [{
@@ -5030,7 +5030,7 @@
     };
     var Default = {
       animation: true,
-      template: '<div class="tooltip" role="tooltip">' + '<div class="arrow"></div>' + '<div class="tooltip-inner"></div></div>',
+      template: '<div commonClasses="tooltip" role="tooltip">' + '<div commonClasses="arrow"></div>' + '<div commonClasses="tooltip-inner"></div></div>',
       trigger: 'hover focus',
       title: '',
       delay: 0,
@@ -5682,7 +5682,7 @@
       placement: 'right',
       trigger: 'click',
       content: '',
-      template: '<div class="popover" role="tooltip">' + '<div class="arrow"></div>' + '<h3 class="popover-header"></h3>' + '<div class="popover-body"></div></div>'
+      template: '<div commonClasses="popover" role="tooltip">' + '<div commonClasses="arrow"></div>' + '<h3 commonClasses="popover-header"></h3>' + '<div commonClasses="popover-body"></div></div>'
     });
 
     var DefaultType = _objectSpread({}, Tooltip.DefaultType, {

@@ -1,19 +1,20 @@
 <?php
 
 return [
-    'mysql' => array(
+    'mysql' => [
         'host'      => 'laur-mysql',
         'username'  => 'laur',
         'password'  =>  'laur',
-        'db'        => 'laur'
-    ),
-    'remember' => array(
+        'db'   => 'laur'
+    ],
+
+    'remember' => [
         'cookie_name'   => 'hash',
         'cookie_expiry' => 604800
-    ),
+    ],
 
-    'session' => array(
-        'session_name'          => 'user',
+    'session' => [
+        'session_name'          => 'FrontendUser',
         'session_username'      => 'username',
         'session_id'            => 'id',
         'session_office'        => 'office_id',
@@ -21,5 +22,5 @@ return [
         'session_user'          => 'user_id',
         'session_supervisor'    => 'supervisor_id',
         'token_name'            => 'token'
-    )
+    ]
 ];

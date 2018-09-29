@@ -63,7 +63,7 @@
         type: 'pie',
         options: {
             legend: {
-                display: true
+                display: false
             }
         },
         data: {
@@ -81,6 +81,45 @@
                         "#a678eb"
                     ]
                 }]
+        }
+    });
+</script>
+
+<script>
+    var employees_chart    = $('#employees_chart');
+    var employeesChart = new Chart(employees_chart, {
+        type: 'bar',
+        options: {
+            scales: {
+                xAxes: [{
+                    display: true,
+                    gridLines: {
+                        color: 'transparent'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    gridLines: {
+                        color: 'transparent'
+                    },
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+        },
+        data: {
+            labels: <?php echo $chartLabels; ?>,
+            datasets: [
+                {
+                    label: "<?php if (Input::exists()) { echo substr(strtoupper(Input::post('table')), 4); } ?>",
+                    backgroundColor: "#864DD9",
+                    hoverBackgroundColor: "#864DD9",
+                    borderColor: "#864DD9",
+                    borderWidth: 0.5,
+                    data: [<?php echo $chartValues; ?>],
+                }
+            ]
         }
     });
 </script>

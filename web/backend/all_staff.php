@@ -1,6 +1,10 @@
 <?php
 require_once 'core/init.php';
-$allStaff = DB::getInstance()->get('cmd_users', $where = [])->results();
+$user = new BackendUser();
+$data = new BackendProfile();
+
+$allLeads = $data->records(Params::TBL_TEAM_LEAD, ['supervisors_id', '=', $user->userId()], ['id', 'name', 'offices_id', 'supervisors_id']);
+
 
 ?>
 
@@ -39,21 +43,23 @@ include 'includes/navbar.php';
             <section>
                 <div class="container-fluid">
                     <div class="row">
-                        <?php foreach ($allStaff as $staff) {
-                            $rating = DB::getInstance()->average('cmd_rating', ['user_id', '=', $staff->id], 'rating')->results();
-                            $rating = round(Values::columnValues($rating, 'average'));
+                        <?php foreach ($allLeads as $lead) {
+                            $rating = $data->rating(['user_id', '=', $lead->id]);
                             ?>
                         <div class="col-md-6 col-xl-4">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="media align-items-center"><h1 class="avatar avatar-xl mr-3 text-monospace"><?php echo Profile::makeAvatar($staff->name); ?></h1>
+                                    <div class="media align-items-center"><h1 class="avatar avatar-xl mr-3 text-monospace"><?php echo Common::makeAvatar($lead->name); ?></h1>
                                         <div class="media-body overflow-hidden">
-                                            <h3 class="card-text mb-0 text-center" style="color: #9055A2;"><?php echo $staff->name; ?></h3>
-                                            <p class="card-text mb-0 text-uppercase font-weight-bold text-secondary text-center"><?php echo Values::columnValue(DB::getInstance()->get('cmd_departments', ['id', '=', $staff->supervisors_id], ['name'])->first()); ?></p>
-                                            <p class="card-text mb-3 text-uppercase font-weight-bold text-secondary text-center"><?php echo Values::columnValue(DB::getInstance()->get('cmd_offices', ['id', '=', $staff->offices_id], ['name'])->first()); ?></p>
+                                            <h3 class="card-text mb-0 text-center" style="color: #9055A2;"><?php echo $lead->name; ?></h3>
+                                            <p class="card-text mb-0 text-uppercase font-weight-bold text-secondary text-center"><?php echo $data->records(Params::TBL_DEPARTMENT, ['id', '=', $lead->supervisors_id], ['name'], false)->name; ?></p>
+                                            <p class="card-text mb-3 text-uppercase font-weight-bold text-secondary text-center"><?php echo $data->records(Params::TBL_OFFICE, ['id', '=', $lead->offices_id], ['name'], false)->name; ?></p>
                                             <p class="card-text mb-0 font-weight-bold text-secondary text-center">Rating</p>
                                             <p class="card-text m-b-0 font-weight-bold text-secondary text-center">
                                                 <?php switch ($rating) {
+                                                    case '0':
+                                                        include 'rating/default.php';
+                                                        break;
                                                     case '1':
                                                         include 'rating/one_star.php';
                                                         break;
@@ -68,6 +74,7 @@ include 'includes/navbar.php';
                                                         break;
                                                     case '5':
                                                         include 'rating/five_star.php';
+                                                        break;
                                                     default:
                                                         include 'rating/default.php';
                                                         break;
@@ -76,7 +83,7 @@ include 'includes/navbar.php';
                                             </p>
                                         </div>
                                     </div>
-                                    <a href="staff_profile.php?id=<?php echo $staff->id; ?>&token=<?php echo Token::generate(); ?> " class="tile-link"></a>
+                                    <a href="staff_profile.php?office_id=<?php echo $lead->offices_id;?>&lead_id=<?php echo $lead->id; ?>&token=<?php echo Token::generate(); ?> " class="tile-link"></a>
                                 </div>
                             </div>
                         </div>

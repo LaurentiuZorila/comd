@@ -1,5 +1,5 @@
 /**
- * Extends a Swal class making it able to be instantiated without the `new` keyword (and thus without `Swal.fire`)
+ * Extends a Swal commonClasses making it able to be instantiated without the `new` keyword (and thus without `Swal.fire`)
  * @param ParentSwal
  * @returns {NoNewKeywordSwal}
  */

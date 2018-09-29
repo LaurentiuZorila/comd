@@ -18,7 +18,7 @@ namespace Dompdf;
 class CanvasFactory
 {
     /**
-     * Constructor is private: this is a static class
+     * Constructor is private: this is a static commonClasses
      */
     private function __construct()
     {

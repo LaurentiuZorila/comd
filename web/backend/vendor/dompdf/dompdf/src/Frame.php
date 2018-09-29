@@ -13,9 +13,9 @@ use Dompdf\Frame\FrameList;
  */
 
 /**
- * The main Frame class
+ * The main Frame commonClasses
  *
- * This class represents a single HTML element.  This class stores
+ * This commonClasses represents a single HTML element.  This commonClasses stores
  * positioning information as well as containing block location and
  * dimensions. Style information for the element is stored in a {@link
  * Style} object. Tree structure is maintained via the parent & children
@@ -1147,8 +1147,8 @@ class Frame
             $tmp = htmlspecialchars($this->_node->nodeValue);
             $str .= "<pre>'" . mb_substr($tmp, 0, 70) .
                 (mb_strlen($tmp) > 70 ? "..." : "") . "'</pre>";
-        } elseif ($css_class = $this->_node->getAttribute("class")) {
-            $str .= "CSS class: '$css_class'<br/>";
+        } elseif ($css_class = $this->_node->getAttribute("commonClasses")) {
+            $str .= "CSS commonClasses: '$css_class'<br/>";
         }
 
         if ($this->_parent) {

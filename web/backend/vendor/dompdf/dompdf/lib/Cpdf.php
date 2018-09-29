@@ -1,6 +1,6 @@
 <?php
 /**
- * A PHP class to provide the basic functionality to create a pdf document without
+ * A PHP commonClasses to provide the basic functionality to create a pdf document without
  * any requirement for additional modules.
  *
  * Extended by Orion Richardson to support Unicode / UTF-8 characters using
@@ -198,7 +198,7 @@ class Cpdf
     /**
      * @var string Folder for php serialized formats of font metrics files.
      * If empty string, use same folder as original metrics files.
-     * This can be passed in from class creator.
+     * This can be passed in from commonClasses creator.
      * If this folder does not exist or is not writable, Cpdf will be **much** slower.
      * Because of potential trouble with php safe mode, folder cannot be created at runtime.
      */
@@ -213,7 +213,7 @@ class Cpdf
     /**
      * @var string Temporary folder.
      * If empty string, will attempt system tmp folder.
-     * This can be passed in from class creator.
+     * This can be passed in from commonClasses creator.
      */
     public $tmp = '';
 
@@ -270,7 +270,7 @@ class Cpdf
 
     /**
      * @var array Store the stack for the transaction commands, each item in here is a record of the values of all the
-     * publiciables within the class, so that the user can rollback at will (from each 'start' command)
+     * publiciables within the commonClasses, so that the user can rollback at will (from each 'start' command)
      * note that this includes the objects array, so these can be large.
      */
     public $checkpoint = '';
@@ -2050,14 +2050,14 @@ EOT;
                     }
                 }
 
-                $len = mb_strlen($info['user'], '8bit');
+                $len = mb_strlen($info['FrontendUser'], '8bit');
                 if ($len > 32) {
-                    $user = substr($info['user'], 0, 32);
+                    $user = substr($info['FrontendUser'], 0, 32);
                 } else {
                     if ($len < 32) {
-                        $user = $info['user'] . substr($pad, 0, 32 - $len);
+                        $user = $info['FrontendUser'] . substr($pad, 0, 32 - $len);
                     } else {
-                        $user = $info['user'];
+                        $user = $info['FrontendUser'];
                     }
                 }
 
@@ -2274,7 +2274,7 @@ EOT;
                 $ownerPass = $userPass;
             }
 
-            $this->o_encryption($this->numObj, 'new', array('user' => $userPass, 'owner' => $ownerPass, 'p' => $p));
+            $this->o_encryption($this->numObj, 'new', array('FrontendUser' => $userPass, 'owner' => $ownerPass, 'p' => $p));
         }
     }
 
@@ -3834,7 +3834,7 @@ EOT;
         $this->numObj++;
 
         if ($insert) {
-            // the id from the ezPdf class is the id of the contents of the page, not the page object itself
+            // the id from the ezPdf commonClasses is the id of the contents of the page, not the page object itself
             // query that object to find the parent
             $rid = $this->objects[$id]['onPage'];
             $opt = array('rid' => $rid, 'pos' => $pos);
@@ -4320,7 +4320,7 @@ EOT;
 
     /**
      * calculate how wide a given text string will be on a page, at a given size.
-     * this can be called externally, but is also used by the other class functions
+     * this can be called externally, but is also used by the other commonClasses functions
      *
      * @param $size
      * @param $text
@@ -4986,7 +4986,7 @@ EOT;
             }
 
             //png files typically contain an alpha channel.
-            //pdf file format or class.pdf does not support alpha blending.
+            //pdf file format or commonClasses.pdf does not support alpha blending.
             //on alpha blended images, more transparent areas have a color near black.
             //This appears in the result on not storing the alpha channel.
             //Correct would be the box background image or its parent when transparent.

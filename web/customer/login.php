@@ -1,29 +1,46 @@
 <?php
 require_once 'core/init.php';
+$token = new Token();
 
-if (Input::exists()) {
-    if (Token::check(Input::post('token'))) {
-
+if (Input::exists() && $token->checkToken(Input::post('token'))) {
         $validate = new Validate();
-        $validation = $validate->check($_POST, array(
-            'username' => array('required'  => true),
-            'password' => array('required'  => true)
-        ));
+        $validation = $validate->check($_POST, [
+            'Username' =>
+                ['required' => true,
+                 'min'      => 2,
+                 'max'      => 40
+                ],
+            'Password' =>
+                ['required' => true,
+                 'min'      => 5,
+                 'max'      => 40
+                ]
+        ]);
 
         if ($validation->passed()) {
-            $user = new User();
-            $login = $user->login(Input::post('username'), Input::post('password'));
+            $errors     = [];
+            $user       = new CustomerUser();
+            $config     = new Common();
+            $login      = $user->login(Input::post('Username'), Input::post('Password'));
+
+            // Get configured status
+            $configured = $config->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['configured'], false)->configured;
+
             if ($login) {
-                Redirect::to('index.php');
+                // Check if user is configured
+                if ($configured) {
+                    CustomerRedirect::to('index.php');
+                } else {
+                    CustomerRedirect::to('profile-setup/profileconfig.php', ['id' => $user->customerId(), 'setup' => $token->getToken()]);
+                }
             } else {
-                Session::put('loginFailed', 'Username or password not valid! Please try again!');
+                $errors = ['Username or password not valid! Please try again!'];
             }
         } else {
             foreach ($validation->errors() as $error) {
                 Session::put('validationError', $error);
             }
         }
-    }
 }
 ?>
 
@@ -37,12 +54,38 @@ include 'includes/head.php';
       <div class="container d-flex align-items-center">
         <div class="form-holder has-shadow">
             <?php
-            if (Session::exists('loginFailed')) { ?>
-                <div class="alert alert-danger alert-dismissible fade show">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <strong>Atention!</strong> <?php echo Session::flash('loginFailed'); ?>
+            if (Input::exists() && count($errors) > 0) { ?>
+                <div class="row mb-0">
+                    <div class="col-lg-12">
+                        <div class="card-body">
+                            <div class="alert alert-dismissible fade show badge-danger" role="alert">
+                                <strong class="text-white"> You have some errors! </strong>
+                                <p class="text-white"> <?php echo $errors[0]; ?></p>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            <? } ?>
+            <? }
+            if (Session::exists('validationError')) {?>
+                <div class="row mb-0">
+                    <div class="col-lg-12">
+                        <div class="card-body">
+                            <div class="alert alert-dismissible fade show badge-danger" role="alert">
+                                <strong class="text-white"> You have some errors! </strong>
+                                <?php foreach ($validation->errors() as $error) { ?>
+                                <p class="text-white mb-0"> <?php echo $error; ?></p>
+                                <?php } ?>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php Session::delete('validationError'); } ?>
           <div class="row">
             <!-- Logo & Information Panel-->
             <div class="col-lg-6">
@@ -61,12 +104,12 @@ include 'includes/head.php';
                 <div class="content">
                   <form method="post" class="form-validate">
                     <div class="form-group">
-                      <input id="login-username" type="text" name="username" required data-msg="Please enter your username" class="input-material">
+                      <input id="login-username" type="text" name="Username" required data-msg="Please enter your username" class="input-material">
                       <label for="login-username" class="label-material">User Name</label>
                     </div>
                     <div class="form-group">
-                      <input id="login-password" type="password" name="password" required data-msg="Please enter your password" class="input-material">
-                        <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                      <input id="login-password" type="password" name="Password" required data-msg="Please enter your password" class="input-material">
+                        <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
                       <label for="login-password" class="label-material">Password</label>
                     </div><button type="submit" id="login" class="btn btn-primary" name="login">Login</button>
                     <!-- This should be submit button but I replaced it with <a> for demo purposes-->

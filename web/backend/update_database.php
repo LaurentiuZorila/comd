@@ -1,10 +1,14 @@
 <?php
 require_once 'core/init.php';
-$user = new User();
+$user = new BackendUser();
+$data = new BackendProfile();
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
 }
-$allTables = DB::getInstance()->get('departments', array('id', '=', $user->userId()))->results();
+/**
+ * TODO to modify this file
+ */
+$allTables = BackendDB::getInstance()->get('departments', array('id', '=', $user->userId()))->results();
 
 foreach (Values::tables($allTables) as $value) {
     $tables[] = trim($value);
@@ -35,13 +39,13 @@ if (Input::exists()) {
             // Open the file for reading
             if (($h = fopen("{$filename}", "r")) !== FALSE) {
                 while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
-                    DB::getInstance()->insert($table, [
+                    BackendDB::getInstance()->insert($table, [
                         'name' => $data[0],
                         'username' => $data[1],
                         'department' => $data[2]
                     ]);
                 }
-                if (DB::getInstance()->count() > 0) {
+                if (BackendDB::getInstance()->count() > 0) {
                     $uploadSuccess = [1];
                 } else {
                     $uploadError = [1];

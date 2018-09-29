@@ -20,7 +20,7 @@ use Dompdf\Positioner\AbstractPositioner;
 /**
  * Contains frame decorating logic
  *
- * This class is responsible for assigning the correct {@link AbstractFrameDecorator},
+ * This commonClasses is responsible for assigning the correct {@link AbstractFrameDecorator},
  * {@link AbstractPositioner}, and {@link AbstractFrameReflower} objects to {@link Frame}
  * objects.  This is determined primarily by the Frame's display type, but
  * also by the Frame's node's type (e.g. DomElement vs. #text)

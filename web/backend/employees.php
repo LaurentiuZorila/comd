@@ -1,8 +1,11 @@
 <?php
 require_once 'core/init.php';
-$user = new User();
+$user   = new BackendUser();
+$data   = new BackendProfile();
 
-$allUsersDetails = DB::getInstance()->get('cmd_employees', ['supervisors_id', '=', $user->userId()])->results();
+$allEmployees = $data->records(Params::TBL_EMPLOYEES, ['departments_id', '=', $user->userId()], ['offices_id', 'departments_id', 'name', 'id']);
+
+
 
 ?>
 
@@ -47,21 +50,21 @@ include 'includes/navbar.php';
                                     <tr>
                                         <th>#</th>
                                         <th>Name</th>
-                                        <th>Team-Leader</th>
                                         <th>Team</th>
                                         <th>Department</th>
+                                        <th>Actions</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <?php
                                     $x = 1;
-                                    foreach ($allUsersDetails as $usersDetail) { ?>
+                                    foreach ($allEmployees as $employees) { ?>
                                         <tr>
                                             <th scope="row"><?php echo $x; ?></th>
-                                            <td><a href="employees_data.php?employees_id=<?php echo $usersDetail->id; ?>"><?php echo $usersDetail->name; ?></a></td>
-                                            <td><?php echo Tables::getDetails('cmd_users', ['id', '=', $usersDetail->user_id], 'name'); ?></td>
-                                            <td><?php echo Tables::getDetails('cmd_offices', ['id', '=', $usersDetail->offices_id], 'name'); ?></td>
-                                            <td><?php echo Tables::getDetails('cmd_departments', ['id', '=', $usersDetail->departments_id], 'name') ;?></td>
+                                            <td><a href="employees_data.php?employees_id=<?php echo $employees->id; ?>"><?php echo $employees->name; ?></a></td>
+                                            <td><?php echo $data->records(Params::TBL_OFFICE, ['id', '=', $employees->offices_id], ['name'], false)->name; ?></td>
+                                            <td><?php echo $data->records(Params::TBL_DEPARTMENT, ['id', '=', $employees->departments_id], ['name'], false)->name ;?></td>
+                                            <td><a href="employees_data.php?employees_id=<?php echo $employees->id; ?>"><i class="fa fa-user"></i></a></td>
                                         </tr>
                                         <?php
                                         $x++;

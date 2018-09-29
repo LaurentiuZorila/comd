@@ -18,11 +18,11 @@ use Dompdf\Frame;
 /**
  * Represents CSS properties.
  *
- * The Style class is responsible for handling and storing CSS properties.
+ * The Style commonClasses is responsible for handling and storing CSS properties.
  * It includes methods to resolve colors and lengths, as well as getters &
  * setters for many CSS properites.
  *
- * Actual CSS parsing is performed in the {@link Stylesheet} class.
+ * Actual CSS parsing is performed in the {@link Stylesheet} commonClasses.
  *
  * @package dompdf
  */
@@ -152,7 +152,7 @@ class Style
      */
     protected $_props;
 
-    /* var instead of protected would allow access outside of class */
+    /* var instead of protected would allow access outside of commonClasses */
     protected $_important_props;
 
     /**
@@ -761,7 +761,7 @@ class Style
      * PHP5 overloaded setter
      *
      * This function along with {@link Style::__get()} permit a user of the
-     * Style class to access any (CSS) property using the following syntax:
+     * Style commonClasses to access any (CSS) property using the following syntax:
      * <code>
      *  Style->margin_top = "1em";
      *  echo (Style->margin_top);
@@ -769,7 +769,7 @@ class Style
      *
      * __set() automatically calls the provided set function, if one exists,
      * otherwise it sets the property directly.  Typically, __set() is not
-     * called directly from outside of this class.
+     * called directly from outside of this commonClasses.
      *
      * On each modification clear cache to return accurate setting.
      * Also affects direct settings not using __set
@@ -817,7 +817,7 @@ class Style
      * PHP5 overloaded getter
      * Along with {@link Style::__set()} __get() provides access to all CSS
      * properties directly.  Typically __get() is not called directly outside
-     * of this class.
+     * of this commonClasses.
      * On each modification clear cache to return accurate setting.
      * Also affects direct settings not using __set
      *
@@ -908,7 +908,7 @@ class Style
 
     /**
      * Getter for the 'font-family' CSS property.
-     * Uses the {@link FontMetrics} class to resolve the font family into an
+     * Uses the {@link FontMetrics} commonClasses to resolve the font family into an
      * actual font file.
      *
      * @link http://www.w3.org/TR/CSS21/fonts.html#propdef-font-family

@@ -1,6 +1,7 @@
 <?php
 require_once 'core/init.php';
-$user = new User();
+
+$user = new CustomerUser();
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
 }
@@ -10,7 +11,9 @@ if (!$user->isLoggedIn()) {
 <nav id="sidebar">
     <!-- Sidebar Header-->
     <div class="sidebar-header d-flex align-items-center">
-        <div class="avatar"><img src="img/avatar-6.jpg" alt="..." class="img-fluid rounded-circle"></div>
+        <div class="avatar">
+            <img src="../../common/img/user.png" alt="..." class="img-fluid rounded-circle">
+        </div>
         <div class="title">
             <h1 class="h5"><?php echo escape($user->data()->name);?></h1>
             <p><?php echo escape($user->data()->function); ?></p>

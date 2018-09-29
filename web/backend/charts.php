@@ -1,19 +1,19 @@
 <?php
 require_once 'core/init.php';
 
-$user = new User();
+$user = new BackendUser();
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
 }
 // Names for select list
-$users = DB::getInstance()->get('users', array('user_id', '=', $user->userId()))->results();
+$users = BackendDB::getInstance()->get('users', array('user_id', '=', $user->userId()))->results();
 
-$furlough = DB::getInstance()->get('furlough', array('user_id', '=', $user->userId()))->results();
+$furlough = BackendDB::getInstance()->get('furlough', array('user_id', '=', $user->userId()))->results();
 
-$absentees = DB::getInstance()->get('absentees', array('user_id', '=', $user->userId()))->results();
+$absentees = BackendDB::getInstance()->get('absentees', array('user_id', '=', $user->userId()))->results();
 
-$allTables = DB::getInstance()->get('departments', array('id', '=', $user->userId()))->results();
+$allTables = BackendDB::getInstance()->get('departments', array('id', '=', $user->userId()))->results();
 
 foreach (Values::tables($allTables) as $value) {
     $tables[] = trim($value);

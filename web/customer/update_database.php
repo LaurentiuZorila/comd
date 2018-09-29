@@ -1,54 +1,57 @@
 <?php
 require_once 'core/init.php';
-$user = new User();
+$user = new CustomerUser();
+$data = new CustomerProfile();
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
 }
 // User data
-$userData = DB::getInstance()->get('cmd_users', ['id', '=', $user->userId()])->first();
+$userData = CustomerDB::getInstance()->get('cmd_users', ['id', '=', $user->customerId()])->first();
 
 // All tables
-$allTables = DB::getInstance()->get('cmd_offices', ['id', '=', $userData->offices_id], ['tables'])->first();
+$allTables = $data->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['tables'], false);
+$allTables = explode(',', $allTables->tables);
 
-foreach (Values::table($allTables) as $value) {
-    $prefix   = 'cmd_';
+foreach ($allTables as $value) {
+    $prefix                   = Params::PREFIX;
     $tables[$prefix . $value] = trim($value);
 }
 
 
 if (Input::exists()) {
-    $year = Input::post('year');
-    $month = Input::post('month');
-    $table = Input::post('tables');
+    $year   = Input::post('year');
+    $month  = Input::post('month');
+    $table  = trim(Input::post('tables'));
+    $table  = Params::PREFIX . $table;
 
-    $filename = $_FILES['fileToUpload']['tmp_name'];
-    $path = $_FILES['fileToUpload']['name'];
-    $size = $_FILES['fileToUpload']['size'];
-    $extension = pathinfo($path, PATHINFO_EXTENSION);
+    $filename   = $_FILES['fileToUpload']['tmp_name'];
+    $path       = $_FILES['fileToUpload']['name'];
+    $size       = $_FILES['fileToUpload']['size'];
+    $extension  = pathinfo($path, PATHINFO_EXTENSION);
     // Extensions
-    $extensions = array('csv');
-    $errors = [];
-    $uploadSuccess = [];
-    $uploadError = [];
+    $extensions     = Params::EXTENSIONS;
+    $errors         = [];
+    $uploadSuccess  = [];
+    $uploadError    = [];
     $extensionError = [];
 
     if (empty($year) || empty($month) || empty($table)) {
         $errors = [1];
     }
-    if (count($errors) == 0) {
+    if (count($errors) === 0) {
     // Check for valid extension
         if (in_array($extension, $extensions) && $size > 0) {
             // Open the file for reading
             if (($h = fopen("{$filename}", "r")) !== FALSE) {
                 while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
-                    DB::getInstance()->insert($table, [
+                    CustomerDB::getInstance()->insert($table, [
                         'name' => $data[0],
                         'username' => $data[1],
                         'department' => $data[2]
                     ]);
                 }
-                if (DB::getInstance()->count() > 0) {
+                if (CustomerDB::getInstance()->count() > 0) {
                     $uploadSuccess = [1];
                 } else {
                     $uploadError = [1];
@@ -61,8 +64,6 @@ if (Input::exists()) {
         }
     }
 }
-
-
 
 ?>
 
@@ -97,6 +98,17 @@ include 'includes/head.php';
             </li>
           </ul>
         </div>
+          <?php
+          if (Input::exists() && count($uploadSuccess) > 0) {
+              include 'includes/uploadSuccess.php';
+          } elseif (Input::exists() && count($uploadError) > 0) {
+              include 'includes/uploadError.php';
+          } elseif (Input::exists() && count($extensionError) > 0) {
+              include 'includes/extensionError.php';
+          } elseif (Input::exists() && count($errors) > 0) {
+              include 'includes/errorRequired.php';
+          }
+          ?>
           <section class="no-padding-top no-padding-bottom">
               <div class="col-lg-12">
                   <div class="block">
@@ -109,7 +121,7 @@ include 'includes/head.php';
                                   <select name="year" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} ?>">
                                       <option value="">Select Year</option>
                                       <?php
-                                      foreach (Profile::getYearsList() as $year) { ?>
+                                      foreach (Common::getYearsList() as $year) { ?>
                                           <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
                                       <?php } ?>
                                   </select>
@@ -121,7 +133,7 @@ include 'includes/head.php';
                               <div class="col-sm-4">
                                   <select name="month" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} ?>">
                                       <option value="">Select Month</option>
-                                      <?php foreach (Profile::getMonthsList() as $key => $value) { ?>
+                                      <?php foreach (Common::getMonths() as $key => $value) { ?>
                                           <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                       <?php } ?>
                                   </select>
@@ -167,24 +179,6 @@ include 'includes/head.php';
 <!--    <script src="vendor/chart.js/Chart.min.js"></script>-->
     <script src="vendor/jquery-validation/jquery.validate.min.js"></script>
     <script src="js/front.js"></script>
-  <!--  Sweet alert   -->
-  <script src="sweetalert/dist/sweetalert2.min.js"></script>
-  <?php
-  if (Input::exists()) {
-      if (count($errors) == 0) {
-          if (count($extensionError) > 0) {
-              include 'notification/uploadExtensionError.php';
-          }
-          if (count($uploadSuccess) > 0) {
-              include 'notification/uploadSuccess.php';
-          }
-          if (count($uploadError) > 0) {
-              include 'notification/uploadError.php';
-          }
-      } else {
-          include 'notification/error.php';
-      }
-  }
-  ?>
+
   </body>
 </html>

@@ -62,7 +62,7 @@ class Text extends AbstractFrameDecorator
      */
     function get_text()
     {
-        // FIXME: this should be in a child class (and is incorrect)
+        // FIXME: this should be in a child commonClasses (and is incorrect)
 //    if ( $this->_frame->get_style()->content !== "normal" ) {
 //      $this->_frame->get_node()->data = $this->_frame->get_style()->content;
 //      $this->_frame->get_style()->content = "normal";

@@ -54,7 +54,7 @@ class PDFLib implements Canvas
     private $_dompdf;
 
     /**
-     * Instance of PDFLib class
+     * Instance of PDFLib commonClasses
      *
      * @var \PDFlib
      */

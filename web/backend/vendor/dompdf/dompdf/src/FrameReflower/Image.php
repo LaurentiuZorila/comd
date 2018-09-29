@@ -13,7 +13,7 @@ use Dompdf\FrameDecorator\Block as BlockFrameDecorator;
 use Dompdf\FrameDecorator\Image as ImageFrameDecorator;
 
 /**
- * Image reflower class
+ * Image reflower commonClasses
  *
  * @package dompdf
  */

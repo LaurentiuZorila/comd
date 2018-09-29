@@ -11,9 +11,9 @@ use Dompdf\FrameDecorator\Block;
 use Dompdf\FrameDecorator\Page;
 
 /**
- * The line box class
+ * The line box commonClasses
  *
- * This class represents a line box
+ * This commonClasses represents a line box
  * http://www.w3.org/TR/CSS2/visuren.html#line-box
  *
  * @package dompdf
@@ -295,7 +295,7 @@ class LineBox
 }
 
 /*
-class LineBoxList implements Iterator {
+commonClasses LineBoxList implements Iterator {
   private $_p = 0;
   private $_lines = array();
 

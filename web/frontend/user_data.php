@@ -1,17 +1,17 @@
 <?php
 require_once 'core/init.php';
-$user = new User();
+$user = new FrontendUser();
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
 }
 // User data
-$userData   = DB::getInstance()->get('cmd_users', ['id', '=', $user->userId()])->first();
+$userData   = BackendDB::getInstance()->get('cmd_users', ['id', '=', $user->userId()])->first();
 
 //  Get all tables for department
-$allTables = DB::getInstance()->get('cmd_offices', ['id', '=', $userData->offices_id])->first();
+$allTables = BackendDB::getInstance()->get('cmd_offices', ['id', '=', $userData->offices_id])->first();
 
 // All employees for user
-$allEmployees = DB::getInstance()->get('cmd_employees', ['user_id', '=', $user->userId()], ['id', 'name'])->results();
+$allEmployees = BackendDB::getInstance()->get('cmd_employees', ['user_id', '=', $user->userId()], ['id', 'name'])->results();
 
 
 if (Input::exists()) {
@@ -42,20 +42,20 @@ if (Input::exists()) {
         foreach ($tables as $table) {
             $prefix = 'cmd_';
             $key[] = $table;
-            $values[] = Values::value(DB::getInstance()->get($prefix . $table, $where, ['quantity'])->results());
-            $allData = array_combine($key, $values);
+            $values[] = Values::value(BackendDB::getInstance()->get($prefix . $table, $where, ['quantity'])->results());
+            $sumAllCommonData = array_combine($key, $values);
         }
 
 // All data for customer
-        $user_profile = DB::getInstance()->get('cmd_employees', ['id', '=', $id], ['name', 'offices_id'])->first();
-        $officeObj = DB::getInstance()->get('cmd_offices', ['id', '=', $user_profile->offices_id], ['name'])->first();
+        $user_profile = BackendDB::getInstance()->get('cmd_employees', ['id', '=', $id], ['name', 'offices_id'])->first();
+        $officeObj = BackendDB::getInstance()->get('cmd_offices', ['id', '=', $user_profile->offices_id], ['name'])->first();
 
         $name = $user_profile->name;
         $officeName = $officeObj->name;
         $initials = Profile::makeAvatar($user_profile->name);
 
 // Check if exists values
-        if (!Js::ifExistsValues($allData)) {
+        if (!Js::ifExistsValues($sumAllCommonData)) {
             $errorsNoData = [1];
         }
     }
@@ -86,20 +86,20 @@ if (!empty(Input::get('customer_id')) && !Input::exists()) {
     foreach ($tables as $table) {
         $prefix     = 'cmd_';
         $key[]      = $table;
-        $values[]   = Values::value(DB::getInstance()->get($prefix . $table, $where, ['quantity'])->results());
-        $allData    = array_combine($key, $values);
+        $values[]   = Values::value(BackendDB::getInstance()->get($prefix . $table, $where, ['quantity'])->results());
+        $sumAllCommonData    = array_combine($key, $values);
     }
 
 // All data for customer
-    $user_profile   = DB::getInstance()->get('cmd_employees', ['id', '=', $id], ['name', 'offices_id'])->first();
-    $officeObj      = DB::getInstance()->get('cmd_offices', ['id', '=', $user_profile->offices_id], ['name'])->first();
+    $user_profile   = BackendDB::getInstance()->get('cmd_employees', ['id', '=', $id], ['name', 'offices_id'])->first();
+    $officeObj      = BackendDB::getInstance()->get('cmd_offices', ['id', '=', $user_profile->offices_id], ['name'])->first();
 
     $name           = $user_profile->name;
     $officeName     = $officeObj->name;
     $initials       = Profile::makeAvatar($user_profile->name);
 
 // Check if exists values
-    if (!Js::ifExistsValues($allData)) {
+    if (!Js::ifExistsValues($sumAllCommonData)) {
         $errorsNoData = [1];
     }
 }
@@ -230,7 +230,7 @@ include 'includes/navbar.php';
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="stats-2-block block d-flex">
-                                        <?php foreach ($allData as $key => $value) { ?>
+                                        <?php foreach ($sumAllCommonData as $key => $value) { ?>
                                             <div class="stats-2 d-flex">
                                                 <div class="stats-2-arrow low"><i class="fa fa-caret-down"></i></div>
                                                 <div class="stats-2-content"><strong
@@ -298,7 +298,7 @@ include 'includes/navbar.php';
             }
         },
         data: {
-            labels: <?php echo Js::key($allData); ?>,
+            labels: <?php echo Js::key($sumAllCommonData); ?>,
             datasets: [
                 {
                     label: "<?php echo Profile::getMonthsList()[$month]; ?>",
@@ -320,7 +320,7 @@ include 'includes/navbar.php';
                     pointHoverBorderWidth: 0,
                     pointRadius: 1,
                     pointHitRadius: 0,
-                    data: [<?php echo Js::values($allData); ?>],
+                    data: [<?php echo Js::values($sumAllCommonData); ?>],
                     spanGaps: false
                 }
             ]

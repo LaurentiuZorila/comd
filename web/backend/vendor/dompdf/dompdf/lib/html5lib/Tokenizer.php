@@ -69,7 +69,7 @@ class HTML5_Tokenizer {
 
     // These are constants describing tokens
     // XXX should probably be moved somewhere else, probably the
-    // HTML5 class.
+    // HTML5 commonClasses.
     const DOCTYPE        = 0;
     const STARTTAG       = 1;
     const ENDTAG         = 2;

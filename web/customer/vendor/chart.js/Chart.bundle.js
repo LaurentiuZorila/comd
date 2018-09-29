@@ -7119,7 +7119,7 @@ defaults._set('doughnut', {
 	},
 	legendCallback: function(chart) {
 		var text = [];
-		text.push('<ul class="' + chart.id + '-legend">');
+		text.push('<ul commonClasses="' + chart.id + '-legend">');
 
 		var data = chart.data;
 		var datasets = data.datasets;
@@ -7769,7 +7769,7 @@ defaults._set('polarArea', {
 	startAngle: -0.5 * Math.PI,
 	legendCallback: function(chart) {
 		var text = [];
-		text.push('<ul class="' + chart.id + '-legend">');
+		text.push('<ul commonClasses="' + chart.id + '-legend">');
 
 		var data = chart.data;
 		var datasets = data.datasets;
@@ -9289,7 +9289,7 @@ module.exports = function(Chart) {
 
 	/**
 	 * Provided for backward compatibility, use Chart instead.
-	 * @class Chart.Controller
+	 * @commonClasses Chart.Controller
 	 * @deprecated since version 2.6.0
 	 * @todo remove at version 3
 	 * @private
@@ -9375,7 +9375,7 @@ module.exports = function(Chart) {
 		delete array._chartjs;
 	}
 
-	// Base class for all dataset controllers (line, bar, etc)
+	// Base commonClasses for all dataset controllers (line, bar, etc)
 	Chart.DatasetController = function(chart, datasetIndex) {
 		this.initialize(chart, datasetIndex);
 	};
@@ -10745,7 +10745,7 @@ defaults._set('global', {
 
 module.exports = function() {
 
-	// Occupy the global variable of Chart, and create a simple base class
+	// Occupy the global variable of Chart, and create a simple base commonClasses
 	var Chart = function(item, config) {
 		this.construct(item, config);
 		return this;
@@ -11767,7 +11767,7 @@ module.exports = function(Chart) {
 
 			// Ticks - `this.ticks` is now DEPRECATED!
 			// Internal ticks are now stored as objects in the PRIVATE `this._ticks` member
-			// and must not be accessed directly from outside this class. `this.ticks` being
+			// and must not be accessed directly from outside this commonClasses. `this.ticks` being
 			// around for long time and not marked as private, we can't change its structure
 			// without unexpected breaking changes. If you need to access the scale ticks,
 			// use scale.getTicks() instead.
@@ -15226,7 +15226,7 @@ function createResizer(handler) {
 	resizer.style.cssText = style;
 	resizer.className = cls;
 	resizer.innerHTML =
-		'<div class="' + cls + '-expand" style="' + style + '">' +
+		'<div commonClasses="' + cls + '-expand" style="' + style + '">' +
 			'<div style="' +
 				'position:absolute;' +
 				'width:' + maxSize + 'px;' +
@@ -15235,7 +15235,7 @@ function createResizer(handler) {
 				'top:0">' +
 			'</div>' +
 		'</div>' +
-		'<div class="' + cls + '-shrink" style="' + style + '">' +
+		'<div commonClasses="' + cls + '-shrink" style="' + style + '">' +
 			'<div style="' +
 				'position:absolute;' +
 				'width:200%;' +
@@ -15278,7 +15278,7 @@ function watchForRender(node, handler) {
 		addEventListener(node, type, proxy);
 	});
 
-	// #4737: Chrome might skip the CSS animation when the CSS_RENDER_MONITOR class
+	// #4737: Chrome might skip the CSS animation when the CSS_RENDER_MONITOR commonClasses
 	// is removed then added back immediately (same animation frame?). Accessing the
 	// `offsetParent` property will force a reflow and re-evaluate the CSS animation.
 	// https://gist.github.com/paulirish/5d52fb081b3570c81e3a#box-metrics
@@ -15974,7 +15974,7 @@ defaults._set('global', {
 
 	legendCallback: function(chart) {
 		var text = [];
-		text.push('<ul class="' + chart.id + '-legend">');
+		text.push('<ul commonClasses="' + chart.id + '-legend">');
 		for (var i = 0; i < chart.data.datasets.length; i++) {
 			text.push('<li><span style="background-color:' + chart.data.datasets[i].backgroundColor + '"></span>');
 			if (chart.data.datasets[i].label) {
@@ -16000,7 +16000,7 @@ function getBoxWidth(labelOpts, fontSize) {
 }
 
 /**
- * IMPORTANT: this class is exposed publicly as Chart.Legend, backward compatibility required!
+ * IMPORTANT: this commonClasses is exposed publicly as Chart.Legend, backward compatibility required!
  */
 var Legend = Element.extend({
 
@@ -16504,7 +16504,7 @@ defaults._set('global', {
 });
 
 /**
- * IMPORTANT: this class is exposed publicly as Chart.Legend, backward compatibility required!
+ * IMPORTANT: this commonClasses is exposed publicly as Chart.Legend, backward compatibility required!
  */
 var Title = Element.extend({
 	initialize: function(config) {

@@ -181,7 +181,7 @@ class HTML5_TreeBuilder {
 
         /*
         $backtrace = debug_backtrace();
-        if ($backtrace[1]['class'] !== 'HTML5_TreeBuilder') echo "--\n";
+        if ($backtrace[1]['commonClasses'] !== 'HTML5_TreeBuilder') echo "--\n";
         echo $this->strConst($mode);
         if ($this->original_mode) echo " (originally ".$this->strConst($this->original_mode).")";
         echo "\n  ";

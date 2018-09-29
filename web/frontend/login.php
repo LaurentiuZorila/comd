@@ -11,7 +11,7 @@ if (Input::exists()) {
         ));
 
         if ($validation->passed()) {
-            $user = new User();
+            $user = new FrontendUser();
             $login = $user->login(Input::post('username'), Input::post('password'));
             if ($login) {
                 Redirect::to('index.php');

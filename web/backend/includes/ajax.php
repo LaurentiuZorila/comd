@@ -8,12 +8,12 @@
     });
 
     $( "select[name='teams']" ).change(function () {
-        var userID = $(this).val();
-        if(userID) {
+        var officeId = $(this).val();
+        if(officeId) {
             $.ajax({
-                url: "includes/staff_employees.php",
+                url: "ajax/staff_employees.php",
                 dataType: 'Json',
-                data: {'id':userID},
+                data: {'office_id':officeId},
                 success: function(data) {
                     $('select[name="employees"]').empty();
                     $.each(data, function(key, value) {
@@ -30,7 +30,7 @@
         var userID = $(this).val();
         if(userID) {
             $.ajax({
-                url: "includes/years.php",
+                url: "ajax/years.php",
                 dataType: 'Json',
                 data: {'id':userID},
                 success: function(data) {
@@ -49,7 +49,7 @@
         var employeesID = $(this).val();
         if(employeesID) {
             $.ajax({
-                url: "includes/months.php",
+                url: "ajax/months.php",
                 dataType: 'Json',
                 data: {'employees_id':employeesID},
                 success: function(data) {

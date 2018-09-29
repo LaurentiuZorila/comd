@@ -16,7 +16,7 @@ use Dompdf\FrameDecorator\Block;
 use Dompdf\Frame\Factory;
 
 /**
- * Base reflower class
+ * Base reflower commonClasses
  *
  * Reflower objects are responsible for determining the width and height of
  * individual frames.  They also create line and page breaks as necessary.

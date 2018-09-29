@@ -14,7 +14,7 @@ use Dompdf\Helpers;
 use Dompdf\Exception\ImageException;
 
 /**
- * Static class that resolves image urls and downloads and caches
+ * Static commonClasses that resolves image urls and downloads and caches
  * remote images if required.
  *
  * @package dompdf

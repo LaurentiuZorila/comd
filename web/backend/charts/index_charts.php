@@ -2,8 +2,11 @@
 ?>
 
 <script>
-    var BARCHARTEXMPLE    = $('#charts');
-    var barChartExample = new Chart(BARCHARTEXMPLE, {
+
+    // BAR CHART
+
+    var INDEXBARCHART    = $('#backendIndexBarChart');
+    var indexBarChart = new Chart(INDEXBARCHART, {
         type: 'bar',
         options: {
             scales: {
@@ -31,7 +34,7 @@
             labels: <?php echo $chartNames; ?>,
             datasets: [
                 {
-                    label: "<?php echo Profile::getMonthsList()[Input::post('month')]; ?>",
+                    label: "<?php echo ucfirst(Input::post('table')) . '-' . Common::getMonths()[Input::post('month')]; ?>",
                     backgroundColor: "#864DD9",
                     hoverBackgroundColor: "#864DD9",
                     borderColor: "#864DD9",
@@ -41,6 +44,52 @@
             ]
         }
     });
+
+    // LINE CHART
+
+    var INDEXLINECHART    = $('#backendIndexLineChart');
+    var indexLineChart = new Chart(INDEXLINECHART, {
+        type: 'line',
+        options: {
+            scales: {
+                xAxes: [{
+                    display: true,
+                    gridLines: {
+                        color: 'transparent'
+                    },
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    gridLines: {
+                        color: 'transparent'
+                    },
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+        },
+        data: {
+            labels: <?php echo $chartNames; ?>,
+            datasets: [
+                {
+                    label: "<?php echo ucfirst(Input::post('table')) . '-' . Common::getMonths()[Input::post('month')]; ?>",
+                    backgroundColor: "#864DD9",
+                    hoverBackgroundColor: "#864DD9",
+                    borderColor: "#864DD9",
+                    borderWidth: 0.5,
+                    data: [<?php echo $chartValues; ?>],
+                },
+            ]
+        }
+    });
+
+
+
+// PIE CHART
 
     var PIECHARTEXMPLE    = $('#totalCommonTables');
     var pieChartExample = new Chart(PIECHARTEXMPLE, {
@@ -58,7 +107,7 @@
             ],
             datasets: [
                 {
-                    data: [<?php echo Values::sumAll($userFurlough, 'quantity'). ', ' . Values::sumAll($userAbsentees, 'quantity'). ', ' . Values::sumAll($userUnpaid, 'quantity'); ?>],
+                    data: [<?php echo $pieCommonData; ?>],
                     borderWidth: 0,
                     backgroundColor: [
                         "#864DD9",

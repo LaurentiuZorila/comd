@@ -1,22 +1,22 @@
 <?php
 
 return [
-    'mysql' => array(
+    'mysql' => [
         'host'      => 'laur-mysql',
         'username'  => 'laur',
-        'password'  =>  'laur',
+        'password'  => 'laur',
         'db'        => 'laur'
-    ),
-    'remember' => array(
+    ],
+
+    'remember' => [
         'cookie_name'   => 'hash',
         'cookie_expiry' => 604800
-    ),
+    ],
 
-    'session' => array(
-        'session_name'    => 'user',
-        'session_user'    => 'user_id',
-        'token_name'      => 'token_name',
-        'token_hash'      => 'token_hash',
-        'token_id'        => 'token_id'
-    )
+    'session' => [
+        'session_name'          => 'name',
+        'session_id'            => 'id',
+        'session_department'    => 'department',
+        'token_name'            => 'token'
+    ]
 ];

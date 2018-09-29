@@ -1,38 +1,35 @@
 <?php
 require_once 'core/init.php';
-
-$user = new User();
+$user   = new CustomerUser();
+$data   = new CustomerProfile();
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
 }
 
 // Count all employees
-$countUsers = DB::getInstance()->get('cmd_employees', ['user_id', '=', $user->userId()])->count();
-// User data
-$userData   = DB::getInstance()->get('cmd_users', ['id', '=', $user->userId()])->first();
+$countUsers = $data->count(Params::TBL_EMPLOYEES, ['offices_id', '=', $user->officesId()]);
 
-// Quantity for common tables
-$furlough  = DB::getInstance()->get('cmd_furlough', ['user_id', '=', $user->userId()], ['quantity'])->results();
-$absentees  = DB::getInstance()->get('cmd_absentees', ['user_id', '=', $user->userId()], ['quantity'])->results();
-$unpaid     = DB::getInstance()->get('cmd_unpaid', ['user_id', '=', $user->userId()], ['quantity'])->results();
-
+// Data for common tables
+$sumFurlough   = $data->sum(Params::TBL_FURLOUGH, ['offices_id', '=', $user->officesId()], 'quantity');
+$sumAbsentees  = $data->sum(Params::TBL_ABSENTEES, ['offices_id', '=', $user->officesId()], 'quantity');
+$sumUnpaid     = $data->sum(Params::TBL_UNPAID, ['offices_id', '=', $user->officesId()], 'quantity');
 
 // tables for user
-$allTables  = DB::getInstance()->get('cmd_offices', ['id', '=', $userData->offices_id], ['tables'])->first();
-$prefix     = 'cmd_';
+$allTables  = $data->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['tables'], false);
+$allTables  = explode(',', trim($allTables->tables));
 
 // Array with tables for user
-foreach (Values::table($allTables) as $value) {
-    $tables[$prefix . $value] = trim($value);
+foreach ($allTables as $table) {
+    $tables[trim($table)] = trim($table);
 }
-
 
 if (Input::exists()) {
         $year       = Input::post('year');
         $month      = Input::post('month');
-        $user_id    = $user->userId();
-        $table      = trim(Input::post('table'));
+        $officeId   = $user->officesId();
+        $npTable    = Input::post('table');
+        $table      = Params::PREFIX . trim(Input::post('table'));
         $errors = [];
         $quantitySum = [];
 
@@ -45,19 +42,20 @@ if (Input::exists()) {
             $where = [
                 ['year', '=', $year],
                 'AND',
-                ['user_id', '=', $user_id],
+                ['offices_id', '=', $officeId],
                 'AND',
                 ['month', '=', $month]
             ];
 
             // Array with all results for one FTE
-            $chartData = DB::getInstance()->get($table, $where, ['quantity'])->results();
+            $chartData  = $data->records($table, $where, ['quantity', 'name']);
+
             foreach ($chartData as $value) {
                 $quantitySum[] = $value->quantity;
             }
 
-            $chartNames = Js::toJson(Js::chartLabel($chartData));
-            $chartValues = Js::chartValues($chartData);
+            $chartNames = Js::toJson(Js::chartLabel($chartData, 'name'));
+            $chartValues = Js::chartValues($chartData, 'quantity');
 
             if (count($quantitySum) < 1) {
                 $errorNoData = [1];
@@ -88,8 +86,23 @@ include 'includes/head.php';
             <h2 class="h5 no-margin-bottom">Dashboard</h2>
           </div>
         </div>
+          <?php
+          if (Input::exists() && count($errors) > 0) {
+              include 'includes/errorRequired.php';
+          }
+
+          if (Input::exists() && count($errorNoData) > 0) {
+              include 'includes/infoError.php';
+          }
+          ?>
         <section class="no-padding-top no-padding-bottom">
             <div class="col-lg-12">
+            <p>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
+                    Filters
+                </button>
+            </p>
+            <div class="<?php if (Input::exists() && count($errors) == 0 && count($errorNoData) == 0) { echo "collapse";} elseif(!Input::exists()) { echo "collapse"; } else { echo "collapse show"; } ?>" id="filter">
               <div class="block">
                   <form method="post">
                     <div class="row">
@@ -100,31 +113,31 @@ include 'includes/head.php';
                                 <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} else { echo 'mb-3';}?>">
                                     <option value="">Select Year</option>
                                     <?php
-                                    foreach (Profile::getYearsList() as $year) { ?>
+                                    foreach (Common::getYearsList() as $year) { ?>
                                         <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
                                     <?php } ?>
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('year'))) { ?>
-                                    <div class="invalid-feedback">Select year!</div>
+                                    <div class="invalid-feedback">Year field are required!</div>
                                 <?php }?>
                             </div>
 
                             <div class="col-sm-4">
-                              <select name="month" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} ?>">
+                              <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) { echo 'is-invalid'; } else { echo 'mb-3';} ?>">
                                   <option value="">Select Month</option>
-                                  <?php foreach (Profile::getMonthsList() as $key => $value) { ?>
+                                  <?php foreach (Common::getMonths() as $key => $value) { ?>
                                   <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                   <?php } ?>
                               </select>
                               <?php
                               if (Input::exists() && empty(Input::post('month'))) { ?>
-                                  <div class="invalid-feedback">Please select month.</div>
+                                  <div class="invalid-feedback">Month field are required!</div>
                               <?php }?>
                             </div>
 
                             <div class="col-sm-4">
-                                <select name="table" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} ?>">
+                                <select name="table" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
                                     <option value="">Select Table</option>
                                     <?php foreach ($tables as $key => $table) { ?>
                                         <option value="<?php echo $key; ?>"><?php echo strtoupper($table); ?></option>
@@ -132,7 +145,7 @@ include 'includes/head.php';
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('table'))) { ?>
-                                    <div class="invalid-feedback">Please select table.</div>
+                                    <div class="invalid-feedback">Table field are required!</div>
                                 <?php }?>
                             </div>
 
@@ -152,7 +165,7 @@ include 'includes/head.php';
                     <div class="statistic-block block">
                       <div class="progress-details d-flex align-items-end justify-content-between">
                         <div class="title">
-                          <div class="icon"><i class="icon-user-1"></i></div><strong>Total users</strong>
+                          <div class="icon"><i class="icon-user-1"></i></div><strong>Total employees</strong>
                         </div>
                         <div class="number dashtext-1"><?php echo $countUsers; ?></div>
                       </div>
@@ -168,7 +181,7 @@ include 'includes/head.php';
                         <div class="title">
                           <div class="icon"><i class="icon-info"></i></div><strong>Total absentees</strong>
                         </div>
-                        <div class="number dashtext-3"><?php echo escape(Values::totalAbsentees($absentees)); ?></div>
+                        <div class="number dashtext-3"><?php echo $sumAbsentees; ?></div>
                       </div>
                       <div class="progress progress-template">
                         <div role="progressbar" style="width: 100%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
@@ -182,7 +195,7 @@ include 'includes/head.php';
                         <div class="title">
                           <div class="icon"><i class="icon-list-1"></i></div><strong>Total furlough</strong>
                         </div>
-                        <div class="number dashtext-3"><?php echo escape(Values::totalFurloughs($furlough)); ?></div>
+                        <div class="number dashtext-3"><?php echo $sumFurlough; ?></div>
                       </div>
                       <div class="progress progress-template">
                         <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
@@ -196,7 +209,7 @@ include 'includes/head.php';
                             <div class="title">
                                 <div class="icon"><i class="icon-list-1"></i></div><strong>Total unpaid</strong>
                             </div>
-                            <div class="number dashtext-3"><?php echo escape(Values::totalFurloughs($unpaid)); ?></div>
+                            <div class="number dashtext-3"><?php echo $sumUnpaid; ?></div>
                         </div>
                         <div class="progress progress-template">
                             <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
@@ -207,21 +220,30 @@ include 'includes/head.php';
           </div>
         </section>
 <!--        ********************       CHARTS         ********************   -->
-          <?php if (Input::exists()) {
-              if (count($errors) == 0) { ?>
+          <?php if (Input::exists() && count($errors) === 0 && count($errorNoData) === 0) { ?>
                   <section class="no-padding-bottom">
                       <div class="container-fluid">
                           <div class="row">
                               <div class="col-lg-12">
-                                  <div class="drills-chart block">
-                                      <canvas id="target_chart" height="100"></canvas>
+                                  <div class="bar-chart block chart">
+<!--                                      <ul class="nav nav-pills card-header-pills">-->
+<!--                                          <li class="nav-item"><button class="btn btn-primary mr-1 bar" id="bar" type="button">Bar</button></li>-->
+<!--                                          <li class="nav-item"><button class="btn btn-outline-primary line" id="line" type="button">Line</button></li>-->
+<!--                                      </ul>-->
+                                      <div class="btn-group btn-group-sm float-sm-right" role="group" aria-label="Charts type">
+                                          <button class="btn btn-primary bar" id="bar" type="button">Bar</button>
+                                          <button class="btn btn-outline-primary line" id="line" type="button">Line</button>
+                                      </div>
+                                      <div class="drills-chart block">
+                                          <canvas id="target_customer_chart_bar" height="150" style="display: block;"></canvas>
+                                          <canvas id="target_customer_chart_line" height="150" style="display: none;"></canvas>
+                                      </div>
                                   </div>
                               </div>
                           </div>
                       </div>
                   </section>
-              <?php }
-          }?>
+              <?php } ?>
           <!--        ********************       CHARTS   END      ********************   -->
         <section class="no-padding-bottom">
           <div class="container-fluid">
@@ -274,26 +296,24 @@ include 'includes/head.php';
 <!--                </div>-->
 <!--            </div>-->
             <?php
-            if (Input::exists()) {
-                if (count($errors) === 0) {
+            if (Input::exists() && count($errors) === 0 && count($errorNoData) === 0) {
                     $x = 1;
                     $year       = Input::post('year');
                     $month      = Input::post('month');
                     $noPrefTbl  = Input::post('table');
-                    $table      = Input::post('table');
-                    $table      = 'cmd_' . $table;
+                    $table      = Params::PREFIX . trim($noPrefTbl);
                     $names      = [];
                     $quantity   = [];
 
                     $where = [
                         ['year', '=', $year],
                         'AND',
-                        ['user_id', '=', $user->userId()],
+                        ['offices_id', '=', $user->officesId()],
                         'AND',
                         ['month', '=', $month]
                     ];
 
-                    $values = DB::getInstance()->get($table, $where)->results();
+                    $values = $data->records($table, $where, ['name', 'quantity']);
                     foreach ($values as $value) {
                         array_push($quantity, $value->quantity);
                         array_push($names, $value->name);
@@ -307,29 +327,27 @@ include 'includes/head.php';
                                 <div class="col-lg-4 d-flex align-items-center">
                                     <div class="order"><?php echo $x; ?></div>
                                     <div class="avatar"></div>
-                                    <a href="#" class="name" data-toggle="tooltip" data-placement="top"
-                                       title="Name"><strong
-                                                class="d-block"><?php echo $key; ?></strong><span
-                                                class="d-block"></span></a>
+                                    <a href="#" class="name" data-toggle="tooltip" data-placement="top" title="Name">
+                                        <strong class="d-block"><?php echo $key; ?></strong>
+                                        <span class="d-block"></span>
+                                    </a>
                                 </div>
                                 <div class="col-lg-4 text-center">
-                                    <div class="contributions" data-toggle="tooltip" data-placement="top"
-                                         title="Month"><?php echo Profile::getMonthsList()[$month]; ?></div>
+                                    <div class="contributions" data-toggle="tooltip" data-placement="top" title="Month"><?php echo escape(ucfirst($noPrefTbl)) . ' - ' . escape(Common::getMonths()[$month]); ?></div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="details d-flex">
-                                        <div class="item" data-toggle="tooltip" data-placement="top"
-                                             title="<?php echo ucfirst($noPrefTbl); ?>"><i
-                                                    class="icon-chart"></i><strong><?php echo $value; ?></strong>
+                                        <div class="item" data-toggle="tooltip" data-placement="top" title="<?php echo ucfirst($noPrefTbl); ?>"><i class="icon-chart"></i>
+                                            <strong><?php echo $value; ?></strong>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <?php
+                        $x++;
                     }
                 }
-            }
             ?>
           </div>
         </section>
@@ -338,23 +356,6 @@ include 'includes/head.php';
           ?>
       </div>
     </div>
-  <button type="button" data-toggle="collapse" data-target="#style-switch" id="style-switch-button" class="btn btn-primary btn-sm d-none d-md-inline-block" aria-expanded="true">
-      <i class="fa fa-cog fa-2x"></i>
-  </button>
-  <div id="style-switch" class="collapse" style="">
-      <h5 class="mb-3">Select theme colour</h5>
-          <form class="mb-3">
-              <select name="colour" id="colour" class="form-control">
-                  <option value="">select colour variant</option>
-                  <option value="style.pink">pink</option>
-                  <option value="style.red">red</option>
-                  <option value="style.green">green</option>
-                  <option value="style.violet">violet</option>
-                  <option value="style.sea">sea</option>
-                  <option value="style.blue">blue</option>
-              </select>
-          </form>
-  </div>
     <!-- JavaScript files-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/popper.js/umd/popper.min.js"> </script>
@@ -364,26 +365,25 @@ include 'includes/head.php';
     <script src="vendor/jquery-validation/jquery.validate.min.js"></script>
     <script src="js/charts-home.js"></script>
     <script src="js/front.js"></script>
-    <!--  Sweet alert   -->
-  <script src="sweetalert/dist/sweetalert2.min.js"></script>
-  <script>
-      $(document).ready(function(){
-          $('#colour').change(function(){
-              $("#theme-stylesheet").attr("href", "css/" + $(this).val() + ".css");
-          });
-      });
-  </script>
+<script>
+    $("#bar").click(function(){
+        $('.line').removeClass('btn-primary').addClass('btn-outline-primary');
+        $('.bar').removeClass('btn-outline-primary').addClass('btn-primary');
+        $("#target_customer_chart_bar").show();
+        $("#target_customer_chart_line").hide();
+    });
+
+    $("#line").click(function(){
+        $('.bar').removeClass('btn-primary').addClass('btn-outline-primary');
+        $('.line').removeClass('btn-outline-primary').addClass('btn-primary');
+        $("#target_customer_chart_line").show();
+        $("#target_customer_chart_bar").hide();
+    });
+</script>
   <?php
-  if (Input::exists()) {
-      if (count($errors) === 0) {
+  if (Input::exists() && count($errors) == 0) {
           include 'charts/target_chart.php';
-      } else {
-          include 'notification/error.php';
-      }
-      if (count($errorNoData) > 0) {
-          include 'notification/post_not_found.php';
-      }
-  }
+     }
   ?>
   </body>
 </html>

@@ -11,7 +11,7 @@ namespace Dompdf\Positioner;
 use Dompdf\FrameDecorator\AbstractFrameDecorator;
 
 /**
- * Base AbstractPositioner class
+ * Base AbstractPositioner commonClasses
  *
  * Defines postioner interface
  *

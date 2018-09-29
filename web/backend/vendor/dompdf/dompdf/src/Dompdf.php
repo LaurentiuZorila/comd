@@ -38,7 +38,7 @@ use Dompdf\Css\Stylesheet;
  * {@link Frame}s are then decorated (in the design pattern sense of the
  * word) based on their CSS display property ({@link
  * http://www.w3.org/TR/CSS21/visuren.html#propdef-display}).
- * Frame_Decorators augment the basic {@link Frame} class by adding
+ * Frame_Decorators augment the basic {@link Frame} commonClasses by adding
  * additional properties and methods specific to the particular type of
  * {@link Frame}.  For example, in the CSS layout model, block frames
  * (display: block;) contain line boxes that are usually filled with text or
@@ -57,10 +57,10 @@ use Dompdf\Css\Stylesheet;
  * details, see the reflow() method of the Reflower classes.
  *
  * Rendering is relatively straightforward once layout is complete. {@link
- * Frame}s are rendered using an adapted {@link Cpdf} class, originally
+ * Frame}s are rendered using an adapted {@link Cpdf} commonClasses, originally
  * written by Wayne Munro, http://www.ros.co.nz/pdf/.  (Some performance
- * related changes have been made to the original {@link Cpdf} class, and
- * the {@link Dompdf\Adapter\CPDF} class provides a simple, stateless interface to
+ * related changes have been made to the original {@link Cpdf} commonClasses, and
+ * the {@link Dompdf\Adapter\CPDF} commonClasses provides a simple, stateless interface to
  * PDF generation.)  PDFLib support has now also been added, via the {@link
  * Dompdf\Adapter\PDFLib}.
  *
@@ -1491,7 +1491,7 @@ class Dompdf
      * PHP5 overloaded getter
      * Along with {@link Dompdf::__set()} __get() provides access to all
      * properties directly.  Typically __get() is not called directly outside
-     * of this class.
+     * of this commonClasses.
      *
      * @param string $prop
      *

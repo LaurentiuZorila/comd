@@ -399,7 +399,7 @@ export function _main (userParams) {
         }
       }
 
-      // set class
+      // set commonClasses
       inputContainer.className = inputClass
       if (innerParams.inputClass) {
         dom.addClass(inputContainer, innerParams.inputClass)

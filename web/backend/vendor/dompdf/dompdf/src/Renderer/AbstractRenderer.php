@@ -18,7 +18,7 @@ use Dompdf\Frame;
 use Dompdf\Image\Cache;
 
 /**
- * Base renderer class
+ * Base renderer commonClasses
  *
  * @package dompdf
  */
