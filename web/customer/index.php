@@ -2,29 +2,30 @@
 require_once 'core/init.php';
 $user   = new CustomerUser();
 $data   = new CustomerProfile();
+$token  = new Token();
 
 if (!$user->isLoggedIn()) {
-    Redirect::to('login.php');
+    CustomerRedirect::to('login.php');
 }
 
-// Count all employees
+/** Count all employees */
 $countUsers = $data->count(Params::TBL_EMPLOYEES, ['offices_id', '=', $user->officesId()]);
 
-// Data for common tables
+/** Data for common tables */
 $sumFurlough   = $data->sum(Params::TBL_FURLOUGH, ['offices_id', '=', $user->officesId()], 'quantity');
 $sumAbsentees  = $data->sum(Params::TBL_ABSENTEES, ['offices_id', '=', $user->officesId()], 'quantity');
 $sumUnpaid     = $data->sum(Params::TBL_UNPAID, ['offices_id', '=', $user->officesId()], 'quantity');
 
-// tables for user
+/** tables for user */
 $allTables  = $data->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['tables'], false);
 $allTables  = explode(',', trim($allTables->tables));
 
-// Array with tables for user
+/** Array with tables $k => $v */
 foreach ($allTables as $table) {
     $tables[trim($table)] = trim($table);
 }
 
-if (Input::exists()) {
+if (Input::exists() && $token->checkToken(Input::post('token'))) {
         $year       = Input::post('year');
         $month      = Input::post('month');
         $officeId   = $user->officesId();
@@ -47,13 +48,14 @@ if (Input::exists()) {
                 ['month', '=', $month]
             ];
 
-            // Array with all results for one FTE
+            /** Array with all results for one FTE to use in chart */
             $chartData  = $data->records($table, $where, ['quantity', 'name']);
 
             foreach ($chartData as $value) {
                 $quantitySum[] = $value->quantity;
             }
 
+            /** Charts labels and values */
             $chartNames = Js::toJson(Js::chartLabel($chartData, 'name'));
             $chartValues = Js::chartValues($chartData, 'quantity');
 
@@ -94,7 +96,22 @@ include 'includes/head.php';
           if (Input::exists() && count($errorNoData) > 0) {
               include 'includes/infoError.php';
           }
-          ?>
+          if (Session::exists('configOk')) { ?>
+          <section>
+              <div class="row">
+                  <div class="col-lg-12">
+                      <div class="card-body">
+                          <div class="alert alert-dismissible fade show badge-info" role="alert">
+                              <p class="text-white"> <?php echo Session::flash('configOk'); ?> </p>
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </section>
+          <?php } ?>
         <section class="no-padding-top no-padding-bottom">
             <div class="col-lg-12">
             <p>
@@ -151,7 +168,7 @@ include 'includes/head.php';
 
                             <div class="col-sm-2">
                                 <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
                             </div>
                     </div>
                   </form>

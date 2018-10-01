@@ -1,10 +1,11 @@
 <?php
 require_once 'core/init.php';
-$user = new CustomerUser();
-$data = new CustomerProfile();
+$user   = new CustomerUser();
+$data   = new CustomerProfile();
+$token  = new Token();
 
 if (!$user->isLoggedIn()) {
-    Redirect::to('login.php');
+    CustomerRedirect::to('login.php');
 }
 
 // All tables
@@ -15,7 +16,7 @@ $allTables = explode(',', trim($allTables->tables));
 $allEmployees = $data->records($data::TBL_EMPLOYEES, ['offices_id', '=', $user->officesId()], ['id', 'name']);
 
 
-if (Input::exists() && Token::check(Input::post('token'))) {
+if (Input::exists() && $token->checkToken(Input::post('token'))) {
         $employeesId    = Input::post('employees');
         $year           = Input::post('year');
         $month          = Input::post('month');
@@ -191,7 +192,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="col-sm-2">
                                 <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
                             </div>
                         </div>
                     </form>

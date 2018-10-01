@@ -1,7 +1,15 @@
 <?php
 class Common
 {
+    /**
+     * @var BackendDB|null
+     */
     private $_db;
+
+    /**
+     *  Allowed characters for profile setup
+     */
+    const ALLOWED_CHARACTERS = ['<', '>'];
 
     /**
      * ProfileDetails constructor.
@@ -124,7 +132,7 @@ class Common
 
 
     /**
-     * @param $string
+     * @param $name
      * @return string
      */
     public static function makeAvatar($name)
@@ -143,9 +151,62 @@ class Common
      * @param $item
      * @return string
      */
-    public function number($item)
+    public static function number($item)
     {
         return number_format($item, 2);
     }
+
+
+    /**
+     * @param $string
+     * @return bool|string
+     * @uses If last character is alphabetic
+     */
+    public static function checkLastCharacter($string)
+    {
+        if (ctype_alpha(substr($string, strlen($string) -1))) {
+            return $string;
+        } elseif (in_array(substr($string, strlen($string) -1), self::ALLOWED_CHARACTERS)) {
+            return $string;
+        } else {
+            return substr($string, 0, strlen($string) -1);
+        }
+    }
+
+
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
+    public static function assocArray($key, $value)
+    {
+        if (count($key) === count($value)) {
+           return array_combine($key, $value);
+        }
+    }
+
+
+    /**
+     * @param array $array
+     * @return false|string
+     */
+    public static function toJson(array $array)
+    {
+        return json_encode($array);
+    }
+
+
+    /**
+     * @param $json
+     * @return mixed
+     */
+    public static function toArray($json)
+    {
+        return json_decode($json);
+    }
+
+
+
 
 }

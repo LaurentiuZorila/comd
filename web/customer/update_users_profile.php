@@ -2,12 +2,13 @@
 require_once 'core/init.php';
 $customerUser  = new CustomerUser();
 $data          = new CustomerProfile();
+$token         = new Token();
 
 $allEmployees   = $data->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $customerUser->officesId()], ['name', 'offices_id', 'id', 'departments_id']);
 $departments    = $data->records(Params::TBL_DEPARTMENT, [], ['id', 'name']);
 
 
-if (Input::exists()) {
+if (Input::exists() && $token->checkToken(Input::post('token'))) {
     $employeesId    = Input::post('user');
     $departmentId   = Input::post('department');
     $officesId      = Input::post('office');
@@ -156,6 +157,7 @@ include 'includes/navbar.php';
                                     </div>
                                     <div class="line"></div>
                                     <div class="col-sm-9 ml-auto">
+                                        <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>"/>
                                         <button type="submit" name="save" class="btn btn-primary">Save changes</button>
                                     </div>
                                 </form>

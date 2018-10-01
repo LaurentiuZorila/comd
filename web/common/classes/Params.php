@@ -82,4 +82,14 @@ class Params
      * Allowed files extensions
      */
     const EXTENSIONS        = ['csv'];
+
+    /**
+     * Min characters allowed
+     */
+    const MIN_INPUT         = 2;
+
+    /**
+     * Max characters allowed
+     */
+    const MAX_INPUT         = 50;
 }

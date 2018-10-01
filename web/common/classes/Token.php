@@ -18,8 +18,9 @@ class Token {
      */
     public function __construct()
     {
-        $this->_tokenHash   = Session::get(Config::get('token/token_hash'));
-        $this->_token       = Session::get(Config::get('token/token'));
+        $this->_tokenHash       = Session::get(Config::get('token/token_hash'));
+        $this->_token           = Session::get(Config::get('token/token'));
+        $this->_setupTokenHash  = Session::get('setupToken');
 
         if (!Input::exists()) {
             $this->_randomId        = uniqid();

@@ -13,7 +13,7 @@ class Validate
     /**
      * @var array
      */
-    private $_errors = array();
+    private $_errors = [];
 
     /**
      * @var BackendDB|null
@@ -39,32 +39,44 @@ class Validate
     {
         foreach ($items as $item => $rules) {
             foreach ($rules as $rule => $rule_value) {
-                $value = trim($source[$item]); // Input POST
-                $item  = escape($item);
+
+                $value      = trim($source[$item]); // Input POST
+                $item       = escape($item);
+
+                if (strpos($item, '_') > 0) {
+                    $needlePosition = strpos($item, '_');
+                    $firstItem      = substr($item, 0, $needlePosition);
+                    $secondItem     = substr($item, $needlePosition + 1);
+                    $errorItem      = ucfirst($firstItem) . ' ' . ucfirst($secondItem);
+                    $errorItem      = escape($errorItem);
+                } else {
+                    $errorItem = ucfirst($item);
+                    $errorItem = escape($errorItem);
+                }
 
                 if ($rule === 'required' && empty($value)) {
                     $this->addError("All fields are required");
                 } else if (!empty($value)) {
                     switch ($rule) {
                         case 'min':
-                            if (strlen($value) < $rule_value) {
-                                $this->addError("{$item} must be a minimum of {$rule_value} characters!");
+                            if (trim(strlen($value)) < $rule_value) {
+                                $this->addError("{$errorItem} must be a minimum of {$rule_value} characters!");
                             }
                             break;
                         case 'max':
-                            if (strlen($value) > $rule_value) {
-                                $this->addError("{$item} must be a maximum of {$rule_value} characters!");
+                            if (trim(strlen($value)) > $rule_value) {
+                                $this->addError("{$errorItem} must be a maximum of {$rule_value} characters!");
                             }
                             break;
                         case 'matches':
                             if ($value != $source[$rule_value]) {
-                                $this->addError("{$rule_value} must match with {$item}!");
+                                $this->addError("Passwords doesn't match!");
                             }
                             break;
                         case 'unique':
                             $check = $this->_db->get($rule_value, $where = [$item, '=', $value]);
                             if ($check->count()) {
-                                $this->addError("{$item} already exists!");
+                                $this->addError("{$errorItem} already exists!");
                             }
                             break;
                         case 'email':
@@ -74,8 +86,14 @@ class Validate
                             break;
                         case 'letters':
                             if (is_numeric($value)) {
-                                $this->addError("{$item} must contain only letters!");
+                                $this->addError("{$errorItem} must contain only letters!");
                             }
+                            break;
+                        case 'characters':
+                            if (is_numeric($value) && ctype_alpha($value)) {
+                                $this->addError("{$errorItem} must contain only characters!");
+                            }
+                            break;
                     }
                 }
             }
@@ -103,7 +121,7 @@ class Validate
      */
     public function errors()
     {
-        return $this->_errors;
+        return array_unique($this->_errors);
     }
 
 

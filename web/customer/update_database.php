@@ -1,10 +1,11 @@
 <?php
 require_once 'core/init.php';
-$user = new CustomerUser();
-$data = new CustomerProfile();
+$user   = new CustomerUser();
+$data   = new CustomerProfile();
+$token  = new Token();
 
 if (!$user->isLoggedIn()) {
-    Redirect::to('login.php');
+    CustomerRedirect::to('login.php');
 }
 // User data
 $userData = CustomerDB::getInstance()->get('cmd_users', ['id', '=', $user->customerId()])->first();
@@ -19,7 +20,7 @@ foreach ($allTables as $value) {
 }
 
 
-if (Input::exists()) {
+if (Input::exists() && $token->checkToken(Input::post('token'))) {
     $year   = Input::post('year');
     $month  = Input::post('month');
     $table  = trim(Input::post('tables'));
@@ -159,7 +160,7 @@ include 'includes/head.php';
                               </div>
                               <div class="col-sm-2">
                                   <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                  <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                  <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
                               </div>
                           </div>
                       </form>

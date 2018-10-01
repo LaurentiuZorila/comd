@@ -3,8 +3,6 @@ require_once 'core/init.php';
 $user = new CustomerUser();
 $data = new CustomerProfile();
 
-// User data
-
 
 // All tables
 $allTables = $data->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['tables'], false);
@@ -15,23 +13,21 @@ $year   = date('Y');
 $month  = 1;
 $prefix = Params::PREFIX;
 
-$where = [
-    ['year', '=', $year],
-    'AND',
-    ['offices_id', '=', $user->officesId()],
-    'AND',
-    ['month', '=', $month]
-];
+    $where = [
+        ['year', '=', $year],
+        'AND',
+        ['offices_id', '=', $user->officesId()],
+        'AND',
+        ['month', '=', $month]
+    ];
 
-foreach ($allTables as $value) {
-    $tables[$prefix . trim($value)] = trim($value);
-}
+    foreach ($allTables as $value) {
+        $tables[$prefix . trim($value)] = trim($value);
+    }
 
-foreach ($tables as $key => $table) {
-    $allRecords[$table] = $data->records($key, $where, ['employees_id', 'name', 'quantity']);
-}
-
-
+    foreach ($tables as $key => $table) {
+        $allRecords[$table] = $data->records($key, $where, ['employees_id', 'quantity']);
+    }
 ?>
 
 <!DOCTYPE html>
@@ -91,7 +87,7 @@ include 'includes/navbar.php';
                                             <tr role="row" class="odd">
                                                 <td class="sorting_1"><a
                                                             href="user_data.php?id=<?php echo $record->employees_id; ?>&table=<?php echo $key; ?>"
-                                                            class="text-muted"><?php echo $record->name; ?></a></td>
+                                                            class="text-muted"><?php echo $data->records(Params::TBL_EMPLOYEES, ['id', '=', $records->employees_id], ['name'], false)->name; ?></a></td>
                                                 <td><?php echo $record->quantity; ?></td>
                                             </tr>
                                         <?php } ?>

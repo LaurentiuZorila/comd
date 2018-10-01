@@ -267,6 +267,11 @@ class CustomerDB
     public function results()
     {
         return $this->_results;
+////        $array = (array)$this->_results;
+////        return !empty($array) ? $this->_results : null;
+//        return ($results = $this->_results) && !empty($results[0]) ? $this->_results : null;
+//        return ($results = $this->count()) && $results > 0 ? $this->_results : null;
+//        return isset($this->_results) ? $this->_results : null;
     }
 
 

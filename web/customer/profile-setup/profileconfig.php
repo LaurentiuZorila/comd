@@ -6,50 +6,136 @@ $records  = new CustomerProfile();
 if (Input::exists('get')) {
     $token          = Input::get('setup');
     $setupTokenHash = Session::get('setupToken');
+
+    /** Check get token */
     if (!CustomerUser::passCheck($token, $setupTokenHash)) {
         CustomerRedirect::to('../login.php');
     }
 }
+
 $customerId         = Input::get('id');
-$customerDetails    = $records->records(Params::TBL_TEAM_LEAD, ['id', '=', $customerId], ['username', 'name', 'id', 'offices_id'], false);
+$customerDetails    = $records->records(Params::TBL_TEAM_LEAD, ['id', '=', $customerId], ['username', 'name', 'id', 'offices_id', 'password'], false);
 
 if (Input::exists()) {
-    $newTables  = Input::post('tables');
-    // Array with tables to create
-    $newTables  = explode(',', trim($newTables));
+    $newTables          = Input::post('tables');
+    $defaultPassword    = Input::post('Password');
+    $new_password       = Input::post('new_password');
+    $confirm_pass       = Input::post('confirm_password');
+    $passwordHash       = password_hash(Input::post('new_password'), PASSWORD_DEFAULT);
+    $bestConditions     = Input::post('tables_conditions');
+
+    /** User details */
+    $customerId         = $customerDetails->id;
+    $officesId          = $customerDetails->offices_id;
+
+    /** Input errors */
+    $inputErrors  = [];
+
+
+    /** Check if all fields are filed */
+    if (empty($newTables) || empty($defaultPassword) || empty($confirm_pass) || empty($bestConditions)) {
+        $requiredErrors[] = 'All fields are required!';
+    }
+
+    /** Check if default password is correct */
+    if (!password_verify($defaultPassword, $customerDetails->password)) {
+        $inputErrors[] = 'Password inserted are wrong!';
+        Session::put('wrongPassword', 'has-error');
+    }
+
+    /** Check if passwords match */
+    if ($new_password !== $confirm_pass) {
+        Session::put('matchPasswords', 'has-error');
+    }
+
+    /** Remove comma if exist at the end of strings */
+    $bestConditions = Common::checkLastCharacter($bestConditions);
+    $newTables      = Common::checkLastCharacter($newTables);
+    $columnTables   = $newTables . ',' . implode(',', Params::TBL_COMMON);
+
+    /** Array with conditions */
+    $conditions = explode(',', trim($bestConditions));
+    /** Array with tables to create */
+    $newTables = explode(',', trim($newTables));
+
+    /** Check if conditions are same with tables to create */
+    if (count($conditions) != count($newTables)) {
+        $inputErrors[] = 'You must have same number of conditions as tables!';
+        Session::put('conditions', 'has-error');
+    } else {
+        /** Json with tables conditions table : conditions */
+        $tablesConditions = Common::toJson(Common::assocArray($newTables, $conditions));
+    }
+
+
     foreach ($newTables as $newTable) {
-        $tables[] = Params::PREFIX . trim($newTable);
+        /** Tables to create with prefix */
+        $tables[] = trim($newTable);
     }
 
-    $password   = password_hash(Input::post('new_password'), PASSWORD_DEFAULT);
-    $customerId = $customerDetails->id;
-    $officesId  = $customerDetails->offices_id;
-
-    // Instantiate Validate class
-    $validate   = new Validate();
-    $validation = $validate->check($_POST, [
-            'Password'  => [
-                    'required'  => true,
-                    'min'       => 6
+        /** Instantiate Validate class */
+        $validate   = new Validate();
+        $validation = $validate->check($_POST, [
+            'Password' => [
+                'required'  => true,
+                'min'       => Params::MIN_INPUT,
+                'max'       => Params::MAX_INPUT
+            ],
+            'new_password' => [
+                'required'  => true,
+                'min'       => Params::MIN_INPUT,
+                'max'       => Params::MAX_INPUT
+            ],
+            'confirm_password' => [
+                'required'  => true,
+                'matches'   => 'new_password'
+            ],
+            'tables' => [
+                'required' => true
+            ],
+            'tables_conditions' => [
+                'required' => true
             ]
-    ]);
-    if ($validation->passed()) {
-        // Update users table with new password
-        $customer->update(Params::TBL_TEAM_LEAD,[
-                'password'  => $password
-        ], [
-                'id' => $customerDetails->id
         ]);
 
-        $customer->update(Params::TBL_OFFICE, [
-                'tables'        => $tables,
-                'configured'    => CustomerProfile::CONFIGURED
-        ], [
-                'offices_id' => $customerDetails->offices_id
-        ]);
 
-    }
+        /** Check if validation is passed and not found errors */
+        if (count($requiredErrors) === 0 && count($inputErrors) === 0 && $validation->passed()) {
+            /** Update users table with new password */
+            $customer->update(Params::TBL_TEAM_LEAD, [
+                'password' => $passwordHash
+            ], [
+                'id' => $customerId
+            ]);
 
+            /** Update offices table with new tables and configured */
+            $customer->update(Params::TBL_OFFICE, [
+                'tables'            => $columnTables,
+                'configured'        => CustomerProfile::CONFIGURED,
+                'tables_conditions' => $tablesConditions
+            ], [
+                'id' => $customerDetails->offices_id
+            ]);
+
+
+            /** Instantiate Create Class */
+            $create = new Create();
+
+            /** Create tables */
+            foreach ($tables as $table) {
+                $create->createTable($table);
+            }
+
+        } else {
+            /** All errors (Validate Class errors & Create Class input errors) */
+            $allErrors  = array_unique(array_merge($inputErrors, $validation->errors()));
+        }
+
+        if (count($allErrors) === 0)
+        {
+            Session::put('configOk', 'You have successfully configure your profile.');
+            CustomerRedirect::to('../index.php');
+        }
 }
 
 ?>
@@ -107,6 +193,23 @@ if (Input::exists()) {
 		        <div class="col-sm-8 col-sm-offset-2">
 		            <!--      Wizard container        -->
 		            <div class="wizard-container">
+                        <?php
+                        if (Input::exists() && count($allErrors) > 0) { ?>
+                            <div class="alert alert-danger">
+                                <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
+                                    <i class="tim-icons icon-simple-remove">x</i>
+                                </button>
+                                <span><b>You have some errors!</b></span>
+                                <?php
+                                foreach ($allErrors as $allError) {
+                                    echo '<p>' . $allError . '</p>';
+                                    }
+                                    foreach ($validation->errors() as $errors) {
+                                        echo '<p>' . $errors . '</p>';
+                                    }
+                                ?>
+                            </div>
+                        <?php } ?>
 		                <div class="card wizard-card" data-color="purple" id="wizardProfile">
 		                    <form action="" method="post">
 		                <!--        You can switch " data-color="purple" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
@@ -152,7 +255,7 @@ if (Input::exists()) {
 													<span class="input-group-addon">
 														<i class="material-icons">lock_open</i>
 													</span>
-													<div class="form-group label-floating passDefault" data-toggle="wizard-radio" rel="tooltip" title="Please insert password." id="passDefault" style="display: block;">
+													<div class="form-group label-floating passDefault <?php if (Session::exists('wrongPassword')) { echo Session::flash('wrongPassword'); } ?>" data-toggle="wizard-radio" rel="tooltip" title="Please insert password." id="passDefault" style="display: block;">
 													  <label class="control-label">Insert default password <small>(required)</small></label>
 													  <input name="Password" type="password" class="form-control default_password" id="pass" required/>
 													</div>
@@ -168,7 +271,7 @@ if (Input::exists()) {
                                                 <span class="input-group-addon">
                                                     <i class="material-icons">lock</i>
                                                 </span>
-                                                    <div class="form-group label-floating newPass" data-toggle="wizard-radio">
+                                                    <div class="form-group label-floating newPass <?php if (Session::exists('matchPasswords')) { echo Session::get('matchPasswords'); } ?>" data-toggle="wizard-radio">
                                                         <label class="control-label">New password <small>(required)</small></label>
                                                         <input name="new_password" type="password" class="form-control" id="newPass" required>
                                                     </div>
@@ -179,9 +282,9 @@ if (Input::exists()) {
                                                 <span class="input-group-addon">
                                                     <i class="material-icons">lock</i>
                                                 </span>
-                                                    <div class="form-group label-floating againPass" data-toggle="wizard-radio">
+                                                    <div class="form-group label-floating againPass <?php if (Session::exists('matchPasswords')) { echo Session::flash('matchPasswords'); } ?>" data-toggle="wizard-radio">
                                                         <label class="control-label">Password again <small>(required)</small></label>
-                                                        <input name="password_again" type="password" class="form-control" id="againPass" required>
+                                                        <input name="confirm_password" type="password" class="form-control" id="againPass" required>
                                                     </div>
                                                 </div>
                                             </div>
@@ -193,15 +296,15 @@ if (Input::exists()) {
 		                                        <h4 class="info-text"> Config your data base! </h4>
 		                                    </div>
 		                                    <div class="col-sm-7">
-	                                        	<div class="form-group label-floating" data-toggle="wizard-radio" rel="tooltip" title="For default we have created common tables (e.g. furlough, absentees, unpaid leaves). Insert tables name what you need created followed by comma (e.g target,quality etc..)">
+	                                        	<div class="form-group label-floating <?php if (Session::exists('conditions')) { echo Session::get('conditions'); } ?>" data-toggle="wizard-radio" rel="tooltip" title="For default we have created common tables (e.g. furlough, absentees, unpaid leaves). Insert tables name what you need created followed by comma (e.g target,quality etc..)">
 	                                        		<label class="control-label">Insert your tables to create</label>
 	                                    			<input type="text" class="form-control" name="tables">
 	                                        	</div>
 		                                    </div>
                                             <div class="col-sm-3 col-sm-offset-1">
-                                                <div class="form-group label-floating" data-toggle="wizard-radio" rel="tooltip" title="For each table inserted you need assign one symbol. If for first table highest data are best data, you need yo insert symbol '>', if lowest data are best data you need to insert symbol '<'. Please make attention!">
+                                                <div class="form-group label-floating <?php if (Session::exists('conditions')) { echo Session::flash('conditions'); } ?>" data-toggle="wizard-radio" rel="tooltip" title="For each table inserted you need assign one symbol. If for first table highest data are best data, you need yo insert symbol '>', if lowest data are best data you need to insert symbol '<'. Please make attention!">
                                                     <label class="control-label">Best</label>
-                                                    <input type="text" class="form-control">
+                                                    <input type="text" class="form-control" name="tables_conditions">
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
@@ -230,6 +333,7 @@ if (Input::exists()) {
 		                        <div class="wizard-footer">
 		                            <div class="pull-right">
 		                                <input type='button' class='btn btn-next btn-fill btn-primary btn-wd' name='next' value='Next' />
+                                        <input type="hidden" name="setupToken" value="" />
 		                                <input type="submit" class='btn btn-finish btn-fill btn-primary btn-wd' name="finish" value='Finish' />
 		                            </div>
 

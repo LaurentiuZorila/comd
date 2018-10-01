@@ -2,15 +2,20 @@
 class Create
 {
     /**
-     * @var BackendDB|null
+     * @var CustomerDB|null
      */
     private $_db;
 
+    /**
+     * @var bool
+     */
+    private $_toCreate  = true;
 
-    public $table;
+    /***
+     * @var
+     */
+    public $errors      = [];
 
-
-    public $exists = false;
 
     /**
      * Create constructor.
@@ -22,41 +27,41 @@ class Create
 
 
     /**
-     * @param array $columns
-     * @param array $types
+     * @param $table
      * @return mixed
      */
-    public function createTable($table = '')
+    public function createTable($table)
     {
-
-//        $params = array_combine($columns, $types);
-//        $conditions = [];
-//
-//        foreach ($params as $column => $type) {
-//            $conditions[] = sprintf("%s %s NOT NULL", $column, $type);
-//        }
-//        $conditions = implode(', ', $conditions);
-
+        $table  = trim(strtolower($table));
+        $tbl    = Params::PREFIX . $table;
         $sql = " 
-            CREATE TABLE IF NOT EXISTS {$table} (
+            CREATE TABLE IF NOT EXISTS {$tbl} (
                 id               INT AUTO_INCREMENT PRIMARY KEY, 
-                offices_id       VARCHAR(100),
-                departments_id   VARCHAR(100),
+                offices_id       INT(),
+                departments_id   INT(),
+                employees_id     INT(11),
                 year             YEAR(4),
-                month            INT(2),
-                quantity         VARCHAR(5)
+                month            TINYINT(2),
+                quantity         SMALLINT(5)
             )";
 
-        return $this->_db->execute($sql);
+        if ($this->_toCreate) {
+            try {
+                return $this->_db->execute($sql);
+            } catch (PDOException $e) {
+                die($e->getMessage());
+            }
+        }
     }
 
 
     /**
+     * @param $table
      * @param array $columns
      * @param array $types
      * @return bool|PDOStatement
      */
-    public function addColumns($columns = array(), $types = array())
+    public function addColumns($table, $columns = array(), $types = array())
     {
         $params = array_combine($columns, $types);
         $conditions = [];
@@ -67,11 +72,11 @@ class Create
         $conditions = implode(', ', $conditions);
 
         $sql = " 
-            ALTER TABLE  {$this->table} (
+            ALTER TABLE  {$table} (
                 {$conditions}
             )";
 
-        if ($this->ckeckTable()) {
+        if (!$this->_toCreate) {
             try {
                 return $this->_db->getPdo()->query($sql);
             } catch (PDOException $e) {
@@ -82,18 +87,53 @@ class Create
 
 
     /**
-     * @return bool
+     * @param $table
+     * @param bool $prefix
+     * @return $this
      */
-    public function ckeckTable()
+    public function ifExist($table, $prefix = false)
     {
-        $sql = "DESCRIBE {$this->table}";
+        if ($prefix) {
+            $tbl = Params::PREFIX . $table;
+            $sql = "DESCRIBE {$tbl}";
+        } else {
+            $sql = "DESCRIBE {$table}";
+        }
 
         if ($this->_db->getPdo()->query($sql)) {
-            return true;
+            $this->addError("{$table} table already exist.");
         }
-        return false;
+
+        if (count($this->errors) > 0) {
+            $this->_toCreate = false;
+        }
     }
 
 
+    /**
+     * @param $error
+     * @return mixed
+     */
+    public function addError($error)
+    {
+        $this->errors[] = $error;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getError()
+    {
+        return $this->errors;
+    }
+
+    /**
+     * @return bool
+     */
+    public function toCreate()
+    {
+        return $this->_toCreate;
+    }
 
 }

@@ -12,7 +12,7 @@ class CustomerProfile
     const CONFIGURED        = 1;
 
     /**
-     * ProfileDetails constructor.
+     * CustomerProfile constructor.
      */
     public function __construct()
     {
@@ -23,8 +23,9 @@ class CustomerProfile
     /**
      * @param $table
      * @param array $where
-     * @return object
-     * @TODO to check if work method when i put $column at the end of return ( ->first()->$column )
+     * @param array $column
+     * @param bool $all
+     * @return mixed
      */
     public function records($table, array $where, $column = ['*'], $all = true)
     {
@@ -59,8 +60,8 @@ class CustomerProfile
 
 
     /**
-     * @param $lead_id
-     * @return float average
+     * @param array $where
+     * @return float
      */
     public function rating(array $where)
     {
@@ -73,8 +74,7 @@ class CustomerProfile
      * @param $table
      * @param array $where
      * @param array $columns
-     * @return array key => values
-     * @uses first column is key and second is value only for 2 columns
+     * @return array
      */
     public function arrayMultipleRecords($table, array $where, array $columns)
     {
