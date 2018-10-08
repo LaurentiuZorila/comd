@@ -12,7 +12,7 @@ $allEmployees = $data->records(Params::TBL_EMPLOYEES, ['departments_id', '=', $u
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
 <body>
 <?php
@@ -74,18 +74,14 @@ include 'includes/navbar.php';
                             </div>
         </section>
         <?php
-        include 'includes/footer.php';
+        include '../common/includes/footer.php';
         ?>
     </div>
 </div>
 <!-- JavaScript files-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/popper.js/umd/popper.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="vendor/jquery.cookie/jquery.cookie.js"></script>
-<script src="vendor/chart.js/Chart.min.js"></script>
-<script src="vendor/jquery-validation/jquery.validate.min.js"></script>
-<script src="js/front.js"></script>
+<?php
+include "./../common/includes/scripts.php";
+?>
 
 </body>
 </html>

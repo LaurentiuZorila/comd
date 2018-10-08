@@ -1,7 +1,7 @@
 <?php
 require_once 'core/init.php';
-
-$user = new FrontendUser();
+$user   = new FrontendUser();
+$token  = new Token();
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
@@ -96,7 +96,7 @@ include 'includes/navbar.php';
                               </div>
                               <div class="col-sm-2">
                                   <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                  <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                  <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
                               </div>
                           </div>
                       </form>

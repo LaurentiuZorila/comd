@@ -3,14 +3,9 @@ require_once '../core/setup-init.php';
 $customer = new CustomerUser();
 $records  = new CustomerProfile();
 
-if (Input::exists('get')) {
-    $token          = Input::get('setup');
-    $setupTokenHash = Session::get('setupToken');
-
-    /** Check get token */
-    if (!CustomerUser::passCheck($token, $setupTokenHash)) {
-        CustomerRedirect::to('../login.php');
-    }
+/** Check get token */
+if (!Tokens::checkRoute(Input::get('r')) && !empty(Input::get('setup'))) {
+    Redirect::to('../login.php');
 }
 
 $customerId         = Input::get('id');
@@ -23,6 +18,7 @@ if (Input::exists()) {
     $confirm_pass       = Input::post('confirm_password');
     $passwordHash       = password_hash(Input::post('new_password'), PASSWORD_DEFAULT);
     $bestConditions     = Input::post('tables_conditions');
+    $tablePriority      = Input::post('tables_priorities');
 
     /** User details */
     $customerId         = $customerDetails->id;
@@ -31,9 +27,8 @@ if (Input::exists()) {
     /** Input errors */
     $inputErrors  = [];
 
-
     /** Check if all fields are filed */
-    if (empty($newTables) || empty($defaultPassword) || empty($confirm_pass) || empty($bestConditions)) {
+    if (empty($newTables) || empty($defaultPassword) || empty($confirm_pass) || empty($bestConditions) || empty($tablePriority)) {
         $requiredErrors[] = 'All fields are required!';
     }
 
@@ -50,11 +45,14 @@ if (Input::exists()) {
 
     /** Remove comma if exist at the end of strings */
     $bestConditions = Common::checkLastCharacter($bestConditions);
+    $tablePriority  = Common::checkLastCharacter($tablePriority);
     $newTables      = Common::checkLastCharacter($newTables);
     $columnTables   = $newTables . ',' . implode(',', Params::TBL_COMMON);
 
     /** Array with conditions */
     $conditions = explode(',', trim($bestConditions));
+    /** Array with priorities */
+    $priorities = explode(',', trim($tablePriority));
     /** Array with tables to create */
     $newTables = explode(',', trim($newTables));
 
@@ -65,6 +63,8 @@ if (Input::exists()) {
     } else {
         /** Json with tables conditions table : conditions */
         $tablesConditions = Common::toJson(Common::assocArray($newTables, $conditions));
+        /** Json with tables conditions table : priorities */
+        $tablesPriorities = Common::toJson(Common::assocArray($priorities, $newTables));
     }
 
 
@@ -112,7 +112,8 @@ if (Input::exists()) {
             $customer->update(Params::TBL_OFFICE, [
                 'tables'            => $columnTables,
                 'configured'        => CustomerProfile::CONFIGURED,
-                'tables_conditions' => $tablesConditions
+                'tables_conditions' => $tablesConditions,
+                'tables_priorities' => $tablesPriorities
             ], [
                 'id' => $customerDetails->offices_id
             ]);
@@ -133,8 +134,8 @@ if (Input::exists()) {
 
         if (count($allErrors) === 0)
         {
-            Session::put('configOk', 'You have successfully configure your profile.');
-            CustomerRedirect::to('../index.php');
+            Session::put('configOk', 'Now you need to update your database.');
+            Redirect::to('../index.php');
         }
 }
 
@@ -295,39 +296,48 @@ if (Input::exists()) {
 		                                    <div class="col-sm-12">
 		                                        <h4 class="info-text"> Config your data base! </h4>
 		                                    </div>
-		                                    <div class="col-sm-7">
-	                                        	<div class="form-group label-floating <?php if (Session::exists('conditions')) { echo Session::get('conditions'); } ?>" data-toggle="wizard-radio" rel="tooltip" title="For default we have created common tables (e.g. furlough, absentees, unpaid leaves). Insert tables name what you need created followed by comma (e.g target,quality etc..)">
+		                                    <div class="col-sm-5">
+	                                        	<div class="form-group label-floating <?php if (Session::exists('conditions')) { echo Session::get('conditions'); } ?> " data-toggle="wizard-radio" rel="tooltip" title="By default common tables are created (e.g. furlough, absentees, unpaid leaves). Insert tables names what you want to create followed by comma (e.g target,quality etc..)">
 	                                        		<label class="control-label">Insert your tables to create</label>
-	                                    			<input type="text" class="form-control" name="tables">
+	                                    			<input type="text" class="form-control" name="tables" id="tablesToCreate">
 	                                        	</div>
 		                                    </div>
-                                            <div class="col-sm-3 col-sm-offset-1">
-                                                <div class="form-group label-floating <?php if (Session::exists('conditions')) { echo Session::flash('conditions'); } ?>" data-toggle="wizard-radio" rel="tooltip" title="For each table inserted you need assign one symbol. If for first table highest data are best data, you need yo insert symbol '>', if lowest data are best data you need to insert symbol '<'. Please make attention!">
+                                            <div class="col-sm-3">
+                                                <div class="form-group label-floating <?php if (Session::exists('conditions')) { echo Session::flash('conditions'); } ?>" data-toggle="wizard-radio" rel="tooltip" title="For each table inserted you need assign one symbol(>, <). If for first table highest data are best data, you need yo insert symbol '>', if lowest data are best data you need to insert symbol '<'. Please make attention!">
                                                     <label class="control-label">Best</label>
-                                                    <input type="text" class="form-control" name="tables_conditions">
+                                                    <input type="text" class="form-control" name="tables_conditions" id="tables_conditions">
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
-                                                <div class="form-group label-floating">
-                                                    <label class="control-label">Select your department</label>
-                                                    <select name="country" class="form-control">
-                                                        <option disabled="" selected=""></option>
-                                                        <option value="Afghanistan"> Afghanistan </option>
-                                                        <option value="Albania"> Albania </option>
-                                                    </select>
+                                            <div class="col-sm-3">
+                                                <div class="form-group label-floating <?php if (Session::exists('conditions')) { echo Session::flash('conditions'); } ?>" data-toggle="wizard-radio" rel="tooltip" title="For each table inserted you need assign PRIORITIES (most important table must have assigned 1 value.). For each table assign values for your own priorities. MAKE ATTENTION THIS SETTING IS IMPORTANT TO CALCULATE BEST EMPLOYEES!">
+                                                    <label class="control-label">Priorities tables</label>
+                                                    <input type="text" class="form-control" name="tables_priorities" id="tables_priorities">
                                                 </div>
                                             </div>
-		                                    <div class="col-sm-6">
-		                                        <div class="form-group label-floating">
-		                                            <label class="control-label">Select your office</label>
-	                                            	<select name="country" class="form-control">
-														<option disabled="" selected=""></option>
-	                                                	<option value="Afghanistan"> Afghanistan </option>
-	                                                	<option value="Albania"> Albania </option>
-	                                            	</select>
-		                                        </div>
-		                                    </div>
+                                            <div class="col-sm-2 col-sm-offset-0">
+                                                <input type="button" class="btn btn-primary addTable" id="addTable" value="Add">
+                                            </div>
+                                            <div class="col-sm-2 col-sm-offset-0">
+                                                <input type="button" class="btn btn-primary removeTable" id="removeTable" style="display: none;" value="Remove">
+                                            </div>
 		                                </div>
+                                        <div class="row">
+                                            <div class="col-sm-12 mt-2">
+                                                <table class="table" id="tables" style="display: none;">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="text-center">#</th>
+                                                        <th>Table</th>
+                                                        <th>Condition</th>
+                                                        <th>Priorites</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="tbodyTables">
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
 		                            </div>
 		                        </div>
 		                        <div class="wizard-footer">
@@ -371,6 +381,41 @@ if (Input::exists()) {
 include 'checkPassword.php';
 include 'newPasswords.php';
 ?>
+<script>
+    $("#addTable").click(function () {
+        var conditions = $( "#tables_conditions" ).val();
+        var tables     = $("#tablesToCreate").val();
+        var priorities = $( "#tables_priorities" ).val();
 
+        if (conditions && tables) {
+            $.ajax({
+                url: "ajax/tables.php",
+                dataType: 'Json',
+                data: {'tables': tables, 'conditions': conditions, 'priority': priorities},
+                success: function (data) {
+                    $("#addTable").css("display","none");
+                    $("#removeTable").css("display","block");
+                    $("#tables").show();
+                    $.each(data, function (key, value) {
+                        $("#tbodyTables").append('<tr><td class="text-center">#</td><td class="text-primary">' + key + '</td> <td class="text-primary">' + value[0] + '</td><td class="text-primary">' + value[1] + '</td></tr>');
+                    });
+                }
+            });
+        }
+    });
+
+
+    $("#removeTable").click(function () {
+        $("#addTable").css("display","block");
+        $("#removeTable").css("display","none");
+        $( "#tables_conditions" ).val("");
+        $("#tablesToCreate").val("");
+        $("#tables_priorities").val("");
+        $("#tbodyTables tr").remove();
+        $("#removeTable").hide();
+        $("#tables").hide();
+    });
+
+</script>
 
 </html>

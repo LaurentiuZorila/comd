@@ -6,6 +6,7 @@ $profileDetails = new FrontendProfile();
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
 }
+
 $tables = $profileDetails->records(Params::TBL_OFFICE, ['id', '=', $user->officeId()], ['tables'], false);
 $tables = explode(',', $tables->tables);
 
@@ -29,17 +30,17 @@ if (!Input::exists()) {
     ];
 }
 
-
-
 if (Input::exists()) {
     Session::delete('InfoAlert');
-    $errors = [];
-    $year   = trim(Input::post('year'));
-    $month  = trim(Input::post('month'));
-    $table  = trim(Input::post('table'));
+    $errors     = [];
+    $year       = trim(Input::post('year'));
+    $month      = trim(Input::post('month'));
+    $table      = trim(Input::post('table'));
+    $prefixTbl  = Params::PREFIX . $table;
+    $alfaMonth  = is_numeric($month) ? Common::numberToMonth($month) : '';
 
     if (!empty($year) && !empty($month) && !empty($table)) {
-        // Conditions for action
+        /** Conditions for action */
         $where = [
             ['employees_id', '=', $user->userId()],
             'AND',
@@ -48,7 +49,7 @@ if (Input::exists()) {
             ['month', '=', $month]
         ];
 
-        // Conditions for COUNT action (total)
+        /** Conditions for COUNT action (total) */
         $whereSum = [
             ['offices_id', '=', $user->officeId()],
             'AND',
@@ -56,20 +57,24 @@ if (Input::exists()) {
             'AND',
             ['month', '=', $month]
         ];
-        // One record
-        $data = $profileDetails->records($table, $where, ['quantity'])->quantity;
+        /**  One record if is selected one month form form */
+        $data = $profileDetails->records($prefixTbl, $where, ['quantity'])->quantity;
+        if ($data == '') {
+            Session::put('DataNotFound', "For {$year} - {$alfaMonth} and table: {$table}, not found data for this search.");
+            $data = 0;
+        }
 
-        // Common data for user
+        /** Common data for user */
         $userFurlough   = $profileDetails->commonDetails($where, ['quantity'])['furlough']->quantity;
         $userAbsentees  = $profileDetails->commonDetails($where, ['quantity'])['absentees']->quantity;
         $userUnpaidDays = $profileDetails->commonDetails($where, ['quantity'])['unpaid']->quantity;
 
-        //Total data for common tables
+        /** Total data for common tables */
         $totalFurloughs = $profileDetails->sumAllCommonData($whereSum, 'quantity')['furlough']->total;
         $totalAbsentees = $profileDetails->sumAllCommonData($whereSum, 'quantity')['absentees']->total;
         $totalUnpaid    = $profileDetails->sumAllCommonData($whereSum, 'quantity')['unpaid']->total;
 
-        // If form select list is selected "all"
+        /** If user serach data for all months */
         if (!is_numeric($month)) {
             // Conditions for action
             $where = [
@@ -85,25 +90,25 @@ if (Input::exists()) {
                 ['year', '=', $year]
             ];
 
-            // Selected chart
-            $dataAllMonths = $profileDetails->arrayMultipleRecords($table, $where, ['month', 'quantity']);
+            /** Selected chart */
+            $dataAllMonths = $profileDetails->arrayMultipleRecords($prefixTbl, $where, ['month', 'quantity']);
 
-            // Common charts
+            /** Common charts */
             $furloughCommon   = $profileDetails->arrayMultipleRecords(Params::TBL_FURLOUGH, $where, ['month', 'quantity']);
             $absenteesCommon  = $profileDetails->arrayMultipleRecords(Params::TBL_ABSENTEES, $where, ['month', 'quantity']);
             $unpaidCommon     = $profileDetails->arrayMultipleRecords(Params::TBL_UNPAID, $where, ['month', 'quantity']);
 
-            // Total data for all employees from common charts
+            /** Total data for all employees from common charts */
             $totalFurloughs = $profileDetails->sumAllCommonData($sumCommonDataAll, 'quantity')['furlough']->total;
             $totalAbsentees = $profileDetails->sumAllCommonData($sumCommonDataAll, 'quantity')['absentees']->total;
             $totalUnpaid    = $profileDetails->sumAllCommonData($sumCommonDataAll, 'quantity')['unpaid']->total;
 
-            // User total data for all months
+            /** User total data for all months */
             $userFurlough   = $profileDetails->sumAllCommonData($where, 'quantity')['furlough']->total;
             $userAbsentees  = $profileDetails->sumAllCommonData($where, 'quantity')['absentees']->total;
             $userUnpaidDays = $profileDetails->sumAllCommonData($where, 'quantity')['unpaid']->total;
 
-            // Common charts
+            /** Common charts */
             $furloughChartLabel     = Js::key($furloughCommon);
             $furloughChartValues    = Js::values($furloughCommon);
 
@@ -113,10 +118,13 @@ if (Input::exists()) {
             $unpaidChartLabel       = Js::key($unpaidCommon);
             $unpaidChartValues      = Js::values($unpaidCommon);
 
-            // Selected table chart
-            $chartLabels = Js::key($dataAllMonths);
-            $chartValues = Js::values($dataAllMonths);
-
+            /** Selected table chart */
+            if (!empty($dataAllMonths)) {
+                $chartLabels = Js::key($dataAllMonths);
+                $chartValues = Js::values($dataAllMonths);
+            } else {
+                Session::put('ChartDataNotFound', "For {$year} - {$alfaMonth} and table: {$table}, not found data, try again.");
+            }
         }
     } else {
         $errors = [1];
@@ -128,7 +136,7 @@ if (Input::exists()) {
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
 <body>
 <?php
@@ -146,25 +154,15 @@ include 'includes/navbar.php';
                 <h2 class="h5 no-margin-bottom">Dashboard</h2>
             </div>
         </div>
-        <?php if (Session::exists('InfoAlert')) { ?>
-            <section>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card-body">
-                            <div class="alert alert-dismissible fade show badge-info b-l-5" role="alert">
-                                <strong class="text-monospace text-dark"> This results are for <?php echo Common::getMonths()[$month]; ?> </strong>
-                                <p class="text-dark"> <?php echo Session::flash('InfoAlert'); ?> </p>
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        <?php }
-        if (Input::exists() && count($errors) > 0) {
-            include 'includes/errors.php';
+        <?php
+        if (Input::exists()) {
+            if (count($errors) > 0) {
+                include './../common/errors/errorRequired.php';
+            }
+            if (Session::exists('ChartDataNotFound')) {
+                include './../common/errors/infoNoDataError.php';
+                Session::delete('ChartDataNotFound');
+            }
         }
         ?>
         <section>
@@ -215,7 +213,7 @@ include 'includes/navbar.php';
                                             <select name="table" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
                                                 <option value="">Select Table</option>
                                                 <?php foreach ($tables as $table) { ?>
-                                                    <option value="<?php echo Params::PREFIX . trim($table); ?>"><?php echo strtoupper($table); ?></option>
+                                                    <option value="<?php echo trim($table); ?>"><?php echo strtoupper($table); ?></option>
                                                 <?php } ?>
                                             </select>
                                             <?php
@@ -226,7 +224,7 @@ include 'includes/navbar.php';
 
                                         <div class="col-sm-2">
                                             <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                            <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                            <input type="hidden" name="token" value="<?php echo Tokens::getInputToken(); ?>">
                                         </div>
                                     </div>
                                 </form>
@@ -277,7 +275,7 @@ include 'includes/navbar.php';
                 </div>
             </section>
         <?php }
-        if (Input::exists() && count($errors) == 0) {
+        if (Input::exists() && count($errors) === 0) {
             if (is_numeric(Input::post('month'))) { ?>
                 <section class="no-padding-top no-padding-bottom">
                     <div class="container-fluid">
@@ -287,14 +285,12 @@ include 'includes/navbar.php';
                                     <div class="progress-details d-flex align-items-end justify-content-between">
                                         <div class="title">
                                             <div class="icon"><i class="icon-info"></i></div>
-                                            <strong><?php echo substr(strtoupper(Input::post('table')), 4) . ' - ' . Common::numberToMonth($month) . ' - ' . Input::post('year'); ?></strong>
+                                            <strong><?php echo strtoupper(Input::post('table')). ' - ' . Common::numberToMonth($month) . ' - ' . Input::post('year'); ?></strong>
                                         </div>
                                         <div class="number dashtext-1"><?php echo $data; ?></div>
                                     </div>
                                     <div class="progress progress-template">
-                                        <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0"
-                                             aria-valuemax="100"
-                                             class="progress-bar progress-bar-template dashbg-1"></div>
+                                        <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-1"></div>
                                     </div>
                                 </div>
                             </div>
@@ -315,15 +311,12 @@ include 'includes/navbar.php';
                                                 <small><?php echo $day = $userFurlough > 1 ? 'days' : 'day'; ?></small>
                                             </strong>
                                             <span class="d-block"><?php echo Common::getMonths()[$month] . ' ' . Input::post('year'); ?></span>
-                                            <small class="d-block">All team
-                                                furloughs: <?php echo $totalFurloughs; ?></small>
+                                            <small class="d-block">All team furloughs: <?php echo $totalFurloughs; ?></small>
                                         </div>
                                     </div>
                                     <div class="col-7">
                                         <div class="bar-chart chart">
-                                            <canvas id="furloughChart"
-                                                    style="display: block; width: 166px; height: 157px;" width="166"
-                                                    height="157" class="chartjs-render-monitor"></canvas>
+                                            <canvas id="furloughChart" style="display: block; width: 166px; height: 157px;" width="166" height="157" class="chartjs-render-monitor"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -345,9 +338,7 @@ include 'includes/navbar.php';
                                     </div>
                                     <div class="col-7">
                                         <div class="bar-chart chart">
-                                            <canvas id="absenteesPieChart"
-                                                    style="display: block; width: 166px; height: 157px;" width="166"
-                                                    height="157" class="chartjs-render-monitor"></canvas>
+                                            <canvas id="absenteesPieChart" style="display: block; width: 166px; height: 157px;" width="166" height="157" class="chartjs-render-monitor"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -368,9 +359,7 @@ include 'includes/navbar.php';
                                     </div>
                                     <div class="col-7">
                                         <div class="bar-chart chart">
-                                            <canvas id="unpaidChart"
-                                                    style="display: block; width: 166px; height: 157px;" width="166"
-                                                    height="157" class="chartjs-render-monitor"></canvas>
+                                            <canvas id="unpaidChart" style="display: block; width: 166px; height: 157px;" width="166" height="157" class="chartjs-render-monitor"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -381,8 +370,7 @@ include 'includes/navbar.php';
             </section>
         <?php } ?>
         <!--        ********************       CHARTS         ********************   -->
-        <?php if (Input::exists() && !is_numeric(Input::post('month'))) {
-            if (count($errors) == 0) { ?>
+        <?php if (Input::exists() && !is_numeric(Input::post('month')) && count($errors) === 0 && !Session::exists('ChartDataNotFound')) { ?>
                 <section class="no-padding-bottom">
                     <div class="container-fluid">
                         <div class="row">
@@ -394,13 +382,11 @@ include 'includes/navbar.php';
                         </div>
                     </div>
                 </section>
-            <?php }
-        }?>
+        <?php } ?>
         <!--        ********************       CHARTS   END      ********************   -->
         <section class="no-padding-bottom">
             <div class="container-fluid">
                 <!--              FOR BEST OPERATOR-->
-
                 <!--            <div class="row">-->
                 <!--              <div class="col-lg-4">-->
                 <!--                <div class="user-block block text-center">-->
@@ -450,30 +436,14 @@ include 'includes/navbar.php';
             </div>
         </section>
         <?php
-        include 'includes/footer.php';
+        include '../common/includes/footer.php';
         ?>
     </div>
 </div>
 <!-- JavaScript files-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/popper.js/umd/popper.min.js"> </script>
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
-<script src="vendor/chart.js/Chart.min.js"></script>
-<script src="vendor/jquery-validation/jquery.validate.min.js"></script>
-<script src="js/charts-home.js"></script>
-<script src="js/front.js"></script>
-<!--  Sweet alert   -->
-<script src="sweetalert/dist/sweetalert2.min.js"></script>
-<script>
-    $(document).ready(function(){
-        $('#colour').change(function(){
-            $("#theme-stylesheet").attr("href", "css/" + $(this).val() + ".css");
-        });
-    });
-</script>
-
 <?php
+include "./../common/includes/scripts.php";
+
 if (Input::exists() && is_numeric(Input::post('month'))) {
     include 'charts/commonDataSingle.php';
 }

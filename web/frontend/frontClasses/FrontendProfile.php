@@ -1,7 +1,7 @@
 <?php
 class FrontendProfile
 {
-    private $_frontDb;
+    private $_db;
 
     /**
      * ProfileDetails constructor.
@@ -23,52 +23,6 @@ class FrontendProfile
             return $this->_db->get($table, $where, $column)->results();
         }
         return $this->_db->get($table, $where, $column)->first();
-    }
-
-
-    /**
-     * @param $id
-     * @return mixed
-     */
-    public function departmentDetails($id, array $column)
-    {
-        $details = $this->_db->get(Params::TBL_DEPARTMENT, ['id', '=', $id], $column)->first();
-        return $details;
-    }
-
-
-    /**
-     * @param $id
-     * @param $column
-     * @return array
-     */
-    public function officeDetails($id, array $column)
-    {
-        $details = $this->_db->get(Params::TBL_OFFICE, ['id', '=', $id], $column)->first();
-        return $details;
-    }
-
-    /**
-     * @param $id
-     * @param $column
-     * @return mixed
-     */
-    public function supervisorDetails($id, array $column)
-    {
-        $details = $this->_db->get(Params::TBL_SUPERVISORS, ['id', '=', $id])->first();
-        return $details->$column;
-    }
-
-
-    /**
-     * @param $id
-     * @param $column
-     * @return mixed
-     */
-    public function teamLeadDetails($id, array $column)
-    {
-        $details = $this->_db->get(Params::TBL_TEAM_LEAD, ['id', '=', $id])->first();
-        return $details->$column;
     }
 
 
@@ -100,7 +54,6 @@ class FrontendProfile
     }
 
 
-
     /**
      * @param $table
      * @param array $where
@@ -111,23 +64,27 @@ class FrontendProfile
     public function arrayMultipleRecords($table, array $where, array $columns)
     {
         if (count($columns) == 2) {
+            //Array with key
             $key[]          = $columns[0];
+            // Array with value
             $value[]        = $columns[1];
+            // String key
             $keyColumn      = $columns[0];
+            // String value
             $valueColumn    = $columns[1];
-            $dataKeys       = [];
+
             $objDataKey     = $this->_db->get($table, $where, $key)->results();
             $objDataValues  = $this->_db->get($table, $where, $value)->results();
-
             foreach ($objDataKey as $dataKey) {
                 $dataKeys[] = Common::getMonths()[$dataKey->$keyColumn];
             }
-
             foreach ($objDataValues as $dataValue) {
                 $dataValues[] = $dataValue->$valueColumn;
             }
 
-            return array_combine($dataKeys, $dataValues);
+            if (count($dataKeys) > 0 && count($dataValues) > 0) {
+                return array_combine($dataKeys, $dataValues);
+            }
         }
     }
 

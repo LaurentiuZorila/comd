@@ -40,7 +40,7 @@ if (Input::exists()) {
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
 <body>
 <?php
@@ -69,10 +69,10 @@ include 'includes/navbar.php';
             </ul>
         </div>
         <?php if (Input::exists() && count($errors) > 0) {
-            include 'includes/errors.php';
+            include './../common/errors/errorRequired.php';
          }
             if (count($uploadOk) > 0) {
-                include 'includes/uploadOk.php';
+                include './../common/errors/uploadOk.php';
             }
          ?>
         <section class="no-padding-top">
@@ -137,22 +137,15 @@ include 'includes/navbar.php';
     </div>
 
     <?php
-    include 'includes/footer.php';
+    include '../common/includes/footer.php';
     ?>
 </div>
 </div>
 <!-- JavaScript files-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/popper.js/umd/popper.min.js"> </script>
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
-<!--    <script src="vendor/chart.js/Chart.min.js"></script>-->
-<script src="vendor/jquery-validation/jquery.validate.min.js"></script>
-<script src="js/front.js"></script>
-<!--  Sweet alert   -->
-<script src="sweetalert/dist/sweetalert2.min.js"></script>
 <?php
-include 'includes/ajax_update_lead.php';
+include "./../common/includes/scripts.php";
+
+include 'includes/js/ajax_update_lead.php';
 ?>
 
 </body>

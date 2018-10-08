@@ -13,7 +13,7 @@ return [
         'cookie_expiry' => 604800
     ],
 
-    'session' => [
+    'frontSession' => [
         'session_name'          => 'FrontendUser',
         'session_username'      => 'username',
         'session_id'            => 'id',

@@ -5,7 +5,7 @@ $data   = new CustomerProfile();
 $token  = new Token();
 
 if (!$user->isLoggedIn()) {
-    CustomerRedirect::to('login.php');
+    Redirect::to('login.php');
 }
 // User data
 $userData = CustomerDB::getInstance()->get('cmd_users', ['id', '=', $user->customerId()])->first();
@@ -71,7 +71,7 @@ if (Input::exists() && $token->checkToken(Input::post('token'))) {
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
   <body>
   <?php
@@ -88,6 +88,7 @@ include 'includes/head.php';
         <div class="page-header no-margin-bottom">
           <div class="container-fluid">
             <h2 class="h5 no-margin-bottom">Update database </h2>
+
           </div>
         </div>
         <!-- Breadcrumb-->
@@ -101,13 +102,13 @@ include 'includes/head.php';
         </div>
           <?php
           if (Input::exists() && count($uploadSuccess) > 0) {
-              include 'includes/uploadSuccess.php';
+              include './../common/errors/uploadSuccess.php';
           } elseif (Input::exists() && count($uploadError) > 0) {
-              include 'includes/uploadError.php';
+              include './../common/errors/uploadError.php';
           } elseif (Input::exists() && count($extensionError) > 0) {
-              include 'includes/extensionError.php';
+              include './../common/errors/extensionError.php';
           } elseif (Input::exists() && count($errors) > 0) {
-              include 'includes/errorRequired.php';
+              include './../common/errors/errorRequired.php';
           }
           ?>
           <section class="no-padding-top no-padding-bottom">
@@ -116,8 +117,13 @@ include 'includes/head.php';
                       <form method="post" enctype="multipart/form-data">
                           <div class="row">
                               <div class="col-sm-12">
-                                  <div class="title"><strong>Update your database</strong></div>
+                                  <div class="title">
+                                      <strong>Update your database</strong>
+                                      <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-primary btn-sm float-sm-right"><i class="fa fa-info-circle"></i></button>
+                                  </div>
+
                               </div>
+
                               <div class="col-sm-4">
                                   <select name="year" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} ?>">
                                       <option value="">Select Year</option>
@@ -167,19 +173,37 @@ include 'includes/head.php';
                   </div>
               </div>
           </section>
+          <!-- Modal-->
+          <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade text-left show" style="display: none;">
+              <div role="document" class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3">Info for database update!</strong>
+                          <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+                      </div>
+                      <div class="modal-body">
+                          <p> Your file must have .csv extension (e.g. absentees.csv). </p>
+                          <p> Your file doesn't need contain headers. </p>
+                          <p> From <a href="download.php" download>here</a> can download csv file example to use on your update. </p>
+                          <p> For other information please contact administrator. </p>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Modal End -->
         <?php
-        include 'includes/footer.php';
+        include '../common/includes/footer.php';
         ?>
       </div>
     </div>
     <!-- JavaScript files-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/popper.js/umd/popper.min.js"> </script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
-<!--    <script src="vendor/chart.js/Chart.min.js"></script>-->
-    <script src="vendor/jquery-validation/jquery.validate.min.js"></script>
-    <script src="js/front.js"></script>
+  <?php
+  include "./../common/includes/scripts.php";
+  ?>
 
   </body>
 </html>
+
+

@@ -17,7 +17,6 @@ class BackendProfile
      * @param $table
      * @param array $where
      * @return object
-     * @TODO to check if work method when i put $column at the end of return ( ->first()->$column )
      */
     public function records($table, array $where, $column = ['*'], $all = true)
     {

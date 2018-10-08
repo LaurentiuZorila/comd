@@ -21,29 +21,26 @@ $data = new BackendProfile();
 
 $employeeId   = $_GET['employees_id'];
 
-// Get office id for selected user, form employees table
-//$offices_id     = DB::getInstance()->get('cmd_employees', ['id', '=', $employees_id], ['offices_id'])->first();
+/** Get office id for selected office, form employees table */
 $officeId   = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $employeeId], ['offices_id'], false)->offices_id;
 
-// Get all tables from offices table
-//$allTables  = DB::getInstance()->get('cmd_offices', ['id', '=', $officeId->offices_id], ['tables'])->first();
+/** Get all tables from offices table */
 $allTables  = $data->records(Params::TBL_OFFICE, ['id', '=', $officeId], ['tables'], false)->tables;
 
-// Make array with all tables
+/** Make array with all tables */
 $tables     = explode(',', trim($allTables));
 
-//Tables with prefix
+/** Tables with prefix */
 foreach ($tables as $table) {
         $prefixTables[]  = Params::PREFIX . trim(strtolower($table));
     }
 
-// Get all months form all tables
+/** Get all months form all tables */
 foreach ($prefixTables as $prefixTable) {
-//        $allMonths = DB::getInstance()->get($prefixTable, ['employees_id', '=', $employeeId], ['month'])->results();
         $allMonths = $data->records($prefixTable, ['employees_id', '=', $employeeId], ['month']);
     }
 
-// Transform numeric months in textual months
+/** Transform numeric months in textual months */
 foreach ($allMonths as $months) {
     foreach ($months as $month) {
         $numberMonths[]     = $month;
@@ -52,5 +49,5 @@ foreach ($allMonths as $months) {
     }
 }
 
-// remove duplicates and print Json
+/** remove duplicates and print Json */
 echo json_encode(array_unique($month));

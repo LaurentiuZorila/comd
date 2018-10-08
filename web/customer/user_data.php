@@ -5,7 +5,7 @@ $data   = new CustomerProfile();
 $token  = new Token();
 
 if (!$user->isLoggedIn()) {
-    CustomerRedirect::to('login.php');
+    Redirect::to('login.php');
 }
 
 // All tables
@@ -16,7 +16,8 @@ $allTables = explode(',', trim($allTables->tables));
 $allEmployees = $data->records($data::TBL_EMPLOYEES, ['offices_id', '=', $user->officesId()], ['id', 'name']);
 
 
-if (Input::exists() && $token->checkToken(Input::post('token'))) {
+if (Input::exists()) {
+
         $employeesId    = Input::post('employees');
         $year           = Input::post('year');
         $month          = Input::post('month');
@@ -39,19 +40,19 @@ if (Input::exists() && $token->checkToken(Input::post('token'))) {
 
             //array key => values (keys are tables and values are numbers(quantity column))
             foreach ($allTables as $table) {
-                $prefix = $data::PREFIX;
-                $key[] = $table;
-                $values[] = Common::columnValues($data->records($prefix . $table, $where, ['quantity']), 'quantity');
-                $allData = array_combine($key, $values);
+                $prefix     = $data::PREFIX;
+                $key[]      = $table;
+                $values[]   = Common::columnValues($data->records($prefix . trim($table), $where, ['quantity']), 'quantity');
+                $allData    = array_combine($key, $values);
             }
 
             // All data for customer
             $employeesDetails = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $employeesId], ['name', 'offices_id'], false);
-            $officeObj = $data->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['name'], false);
+            $officeObj        = $data->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['name'], false);
 
             $name = $employeesDetails->name;
             $officeName = $officeObj->name;
-            $initials = $data::makeAvatar($name);
+            $initials   = Common::makeAvatar($name);
 
             // Check if exists values
             if (!Common::checkValues($allData)) {
@@ -88,9 +89,9 @@ if (Input::exists('get') && !Input::exists()) {
     $employeesDetails   = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $employeesId], ['name', 'offices_id'], false);
     $officeObj          = $data->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['name'], false);
 
-    $name = $employeesDetails->name;
+    $name       = $employeesDetails->name;
     $officeName = $officeObj->name;
-    $initials = $data::makeAvatar($name);
+    $initials   = Common::makeAvatar($name);
 
 // Check if exists values
     if (!Common::checkValues($allData)) {
@@ -105,7 +106,7 @@ if (Input::exists('get') && !Input::exists()) {
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
 <body>
 <?php
@@ -132,11 +133,11 @@ include 'includes/navbar.php';
         </div>
         <?php
         if (Input::exists() && count($errors) > 0) {
-            include 'includes/errorRequired.php';
+            include './../common/errors/errorRequired.php';
         }
 
         if (Input::exists() && count($errorNoData) > 0) {
-            include 'includes/infoError.php';
+            include './../common/errors/infoError.php';
         }
         ?>
         <section class="no-padding-top no-padding-bottom">
@@ -200,7 +201,9 @@ include 'includes/navbar.php';
             </div>
         </section>
         <?php if (Input::exists('get') || Input::exists()) {
-            if (count($errors) == 0 && count($errorNoData) == 0) {  ?>
+            if (count($errors) == 0 && count($errorNoData) == 0) {
+                $month = Input::post('month');
+                ?>
             <section>
                 <div class="container-fluid">
                     <div class="row">
@@ -210,7 +213,7 @@ include 'includes/navbar.php';
                                 </div>
                                 <div class="card-body text-center">
                                     <h4 class="mb-3 text-gray-light"><?php echo $name; ?></h4>
-                                    <p class="mb-4"></p>
+                                    <p class="mb-4"><?php echo Common::numberToMonth($month) . ' - ' . Input::post('year'); ?></p>
                                 </div>
                             </div>
                         </div>
@@ -261,21 +264,14 @@ include 'includes/navbar.php';
     }?>
     </div>
     <?php
-    include 'includes/footer.php';
+    include '../common/includes/head.php';
     ?>
 </div>
 </div>
 <!-- JavaScript files-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/popper.js/umd/popper.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="vendor/jquery.cookie/jquery.cookie.js"></script>
-<script src="vendor/chart.js/Chart.min.js"></script>
-<script src="vendor/jquery-validation/jquery.validate.min.js"></script>
-<script src="js/charts-home.js"></script>
-<script src="js/front.js"></script>
-<!--  Sweet alert   -->
-<script src="sweetalert/dist/sweetalert2.min.js"></script>
+<?php
+include "./../common/includes/scripts.php";
+?>
 <script>
     var target_chart   = $('#all_data');
     var target = new Chart(target_chart, {

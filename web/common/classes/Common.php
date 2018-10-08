@@ -168,6 +168,8 @@ class Common
             return $string;
         } elseif (in_array(substr($string, strlen($string) -1), self::ALLOWED_CHARACTERS)) {
             return $string;
+        } elseif (is_numeric(substr($string, strlen($string) -1))) {
+            return $string;
         } else {
             return substr($string, 0, strlen($string) -1);
         }

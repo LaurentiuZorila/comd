@@ -1,8 +1,7 @@
 <?php
 require_once 'core/init.php';
-$token = new Token();
 
-if (Input::exists() && $token->checkToken(Input::post('token'))) {
+if (Input::exists() && Tokens::checkInput(Input::post('token'))) {
         $validate = new Validate();
         $validation = $validate->check($_POST, [
             'Username' =>
@@ -20,18 +19,18 @@ if (Input::exists() && $token->checkToken(Input::post('token'))) {
         if ($validation->passed()) {
             $errors     = [];
             $user       = new CustomerUser();
-            $config     = new Common();
+            $config     = new CustomerProfile();
             $login      = $user->login(Input::post('Username'), Input::post('Password'));
 
-            // Get configured status
+            /**  Get configured status */
             $configured = $config->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['configured'], false)->configured;
 
             if ($login) {
-                // Check if user is configured
+                /** Check if user is configured */
                 if ($configured) {
-                    CustomerRedirect::to('index.php');
+                    Redirect::to('index.php');
                 } else {
-                    CustomerRedirect::to('profile-setup/profileconfig.php', ['id' => $user->customerId(), 'setup' => $token->getToken()]);
+                    Redirect::to('profile-setup/profileconfig.php', ['id' => $user->customerId(), 'setup' => Tokens::randomString(8)]);
                 }
             } else {
                 $errors = ['Username or password not valid! Please try again!'];
@@ -47,7 +46,7 @@ if (Input::exists() && $token->checkToken(Input::post('token'))) {
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
   <body>
      <div class="login-page">
@@ -109,7 +108,7 @@ include 'includes/head.php';
                     </div>
                     <div class="form-group">
                       <input id="login-password" type="password" name="Password" required data-msg="Please enter your password" class="input-material">
-                        <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
+                        <input type="hidden" name="token" value="<?php echo Tokens::getInputToken(); ?>">
                       <label for="login-password" class="label-material">Password</label>
                     </div><button type="submit" id="login" class="btn btn-primary" name="login">Login</button>
                     <!-- This should be submit button but I replaced it with <a> for demo purposes-->
@@ -120,22 +119,10 @@ include 'includes/head.php';
           </div>
         </div>
       </div>
-      <div class="copyrights text-center">
-        <p>Design by <a href="https://bootstrapious.com" class="external">Bootstrapious</a></p>
-        <!-- Please do not remove the backlink to us unless you support further theme's development at https://bootstrapious.com/donate. It is part of the license conditions. Thank you for understanding :)-->
-      </div>
     </div>
     <!-- JavaScript files-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/popper.js/umd/popper.min.js"> </script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
-    <script src="vendor/chart.js/Chart.min.js"></script>
-    <script src="vendor/jquery-validation/jquery.validate.min.js"></script>
-    <script src="js/front.js"></script>
-    <script src="js/notify.js"></script>
-  <script>
-
-  </script>
+     <?php
+     include "./../common/includes/scripts.php";
+     ?>
   </body>
 </html>

@@ -33,7 +33,7 @@ $prefix = Params::PREFIX;
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
 <body>
 <?php
@@ -67,7 +67,7 @@ include 'includes/navbar.php';
                     foreach ($allRecords as $key => $records) { ?>
                     <div class="col-sm-3">
                         <div class="block margin-bottom-sm">
-                            <div class="title"><strong><?php echo ucfirst($key); ?></strong></div>
+                            <div class="title text-center"><strong class="text-primary"><?php echo ucfirst($key); ?></strong></div>
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead>
@@ -87,8 +87,8 @@ include 'includes/navbar.php';
                                             <tr role="row" class="odd">
                                                 <td class="sorting_1"><a
                                                             href="user_data.php?id=<?php echo $record->employees_id; ?>&table=<?php echo $key; ?>"
-                                                            class="text-muted"><?php echo $data->records(Params::TBL_EMPLOYEES, ['id', '=', $records->employees_id], ['name'], false)->name; ?></a></td>
-                                                <td><?php echo $record->quantity; ?></td>
+                                                            class="text-white-50"><?php echo $data->records(Params::TBL_EMPLOYEES, ['id', '=', $record->employees_id], ['name'], false)->name; ?></a></td>
+                                                <td class="text-danger"><?php echo $record->quantity; ?></td>
                                             </tr>
                                         <?php } ?>
                                         </tbody>
@@ -101,18 +101,14 @@ include 'includes/navbar.php';
             </div>
         </section>
         <?php
-        include 'includes/footer.php';
+        include '../common/includes/footer.php';
         ?>
     </div>
 </div>
 <!-- JavaScript files-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/popper.js/umd/popper.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="vendor/jquery.cookie/jquery.cookie.js"></script>
-<script src="vendor/chart.js/Chart.min.js"></script>
-<script src="vendor/jquery-validation/jquery.validate.min.js"></script>
-<script src="js/front.js"></script>
+<?php
+include "./../common/includes/scripts.php";
+?>
 
 </body>
 </html>

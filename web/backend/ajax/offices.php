@@ -1,7 +1,7 @@
 <?php
 function __autoload($class_name)
 {
-    //commonClasses directories
+    /** CommonClasses directories */
     $directorys = array(
         '../backendClasses/',
         '../../common/classes/'

@@ -7,9 +7,12 @@ function __autoload($class_name)
     //commonClasses directories
     $directorys = array(
         'frontClasses/',
-        '../common/classes/'
+        'common/classes/',
+        '../frontClasses/',
+        '../common/classes/',
+        '../../common/classes/',
+        '../../frontClasses/'
     );
-
     //for each directory
     foreach($directorys as $directory)
     {
@@ -23,7 +26,6 @@ function __autoload($class_name)
 }
 
 require_once './functions/sanitize.php';
-
 
 
 //if (Cookie::exists(Config::get('remember/cookie_name')) && !Session::exists(Config::get('session/session_name'))) {

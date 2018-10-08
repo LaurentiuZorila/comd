@@ -1,6 +1,7 @@
 <?php
 require_once 'core/init.php';
-$user = new FrontendUser();
+$user   = new FrontendUser();
+$token  = new Token();
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
 }
@@ -15,7 +16,7 @@ $allEmployees = BackendDB::getInstance()->get('cmd_employees', ['user_id', '=', 
 
 
 if (Input::exists()) {
-    if (Token::check(Input::post('token'))) {
+    if ($token->getToken(Input::post('token'))) {
         $id = Input::post('employees');
         $year = Input::post('year');
         $month = Input::post('month');
@@ -111,7 +112,7 @@ if (!empty(Input::get('customer_id')) && !Input::exists()) {
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
 <body>
 <?php
@@ -136,6 +137,30 @@ include 'includes/navbar.php';
                 <li class="breadcrumb-item active">Employees data</li>
             </ul>
         </div>
+        <?php
+        // If selected option not return data, alert
+        if (Input::exists()) {
+            if (count($errors) > 0) {
+                include './../common/errors/errorRequired.php';
+            }
+        }
+
+
+        // If get not return data, alert
+        if (Input::exists('get') && !Input::exists()) {
+            if (count($errorsNoData) > 0 && count($errors) == 0) {
+                include './../common/errors/infoNoDataError.php';
+            }
+        }
+
+
+        // If search not return data, alert
+        if (Input::exists() || Input::exists('get')) {
+            if (count($errorsNoData) > 0 && count($errors) == 0) {
+                include './../common/errors/infoNoDataError.php';
+            }
+        }
+        ?>
         <section class="no-padding-top no-padding-bottom">
             <div class="col-lg-12">
                 <div class="block">
@@ -148,7 +173,7 @@ include 'includes/navbar.php';
                                 <select name="year" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} ?>">
                                     <option value="">Select Year</option>
                                     <?php
-                                    foreach (Profile::getYearsList() as $year) { ?>
+                                    foreach (Common::getYearsList() as $year) { ?>
                                         <option><?php echo $year; ?></option>
                                     <?php } ?>
                                 </select>
@@ -160,7 +185,7 @@ include 'includes/navbar.php';
                             <div class="col-sm-4">
                                 <select name="month" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} ?>">
                                     <option value="">Select Month</option>
-                                    <?php foreach (Profile::getMonthsList() as $key => $value) { ?>
+                                    <?php foreach (Common::getMonths() as $key => $value) { ?>
                                         <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                     <?php } ?>
                                 </select>
@@ -183,7 +208,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="col-sm-2">
                                 <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
                             </div>
                         </div>
                     </form>
@@ -253,21 +278,14 @@ include 'includes/navbar.php';
             }?>
     </div>
     <?php
-    include 'includes/footer.php';
+    include '../common/includes/footer.php';
     ?>
 </div>
 </div>
 <!-- JavaScript files-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/popper.js/umd/popper.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="vendor/jquery.cookie/jquery.cookie.js"></script>
-<script src="vendor/chart.js/Chart.min.js"></script>
-<script src="vendor/jquery-validation/jquery.validate.min.js"></script>
-<script src="js/charts-home.js"></script>
-<script src="js/front.js"></script>
-<!--  Sweet alert   -->
-<script src="sweetalert/dist/sweetalert2.min.js"></script>
+<?php
+include "./../common/includes/scripts.php";
+?>
 <script>
     var LINECHART1 = $('#all_data');
     var myLineChart = new Chart(LINECHART1, {
@@ -327,33 +345,5 @@ include 'includes/navbar.php';
         }
     });
 </script>
-<?php
-// If selected option not return data, alert
-if (Input::exists()) {
-    if (count($errors) > 0) {
-        include 'notification/error.php';
-    }
-}
-
-
-// If get not return data, alert
-if (Input::exists('get') && !Input::exists()) {
-    if (count($errorsNoData) > 0 && count($errors) == 0) {
-        include 'notification/get_not_found.php';
-    }
-}
-
-
-// If search not return data, alert
-if (Input::exists() || Input::exists('get')) {
-    if (count($errorsNoData) > 0 && count($errors) == 0) {
-        include 'notification/post_not_found.php';
-    }
-}
-
-
-
-?>
-
 </body>
 </html>

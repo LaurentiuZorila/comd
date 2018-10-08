@@ -1,7 +1,9 @@
 <?php
 require_once 'core/init.php';
-$user = new BackendUser();
-$data = new BackendProfile();
+$user   = new BackendUser();
+$data   = new BackendProfile();
+$token  = new Token();
+
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
 }
@@ -66,7 +68,7 @@ if (Input::exists()) {
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
   <body>
   <?php
@@ -94,6 +96,23 @@ include 'includes/head.php';
             </li>
           </ul>
         </div>
+          <?php
+          if (Input::exists()) {
+              if (count($errors) == 0) {
+                  if (count($extensionError) > 0) {
+                      include './../common/errors/extensionError.php';
+                  }
+                  if (count($uploadSuccess) > 0) {
+                      include './../common/errors/uploadSuccess.php';
+                  }
+                  if (count($uploadError) > 0) {
+                      include './../common/errors/uploadError.php';
+                  }
+              } else {
+                  include './../common/errors/errorRequired.php';
+              }
+          }
+          ?>
           <section class="no-padding-top no-padding-bottom">
               <div class="col-lg-12">
                   <div class="block">
@@ -144,7 +163,7 @@ include 'includes/head.php';
                               </div>
                               <div class="col-sm-2">
                                   <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                  <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                  <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
                               </div>
                           </div>
                       </form>
@@ -152,36 +171,13 @@ include 'includes/head.php';
               </div>
           </section>
         <?php
-        include 'includes/footer.php';
+        include '../common/includes/footer.php';
         ?>
       </div>
     </div>
     <!-- JavaScript files-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/popper.js/umd/popper.min.js"> </script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
-<!--    <script src="vendor/chart.js/Chart.min.js"></script>-->
-    <script src="vendor/jquery-validation/jquery.validate.min.js"></script>
-    <script src="js/front.js"></script>
-  <!--  Sweet alert   -->
-  <script src="sweetalert/dist/sweetalert2.min.js"></script>
   <?php
-  if (Input::exists()) {
-      if (count($errors) == 0) {
-          if (count($extensionError) > 0) {
-              include 'notification/uploadExtensionError.php';
-          }
-          if (count($uploadSuccess) > 0) {
-              include 'notification/uploadSuccess.php';
-          }
-          if (count($uploadError) > 0) {
-              include 'notification/uploadError.php';
-          }
-      } else {
-          include 'notification/error.php';
-      }
-  }
+  include "./../common/includes/scripts.php";
   ?>
   </body>
 </html>

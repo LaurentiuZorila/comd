@@ -18,15 +18,15 @@ class Token {
      */
     public function __construct()
     {
-        $this->_tokenHash       = Session::get(Config::get('token/token_hash'));
-        $this->_token           = Session::get(Config::get('token/token'));
+        $this->_tokenHash       = Session::get('tokenHash');
+        $this->_token           = Session::get('token');
         $this->_setupTokenHash  = Session::get('setupToken');
 
-        if (!Input::exists()) {
+        if (!isset($_POST)) {
             $this->_randomId        = uniqid();
             $hash                   = password_hash($this->_randomId, PASSWORD_DEFAULT);
-            $this->_token           = Session::put(Config::get('token/token'), $this->_randomId);
-            $this->_tokenHash       = Session::put(Config::get('token/token_hash'), $hash);
+            $this->_token           = Session::put('token', $this->_randomId);
+            $this->_tokenHash       = Session::put('tokenHash', $hash);
             $this->_setupTokenHash  = Session::put('setupToken', $hash);
         }
     }

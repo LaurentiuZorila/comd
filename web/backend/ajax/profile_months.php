@@ -17,7 +17,7 @@ function __autoload($class_name)
         }
     }
 }
-$common = new Common();
+$data = new BackendProfile();
 
 $table      = Input::get('table');
 $table      = Params::PREFIX . trim($table);
@@ -25,7 +25,7 @@ $officesId  = Input::get('offices_id');
 $year       = Input::get('year');
 
 // Array with all months
-$allMonths   = $common->records($table, [['offices_id', '=', $officesId], 'AND', ['year', '=', $year]], ['month']);
+$allMonths   = $data->records($table, [['offices_id', '=', $officesId], 'AND', ['year', '=', $year]], ['month']);
 
 foreach ($allMonths as $months) {
      $month[$months->month] = Common::getMonths()[$months->month];

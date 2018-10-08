@@ -1,27 +1,26 @@
 <?php
 require_once 'core/init.php';
+$token = new Token();
 
 if (Input::exists()) {
-    if (Token::check(Input::post('token'))) {
 
-        $validate = new Validate();
-        $validation = $validate->check($_POST, array(
-            'username' => array('required'  => true),
-            'password' => array('required'  => true)
-        ));
+    $validate = new Validate();
+    $validation = $validate->check($_POST, [
+        'username' => ['required'  => true],
+        'password' => ['required'  => true]
+    ]);
 
-        if ($validation->passed()) {
-            $user = new BackendUser();
-            $login = $user->login(Input::post('username'), Input::post('password'));
-            if ($login) {
-                Redirect::to('index.php');
-            } else {
-                Session::put('loginFailed', 'Username or password not valid! Please try again!');
-            }
+    if ($validation->passed()) {
+        $user = new BackendUser();
+        $login = $user->login(Input::post('username'), Input::post('password'));
+        if ($login) {
+            Redirect::to('index.php');
         } else {
-            foreach ($validation->errors() as $error) {
-                Session::put('validationError', $error);
-            }
+            Session::put('loginFailed', 'Username or password not valid! Please try again!');
+        }
+    } else {
+        foreach ($validation->errors() as $error) {
+            Session::put('validationError', $error);
         }
     }
 }
@@ -30,7 +29,7 @@ if (Input::exists()) {
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
   <body>
      <div class="login-page">
@@ -66,7 +65,7 @@ include 'includes/head.php';
                     </div>
                     <div class="form-group">
                       <input id="login-password" type="password" name="password" required data-msg="Please enter your password" class="input-material">
-                        <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                        <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
                       <label for="login-password" class="label-material">Password</label>
                     </div><button type="submit" id="login" class="btn btn-primary" name="login">Login</button>
                     <!-- This should be submit button but I replaced it with <a> for demo purposes-->
@@ -77,22 +76,10 @@ include 'includes/head.php';
           </div>
         </div>
       </div>
-      <div class="copyrights text-center">
-        <p>Design by <a href="https://bootstrapious.com" class="external">Bootstrapious</a></p>
-        <!-- Please do not remove the backlink to us unless you support further theme's development at https://bootstrapious.com/donate. It is part of the license conditions. Thank you for understanding :)-->
-      </div>
     </div>
     <!-- JavaScript files-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/popper.js/umd/popper.min.js"> </script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
-    <script src="vendor/chart.js/Chart.min.js"></script>
-    <script src="vendor/jquery-validation/jquery.validate.min.js"></script>
-    <script src="js/front.js"></script>
-    <script src="js/notify.js"></script>
-  <script>
-
-  </script>
+     <?php
+     include "./../common/includes/scripts.php";
+     ?>
   </body>
 </html>

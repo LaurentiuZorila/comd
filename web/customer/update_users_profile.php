@@ -73,7 +73,7 @@ if (Input::exists() && $token->checkToken(Input::post('token'))) {
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
 <body>
 <?php
@@ -103,11 +103,11 @@ include 'includes/navbar.php';
         </div>
         <?php
         if (Input::exists() && count($errors) > 0) {
-            include 'includes/errorRequired.php';
+            include './../common/errors/errorRequired.php';
         } elseif (Input::exists() && count($updateOk) > 0) {
-            include 'includes/uploadSuccess.php';
+            include './../common/errors/uploadSuccess.php';
         } elseif (Input::exists() && count($updateKo)) {
-            include 'includes/uploadError.php';
+            include './../common/errors/uploadError.php';
         }
         ?>
         <section class="no-padding-top">
@@ -168,20 +168,16 @@ include 'includes/navbar.php';
             </div>
         </section>
     <?php
-    include 'includes/footer.php';
+    include '../common/includes/footer.php';
     ?>
 </div>
 </div>
 <!-- JavaScript files-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/popper.js/umd/popper.min.js"> </script>
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
-<!--    <script src="vendor/chart.js/Chart.min.js"></script>-->
-<script src="vendor/jquery-validation/jquery.validate.min.js"></script>
-<script src="js/front.js"></script>
 <?php
-include 'includes/offices.php';
+include "./../common/includes/scripts.php";
+?>
+<?php
+include 'includes/js/offices.php';
 ?>
 
 </body>

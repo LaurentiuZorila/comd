@@ -2,12 +2,13 @@
 require_once 'core/init.php';
 $backendUser        = new BackendUser();
 $backendUserProfile = new BackendProfile();
+$token              = new Token();
 
 if (!$backendUser->isLoggedIn()) {
     Redirect::to('login.php');
 }
 
-// All users and staffs for one department
+/** All users and staffs for one department */
 $offices        = $backendUserProfile->records(Params::TBL_OFFICE, ['departments_id', '=', $backendUser->departmentId()], ['id', 'name']);
 $allUsers       = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['departments_id', '=', $backendUser->userId()], ['offices_id', 'departments_id', 'supervisors_id', 'name']);
 
@@ -15,16 +16,17 @@ $countEmployees = $backendUserProfile->count(Params::TBL_EMPLOYEES, ['department
 $countStaff     = $backendUserProfile->count(Params::TBL_TEAM_LEAD, ['supervisors_id', '=', $backendUser->userId()]);
 $countOffices   = $backendUserProfile->count(Params::TBL_OFFICE, ['departments_id', '=', $backendUser->departmentId()]);
 
-
+/** Condition for action */
 $where = [
         'departments_id', '=', $backendUser->userId()
 ];
 
-// Total common tables for all department
+/** Total common tables for all department */
 $furlough   = $backendUserProfile->records(Params::TBL_FURLOUGH, $where, ['quantity']);
 $absentees  = $backendUserProfile->records(Params::TBL_ABSENTEES, $where, ['quantity']);
 $unpaid     = $backendUserProfile->records(Params::TBL_UNPAID, $where, ['quantity']);
 
+/** If form is submitted */
 if (Input::exists()) {
         $year           = Input::post('year');
         $month          = Input::post('month');
@@ -33,12 +35,13 @@ if (Input::exists()) {
         $table          = Params::PREFIX.$table;
         $quantitySum    = [];
 
+
         if (empty($month) || empty($year)) {
             $errors = [1];
         }
 
         if (count($errors) === 0) {
-            // Conditions for action
+            /** Conditions for action */
             $where = [
                 ['year', '=', $year],
                 'AND',
@@ -47,18 +50,25 @@ if (Input::exists()) {
                 ['month', '=', $month]
             ];
 
-            // Array with all results for one FTE
-            $chartData      = $backendUserProfile->records($table, $where, ['quantity', 'name']);
-            // Total furlough , absentees, unpaid for selected user
+            /** Array with all results for one FTE */
+            $chartData      = $backendUserProfile->records($table, $where, ['quantity', 'employees_id']);
+
+            /** Total furlough , absentees, unpaid for selected user */
             $countFurlough  = $backendUserProfile->sum(Params::TBL_FURLOUGH, $where, 'quantity');
             $countAbsentees = $backendUserProfile->sum(Params::TBL_ABSENTEES, $where, 'quantity');
             $countUnpaid    = $backendUserProfile->sum(Params::TBL_UNPAID, $where, 'quantity');
 
+            /** Check if search return records */
             foreach ($chartData as $value) {
                 $quantitySum[] = $value->quantity;
             }
 
-            $chartNames     = Js::toJson(Js::chartLabel($chartData, 'name'));
+            /** Get names for chart */
+            foreach ($chartData as $data) {
+                $names[] = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['id', '=', $data->employees_id], ['name'], false)->name;
+            }
+
+            $chartNames     = Js::toJson($names);
             $chartValues    = Js::chartValues($chartData, 'quantity');
             $pieCommonData  = $countFurlough . ', ' . $countAbsentees . ', ' . $countUnpaid;
 
@@ -73,7 +83,7 @@ if (Input::exists()) {
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
   <body>
   <?php
@@ -92,9 +102,9 @@ include 'includes/head.php';
           </div>
         </div>
           <?php if (Input::exists() && count($errors) > 0) {
-              include 'includes/errors.php';
+              include './../common/errors/errorRequired.php';
           } elseif (Input::exists() && count($errorNoData) > 0) {
-              include 'includes/infoError.php';
+              include './../common/errors/infoError.php';
           }
          ?>
           <section class="no-padding-top no-padding-bottom">
@@ -159,7 +169,7 @@ include 'includes/head.php';
                           </div>
                             <div class="col-sm-2">
                                 <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
                             </div>
                         </div>
                       </form>
@@ -316,21 +326,16 @@ include 'includes/head.php';
               </div>
           </div>
         </section>
-        <?php } ?>
+        <?php }
+        include '../common/includes/footer.php';
+        ?>
           <!--        ********************       CHARTS   END      ********************   -->
       </div>
     </div>
     <!-- JavaScript files-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/popper.js/umd/popper.min.js"> </script>
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
-<script src="vendor/chart.js/Chart.min.js"></script>
-<script src="vendor/jquery-validation/jquery.validate.min.js"></script>
-<script src="js/charts-home.js"></script>
-<script src="js/front.js"></script>
-<script src="js/charts-custom.js"></script>
   <?php
+  include "./../common/includes/scripts.php";
+
   if (Input::exists() && count($errors) === 0) {
       include 'charts/index_charts.php';
   }
@@ -340,7 +345,7 @@ include 'includes/head.php';
       var officeId = $(this).val();
       if(officeId) {
           $.ajax({
-              url: "includes/staff_tables.php",
+              url: "ajax/staff_tables.php",
               dataType: 'Json',
               data: {'office_id':officeId},
               success: function(data) {

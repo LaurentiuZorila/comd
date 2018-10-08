@@ -11,6 +11,11 @@ class FrontendUser
     private $_db;
 
     /**
+     * @var bool
+     */
+    private $_error = false;
+
+    /**
      * @var
      */
     private $_data;
@@ -85,7 +90,6 @@ class FrontendUser
                     $this->_isLoggedIn = true;
                 } else {
                     return $this->logout();
-                    Redirect::to('login.php');
                 }
             }
         } else {
@@ -147,6 +151,22 @@ class FrontendUser
         Session::delete($this->_sessionDepartmentId);
         Session::delete($this->_sessionUserName);
         Session::delete($this->_sessionTeamLeadId);
+    }
+
+
+    /**
+     * @param $table
+     * @param null $customer_id
+     * @param array $fields
+     * @throws Exception
+     */
+    public function update($table, $fields = array(), $conditions = array())
+    {
+        $this->_error = false;
+        if (!$this->_db->update($table, $fields, $conditions)) {
+            $this->_error = true;
+            throw new Exception('There was a problem, please try again!');
+        }
     }
 
 

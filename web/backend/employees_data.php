@@ -2,6 +2,7 @@
 require_once 'core/init.php';
 $user   = new BackendUser();
 $data   = new BackendProfile();
+$token  = new Token();
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
@@ -30,36 +31,36 @@ if (Input::exists()) {
     }
 
     if (count($errors) == 0) {
-        //Employees details
+        /** Employees details */
         $employeesData  = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $id], ['offices_id', 'name'], false);
-        // Offices data
+        /** Offices data */
         $allOfficesData = $data->records(Params::TBL_OFFICE, ['id', '=', $employeesData->offices_id], ['name', 'tables'], false);
-        //All Leads for selected office details
+        /** All Leads for selected office details */
         $allLeads       = $data->records(Params::TBL_TEAM_LEAD, ['offices_id', '=', $employeesData->offices_id], ['name']);
 
-        //Team Leads names
+        /** Team Leads names */
         foreach ($allLeads as $leads) {
             $leadsName[] = $leads->name;
         }
-        // Employee name
+        /** Employees name */
         $employeesName  = $employeesData->name;
-        //Month name
+        /** Month name */
         $monthName      = Common::numberToMonth($month);
 
-        // arrays with tables
+        /** Arrays with tables */
         $tables = explode(',', trim($allOfficesData->tables));
 
-        // array with tables without prefix
+        /** array with tables without prefix */
         foreach ($tables as $table) {
             $key[] = trim($table);
         }
 
-        // Tables with prefix
+        /** Tables with prefix */
         foreach ($tables as $table) {
             $prefixTables[] = Params::PREFIX . trim($table);
         }
 
-        // Conditions for action
+        /** Conditions for action */
         $where = [
             ['year', '=', $year],
             'AND',
@@ -69,7 +70,7 @@ if (Input::exists()) {
         ];
 
         foreach ($prefixTables as $table) {
-            // quantity for all tables
+            /** quantity for all tables */
             if (is_null($data->records($table, $where, ['quantity'], false)->quantity)) {
                 $values[] = 0;
             } else {
@@ -77,13 +78,13 @@ if (Input::exists()) {
             }
         }
 
-        // Array with tables and values(quantity)
+        /** Array with tables and values(quantity) */
         $allData = array_combine($key, $values);
 
         $chartLabels = Js::key($allData);
         $chartValues = Js::values($allData);
 
-        // Check if exists values for selected options
+        /** Check if exists values for selected options */
         if (!Common::checkValues($allData)) {
             $errorsNoData = [1];
         }
@@ -98,11 +99,10 @@ if (!empty(Input::get('employees_id')) && !Input::exists()) {
 
 ?>
 
-
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
 <body>
 <?php
@@ -127,6 +127,26 @@ include 'includes/navbar.php';
                 <li class="breadcrumb-item active">Employees data</li>
             </ul>
         </div>
+        <?php
+        /** If selected option not return data, alert */
+        if (Input::exists()) {
+            if (count($errors) > 0) {
+                include './../common/errors/errorRequired.php';
+            }
+        }
+        /** If get not return data, alert */
+        if (Input::exists('get') && !Input::exists()) {
+            if (count($errorsNoData) > 0 && count($errors) == 0) {
+                include './../common/errors/infoNoDataError.php';
+            }
+        }
+        /** If search not return data, alert */
+        if (Input::exists()) {
+            if (count($errorsNoData) > 0 && count($errors) == 0) {
+                include './../common/errors/infoNoDataError.php';
+            }
+        }
+        ?>
         <section class="no-padding-top no-padding-bottom">
             <div class="col-lg-12">
                 <p>
@@ -186,7 +206,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="col-sm-2">
                                 <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
                             </div>
                         </div>
                     </form>
@@ -270,21 +290,20 @@ if (Input::exists() && count($errorsNoData) == 0 && count($errors) == 0) { ?>
     <?php } ?>
     </div>
     <?php
-    include 'includes/footer.php';
+    include '../common/includes/footer.php';
     ?>
 </div>
 </div>
 <!-- JavaScript files-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/popper.js/umd/popper.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="vendor/jquery.cookie/jquery.cookie.js"></script>
-<script src="vendor/chart.js/Chart.min.js"></script>
-<script src="vendor/jquery-validation/jquery.validate.min.js"></script>
-<script src="js/charts-home.js"></script>
-<script src="js/front.js"></script>
-<!--  Sweet alert   -->
-<script src="sweetalert/dist/sweetalert2.min.js"></script>
+<?php
+include "./../common/includes/scripts.php";
+
+if (Input::exists() && count($errors) == 0 && count($errorsNoData) == 0) {
+    include 'charts/employees_data_chart.php';
+}
+include 'includes/js/ajax.php';
+?>
+
 <script>
     $("#bar").click(function(){
         $('.line').removeClass('btn-primary').addClass('btn-outline-primary');
@@ -300,34 +319,5 @@ if (Input::exists() && count($errorsNoData) == 0 && count($errors) == 0) { ?>
         $("#all_data_bar").hide();
     });
 </script>
-<?php
-include 'includes/ajax.php';
-
-if (Input::exists() && count($errors) == 0 && count($errorsNoData) == 0) {
-    include 'charts/employees_data_chart.php';
-}
-// If selected option not return data, alert
-if (Input::exists()) {
-    if (count($errors) > 0) {
-        include 'notification/error.php';
-    }
-}
-
-// If get not return data, alert
-if (Input::exists('get') && !Input::exists()) {
-    if (count($errorsNoData) > 0 && count($errors) == 0) {
-        include 'notification/get_not_found.php';
-    }
-}
-
-// If search not return data, alert
-if (Input::exists()) {
-    if (count($errorsNoData) > 0 && count($errors) == 0) {
-        include 'notification/post_not_found.php';
-    }
-}
-
-?>
-
 </body>
 </html>

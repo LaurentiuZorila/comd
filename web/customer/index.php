@@ -2,10 +2,9 @@
 require_once 'core/init.php';
 $user   = new CustomerUser();
 $data   = new CustomerProfile();
-$token  = new Token();
 
 if (!$user->isLoggedIn()) {
-    CustomerRedirect::to('login.php');
+    Redirect::to('login.php');
 }
 
 /** Count all employees */
@@ -25,7 +24,8 @@ foreach ($allTables as $table) {
     $tables[trim($table)] = trim($table);
 }
 
-if (Input::exists() && $token->checkToken(Input::post('token'))) {
+/** If form is submitted */
+if (Input::exists()) {
         $year       = Input::post('year');
         $month      = Input::post('month');
         $officeId   = $user->officesId();
@@ -34,12 +34,22 @@ if (Input::exists() && $token->checkToken(Input::post('token'))) {
         $errors = [];
         $quantitySum = [];
 
+        /** Get priority table for best operator */
+        $priority       = $data->records(Params::TBL_OFFICE, ['id', '=', $user->customerId()], ['tables_priorities'], false)->tables_priorities;
+        $priority       = json_decode($priority);
+        $priorityTbl    = (array) $priority;
+        ksort($priorityTbl, SORT_NUMERIC);
+
+        $priorityTbl = array_splice($priorityTbl, 0, 1);
+        print_r($priorityTbl);
+        exit;
+
         if (empty($month) || empty($year) || empty($table)) {
             $errors = [1];
         }
 
         if (count($errors) == 0) {
-            // Conditions for action
+            /** Conditions for action */
             $where = [
                 ['year', '=', $year],
                 'AND',
@@ -49,17 +59,32 @@ if (Input::exists() && $token->checkToken(Input::post('token'))) {
             ];
 
             /** Array with all results for one FTE to use in chart */
-            $chartData  = $data->records($table, $where, ['quantity', 'name']);
+            $chartData  = $data->records($table, $where, ['quantity', 'employees_id']);
 
+            /** Chart names */
+            foreach ($chartData as $chartNames) {
+                $names[] = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $chartNames->employees_id], ['name'], false)->name;
+            }
+
+            /** Quantity data */
+            foreach ($chartData as $datas) {
+                $quantity[] = $datas->quantity;
+            }
+
+            // Insert returned values in array
             foreach ($chartData as $value) {
                 $quantitySum[] = $value->quantity;
             }
 
-            /** Charts labels and values */
-            $chartNames = Js::toJson(Js::chartLabel($chartData, 'name'));
-            $chartValues = Js::chartValues($chartData, 'quantity');
+            /** Check if submitted form return values */
+            if (count($quantitySum) > 1) {
+                // Assoc array with names => quantity
+                $allData = array_combine($names, $quantity);
 
-            if (count($quantitySum) < 1) {
+                // Charts labels and values
+                $chartNames = Js::toJson($names);
+                $chartValues = Js::chartValues($chartData, 'quantity');
+            } else {
                 $errorNoData = [1];
             }
         }
@@ -70,7 +95,7 @@ if (Input::exists() && $token->checkToken(Input::post('token'))) {
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
   <body>
   <?php
@@ -90,19 +115,21 @@ include 'includes/head.php';
         </div>
           <?php
           if (Input::exists() && count($errors) > 0) {
-              include 'includes/errorRequired.php';
+              include './../common/errors/errorRequired.php';
           }
 
           if (Input::exists() && count($errorNoData) > 0) {
-              include 'includes/infoError.php';
+              include './../common/errors/infoNoDataError.php';
           }
           if (Session::exists('configOk')) { ?>
           <section>
               <div class="row">
                   <div class="col-lg-12">
                       <div class="card-body">
-                          <div class="alert alert-dismissible fade show badge-info" role="alert">
-                              <p class="text-white"> <?php echo Session::flash('configOk'); ?> </p>
+                          <div class="alert alert-dismissible fade show badge-warning" role="alert">
+                              <strong class="text-white"> Your profile is configured.  </strong>
+                              <p class="text-white mb-0"> <?php echo Session::flash('configOk'); ?> </p>
+                              <p class="text-white mb-0">Click this <a href="update_database.php">link</a> to update your database.</p>
                               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
                               </button>
@@ -168,7 +195,7 @@ include 'includes/head.php';
 
                             <div class="col-sm-2">
                                 <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
+                                <input type="hidden" name="token" value="">
                             </div>
                     </div>
                   </form>
@@ -262,81 +289,60 @@ include 'includes/head.php';
                   </section>
               <?php } ?>
           <!--        ********************       CHARTS   END      ********************   -->
+
         <section class="no-padding-bottom">
           <div class="container-fluid">
-<!--              FOR BEST OPERATOR-->
-
-<!--            <div class="row">-->
-<!--              <div class="col-lg-4">-->
-<!--                <div class="user-block block text-center">-->
-<!--                  <div class="avatar"><img src="img/avatar-1.jpg" alt="..." class="img-fluid">-->
-<!--                    <div class="order dashbg-2">1st</div>-->
-<!--                  </div><a href="#" class="user-title">-->
-<!--                    <h3 class="h5">Richard Nevoreski</h3><span>@richardnevo</span></a>-->
-<!--                  <div class="contributions">Best Operator</div>-->
-<!--                  <div class="details d-flex">-->
-<!--                    <div class="item"><i class="icon-info"></i><strong>150</strong></div>-->
-<!--                    <div class="item"><i class="fa fa-gg"></i><strong>340</strong></div>-->
-<!--                    <div class="item"><i class="icon-flow-branch"></i><strong>460</strong></div>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--                <div class="col-lg-4">-->
-<!--                    <div class="stats-with-chart-1 block" style="height: 91%;">-->
-<!--                        <div class="title"> <strong class="d-block">Target</strong><span class="d-block">Lorem ipsum dolor sit</span></div>-->
-<!--                        <div class="row d-flex align-items-end justify-content-between">-->
-<!--                            <div class="col-5">-->
-<!--                                <div class="text"><strong class="d-block dashtext-3">$740</strong><span class="d-block">May 2017</span><small class="d-block">320 Sales</small></div>-->
-<!--                            </div>-->
-<!--                            <div class="col-7">-->
-<!--                                <div class="bar-chart chart">-->
-<!--                                    <canvas id="salesBarChart1"></canvas>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-lg-4">-->
-<!--                    <div class="stats-with-chart-1 block" style="height: 91%;">-->
-<!--                        <div class="title"> <strong class="d-block">Quality</strong><span class="d-block">Lorem ipsum dolor sit</span></div>-->
-<!--                        <div class="row d-flex align-items-end justify-content-between">-->
-<!--                            <div class="col-4">-->
-<!--                                <div class="text"><strong class="d-block dashtext-1">$457</strong><span class="d-block">May 2017</span><small class="d-block">210 Sales</small></div>-->
-<!--                            </div>-->
-<!--                            <div class="col-8">-->
-<!--                                <div class="bar-chart chart">-->
-<!--                                    <canvas id="visitPieChart"></canvas>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
+              <!--              FOR BEST OPERATOR-->
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="user-block block text-center">
+                  <div class="avatar"><img src="./../common/img/user.png" alt="..." class="img-fluid">
+                    <div class="order dashbg-2">1st</div>
+                  </div><a href="#" class="user-title">
+                    <h3 class="h5">Richard Nevoreski</h3><span>@richardnevo</span></a>
+                  <div class="contributions">Best Operator</div>
+                  <div class="details d-flex">
+                    <div class="item"><i class="icon-info"></i><strong>150</strong></div>
+                    <div class="item"><i class="fa fa-gg"></i><strong>340</strong></div>
+                    <div class="item"><i class="icon-flow-branch"></i><strong>460</strong></div>
+                  </div>
+                </div>
+              </div>
+                <div class="col-lg-4">
+                    <div class="stats-with-chart-1 block" style="height: 91%;">
+                        <div class="title"> <strong class="d-block">Target</strong><span class="d-block">Lorem ipsum dolor sit</span></div>
+                        <div class="row d-flex align-items-end justify-content-between">
+                            <div class="col-5">
+                                <div class="text"><strong class="d-block dashtext-3">$740</strong><span class="d-block">May 2017</span><small class="d-block">320 Sales</small></div>
+                            </div>
+                            <div class="col-7">
+                                <div class="bar-chart chart">
+                                    <canvas id="salesBarChart1"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="stats-with-chart-1 block" style="height: 91%;">
+                        <div class="title"> <strong class="d-block">Quality</strong><span class="d-block">Lorem ipsum dolor sit</span></div>
+                        <div class="row d-flex align-items-end justify-content-between">
+                            <div class="col-4">
+                                <div class="text"><strong class="d-block dashtext-1">$457</strong><span class="d-block">May 2017</span><small class="d-block">210 Sales</small></div>
+                            </div>
+                            <div class="col-8">
+                                <div class="bar-chart chart">
+                                    <canvas id="visitPieChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+              <!--              BEST OPERATOR END  -->
             <?php
             if (Input::exists() && count($errors) === 0 && count($errorNoData) === 0) {
                     $x = 1;
-                    $year       = Input::post('year');
-                    $month      = Input::post('month');
-                    $noPrefTbl  = Input::post('table');
-                    $table      = Params::PREFIX . trim($noPrefTbl);
-                    $names      = [];
-                    $quantity   = [];
-
-                    $where = [
-                        ['year', '=', $year],
-                        'AND',
-                        ['offices_id', '=', $user->officesId()],
-                        'AND',
-                        ['month', '=', $month]
-                    ];
-
-                    $values = $data->records($table, $where, ['name', 'quantity']);
-                    foreach ($values as $value) {
-                        array_push($quantity, $value->quantity);
-                        array_push($names, $value->name);
-                        $allData = array_combine($names, $quantity);
-                    }
-
                     foreach ($allData as $key => $value) {
                         ?>
                         <div class="public-user-block block">
@@ -350,11 +356,11 @@ include 'includes/head.php';
                                     </a>
                                 </div>
                                 <div class="col-lg-4 text-center">
-                                    <div class="contributions" data-toggle="tooltip" data-placement="top" title="Month"><?php echo escape(ucfirst($noPrefTbl)) . ' - ' . escape(Common::getMonths()[$month]); ?></div>
+                                    <div class="contributions" data-toggle="tooltip" data-placement="top" title="Month"><?php echo escape(ucfirst($npTable)) . ' - ' . escape(Common::getMonths()[$month]); ?></div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="details d-flex">
-                                        <div class="item" data-toggle="tooltip" data-placement="top" title="<?php echo ucfirst($noPrefTbl); ?>"><i class="icon-chart"></i>
+                                        <div class="item" data-toggle="tooltip" data-placement="top" title="<?php echo ucfirst($npTable); ?>"><i class="icon-chart"></i>
                                             <strong><?php echo $value; ?></strong>
                                         </div>
                                     </div>
@@ -369,19 +375,14 @@ include 'includes/head.php';
           </div>
         </section>
           <?php
-          include 'includes/footer.php';
+          include '../common/includes/footer.php';
           ?>
       </div>
     </div>
     <!-- JavaScript files-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/popper.js/umd/popper.min.js"> </script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
-    <script src="vendor/chart.js/Chart.min.js"></script>
-    <script src="vendor/jquery-validation/jquery.validate.min.js"></script>
-    <script src="js/charts-home.js"></script>
-    <script src="js/front.js"></script>
+  <?php
+  include "./../common/includes/scripts.php";
+  ?>
 <script>
     $("#bar").click(function(){
         $('.line').removeClass('btn-primary').addClass('btn-outline-primary');

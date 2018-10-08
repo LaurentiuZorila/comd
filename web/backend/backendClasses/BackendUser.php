@@ -150,6 +150,7 @@ class BackendUser
         Session::delete($this->_sessionName);
         Session::delete($this->_sessionUserId);
         Session::delete($this->_sessionDepartmentId);
+        Redirect::to('../index.php');
     }
 
 

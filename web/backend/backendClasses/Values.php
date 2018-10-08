@@ -113,7 +113,7 @@ class Values
     /**
      * @return mixed
      */
-    public static function selectorString ()
+    public static function selectorString ($items)
     {
         foreach (self::selectorArray($items) as $item) {
             return $item;

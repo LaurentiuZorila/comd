@@ -1,10 +1,13 @@
 <?php
 require_once 'core/init.php';
-$user = new BackendUser();
-$data = new BackendProfile();
+$user  = new BackendUser();
+$data  = new BackendProfile();
+$token = new Token();
 
-$allLeads = $data->records(Params::TBL_TEAM_LEAD, ['supervisors_id', '=', $user->userId()], ['id', 'name', 'offices_id', 'supervisors_id']);
-
+if (!$user->isLoggedIn()) {
+    Redirect::to('login.php');
+}
+$allLeads = $data->records(Params::TBL_TEAM_LEAD, ['departments_id', '=', $user->departmentId()], ['id', 'name', 'offices_id', 'departments_id']);
 
 ?>
 
@@ -13,7 +16,7 @@ $allLeads = $data->records(Params::TBL_TEAM_LEAD, ['supervisors_id', '=', $user-
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
 <body>
 <?php
@@ -39,7 +42,6 @@ include 'includes/navbar.php';
                     <li class="breadcrumb-item active">All staff</li>
                 </ul>
             </div>
-
             <section>
                 <div class="container-fluid">
                     <div class="row">
@@ -52,7 +54,7 @@ include 'includes/navbar.php';
                                     <div class="media align-items-center"><h1 class="avatar avatar-xl mr-3 text-monospace"><?php echo Common::makeAvatar($lead->name); ?></h1>
                                         <div class="media-body overflow-hidden">
                                             <h3 class="card-text mb-0 text-center" style="color: #9055A2;"><?php echo $lead->name; ?></h3>
-                                            <p class="card-text mb-0 text-uppercase font-weight-bold text-secondary text-center"><?php echo $data->records(Params::TBL_DEPARTMENT, ['id', '=', $lead->supervisors_id], ['name'], false)->name; ?></p>
+                                            <p class="card-text mb-0 text-uppercase font-weight-bold text-secondary text-center"><?php echo $data->records(Params::TBL_DEPARTMENT, ['id', '=', $lead->departments_id], ['name'], false)->name; ?></p>
                                             <p class="card-text mb-3 text-uppercase font-weight-bold text-secondary text-center"><?php echo $data->records(Params::TBL_OFFICE, ['id', '=', $lead->offices_id], ['name'], false)->name; ?></p>
                                             <p class="card-text mb-0 font-weight-bold text-secondary text-center">Rating</p>
                                             <p class="card-text m-b-0 font-weight-bold text-secondary text-center">
@@ -83,7 +85,7 @@ include 'includes/navbar.php';
                                             </p>
                                         </div>
                                     </div>
-                                    <a href="staff_profile.php?office_id=<?php echo $lead->offices_id;?>&lead_id=<?php echo $lead->id; ?>&token=<?php echo Token::generate(); ?> " class="tile-link"></a>
+                                    <a href="staff_profile.php?office_id=<?php echo $lead->offices_id;?>&lead_id=<?php echo $lead->id; ?>&token=<?php echo $token->getToken(); ?> " class="tile-link"></a>
                                 </div>
                             </div>
                         </div>
@@ -92,16 +94,14 @@ include 'includes/navbar.php';
                 </div>
             </section>
             <?php
-            include 'includes/footer.php';
+            include '../common/includes/footer.php';
             ?>
         </div>
     </div>
 <!-- JavaScript files-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/popper.js/umd/popper.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="vendor/jquery.cookie/jquery.cookie.js"></script>
-<script src="js/front.js"></script>
+<?php
+include "./../common/includes/scripts.php";
+?>
 
 
 </body>

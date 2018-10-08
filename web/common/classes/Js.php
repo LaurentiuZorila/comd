@@ -22,14 +22,13 @@ class Js
 
     /**
      * @param $items
-     * @return string with quantity column
-     * @uses on object
+     * @param $column
+     * @return string
      */
     public static function chartValues($items, $column)
     {
-        $values = [];
         foreach ($items as $item) {
-            array_push($values, $item->$column);
+            $values[] = $item->$column;
         }
         return $values = implode(',', $values);
     }
@@ -65,13 +64,14 @@ class Js
      * @return string
      * @uses on array
      */
-    public static function key($items = [])
+    public static function key($items)
     {
-        $keys = [];
-        foreach ($items as $key => $value) {
-            $keys[] = strtoupper($key);
+        if (count($items) > 0) {
+            foreach ($items as $key => $value) {
+                $keys[] = strtoupper($key);
+            }
+            return self::toJson($keys);
         }
-        return self::toJson($keys);
     }
 
 
@@ -80,16 +80,17 @@ class Js
      * @return mixed
      * @uses on array
      */
-    public static function values($items = [], $upper = false)
+    public static function values($items, $upper = false)
     {
-        $values = [];
-        foreach ($items as $key => $value) {
-            if ($upper) {
-                $values[] = strtoupper($value);
+        if (count($items) > 0) {
+            foreach ($items as $key => $value) {
+                if ($upper) {
+                    $values[] = strtoupper($value);
+                }
+                $values[] = $value;
             }
-            $values[] = $value;
+            return !empty($values) ? implode(', ', $values) : '';
         }
-        return implode(', ', $values);
     }
 
 

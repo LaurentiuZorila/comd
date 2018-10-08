@@ -112,7 +112,7 @@
             labels: <?php echo $chartLabels; ?>,
             datasets: [
                 {
-                    label: "<?php if (Input::exists()) { echo substr(strtoupper(Input::post('table')), 4); } ?>",
+                    label: "<?php if (Input::exists()) { echo strtoupper(Input::post('table')); } ?>",
                     backgroundColor: "#864DD9",
                     hoverBackgroundColor: "#864DD9",
                     borderColor: "#864DD9",

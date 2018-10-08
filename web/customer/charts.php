@@ -1,7 +1,8 @@
 <?php
 require_once 'core/init.php';
 
-$user = new CustomerUser();
+$user   = new CustomerUser();
+$token  = new Token();
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
@@ -23,7 +24,7 @@ foreach (Values::tables($allTables) as $value) {
 <!DOCTYPE html>
 <html>
 <?php
-include 'includes/head.php';
+include '../common/includes/head.php';
 ?>
 <body>
 <?php
@@ -61,7 +62,7 @@ include 'includes/navbar.php';
                                   <select name="year" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} ?>">
                                       <option value="">Select Year</option>
                                       <?php
-                                      foreach (Profile::getYearsList() as $year) { ?>
+                                      foreach (Common::getYearsList() as $year) { ?>
                                           <option><?php echo $year; ?></option>
                                       <?php } ?>
                                   </select>
@@ -73,7 +74,7 @@ include 'includes/navbar.php';
                               <div class="col-sm-4">
                                   <select name="month" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} ?>">
                                       <option value="">Select Month</option>
-                                      <?php foreach (Profile::getMonthsList() as $key => $value) { ?>
+                                      <?php foreach (Common::getMonthsList() as $key => $value) { ?>
                                           <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                       <?php } ?>
                                   </select>
@@ -96,7 +97,7 @@ include 'includes/navbar.php';
                               </div>
                               <div class="col-sm-2">
                                   <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                  <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                  <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
                               </div>
                           </div>
                       </form>
