@@ -2,34 +2,39 @@
 require_once 'core/init.php';
 $user   = new CustomerUser();
 $data   = new CustomerProfile();
-$token  = new Token();
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
 }
 
-// All tables
+/** All tables */
 $allTables = $data->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['tables'], false);
 $allTables = explode(',', trim($allTables->tables));
 
-// All employees for user
+/** All employees for user */
 $allEmployees = $data->records($data::TBL_EMPLOYEES, ['offices_id', '=', $user->officesId()], ['id', 'name']);
 
 
-if (Input::exists()) {
+if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+    /** Instantiate validation class */
+    $validate = new Validate();
+    /** Validate  inputs */
+    $validation = $validate->check($_POST, [
+        'employees' => ['required'  => true],
+        'year'      => ['required'  => true],
+        'month'     => ['required'  => true]
+    ]);
 
+    /** If validation is passed */
+    if ($validation->passed()) {
+    /** Inputs */
         $employeesId    = Input::post('employees');
         $year           = Input::post('year');
         $month          = Input::post('month');
         $errors         = [];
         $errorNoData    = [];
 
-        if (empty($employeesId) || empty($year) || empty($month)) {
-            $errors = [1];
-        }
-
-        if (count($errors) === 0) {
-            // Conditions for action
+            /** Conditions for action */
             $where = [
                 ['year', '=', $year],
                 'AND',
@@ -38,7 +43,7 @@ if (Input::exists()) {
                 ['month', '=', $month]
             ];
 
-            //array key => values (keys are tables and values are numbers(quantity column))
+            /** array key => values (keys are tables and values are numbers(quantity column)) */
             foreach ($allTables as $table) {
                 $prefix     = $data::PREFIX;
                 $key[]      = $table;
@@ -46,7 +51,7 @@ if (Input::exists()) {
                 $allData    = array_combine($key, $values);
             }
 
-            // All data for customer
+            /** All data for customer */
             $employeesDetails = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $employeesId], ['name', 'offices_id'], false);
             $officeObj        = $data->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['name'], false);
 
@@ -54,21 +59,21 @@ if (Input::exists()) {
             $officeName = $officeObj->name;
             $initials   = Common::makeAvatar($name);
 
-            // Check if exists values
+            /** Check if exists values */
             if (!Common::checkValues($allData)) {
                 $errorNoData = [1];
             }
         }
 }
 
-// If get exists
+/** If get exists and post doesn't exists */
 if (Input::exists('get') && !Input::exists()) {
     $employeesId    = Input::get('id');
     $year           = date('Y');
     $month          = date('n');
     $errorsNoData   = [];
 
-    // Conditions for action
+    /** Conditions for action */
     $where = [
         ['year', '=', $year],
         'AND',
@@ -77,7 +82,7 @@ if (Input::exists('get') && !Input::exists()) {
         ['month', '=', $month]
     ];
 
-    //array key => values (keys are tables and values are numbers(quantity column))
+    /** array key => values (keys are tables and values are numbers(quantity column)) */
     foreach ($allTables as $table) {
         $prefix     = $data::PREFIX;
         $key[]      = $table;
@@ -85,7 +90,7 @@ if (Input::exists('get') && !Input::exists()) {
         $allData    = array_combine($key, $values);
     }
 
-    // All data for customer
+    /** All data for customer */
     $employeesDetails   = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $employeesId], ['name', 'offices_id'], false);
     $officeObj          = $data->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['name'], false);
 
@@ -93,7 +98,7 @@ if (Input::exists('get') && !Input::exists()) {
     $officeName = $officeObj->name;
     $initials   = Common::makeAvatar($name);
 
-// Check if exists values
+    /** Check if exists values */
     if (!Common::checkValues($allData)) {
         $errorNoData = [1];
     }
@@ -127,13 +132,13 @@ include 'includes/navbar.php';
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
                 <li class="breadcrumb-item active">Employees data</li>
             </ul>
         </div>
         <?php
-        if (Input::exists() && count($errors) > 0) {
-            include './../common/errors/errorRequired.php';
+        if (Input::exists() && $validation->countErrors()) {
+            include './../common/errors/validationErrors.php';
         }
 
         if (Input::exists() && count($errorNoData) > 0) {
@@ -193,7 +198,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="col-sm-2">
                                 <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
+                                <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
                             </div>
                         </div>
                     </form>
@@ -201,7 +206,7 @@ include 'includes/navbar.php';
             </div>
         </section>
         <?php if (Input::exists('get') || Input::exists()) {
-            if (count($errors) == 0 && count($errorNoData) == 0) {
+            if ($validation->countErrors() && count($errorNoData) == 0) {
                 $month = Input::post('month');
                 ?>
             <section>
@@ -225,14 +230,11 @@ include 'includes/navbar.php';
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="drills-chart block">
-                                <div style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"
-                                     class="chartjs-size-monitor">
-                                    <div class="chartjs-size-monitor-expand"
-                                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                                <div style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;" class="chartjs-size-monitor">
+                                    <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
                                         <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
                                     </div>
-                                    <div class="chartjs-size-monitor-shrink"
-                                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                                    <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
                                         <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
                                     </div>
                                 </div>
@@ -244,13 +246,11 @@ include 'includes/navbar.php';
                                 <?php foreach ($allData as $key => $value) { ?>
                                     <div class="stats-2 d-flex">
                                         <div class="stats-2-arrow low"><i class="fa fa-line-chart"></i></div>
-                                        <div class="stats-2-content"><strong
-                                                    class="d-block dashtext-1"><?php echo $value; ?></strong><span
-                                                    class="d-block"><? echo strtoupper($key); ?></span>
+                                        <div class="stats-2-content">
+                                            <strong class="d-block dashtext-1"><?php echo $value; ?></strong>
+                                            <span class="d-block"><? echo strtoupper($key); ?></span>
                                             <div class="progress progress-template progress-small">
-                                                <div role="progressbar" style="width: <?php echo $value; ?>%;"
-                                                     aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"
-                                                     class="progress-bar progress-bar-template progress-bar-small dashbg-2"></div>
+                                                <div role="progressbar" style="width: <?php echo $value; ?>%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template progress-bar-small dashbg-2"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -271,65 +271,10 @@ include 'includes/navbar.php';
 <!-- JavaScript files-->
 <?php
 include "./../common/includes/scripts.php";
+if (Input::exists() && $validate->countErrors() && count($errorNoData) == 0) {
+    include './charts/useDataChart.php';
+}
 ?>
-<script>
-    var target_chart   = $('#all_data');
-    var target = new Chart(target_chart, {
-        type: 'line',
-        options: {
-            legend: {labels:{fontColor:"#777", fontSize: 16}},
-            scales: {
-                xAxes: [{
-                    display: true,
-                    gridLines: {
-                        color: 'transparent'
-                    },
-                    ticks: {
-                        autoSkip: false
-                    }
-                }],
-                yAxes: [{
-                    display: true,
-                    gridLines: {
-                        color: 'transparent'
-                    },
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            },
-        },
-        data: {
-            labels: <?php echo Js::key($allData); ?>,
-            datasets: [
-                {
-                    label: "<?php echo Common::getMonths()[$month]; ?>",
-                    fill: true,
-                    lineTension: 0,
-                    backgroundColor: "rgba(134, 77, 217, 0.88)",
-                    borderColor: "rgba(134, 77, 217, 088)",
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    borderWidth: 1,
-                    pointBorderColor: "rgba(134, 77, 217, 0.88)",
-                    pointBackgroundColor: "#fff",
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: "rgba(134, 77, 217, 0.88)",
-                    pointHoverBorderColor: "rgba(134, 77, 217, 0.88)",
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 3,
-                    pointHitRadius: 10,
-                    data: [<?php echo Js::values($allData); ?>],
-                    spanGaps: false
-                }
-            ]
-        }
-    });
-
-</script>
 
 </body>
 </html>

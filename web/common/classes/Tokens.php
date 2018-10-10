@@ -1,73 +1,74 @@
 <?php
 /***
- * Class Tokens
+ * Class Token
  */
 class Tokens {
-
     /***
-     * Hash
+     * @var mixed
      */
-    const HASH  = PASSWORD_DEFAULT;
+    private static $_token;
+
+
+    /**
+     * @var array
+     */
+    private $_tokens = ['token', 'tokenHash', 'setupToken', 'routeToken', 'routeTokenHash'];
 
 
     /***
+     * Token constructor.
+     */
+    public function __construct()
+    {
+        if (!Input::exists()) {
+            in_array('token', $this->_tokens) ? Session::put('token', $this->getUniqueId()) : '';
+        }
+    }
+
+
+    /**
      * @return string
      */
-    public static function unqId()
+    public function getUniqueId()
     {
         return uniqid();
     }
 
 
-    /***
+    /**
+     * @return int
+     */
+    public function now()
+    {
+        return time();
+    }
+
+
+    /**
      * @return mixed
+     * @ Generate token
      */
-    public static function getInputToken()
+    public static function getToken()
     {
-        return Session::put('inputToken', self::unqId());
+        return Session::get('token');
     }
 
-
-    /***
-     * @return bool|string
-     */
-    public static function getInputTokenHash()
-    {
-        return password_hash(Session::get('inputToken'), self::HASH);
-    }
-
-
-    /***
-     * @param int $len
-     * @return mixed
-     */
-    public static function getRouteToken($len = 10)
-    {
-        return Session::put('routeToken', self::randomString($len));
-    }
-
-    /***
-     * @return bool|string
-     */
-    public static function getRouteTokenHash()
-    {
-        return password_hash(Session::get('routeToken'), self::HASH);
-    }
-
-
-    /***
-     * @param int $length
+    /**
      * @return string
      */
-    public static function randomString($length = 10)
+    public static function inputHidden()
     {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
-        }
-        return $randomString;
+        echo '<input type="hidden" name="token" value="'. self::getToken() . '" />';
+    }
+
+
+    /**
+     * @return mixed
+     * @ Generate token hash
+     */
+    public static function getTokenHash()
+    {
+        return password_hash(self::getToken(), PASSWORD_DEFAULT);
     }
 
 
@@ -75,25 +76,12 @@ class Tokens {
      * @param $token
      * @return bool
      */
-    public static function checkInput($token)
+    public static function checkToken($token)
     {
-        $tokenHash = self::getInputTokenHash();
-        if (Session::exists('inputToken') && password_verify($token, $tokenHash)) {
-            Session::delete('inputToken');
+        if (password_verify($token, self::getTokenHash())) {
+            Session::delete('token');
             return true;
         }
         return false;
-    }
-
-
-    /***
-     * @param $routeToken
-     * @return bool
-     */
-    public static function checkRoute($routeToken)
-    {
-        if (Session::exists('routeToken')) {
-            return password_verify($routeToken, self::getRouteTokenHash());
-        }
     }
 }

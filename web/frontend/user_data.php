@@ -1,7 +1,7 @@
 <?php
 require_once 'core/init.php';
 $user   = new FrontendUser();
-$token  = new Token();
+
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
 }
@@ -15,50 +15,48 @@ $allTables = BackendDB::getInstance()->get('cmd_offices', ['id', '=', $userData-
 $allEmployees = BackendDB::getInstance()->get('cmd_employees', ['user_id', '=', $user->userId()], ['id', 'name'])->results();
 
 
-if (Input::exists()) {
-    if ($token->getToken(Input::post('token'))) {
-        $id = Input::post('employees');
-        $year = Input::post('year');
-        $month = Input::post('month');
-        $errors = [];
-        $errorsNoData = [];
+if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+    $id = Input::post('employees');
+    $year = Input::post('year');
+    $month = Input::post('month');
+    $errors = [];
+    $errorsNoData = [];
 
-        if (empty($id) || empty($year) || empty($month)) {
-            $errors = [1];
-        }
+    if (empty($id) || empty($year) || empty($month)) {
+        $errors = [1];
+    }
 // Conditions for action
-        $where = [
-            ['year', '=', $year],
-            'AND',
-            ['employees_id', '=', $id],
-            'AND',
-            ['month', '=', $month]
-        ];
+    $where = [
+        ['year', '=', $year],
+        'AND',
+        ['employees_id', '=', $id],
+        'AND',
+        ['month', '=', $month]
+    ];
 
-        foreach (Values::table($allTables) as $value) {
-            $tables[] = trim($value);
-        }
+    foreach (Values::table($allTables) as $value) {
+        $tables[] = trim($value);
+    }
 
-        //array key => values (keys are tables and values are numbers(quantity column))
-        foreach ($tables as $table) {
-            $prefix = 'cmd_';
-            $key[] = $table;
-            $values[] = Values::value(BackendDB::getInstance()->get($prefix . $table, $where, ['quantity'])->results());
-            $sumAllCommonData = array_combine($key, $values);
-        }
+    //array key => values (keys are tables and values are numbers(quantity column))
+    foreach ($tables as $table) {
+        $prefix = 'cmd_';
+        $key[] = $table;
+        $values[] = Values::value(BackendDB::getInstance()->get($prefix . $table, $where, ['quantity'])->results());
+        $sumAllCommonData = array_combine($key, $values);
+    }
 
 // All data for customer
-        $user_profile = BackendDB::getInstance()->get('cmd_employees', ['id', '=', $id], ['name', 'offices_id'])->first();
-        $officeObj = BackendDB::getInstance()->get('cmd_offices', ['id', '=', $user_profile->offices_id], ['name'])->first();
+    $user_profile = BackendDB::getInstance()->get('cmd_employees', ['id', '=', $id], ['name', 'offices_id'])->first();
+    $officeObj = BackendDB::getInstance()->get('cmd_offices', ['id', '=', $user_profile->offices_id], ['name'])->first();
 
-        $name = $user_profile->name;
-        $officeName = $officeObj->name;
-        $initials = Profile::makeAvatar($user_profile->name);
+    $name = $user_profile->name;
+    $officeName = $officeObj->name;
+    $initials = Profile::makeAvatar($user_profile->name);
 
 // Check if exists values
-        if (!Js::ifExistsValues($sumAllCommonData)) {
-            $errorsNoData = [1];
-        }
+    if (!Js::ifExistsValues($sumAllCommonData)) {
+        $errorsNoData = [1];
     }
 }
 
@@ -208,7 +206,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="col-sm-2">
                                 <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
+                                <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
                             </div>
                         </div>
                     </form>

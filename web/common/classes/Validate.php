@@ -21,6 +21,7 @@ class Validate
     private $_db = null;
 
 
+
     /**
      * Validate constructor.
      */
@@ -116,7 +117,7 @@ class Validate
     }
 
 
-    /**
+    /***
      * @return array
      */
     public function errors()
@@ -124,6 +125,18 @@ class Validate
         return array_unique($this->_errors);
     }
 
+    /***
+     * @return bool
+     */
+    public function countErrors()
+    {
+        if (count($this->errors()) > 0) {
+            return true;
+        } elseif (count($this->errors()) === 0) {
+            return false;
+        }
+
+    }
 
     /**
      * @return bool

@@ -25,7 +25,18 @@ foreach ($allTables as $table) {
 }
 
 /** If form is submitted */
-if (Input::exists()) {
+if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+    /** Instantiate validation class */
+    $validate = new Validate();
+    // Check if all fields are filed
+    $validation = $validate->check($_POST, [
+        'year'  => ['required' => true],
+        'month' => ['required' => true],
+        'table' => ['required' => true]
+    ]);
+
+    /** If validation passed */
+    if ($validation->passed()) {
         $year       = Input::post('year');
         $month      = Input::post('month');
         $officeId   = $user->officesId();
@@ -35,59 +46,51 @@ if (Input::exists()) {
         $quantitySum = [];
 
         /** Get priority table for best operator */
-        $priority       = $data->records(Params::TBL_OFFICE, ['id', '=', $user->customerId()], ['tables_priorities'], false)->tables_priorities;
-        $priority       = json_decode($priority);
-        $priorityTbl    = (array) $priority;
-        ksort($priorityTbl, SORT_NUMERIC);
+        $priority       = $data->records(Params::TBL_OFFICE, ['id', '=', $user->customerId()], ['tables_priorities'], false);
 
-        $priorityTbl = array_splice($priorityTbl, 0, 1);
-        print_r($priorityTbl);
-        exit;
+        /** Priority table */
+        $priorityTable  = Common::objToArrayOneValue($priority, 'tables_priorities', 1);
 
-        if (empty($month) || empty($year) || empty($table)) {
-            $errors = [1];
+
+        /** Conditions for action */
+        $where = [
+            ['year', '=', $year],
+            'AND',
+            ['offices_id', '=', $officeId],
+            'AND',
+            ['month', '=', $month]
+        ];
+
+        /** Array with all results for one FTE to use in chart */
+        $chartData  = $data->records($table, $where, ['quantity', 'employees_id']);
+
+        /** Chart names */
+        foreach ($chartData as $chartNames) {
+            $names[] = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $chartNames->employees_id], ['name'], false)->name;
         }
 
-        if (count($errors) == 0) {
-            /** Conditions for action */
-            $where = [
-                ['year', '=', $year],
-                'AND',
-                ['offices_id', '=', $officeId],
-                'AND',
-                ['month', '=', $month]
-            ];
-
-            /** Array with all results for one FTE to use in chart */
-            $chartData  = $data->records($table, $where, ['quantity', 'employees_id']);
-
-            /** Chart names */
-            foreach ($chartData as $chartNames) {
-                $names[] = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $chartNames->employees_id], ['name'], false)->name;
-            }
-
-            /** Quantity data */
-            foreach ($chartData as $datas) {
-                $quantity[] = $datas->quantity;
-            }
-
-            // Insert returned values in array
-            foreach ($chartData as $value) {
-                $quantitySum[] = $value->quantity;
-            }
-
-            /** Check if submitted form return values */
-            if (count($quantitySum) > 1) {
-                // Assoc array with names => quantity
-                $allData = array_combine($names, $quantity);
-
-                // Charts labels and values
-                $chartNames = Js::toJson($names);
-                $chartValues = Js::chartValues($chartData, 'quantity');
-            } else {
-                $errorNoData = [1];
-            }
+        /** Quantity data */
+        foreach ($chartData as $datas) {
+            $quantity[] = $datas->quantity;
         }
+
+        // Insert returned values in array
+        foreach ($chartData as $value) {
+            $quantitySum[] = $value->quantity;
+        }
+
+        /** Check if submitted form return values */
+        if (count($quantitySum) > 1) {
+            // Assoc array with names => quantity
+            $allData = array_combine($names, $quantity);
+
+            // Charts labels and values
+            $chartNames = Js::toJson($names);
+            $chartValues = Js::chartValues($chartData, 'quantity');
+        } else {
+            $errorNoData = [1];
+        }
+    }
 }
 
 ?>
@@ -114,8 +117,8 @@ include '../common/includes/head.php';
           </div>
         </div>
           <?php
-          if (Input::exists() && count($errors) > 0) {
-              include './../common/errors/errorRequired.php';
+          if (Input::exists() && count($validation->errors()) > 0) {
+              include './../common/errors/validationErrors.php';
           }
 
           if (Input::exists() && count($errorNoData) > 0) {
@@ -195,7 +198,7 @@ include '../common/includes/head.php';
 
                             <div class="col-sm-2">
                                 <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="">
+                                <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
                             </div>
                     </div>
                   </form>

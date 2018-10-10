@@ -1,15 +1,17 @@
 <?php
 require_once 'core/init.php';
-$token = new Token();
 
-if (Input::exists()) {
-
+if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+    /** Instantiate validate class */
     $validate = new Validate();
+
+    /** Validate fields */
     $validation = $validate->check($_POST, [
         'username' => ['required'  => true],
         'password' => ['required'  => true]
     ]);
 
+    /** Check if validation is passed */
     if ($validation->passed()) {
         $user = new BackendUser();
         $login = $user->login(Input::post('username'), Input::post('password'));
@@ -65,7 +67,7 @@ include '../common/includes/head.php';
                     </div>
                     <div class="form-group">
                       <input id="login-password" type="password" name="password" required data-msg="Please enter your password" class="input-material">
-                        <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
+                        <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
                       <label for="login-password" class="label-material">Password</label>
                     </div><button type="submit" id="login" class="btn btn-primary" name="login">Login</button>
                     <!-- This should be submit button but I replaced it with <a> for demo purposes-->

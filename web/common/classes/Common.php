@@ -83,6 +83,25 @@ class Common
     }
 
 
+    /***
+     * @param $obj
+     * @param $column
+     * @param $returnedKey
+     * @return mixed
+     */
+    public static function objToArrayOneValue($obj, $column, $returnedKey)
+    {
+        $obj       = json_decode($obj->$column);
+        $arrItem   = (array) $obj;
+        ksort($arrItem, SORT_NUMERIC);
+        array_map('trim', $arrItem);
+        foreach ($arrItem as $key => $value) {
+            $item[$key] = $value;
+        }
+        return $item[$returnedKey];
+    }
+
+
     /**
      * @param $items
      * @return array
@@ -207,8 +226,5 @@ class Common
     {
         return json_decode($json);
     }
-
-
-
 
 }

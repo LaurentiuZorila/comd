@@ -24,7 +24,7 @@ $departmentName = $details->records(Params::TBL_DEPARTMENT, ['id', '=', $user->d
     <!-- Sidebar Navidation Menus-->
     <span class="heading">Main</span>
     <ul class="list-unstyled">
-        <li class="active"><a href="index.php?info=<?php echo Tokens::getRouteToken(); ?>"> <i class="icon-home"></i>Home</a></li>
+        <li class="active"><a href="index.php?info=<?php echo Tokens::getToken(); ?>"> <i class="icon-home"></i>Home</a></li>
         <li><a href="feedback.php"> <i class="fa fa-star-half-empty"></i> Feedback </a></li>
         <li><a href="update_profile.php"> <i class="icon-user"></i>Update my profile </a></li>
         <li><a href="logout.php"> <i class="icon-logout"></i>Logout </a></li>

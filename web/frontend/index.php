@@ -2,6 +2,7 @@
 require_once 'core/init.php';
 $user           = new FrontendUser();
 $profileDetails = new FrontendProfile();
+$tk = new Tokens();
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
@@ -30,16 +31,23 @@ if (!Input::exists()) {
     ];
 }
 
-if (Input::exists()) {
+if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
     Session::delete('InfoAlert');
-    $errors     = [];
+    $validate   = new Validate();
+    $validation = $validate->check($_POST, [
+        'year'  => ['required'  => true],
+        'month' => ['required'  => true],
+        'table' => ['required'  => true]
+    ]);
+
+    if ($validate->passed()) {
+
     $year       = trim(Input::post('year'));
     $month      = trim(Input::post('month'));
     $table      = trim(Input::post('table'));
     $prefixTbl  = Params::PREFIX . $table;
     $alfaMonth  = is_numeric($month) ? Common::numberToMonth($month) : '';
 
-    if (!empty($year) && !empty($month) && !empty($table)) {
         /** Conditions for action */
         $where = [
             ['employees_id', '=', $user->userId()],
@@ -74,7 +82,7 @@ if (Input::exists()) {
         $totalAbsentees = $profileDetails->sumAllCommonData($whereSum, 'quantity')['absentees']->total;
         $totalUnpaid    = $profileDetails->sumAllCommonData($whereSum, 'quantity')['unpaid']->total;
 
-        /** If user serach data for all months */
+        /** If user search data for all months */
         if (!is_numeric($month)) {
             // Conditions for action
             $where = [
@@ -126,8 +134,6 @@ if (Input::exists()) {
                 Session::put('ChartDataNotFound', "For {$year} - {$alfaMonth} and table: {$table}, not found data, try again.");
             }
         }
-    } else {
-        $errors = [1];
     }
 }
 
@@ -156,8 +162,8 @@ include 'includes/navbar.php';
         </div>
         <?php
         if (Input::exists()) {
-            if (count($errors) > 0) {
-                include './../common/errors/errorRequired.php';
+            if ($validate->countErrors()) {
+                include './../common/errors/validationErrors.php';
             }
             if (Session::exists('ChartDataNotFound')) {
                 include './../common/errors/infoNoDataError.php';
@@ -174,7 +180,7 @@ include 'includes/navbar.php';
                                 Filters
                             </button>
                         </p>
-                        <div class="<?php if (Input::exists() && count($errors) > 0) {echo 'collapse show'; } else { echo 'collapse'; } ?>" id="collapseExample">
+                        <div class="<?php if (Input::exists() && $validate->countErrors()) {echo 'collapse show'; } else { echo 'collapse'; } ?>" id="collapseExample">
                             <div class="card card-body">
                                 <form method="post">
                                     <div class="row">
@@ -224,7 +230,7 @@ include 'includes/navbar.php';
 
                                         <div class="col-sm-2">
                                             <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                            <input type="hidden" name="token" value="<?php echo Tokens::getInputToken(); ?>">
+                                            <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
                                         </div>
                                     </div>
                                 </form>
@@ -275,7 +281,7 @@ include 'includes/navbar.php';
                 </div>
             </section>
         <?php }
-        if (Input::exists() && count($errors) === 0) {
+        if (Input::exists() && !$validate->countErrors()) {
             if (is_numeric(Input::post('month'))) { ?>
                 <section class="no-padding-top no-padding-bottom">
                     <div class="container-fluid">
@@ -370,7 +376,7 @@ include 'includes/navbar.php';
             </section>
         <?php } ?>
         <!--        ********************       CHARTS         ********************   -->
-        <?php if (Input::exists() && !is_numeric(Input::post('month')) && count($errors) === 0 && !Session::exists('ChartDataNotFound')) { ?>
+        <?php if (Input::exists() && !is_numeric(Input::post('month')) && !$validate->countErrors() && !Session::exists('ChartDataNotFound')) { ?>
                 <section class="no-padding-bottom">
                     <div class="container-fluid">
                         <div class="row">

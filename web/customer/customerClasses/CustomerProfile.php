@@ -1,4 +1,5 @@
 <?php
+
 class CustomerProfile
 {
     private $_db;
@@ -39,7 +40,7 @@ class CustomerProfile
     /**
      * @param $table
      * @param array $where
-     * @return int
+     * @return mixed
      */
     public function count($table, array $where)
     {

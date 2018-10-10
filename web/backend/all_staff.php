@@ -2,7 +2,6 @@
 require_once 'core/init.php';
 $user  = new BackendUser();
 $data  = new BackendProfile();
-$token = new Token();
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
@@ -59,9 +58,6 @@ include 'includes/navbar.php';
                                             <p class="card-text mb-0 font-weight-bold text-secondary text-center">Rating</p>
                                             <p class="card-text m-b-0 font-weight-bold text-secondary text-center">
                                                 <?php switch ($rating) {
-                                                    case '0':
-                                                        include 'rating/default.php';
-                                                        break;
                                                     case '1':
                                                         include 'rating/one_star.php';
                                                         break;
@@ -85,7 +81,7 @@ include 'includes/navbar.php';
                                             </p>
                                         </div>
                                     </div>
-                                    <a href="staff_profile.php?office_id=<?php echo $lead->offices_id;?>&lead_id=<?php echo $lead->id; ?>&token=<?php echo $token->getToken(); ?> " class="tile-link"></a>
+                                    <a href="staff_profile.php?office_id=<?php echo $lead->offices_id;?>&lead_id=<?php echo $lead->id; ?>&token=<?php echo ''; ?> " class="tile-link"></a>
                                 </div>
                             </div>
                         </div>

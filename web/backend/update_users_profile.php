@@ -1,25 +1,31 @@
 <?php
 require_once 'core/init.php';
-$user = new BackendUser();
-$data  = new BackendProfile();
+$user   = new BackendUser();
+$data   = new BackendProfile();
 
 $departments    = $data->records(Params::TBL_DEPARTMENT, ['1 = 1'], ['id', 'name']);
 $leads          = $data->records(Params::TBL_TEAM_LEAD, ['supervisors_id', '=', $user->userId()], ['id', 'name', 'offices_id']);
 $offices        = $data->records(Params::TBL_OFFICE, ['departments_id', '=', $user->departmentId()]);
 
 
-if (Input::exists()) {
+if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+    /** Instantiate validate class */
+    $validate   = new Validate();
+    /** Check finput fields */
+    $validation = $validate->check($_POST, [
+        'leads' => ['required' => true],
+        'departments'   => ['required'  => true],
+        'offices'       => ['required'  => true]
+    ]);
+
+    /** If validation is passed */
+    if ($validate->passed()) {
+
     $leadId     = Input::post('leads');
     $department = Input::post('departments');
     $offices    = Input::post('offices');
     $errors     = [];
     $uploadOk   = [];
-
-    if (empty($user) || empty($department) || empty($offices)) {
-        $errors[] = 1;
-    }
-
-    if (count($errors) === 0) {
 
         $user->update(Params::TBL_TEAM_LEAD, [
             'departments_id'    => $department,
@@ -68,7 +74,7 @@ include 'includes/navbar.php';
                 </li>
             </ul>
         </div>
-        <?php if (Input::exists() && count($errors) > 0) {
+        <?php if (Input::exists() && $validate->countErrors()) {
             include './../common/errors/errorRequired.php';
          }
             if (count($uploadOk) > 0) {
@@ -125,7 +131,8 @@ include 'includes/navbar.php';
 
                                     <div class="line"></div>
                                     <div class="col-sm-9 ml-auto">
-                                        <button type="submit" name="save" class="btn btn-primary">Save changes</button>
+                                        <input type="submit" name="save" class="btn btn-primary" value="Save"/>
+                                        <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?> ">
                                     </div>
                                 </div>
                             </form>

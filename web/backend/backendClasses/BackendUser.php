@@ -65,7 +65,6 @@ class BackendUser
                     $this->_isLoggedIn = true;
                 } else {
                     return $this->logout();
-                    Redirect::to('login.php');
                 }
             }
         } else {

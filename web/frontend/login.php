@@ -1,13 +1,16 @@
 <?php
 require_once 'core/init.php';
 
-if (Input::exists() && Tokens::checkInput(Input::post('token'))) {
+if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+    /** Instantiate validate class */
     $validate = new Validate();
+    /** Check fields */
     $validation = $validate->check($_POST, array(
         'username' => array('required'  => true),
         'password' => array('required'  => true)
     ));
 
+    /** Check if validation is passed */
     if ($validation->passed()) {
         $user = new FrontendUser();
         $login = $user->login(Input::post('username'), Input::post('password'));
@@ -69,7 +72,7 @@ include '../common/includes/head.php';
                     </div>
                     <div class="form-group">
                       <input id="login-password" type="password" name="password" required data-msg="Please enter your password" class="input-material">
-                        <input type="hidden" name="token" value="<?php echo Tokens::getInputToken(); ?>">
+                        <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
                       <label for="login-password" class="label-material">Password</label>
                     </div><button type="submit" id="login" class="btn btn-primary" name="login">Login</button>
                     <!-- This should be submit button but I replaced it with <a> for demo purposes-->

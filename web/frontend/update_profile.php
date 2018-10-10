@@ -2,24 +2,20 @@
 require_once 'core/init.php';
 $profile = new FrontendProfile();
 $user    = new FrontendUser();
+
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
 }
-
 
 $name           = $user->name();
 $departmentName = $profile->records(Params::TBL_DEPARTMENT, ['id', '=', $user->departmentId()], ['name'], false);
 $officeName     = $profile->records(Params::TBL_OFFICE, ['id', '=', $user->officeId()], ['name'], false);
 
-if (Input::exists()) {
-    $first_name = trim(Input::post('first_name'));
-    $last_name  = trim(Input::post('last_name'));
-    $name       = $first_name . ' ' . $last_name;
-    $username   = trim(Input::post('username'));
-    $password   = trim(Input::post('password'));
-    $password   = password_hash($password, PASSWORD_DEFAULT);
-
+if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+    /** Instantiate validate class */
         $validate = new Validate();
+
+        /** Validate fields */
         $validation = $validate->check($_POST, [
             'first_name'     =>  [
                 'required'  => true,
@@ -47,7 +43,16 @@ if (Input::exists()) {
             ]
         ]);
 
+        /** If validation is passed */
         if ($validation->passed()) {
+            $first_name = trim(Input::post('first_name'));
+            $last_name  = trim(Input::post('last_name'));
+            $name       = $first_name . ' ' . $last_name;
+            $username   = trim(Input::post('username'));
+            $password   = trim(Input::post('password'));
+            $password   = password_hash($password, PASSWORD_DEFAULT);
+
+            /** Update employees table */
             $users->update(Params::TBL_EMPLOYEES, [
                 'name'      => $name,
                 'username'  => $username,
@@ -55,10 +60,7 @@ if (Input::exists()) {
             ], [
                 'id' => $user->userId()
             ]);
-        } else {
-            $validationErrors = $validation->errors();
         }
-
 }
 ?>
 
@@ -91,26 +93,10 @@ include 'includes/navbar.php';
             </ul>
         </div>
         <?php
-            if (Input::exists() && count($validationErrors) > 0) { ?>
-            <section>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card-body">
-                            <div class="alert alert-dismissible fade show badge-danger" role="alert">
-                                <strong class="text-white-50"> You have some errors! </strong>
-                                <?php
-                                foreach ($validationErrors as $error) { ?>
-                                    <p class="text-white-50 mb-0"><?php echo $error; ?></p>
-                                <?php } ?>
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        <?php } ?>
+            if (Input::exists() && $validate->countErrors()) {
+                include './../common/errors/validationErrors.php';
+            }
+        ?>
         <section>
             <div class="container-fluid">
                 <div class="row">
@@ -167,7 +153,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="card-footer text-right">
                                 <input type="submit" name="Update" class="btn btn-primary" value="Update Profile">
-                                <input type="hidden" name="token" value="" />
+                                <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>" />
                             </div>
                         </form>
                     </div>

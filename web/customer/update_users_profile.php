@@ -8,7 +8,7 @@ $allEmployees   = $data->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $cus
 $departments    = $data->records(Params::TBL_DEPARTMENT, [], ['id', 'name']);
 
 
-if (Input::exists() && $token->checkToken(Input::post('token'))) {
+if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
     $employeesId    = Input::post('user');
     $departmentId   = Input::post('department');
     $officesId      = Input::post('office');
@@ -157,7 +157,7 @@ include 'includes/navbar.php';
                                     </div>
                                     <div class="line"></div>
                                     <div class="col-sm-9 ml-auto">
-                                        <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>"/>
+                                        <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>"/>
                                         <button type="submit" name="save" class="btn btn-primary">Save changes</button>
                                     </div>
                                 </form>

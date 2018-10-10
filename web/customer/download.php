@@ -1,33 +1,36 @@
 <?php
-$file = 'web/common/files/MOCK_DATA.csv';
+require_once 'core/init.php';
+require_once 'vendor/league/csv/autoload.php';
 
+use League\Csv\Writer;
+use Customer\Profile\CustomerProfile;
+use Customer\User\CustomerUser;
 
-if (file_exists($file)) {
-    header('Content-Description: File Transfer');
-    header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename="'.basename($file).'"');
-    header('Expires: 0');
-    header('Cache-Control: must-revalidate');
-    header('Pragma: public');
-    header('Content-Length: ' . filesize($file));
-    readfile($file);
-    exit;
+$user   = new CustomerUser();
+$data   = new CustomerProfile();
+
+//we fetch the info from a DB using a PDO object
+$records = $data->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $user->officesId()], ['id', 'offices_id', 'departments_id']);
+foreach ($records as $record) {
+    $sth[] = (array)$record;
 }
+//we create the CSV into memory
+$csv = Writer::createFromFileObject(new SplTempFileObject());
 
-$fileName = basename('codexworld.txt');
-$filePath = 'files/'.$fileName;
-if(!empty($fileName) && file_exists($filePath)){
-    // Define headers
-    header("Cache-Control: public");
-    header("Content-Description: File Transfer");
-    header("Content-Disposition: attachment; filename=$fileName");
-    header("Content-Type: application/zip");
-    header("Content-Transfer-Encoding: binary");
+//we insert the CSV header
+$csv->insertOne(['employees_id', 'offices_id', 'departments_id']);
 
-    // Read the file
-    readfile($filePath);
-    exit;
-}else{
-    echo 'The file does not exist.';
-}
-?>
+// The PDOStatement Object implements the Traversable Interface
+// that's why Writer::insertAll can directly insert
+// the data into the CSV
+$csv->insertAll($sth);
+
+// Because you are providing the filename you don't have to
+// set the HTTP headers Writer::output can
+// directly set them for you
+// The file is downloadable
+$csv->output('users.csv');
+die;
+
+
+

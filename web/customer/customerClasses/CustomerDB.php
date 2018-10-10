@@ -51,7 +51,7 @@ class CustomerDB
 
 
     /**
-     * @return BackendDB|null
+     * @return CustomerDB|null
      */
     public static function getInstance()
     {
@@ -80,6 +80,7 @@ class CustomerDB
     /**
      * @param $sql
      * @param array $params
+     * @param array $conditions
      * @return $this
      */
     public function query($sql, $params = array(), $conditions = array())
@@ -98,8 +99,8 @@ class CustomerDB
                 }
             }
             if ($this->_query->execute()) {
-                $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
-                $this->_count = $this->_query->rowCount();
+                $this->_results         = $this->_query->fetchAll(PDO::FETCH_OBJ);
+                $this->_count           = $this->_query->rowCount();
             } else {
                 $this->_error = true;
             }
@@ -155,11 +156,11 @@ class CustomerDB
     }
 
 
-    /**
+    /***
      * @param $table
      * @param $where
      * @param array $columns
-     * @return bool|BackendDB
+     * @return bool|CustomerDB
      */
     public function get($table, $where, array $columns = ['*'])
     {
@@ -267,12 +268,8 @@ class CustomerDB
     public function results()
     {
         return $this->_results;
-////        $array = (array)$this->_results;
-////        return !empty($array) ? $this->_results : null;
-//        return ($results = $this->_results) && !empty($results[0]) ? $this->_results : null;
-//        return ($results = $this->count()) && $results > 0 ? $this->_results : null;
-//        return isset($this->_results) ? $this->_results : null;
     }
+
 
 
     /**
@@ -283,6 +280,14 @@ class CustomerDB
         return ($results = $this->results()) && !empty($results[0]) ? $results[0] : null;
     }
 
+
+    /**
+     * @return null
+     */
+    public function arrayFirst()
+    {
+        return ($results = $this->arrayResults() && !empty($results[0])) ? $results[0] : null;
+    }
 
     /**
      * @return bool

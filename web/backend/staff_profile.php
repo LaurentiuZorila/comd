@@ -23,14 +23,19 @@ $allTables  = explode(',', $allTables);
 if (Input::exists('get')) {
     $leadId             = Input::get('lead_id');
     $officeId           = Input::get('office_id');
+
     /** Staff details */
     $leadProfile        = $data->records(Params::TBL_TEAM_LEAD, ['id', '=', $leadId],['name', 'id', 'supervisors_id', 'offices_id'], false);
+
     /** Count employees */
     $totalEmployees     = $data->count(Params::TBL_EMPLOYEES, ['offices_id', '=', $officeId]);
+
     /** Department name */
     $departmentName     = $data->records(Params::TBL_DEPARTMENT, ['id', '=', $leadProfile->supervisors_id], ['name'], false)->name;
+
     /** Office name */
     $officeName         = $data->records(Params::TBL_OFFICE, ['id', '=', $leadProfile->offices_id], ['name'], false)->name;
+
     /** Icons for tables */
     $icon               = ['icon-line-chart', 'icon-dashboard', 'icon-chart'];
 
@@ -42,20 +47,26 @@ if (Input::exists('get')) {
     /** Array with tables and sum of quantity for each table */
     $dataCommonTables = array_combine(Params::TBL_COMMON, $commonData);
 
-
 }
 
-if (Input::exists()) {
-    $officeId   = Input::get('office_id');
-    $table      = Params::PREFIX . trim(Input::post('table'));
-    $year       = Input::post('year');
-    $month      = Input::post('month');
+if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+    /** Instantiate validate class */
+    $validate = new Validate();
 
-    if (empty($month) || empty($year) || empty($table)) {
-        $errors = [1];
-    }
+    /** Validate fields */
+    $validation = $validate->check($_POST, [
+        'table'     => ['required'  => true],
+        'year'      => ['required'  => true],
+        'month'     => ['required'  => true]
+    ]);
 
-    if (count($errors) === 0) {
+    /** Check if validation passed */
+    if ($validation->passed()) {
+        $officeId   = Input::get('office_id');
+        $table      = Params::PREFIX . trim(Input::post('table'));
+        $year       = Input::post('year');
+        $month      = Input::post('month');
+
         /** Conditions for action */
         $where = [
             ['year', '=', $year],
@@ -123,8 +134,8 @@ include 'includes/navbar.php';
             </ul>
         </div>
         <?php
-        if (Input::exists() && count($errors) > 0) {
-            include './../common/errors/errorRequired.php';
+        if (Input::exists() && $validation->countErrors()) {
+            include './../common/errors/validationErrors.php';
         }
         ?>
         <section>
@@ -136,7 +147,7 @@ include 'includes/navbar.php';
                                 Filters
                             </button>
                         </p>
-                        <div class="<?php if (Input::exists() && count($errors) == 0 && count($errorNoData) == 0) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
+                        <div class="<?php if (Input::exists() && !$validation->countErrors() && count($errorNoData) == 0) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
                             <div class="card card-body">
                                 <form method="post">
                                     <div class="row">
@@ -175,7 +186,7 @@ include 'includes/navbar.php';
                                         </div>
                                         <div class="col-sm-12">
                                             <input value="Submit" name="Filter" class="btn btn-outline-primary" type="submit">
-                                            <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
+                                            <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
                                         </div>
                                     </div>
                                 </form>
@@ -227,7 +238,7 @@ include 'includes/navbar.php';
                 </div>
             </div>
         </section>
-        <?php if (Input::exists() && count($errors) === 0) { ?>
+        <?php if (Input::exists() && !$validation->countErrors()) { ?>
         <section>
             <div class="col-md-12">
                 <div class="card text-center">
@@ -281,7 +292,7 @@ include "./../common/includes/scripts.php";
 <?php
 include 'includes/js/ajax_user_profile.php';
 
-if (Input::exists() && count($errors) === 0) {
+if (Input::exists() && !$validation->countErrors()) {
     include 'charts/profile_chart.php';
 }
 ?>

@@ -1,7 +1,7 @@
 <?php
 require_once 'core/init.php';
 
-if (Input::exists() && Tokens::checkInput(Input::post('token'))) {
+if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
         $validate = new Validate();
         $validation = $validate->check($_POST, [
             'Username' =>
@@ -35,10 +35,6 @@ if (Input::exists() && Tokens::checkInput(Input::post('token'))) {
             } else {
                 $errors = ['Username or password not valid! Please try again!'];
             }
-        } else {
-            foreach ($validation->errors() as $error) {
-                Session::put('validationError', $error);
-            }
         }
 }
 ?>
@@ -68,23 +64,9 @@ include '../common/includes/head.php';
                     </div>
                 </div>
             <? }
-            if (Session::exists('validationError')) {?>
-                <div class="row mb-0">
-                    <div class="col-lg-12">
-                        <div class="card-body">
-                            <div class="alert alert-dismissible fade show badge-danger" role="alert">
-                                <strong class="text-white"> You have some errors! </strong>
-                                <?php foreach ($validation->errors() as $error) { ?>
-                                <p class="text-white mb-0"> <?php echo $error; ?></p>
-                                <?php } ?>
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <?php Session::delete('validationError'); } ?>
+            if (Input::exists() && count($validation->errors()) > 0) {
+                include './../common/errors/validationErrors.php';
+            } ?>
           <div class="row">
             <!-- Logo & Information Panel-->
             <div class="col-lg-6">
@@ -108,7 +90,7 @@ include '../common/includes/head.php';
                     </div>
                     <div class="form-group">
                       <input id="login-password" type="password" name="Password" required data-msg="Please enter your password" class="input-material">
-                        <input type="hidden" name="token" value="<?php echo Tokens::getInputToken(); ?>">
+                        <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
                       <label for="login-password" class="label-material">Password</label>
                     </div><button type="submit" id="login" class="btn btn-primary" name="login">Login</button>
                     <!-- This should be submit button but I replaced it with <a> for demo purposes-->

@@ -50,6 +50,9 @@ class CustomerUser
      */
     private $_error = false;
 
+
+    private $_success = false;
+
     /**
      * Customer table
      */
@@ -130,6 +133,8 @@ class CustomerUser
         if (!$this->_customerDB->insert($table, $fields)) {
             $this->_error = true;
             throw new Exception('There was a problem, please try again!');
+        } else {
+            $this->_success = true;
         }
     }
 
@@ -254,5 +259,10 @@ class CustomerUser
     public function errors()
     {
         return $this->_error;
+    }
+
+    public function success()
+    {
+        return $this->_success;
     }
 }

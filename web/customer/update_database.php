@@ -2,7 +2,7 @@
 require_once 'core/init.php';
 $user   = new CustomerUser();
 $data   = new CustomerProfile();
-$token  = new Token();
+
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
@@ -20,39 +20,49 @@ foreach ($allTables as $value) {
 }
 
 
-if (Input::exists() && $token->checkToken(Input::post('token'))) {
-    $year   = Input::post('year');
-    $month  = Input::post('month');
-    $table  = trim(Input::post('tables'));
-    $table  = Params::PREFIX . $table;
+if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+    $validate = new Validate();
+    $validation = $validate->check($_POST, [
+        'year'      => ['required' => true],
+        'month'     => ['required' => true],
+        'tables'    => ['required' => true]
+    ]);
 
-    $filename   = $_FILES['fileToUpload']['tmp_name'];
-    $path       = $_FILES['fileToUpload']['name'];
-    $size       = $_FILES['fileToUpload']['size'];
-    $extension  = pathinfo($path, PATHINFO_EXTENSION);
-    // Extensions
-    $extensions     = Params::EXTENSIONS;
-    $errors         = [];
-    $uploadSuccess  = [];
-    $uploadError    = [];
-    $extensionError = [];
+    if ($validation->passed()) {
 
-    if (empty($year) || empty($month) || empty($table)) {
-        $errors = [1];
-    }
-    if (count($errors) === 0) {
-    // Check for valid extension
+        $year   = Input::post('year');
+        $month  = Input::post('month');
+        $table  = trim(Input::post('tables'));
+        $table  = Params::PREFIX . $table;
+
+        $filename   = $_FILES['fileToUpload']['tmp_name'];
+        $path       = $_FILES['fileToUpload']['name'];
+        $size       = $_FILES['fileToUpload']['size'];
+        $extension  = pathinfo($path, PATHINFO_EXTENSION);
+        /** Allowed extensions */
+        $extensions     = Params::EXTENSIONS;
+
+        /** Errors */
+        $errors         = [];
+        $uploadSuccess  = [];
+        $uploadError    = [];
+        $extensionError = [];
+
+        // Check for valid extension
         if (in_array($extension, $extensions) && $size > 0) {
             // Open the file for reading
             if (($h = fopen("{$filename}", "r")) !== FALSE) {
                 while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
-                    CustomerDB::getInstance()->insert($table, [
-                        'name' => $data[0],
-                        'username' => $data[1],
-                        'department' => $data[2]
+                    $user->insert($table, [
+                        'offices_id'        => $user->officesId(),
+                        'departments_id'    => $user->departmentId(),
+                        'year'              => $year,
+                        'month'             => $month,
+                        'employees_id'      => $data[0],
+                        'quantity'          => $data[1]
                     ]);
                 }
-                if (CustomerDB::getInstance()->count() > 0) {
+                if ($user->success()) {
                     $uploadSuccess = [1];
                 } else {
                     $uploadError = [1];
@@ -107,8 +117,8 @@ include '../common/includes/head.php';
               include './../common/errors/uploadError.php';
           } elseif (Input::exists() && count($extensionError) > 0) {
               include './../common/errors/extensionError.php';
-          } elseif (Input::exists() && count($errors) > 0) {
-              include './../common/errors/errorRequired.php';
+          } elseif (Input::exists() && count($validation->errors()) > 0) {
+              include './../common/errors/validationErrors.php';
           }
           ?>
           <section class="no-padding-top no-padding-bottom">
@@ -121,7 +131,6 @@ include '../common/includes/head.php';
                                       <strong>Update your database</strong>
                                       <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-primary btn-sm float-sm-right"><i class="fa fa-info-circle"></i></button>
                                   </div>
-
                               </div>
 
                               <div class="col-sm-4">
@@ -166,7 +175,7 @@ include '../common/includes/head.php';
                               </div>
                               <div class="col-sm-2">
                                   <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                  <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
+                                  <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
                               </div>
                           </div>
                       </form>
@@ -183,7 +192,7 @@ include '../common/includes/head.php';
                       <div class="modal-body">
                           <p> Your file must have .csv extension (e.g. absentees.csv). </p>
                           <p> Your file doesn't need contain headers. </p>
-                          <p> From <a href="download.php" download>here</a> can download csv file example to use on your update. </p>
+                          <p> From <a href="download.php">here</a> can download csv file example to use on your update. </p>
                           <p> For other information please contact administrator. </p>
                       </div>
                       <div class="modal-footer">

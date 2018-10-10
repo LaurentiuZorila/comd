@@ -5,8 +5,6 @@ $data   = new BackendProfile();
 
 $allEmployees = $data->records(Params::TBL_EMPLOYEES, ['departments_id', '=', $user->userId()], ['offices_id', 'departments_id', 'name', 'id']);
 
-
-
 ?>
 
 <!DOCTYPE html>

@@ -2,7 +2,6 @@
 require_once 'core/init.php';
 $user   = new BackendUser();
 $data   = new BackendProfile();
-$token  = new Token();
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
@@ -11,26 +10,32 @@ if (!$user->isLoggedIn()) {
 $user_id        = $user->userId();
 $department_id  = $user->departmentId();
 
-// All users and staf for one department
+/** All users and staf for one department */
 $allStaff   = $data->records(Params::TBL_TEAM_LEAD, ['supervisors_id', '=', $user_id], ['id', 'name', 'offices_id', 'supervisors_id']);
 $offices    = $data->records(Params::TBL_OFFICE, ['departments_id', '=', $department_id], ['id', 'name']);
 $allUsers   = $data->records(Params::TBL_EMPLOYEES, ['supervisors_id', '=', $user_id]);
 
-if (Input::exists()) {
+
+if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+    /** Instantiate validation class */
+    $validate = new Validate();
+    /** Validate inputs */
+    $validation = $validate->check($_POST, [
+        'year'          => ['required'  => true],
+        'month'         => ['required'  => true],
+        'employees'     => ['required'  => true],
+        'teams'         => ['required'  => true]
+    ]);
+
+    /** If validation passed */
+    if ($validation->passed()) {
+    /** Inputs */
     $prefix         = Params::PREFIX;
-    $customer_id    = Input::post('customer');
     $year           = Input::post('year');
     $month          = Input::post('month');
     $id             = Input::post('employees');
     $team           = Input::post('teams');
-    $errors         = [];
-    $errorsNoData   = [];
 
-    if (empty($year) || empty($month) || empty($id) || empty($team)) {
-        $errors = [1];
-    }
-
-    if (count($errors) == 0) {
         /** Employees details */
         $employeesData  = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $id], ['offices_id', 'name'], false);
         /** Offices data */
@@ -86,7 +91,7 @@ if (Input::exists()) {
 
         /** Check if exists values for selected options */
         if (!Common::checkValues($allData)) {
-            $errorsNoData = [1];
+            $errorsNoData[] = 1;
         }
     }
 }
@@ -129,22 +134,16 @@ include 'includes/navbar.php';
         </div>
         <?php
         /** If selected option not return data, alert */
-        if (Input::exists()) {
-            if (count($errors) > 0) {
-                include './../common/errors/errorRequired.php';
-            }
+        if (Input::exists() && $validation->countErrors()) {
+            include './../common/errors/validationErrors.php';
         }
         /** If get not return data, alert */
-        if (Input::exists('get') && !Input::exists()) {
-            if (count($errorsNoData) > 0 && count($errors) == 0) {
-                include './../common/errors/infoNoDataError.php';
-            }
+        if (Input::exists('get') && !Input::exists() && $validation->countErrors()) {
+            include './../common/errors/infoNoDataError.php';
         }
         /** If search not return data, alert */
-        if (Input::exists()) {
-            if (count($errorsNoData) > 0 && count($errors) == 0) {
-                include './../common/errors/infoNoDataError.php';
-            }
+        if (Input::exists() && count($errorsNoData) > 0 && $validation->countErrors()) {
+            include './../common/errors/infoNoDataError.php';
         }
         ?>
         <section class="no-padding-top no-padding-bottom">
@@ -154,7 +153,7 @@ include 'includes/navbar.php';
                         Filters
                     </button>
                 </p>
-                <div class="<?php if (Input::exists() && count($errors) == 0 && count($errorsNoData) == 0) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
+                <div class="<?php if (Input::exists() && !$validation->countErrors() && count($errorsNoData) == 0) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
                     <div class="card card-body">
                     <form method="post">
                         <div class="row">
@@ -206,7 +205,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="col-sm-2">
                                 <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo $token->getToken(); ?>">
+                                <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
                             </div>
                         </div>
                     </form>
@@ -215,7 +214,7 @@ include 'includes/navbar.php';
             </div>
         </section>
 <?php
-if (Input::exists() && count($errorsNoData) == 0 && count($errors) == 0) { ?>
+if (Input::exists() && count($errorsNoData) == 0 && !$validation->countErrors()) { ?>
         <section>
             <div class="col-md-12">
                 <div class="card text-white bg-dark">
@@ -298,7 +297,7 @@ if (Input::exists() && count($errorsNoData) == 0 && count($errors) == 0) { ?>
 <?php
 include "./../common/includes/scripts.php";
 
-if (Input::exists() && count($errors) == 0 && count($errorsNoData) == 0) {
+if (Input::exists() && !$validation->countErrors() && count($errorsNoData) == 0) {
     include 'charts/employees_data_chart.php';
 }
 include 'includes/js/ajax.php';
