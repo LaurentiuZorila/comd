@@ -1,8 +1,8 @@
 <?php
 session_start(); // global settings
 
-function __autoload($class_name)
-{
+spl_autoload_register(function($class_name){
+
     //commonClasses directories
     $directorys = array(
         'backendClasses/',
@@ -19,7 +19,7 @@ function __autoload($class_name)
             return;
         }
     }
-}
+});
 
 
 require_once './functions/sanitize.php';

@@ -2,6 +2,7 @@
 require_once 'core/init.php';
 $user   = new CustomerUser();
 $data   = new CustomerProfile();
+$tk     = new Tokens();
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
@@ -152,7 +153,7 @@ include 'includes/navbar.php';
                         Filters
                     </button>
                 </p>
-                <div class="<?php if (Input::exists() && count($errors) == 0 && count($errorNoData) == 0) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
+                <div class="<?php if (Input::exists() && !$validation->countErrors() && count($errorNoData) == 0) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
                 <div class="block">
                     <form method="post">
                         <div class="row">
@@ -206,7 +207,7 @@ include 'includes/navbar.php';
             </div>
         </section>
         <?php if (Input::exists('get') || Input::exists()) {
-            if ($validation->countErrors() && count($errorNoData) == 0) {
+            if (!$validation->countErrors() && count($errorNoData) == 0) {
                 $month = Input::post('month');
                 ?>
             <section>
@@ -271,7 +272,7 @@ include 'includes/navbar.php';
 <!-- JavaScript files-->
 <?php
 include "./../common/includes/scripts.php";
-if (Input::exists() && $validate->countErrors() && count($errorNoData) == 0) {
+if (Input::exists() && !$validate->countErrors() && count($errorNoData) == 0) {
     include './charts/useDataChart.php';
 }
 ?>

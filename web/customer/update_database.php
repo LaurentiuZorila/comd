@@ -111,6 +111,9 @@ include '../common/includes/head.php';
           </ul>
         </div>
           <?php
+          if (!Input::exists()) {
+              include './../common/errors/infoUpdateDB.php';
+          }
           if (Input::exists() && count($uploadSuccess) > 0) {
               include './../common/errors/uploadSuccess.php';
           } elseif (Input::exists() && count($uploadError) > 0) {
@@ -186,13 +189,13 @@ include '../common/includes/head.php';
           <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade text-left show" style="display: none;">
               <div role="document" class="modal-dialog">
                   <div class="modal-content">
-                      <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3">Info for database update!</strong>
+                      <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3">Please make attention!</strong>
                           <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
                       </div>
                       <div class="modal-body">
                           <p> Your file must have .csv extension (e.g. absentees.csv). </p>
                           <p> Your file doesn't need contain headers. </p>
-                          <p> From <a href="download.php">here</a> can download csv file example to use on your update. </p>
+                          <p> Download your file from <a href="download.php">here</a>!</p>
                           <p> For other information please contact administrator. </p>
                       </div>
                       <div class="modal-footer">
