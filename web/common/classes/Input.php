@@ -45,6 +45,7 @@ class Input
         return '';
     }
 
+
     /**
      * @param $item
      * @return string|array
@@ -62,6 +63,21 @@ class Input
             return $_GET[$item];
         }
         return '';
+    }
+
+
+    /**
+     * @param $item
+     * @return array|string
+     */
+    public static function getInput($item)
+    {
+        if (self::exists()) {
+            return self::post($item);
+        }
+        if (self::exists('get')) {
+            return self::get($item);
+        }
     }
 
 }

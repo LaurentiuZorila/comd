@@ -79,31 +79,4 @@ class Values
         return $values = explode(',', $items);
     }
 
-
-    /**
-     * @param $items
-     * @return array
-     */
-    public static function selectorArray ($items)
-    {
-        $keys = [];
-        foreach ($items as $item) {
-            foreach ($item as $key => $value) {
-                $keys[] = $key;
-                $keys = array_unique($keys);
-            }
-        }
-        return $keys;
-    }
-
-
-    /**
-     * @return mixed
-     */
-    public static function selectorString ()
-    {
-        foreach (self::selectorArray($items) as $item) {
-            return $item;
-        }
-    }
 }

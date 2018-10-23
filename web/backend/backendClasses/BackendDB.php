@@ -80,6 +80,7 @@ class BackendDB
     /**
      * @param $sql
      * @param array $params
+     * @param array $conditions
      * @return $this
      */
     public function query($sql, $params = array(), $conditions = array())

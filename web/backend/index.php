@@ -7,6 +7,7 @@ if (!$backendUser->isLoggedIn()) {
     Redirect::to('login.php');
 }
 
+
 /** All offices (id, name) */
 $offices        = $backendUserProfile->records(Params::TBL_OFFICE, ['departments_id', '=', $backendUser->departmentId()], ['id', 'name']);
 
@@ -27,9 +28,9 @@ $furlough   = $backendUserProfile->records(Params::TBL_FURLOUGH, $where, ['quant
 $absentees  = $backendUserProfile->records(Params::TBL_ABSENTEES, $where, ['quantity']);
 $unpaid     = $backendUserProfile->records(Params::TBL_UNPAID, $where, ['quantity']);
 
-/** If form is submitted */
-if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
 
+/** If form is submitted */
+if (Input::exists()) {
     /** Instantiate validation class */
     $validate = new Validate();
 
@@ -77,11 +78,11 @@ if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
             $names[] = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['id', '=', $data->employees_id], ['name'], false)->name;
         }
 
-        $chartNames     = Js::toJson($names);
-        $chartValues    = Js::chartValues($chartData, 'quantity');
-        $pieCommonData  = $countFurlough . ', ' . $countAbsentees . ', ' . $countUnpaid;
-
-        if (count($quantitySum) < 1) {
+        if (count($quantitySum) > 1) {
+            $chartNames     = Js::toJson($names);
+            $chartValues    = Js::chartValues($chartData, 'quantity');
+            $pieCommonData  = $countFurlough . ', ' . $countAbsentees . ', ' . $countUnpaid;
+        } else {
             $errorNoData[] = 1;
         }
     }
@@ -178,7 +179,7 @@ include 'includes/navbar.php';
                                 </div>
                                 <div class="col-sm-2">
                                     <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                    <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
+                                    <input type="hidden" name="token", value="<?php echo Token::generate(); ?>">
                                 </div>
                             </div>
                         </form>

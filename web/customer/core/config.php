@@ -24,7 +24,9 @@ return [
         'login_token'           => 'login_token'
     ],
     'token'     => [
-        'token'         => 'token',
-        'token_hash'    => 'token_hash'
+        'token'                 => 'token',
+        'token_hash'            => 'token_hash',
+        'submit_token'          => 'submitToken',
+        'filer_submit_token'    => 'filterSubmitToken'
     ]
 ];

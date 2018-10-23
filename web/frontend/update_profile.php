@@ -1,7 +1,7 @@
 <?php
 require_once 'core/init.php';
-$profile = new FrontendProfile();
 $user    = new FrontendUser();
+$profile = new FrontendProfile();
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
@@ -11,7 +11,7 @@ $name           = $user->name();
 $departmentName = $profile->records(Params::TBL_DEPARTMENT, ['id', '=', $user->departmentId()], ['name'], false);
 $officeName     = $profile->records(Params::TBL_OFFICE, ['id', '=', $user->officeId()], ['name'], false);
 
-if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+if (Input::exists()) {
     /** Instantiate validate class */
         $validate = new Validate();
 
@@ -53,13 +53,19 @@ if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
             $password   = password_hash($password, PASSWORD_DEFAULT);
 
             /** Update employees table */
-            $users->update(Params::TBL_EMPLOYEES, [
+            $update = $user->update(Params::TBL_EMPLOYEES, [
                 'name'      => $name,
                 'username'  => $username,
                 'password'  => $password
             ], [
                 'id' => $user->userId()
             ]);
+
+            if ($update) {
+                Session::put('profileUpdateSuccess', 'Your profile is successfully updated!');
+            } else {
+                Session::put('profileUpdateError', 'ko');
+            }
         }
 }
 ?>
@@ -88,13 +94,16 @@ include 'includes/navbar.php';
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
                 <li class="breadcrumb-item active">Profile </li>
             </ul>
         </div>
         <?php
             if (Input::exists() && $validate->countErrors()) {
                 include './../common/errors/validationErrors.php';
+            }
+            if (Session::exists('profileUpdateSuccess')) {
+                include './../common/errors/profileUpdateOk.php';
             }
         ?>
         <section>
@@ -153,7 +162,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="card-footer text-right">
                                 <input type="submit" name="Update" class="btn btn-primary" value="Update Profile">
-                                <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>" />
+                                <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
                             </div>
                         </form>
                     </div>

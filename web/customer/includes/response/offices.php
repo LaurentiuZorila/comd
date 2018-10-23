@@ -1,10 +1,11 @@
 <?php
-function __autoload($class_name)
-{
+spl_autoload_register(function($class_name){
     //commonClasses directories
     $directorys = array(
-        '../customerClasses/',
-        '../../common/classes/'
+        './../customerClasses/',
+        './../../common/classes/',
+        './../../customerClasses/',
+        './../../../common/classes/'
     );
 
     //for each directory
@@ -17,8 +18,7 @@ function __autoload($class_name)
             return;
         }
     }
-}
-
+});
 
 $data           = new CustomerProfile();
 $departmentId   = Input::get('departments_id');

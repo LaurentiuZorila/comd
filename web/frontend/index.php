@@ -2,7 +2,6 @@
 require_once 'core/init.php';
 $user           = new FrontendUser();
 $profileDetails = new FrontendProfile();
-$tk = new Tokens();
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
@@ -31,7 +30,7 @@ if (!Input::exists()) {
     ];
 }
 
-if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+if (Input::exists()) {
     Session::delete('InfoAlert');
     $validate   = new Validate();
     $validation = $validate->check($_POST, [
@@ -180,7 +179,7 @@ include 'includes/navbar.php';
                                 Filters
                             </button>
                         </p>
-                        <div class="<?php if (Input::exists() && $validate->countErrors()) {echo 'collapse show'; } else { echo 'collapse'; } ?>" id="collapseExample">
+                        <div class="<?php if (Input::exists() && !$validation->countErrors()) { echo "collapse";} else { echo "collapse show"; } ?>" id="collapseExample">
                             <div class="card card-body">
                                 <form method="post">
                                     <div class="row">
@@ -230,7 +229,7 @@ include 'includes/navbar.php';
 
                                         <div class="col-sm-2">
                                             <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                            <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
+                                            <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
                                         </div>
                                     </div>
                                 </form>

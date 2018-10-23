@@ -4,7 +4,7 @@ $customer = new CustomerUser();
 $records  = new CustomerProfile();
 
 /** Check get token */
-if (!Tokens::checkRoute(Input::get('r')) && !empty(Input::get('setup'))) {
+if (empty(Input::get('setup')) && !$customer->isLoggedIn()) {
     Redirect::to('../login.php');
 }
 
@@ -118,7 +118,6 @@ if (Input::exists()) {
                 'id' => $customerDetails->offices_id
             ]);
 
-
             /** Instantiate Create Class */
             $create = new Create();
 
@@ -135,7 +134,7 @@ if (Input::exists()) {
         if (count($allErrors) === 0)
         {
             Session::put('configOk', 'Now you need to update your database.');
-            Redirect::to('../index.php');
+            Redirect::to('../update_database.php');
         }
 }
 
@@ -159,10 +158,13 @@ if (Input::exists()) {
 	<!--     Fonts and icons     -->
 	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 	<!-- CSS Files -->
 	<link href="assets/css/bootstrap.min.css" rel="stylesheet" />
 	<link href="assets/css/material-bootstrap-wizard.css" rel="stylesheet" />
+    <!-- Custom Font Icons CSS-->
+    <link rel="stylesheet" href="./../../common/css/fonts.css">
 
 	<!-- CSS Just for demo purpose, don't include it in your project -->
 	<link href="assets/css/demo.css" rel="stylesheet" />
@@ -343,7 +345,6 @@ if (Input::exists()) {
 		                        <div class="wizard-footer">
 		                            <div class="pull-right">
 		                                <input type='button' class='btn btn-next btn-fill btn-primary btn-wd' name='next' value='Next' />
-                                        <input type="hidden" name="setupToken" value="" />
 		                                <input type="submit" class='btn btn-finish btn-fill btn-primary btn-wd' name="finish" value='Finish' />
 		                            </div>
 

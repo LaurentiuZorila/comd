@@ -2,7 +2,7 @@
 require_once 'core/init.php';
 $user   = new CustomerUser();
 $data   = new CustomerProfile();
-$tk     = new Tokens();
+
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
@@ -16,7 +16,7 @@ $allTables = explode(',', trim($allTables->tables));
 $allEmployees = $data->records($data::TBL_EMPLOYEES, ['offices_id', '=', $user->officesId()], ['id', 'name']);
 
 
-if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+if (Input::exists()) {
     /** Instantiate validation class */
     $validate = new Validate();
     /** Validate  inputs */
@@ -32,7 +32,6 @@ if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
         $employeesId    = Input::post('employees');
         $year           = Input::post('year');
         $month          = Input::post('month');
-        $errors         = [];
         $errorNoData    = [];
 
             /** Conditions for action */
@@ -48,16 +47,15 @@ if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
             foreach ($allTables as $table) {
                 $prefix     = $data::PREFIX;
                 $key[]      = $table;
-                $values[]   = Common::columnValues($data->records($prefix . trim($table), $where, ['quantity']), 'quantity');
+                $values[]   = $data->records($prefix . trim($table), $where, ['quantity'], false)->quantity;
                 $allData    = array_combine($key, $values);
             }
 
             /** All data for customer */
             $employeesDetails = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $employeesId], ['name', 'offices_id'], false);
-            $officeObj        = $data->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['name'], false);
 
-            $name = $employeesDetails->name;
-            $officeName = $officeObj->name;
+            $name       = $employeesDetails->name;
+            $officeName = $data->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['name'], false)->name;
             $initials   = Common::makeAvatar($name);
 
             /** Check if exists values */
@@ -199,7 +197,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="col-sm-2">
                                 <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
+                                <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
                             </div>
                         </div>
                     </form>
@@ -248,7 +246,7 @@ include 'includes/navbar.php';
                                     <div class="stats-2 d-flex">
                                         <div class="stats-2-arrow low"><i class="fa fa-line-chart"></i></div>
                                         <div class="stats-2-content">
-                                            <strong class="d-block dashtext-1"><?php echo $value; ?></strong>
+                                            <strong class="d-block dashtext-1"><?php echo $value == '' || $value == null ? 0 : $value; ?></strong>
                                             <span class="d-block"><? echo strtoupper($key); ?></span>
                                             <div class="progress progress-template progress-small">
                                                 <div role="progressbar" style="width: <?php echo $value; ?>%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template progress-bar-small dashbg-2"></div>

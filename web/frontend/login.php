@@ -1,14 +1,20 @@
 <?php
 require_once 'core/init.php';
 
-if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+if (Input::exists()) {
     /** Instantiate validate class */
     $validate = new Validate();
     /** Check fields */
-    $validation = $validate->check($_POST, array(
-        'username' => array('required'  => true),
-        'password' => array('required'  => true)
-    ));
+    $validation = $validate->check($_POST, [
+        'username' => [
+                'required'  => true,
+                'min'       => 2
+            ],
+        'password' => [
+                'required'  => true,
+                'min'       => 5
+            ]
+    ]);
 
     /** Check if validation is passed */
     if ($validation->passed()) {
@@ -18,10 +24,6 @@ if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
             Redirect::to('index.php');
         } else {
             Session::put('loginFailed', 'Username or password not valid! Please try again!');
-        }
-    } else {
-        foreach ($validation->errors() as $error) {
-            Session::put('validationError', $error);
         }
     }
 }
@@ -37,6 +39,9 @@ include '../common/includes/head.php';
       <div class="container d-flex align-items-center">
         <div class="form-holder has-shadow">
             <?php
+            if (Input::exists() && $validation->countErrors()) {
+                include '../common/errors/validationErrors.php';
+            }
             if (Session::exists('loginFailed')) { ?>
                 <div class="alert alert-danger alert-dismissible fade show">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -72,7 +77,7 @@ include '../common/includes/head.php';
                     </div>
                     <div class="form-group">
                       <input id="login-password" type="password" name="password" required data-msg="Please enter your password" class="input-material">
-                        <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
+                      <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
                       <label for="login-password" class="label-material">Password</label>
                     </div><button type="submit" id="login" class="btn btn-primary" name="login">Login</button>
                     <!-- This should be submit button but I replaced it with <a> for demo purposes-->

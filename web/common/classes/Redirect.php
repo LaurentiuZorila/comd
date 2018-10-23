@@ -33,7 +33,7 @@ class Redirect {
                     }
                     $header = implode('&', $header);
                 }
-                header('Location: '.$location . '?' . $header . '&r=' . Tokens::getRouteToken());
+                header('Location: '.$location . '?' . $header . '&r=' . 'adsvbvfjhgjytftsaeacdhyftr35344yrthgn');
                 exit();
             }
             header('Location: '.$location);

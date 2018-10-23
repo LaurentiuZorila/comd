@@ -8,7 +8,7 @@ $leads          = $data->records(Params::TBL_TEAM_LEAD, ['supervisors_id', '=', 
 $offices        = $data->records(Params::TBL_OFFICE, ['departments_id', '=', $user->departmentId()]);
 
 
-if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+if (Input::exists()) {
     /** Instantiate validate class */
     $validate   = new Validate();
     /** Check finput fields */
@@ -132,7 +132,7 @@ include 'includes/navbar.php';
                                     <div class="line"></div>
                                     <div class="col-sm-9 ml-auto">
                                         <input type="submit" name="save" class="btn btn-primary" value="Save"/>
-                                        <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?> ">
+                                        <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
                                     </div>
                                 </div>
                             </form>

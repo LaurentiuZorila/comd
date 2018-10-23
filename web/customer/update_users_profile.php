@@ -2,13 +2,12 @@
 require_once 'core/init.php';
 $customerUser  = new CustomerUser();
 $data          = new CustomerProfile();
-$token         = new Token();
 
 $allEmployees   = $data->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $customerUser->officesId()], ['name', 'offices_id', 'id', 'departments_id']);
 $departments    = $data->records(Params::TBL_DEPARTMENT, [], ['id', 'name']);
 
 
-if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+if (Input::exists()) {
     $employeesId    = Input::post('user');
     $departmentId   = Input::post('department');
     $officesId      = Input::post('office');
@@ -25,7 +24,7 @@ if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
         $employeesDetails       = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $employeesId], ['departments_id', 'offices_id'], false);
         $employeesRecentTables  = $data->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['tables'], false);
 
-        /* Employees tables */
+        /** Employees tables */
         $empRecentTables  = explode(',', $employeesRecentTables->tables);
 
 
@@ -122,13 +121,17 @@ include 'includes/navbar.php';
                                     <div class="form-group row">
                                         <label class="col-sm-3 form-control-label">Select employees</label>
                                         <div class="col-sm-9">
-                                            <select name="user" class="form-control mb-3 mb-3">
+                                            <select name="user" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('user'))) {echo 'is-invalid';} ?>">
                                                 <option value="">Select user</option>
                                                 <?php
                                                 foreach ($allEmployees as $employees) { ?>
                                                     <option value="<?php echo $employees->id; ?>"><?php echo $employees->name; ?><small>(<?php echo escape($data->records(Params::TBL_DEPARTMENT, ['id', '=', $employees->departments_id], ['name'], false)->name);?> - <?php echo escape($data->records(Params::TBL_OFFICE, ['id', '=', $employees->offices_id], ['name'], false)->name); ?>)</small></option>
                                                 <?php } ?>
                                             </select>
+                                            <?php
+                                            if (Input::exists() && empty(Input::post('user'))) { ?>
+                                                <div class="invalid-feedback">Please select year.</div>
+                                            <?php }?>
                                         </div>
                                     </div>
 
@@ -136,13 +139,17 @@ include 'includes/navbar.php';
                                     <div class="form-group row">
                                         <label class="col-sm-3 form-control-label">Department to move:</label>
                                         <div class="col-sm-9">
-                                            <select name="department" class="form-control mb-3 mb-3">
+                                            <select name="department" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('department'))) {echo 'is-invalid';} ?>">
                                                 <option value="">Select department</option>
                                                 <?php
                                                 foreach ($departments as $department) { ?>
                                                 <option value="<?php echo $department->id; ?>"><?php echo $department->name; ?></option>
                                                 <?php } ?>
                                             </select>
+                                            <?php
+                                            if (Input::exists() && empty(Input::post('department'))) { ?>
+                                                <div class="invalid-feedback">Please select year.</div>
+                                            <?php }?>
                                         </div>
                                     </div>
 
@@ -150,14 +157,18 @@ include 'includes/navbar.php';
                                     <div class="form-group row">
                                         <label class="col-sm-3 form-control-label">Office to move:</label>
                                         <div class="col-sm-9">
-                                            <select name="office" class="form-control mb-3 mb-3">
+                                            <select name="office" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('office'))) {echo 'is-invalid';} ?>">
                                                 <option value="">Select office</option>
                                             </select>
+                                            <?php
+                                            if (Input::exists() && empty(Input::post('office'))) { ?>
+                                                <div class="invalid-feedback">Please select year.</div>
+                                            <?php }?>
                                         </div>
                                     </div>
                                     <div class="line"></div>
                                     <div class="col-sm-9 ml-auto">
-                                        <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>"/>
+                                        <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
                                         <button type="submit" name="save" class="btn btn-primary">Save changes</button>
                                     </div>
                                 </form>

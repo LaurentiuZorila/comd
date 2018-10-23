@@ -109,8 +109,8 @@ class CustomerUser
 
     /**
      * @param $table
-     * @param null $customer_id
      * @param array $fields
+     * @param array $conditions
      * @throws Exception
      */
     public function update($table, $fields = array(), $conditions = array())

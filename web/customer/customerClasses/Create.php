@@ -34,15 +34,17 @@ class Create
     {
         $table  = trim(strtolower($table));
         $tbl    = Params::PREFIX . $table;
+
         $sql = " 
             CREATE TABLE IF NOT EXISTS {$tbl} (
-                id               INT AUTO_INCREMENT PRIMARY KEY, 
-                offices_id       INT(),
-                departments_id   INT(),
-                employees_id     INT(11),
-                year             YEAR(4),
-                month            TINYINT(2),
-                quantity         SMALLINT(5)
+                id                    INT AUTO_INCREMENT PRIMARY KEY, 
+                offices_id            INT(11),
+                departments_id        INT(11),
+                employees_id          INT(11),
+                employees_average_id  VARCHAR(255),
+                year                  YEAR(4),
+                month                 TINYINT(2),
+                quantity              SMALLINT(5)
             )";
 
         if ($this->_toCreate) {

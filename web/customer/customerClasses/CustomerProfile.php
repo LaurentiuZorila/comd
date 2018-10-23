@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class CustomerProfile
+ */
 class CustomerProfile
 {
     private $_db;
@@ -55,8 +58,19 @@ class CustomerProfile
      */
     public function sum($table, array $where, $column)
     {
-        $sum = $this->_db->sum($table, $where, $column)->first();
-        return $sum->sum;
+        return $this->_db->sum($table, $where, $column)->first()->sum;
+    }
+
+    /**
+     * @param $table
+     * @param $where
+     * @param string $column
+     * @return string
+     */
+    public function average($table, $where, $column ='')
+    {
+        $average = $this->_db->average($table, $where, $column)->first();
+        return number_format($average->average, 2);
     }
 
 

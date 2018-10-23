@@ -42,7 +42,7 @@ class FrontendDB
 
 
     /**
-     * DB constructor.
+     * FrontendDB constructor.
      */
     private function __construct()
     {
@@ -55,7 +55,7 @@ class FrontendDB
 
 
     /**
-     * @return BackendDB|null
+     * @return FrontendDB|null
      */
     public static function getInstance()
     {
@@ -167,7 +167,7 @@ class FrontendDB
      * @param $table
      * @param $where
      * @param array $columns
-     * @return bool|BackendDB
+     * @return bool|FrontendDB
      */
     public function get($table, $where, $columns = ['*'])
     {
@@ -249,8 +249,8 @@ class FrontendDB
     /**
      * @param $table
      * @param $where
-     * @param array $columns
-     * @return bool|BackendDB
+     * @param string $column
+     * @return bool|FrontendDB
      */
     public function average($table, $where, $column = 'quantity')
     {

@@ -12,7 +12,7 @@ class Common
     const ALLOWED_CHARACTERS = ['<', '>'];
 
     /**
-     * ProfileDetails constructor.
+     * Common constructor.
      */
     public function __construct()
     {
@@ -104,6 +104,7 @@ class Common
 
     /**
      * @param $items
+     * @param $column
      * @return array
      */
     public static function objToArray ($items, $column)
@@ -141,7 +142,7 @@ class Common
     /**
      * @return array
      */
-    public static function getMonths()
+    public static function getMonths() :array
     {
         for ($x = 1; $x < 13; $x++) {
             $months[$x] = date("F", mktime(0, 0, 0, $x, 10));
@@ -168,11 +169,12 @@ class Common
 
     /**
      * @param $item
+     * @param int $char
      * @return string
      */
-    public static function number($item)
+    public static function number($item, $char = 2)
     {
-        return number_format($item, 2);
+        return number_format($item, $char);
     }
 
 
@@ -209,7 +211,7 @@ class Common
 
 
     /**
-     * @param array $array
+     * @param $array
      * @return false|string
      */
     public static function toJson(array $array)
@@ -224,7 +226,7 @@ class Common
      */
     public static function toArray($json)
     {
-        return json_decode($json);
+        return (array)json_decode($json);
     }
 
 }

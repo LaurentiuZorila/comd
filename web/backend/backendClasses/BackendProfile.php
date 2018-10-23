@@ -16,7 +16,9 @@ class BackendProfile
     /**
      * @param $table
      * @param array $where
-     * @return object
+     * @param array $column
+     * @param bool $all
+     * @return mixed
      */
     public function records($table, array $where, $column = ['*'], $all = true)
     {
@@ -51,13 +53,14 @@ class BackendProfile
 
 
     /**
-     * @param $lead_id
-     * @return float average
+     * @param array $where
+     * @return int
      */
     public function rating(array $where)
     {
         $rating = $this->_db->average(Params::TBL_RATING, $where, 'rating')->results();
-        return (int)round(Common::columnValues($rating, 'average'));
+//        return (int)round(Common::columnValues($rating, 'average'));
+        return (int)round($rating->average);
     }
 
 

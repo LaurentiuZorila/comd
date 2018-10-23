@@ -4,50 +4,32 @@
  */
 class Token {
 
-    private $_token;
+    private static $_tokenName       = 'submit_token';
 
-    private $_tokenHash;
+    private static $_filterTokenName = 'filer_submit_token';
 
-    private $_randomId;
+    public static $inputName         = 'token';
 
-    private $_setupTokenHash;
+    public static $filterToken       = 'filter';
 
 
     /**
      * @return mixed
      */
-    public function __construct()
-    {
-        $this->_tokenHash       = Session::get('tokenHash');
-        $this->_token           = Session::get('token');
-        $this->_setupTokenHash  = Session::get('setupToken');
-
-        if (!isset($_POST)) {
-            $this->_randomId        = uniqid();
-            $hash                   = password_hash($this->_randomId, PASSWORD_DEFAULT);
-            $this->_token           = Session::put('token', $this->_randomId);
-            $this->_tokenHash       = Session::put('tokenHash', $hash);
-            $this->_setupTokenHash  = Session::put('setupToken', $hash);
+    public static function generate() {
+        if (Session::exists(self::$_tokenName)) {
+            Session::delete(self::$_tokenName);
         }
+        return Session::put(self::$_tokenName, md5(bin2hex(random_bytes(16))));
     }
 
 
     /**
      * @return mixed
-     * @ Genereate token
      */
-    public function getToken()
+    public static function filterValue()
     {
-        return $this->_token;
-    }
-
-    /**
-     * @return mixed
-     * @ Generate token hash
-     */
-    public function getTokenHash()
-    {
-        return $this->_tokenHash;
+        return Session::put(self::$_filterTokenName, md5(bin2hex(random_bytes(8))));
     }
 
 
@@ -55,18 +37,29 @@ class Token {
      * @param $token
      * @return bool
      */
-    public function checkToken($token)
+    public static function checkSubmit($token)
     {
-        return password_verify($token, $this->_tokenHash);
+        $hashToken = Session::get(Config::get(self::$_filterTokenName));
+        if (Session::exists(self::$_filterTokenName) && hash_equals($hashToken, $token)) {
+            Session::delete(self::$_filterTokenName);
+            return true;
+        }
+        Redirect::to('../error/notFoundToken.php');
     }
 
 
     /**
-     * @param $tokenHash
+     * @param $token
      * @return bool
+     * @throws Exception
      */
-    public function checkHashToken($tokenHash)
+    public static function check($token)
     {
-        return password_verify($this->_token, $tokenHash);
+        if (Session::exists(self::$_tokenName) && hash_equals(Session::get(self::$_tokenName), $token)) {
+            Session::delete(self::$_tokenName);
+            return true;
+        }
+//        Redirect::to('../error/notFoundToken.php');
+        return false;
     }
 }

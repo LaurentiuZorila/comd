@@ -2,12 +2,10 @@
 require_once 'core/init.php';
 $user   = new BackendUser();
 $data   = new BackendProfile();
-$token  = new Token();
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
 }
-
 
 $leadId         = Input::get('lead_id');
 $officeId       = Input::get('office_id');
@@ -49,7 +47,7 @@ if (Input::exists('get')) {
 
 }
 
-if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+if (Input::exists()) {
     /** Instantiate validate class */
     $validate = new Validate();
 
@@ -129,7 +127,7 @@ include 'includes/navbar.php';
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
                 <li class="breadcrumb-item active">Profile </li>
             </ul>
         </div>
@@ -186,7 +184,7 @@ include 'includes/navbar.php';
                                         </div>
                                         <div class="col-sm-12">
                                             <input value="Submit" name="Filter" class="btn btn-outline-primary" type="submit">
-                                            <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
+                                            <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
                                         </div>
                                     </div>
                                 </form>

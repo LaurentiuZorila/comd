@@ -61,12 +61,12 @@ class Validate
                     switch ($rule) {
                         case 'min':
                             if (trim(strlen($value)) < $rule_value) {
-                                $this->addError("{$errorItem} must be a minimum of {$rule_value} characters!");
+                                $this->addError(sprintf("%s must be a minimum of %d characters!", $errorItem, $rule_value));
                             }
                             break;
                         case 'max':
                             if (trim(strlen($value)) > $rule_value) {
-                                $this->addError("{$errorItem} must be a maximum of {$rule_value} characters!");
+                                $this->addError(sprintf("%s must be a maximum of %d characters!", $errorItem, $rule_value));
                             }
                             break;
                         case 'matches':
@@ -77,7 +77,7 @@ class Validate
                         case 'unique':
                             $check = $this->_db->get($rule_value, $where = [$item, '=', $value]);
                             if ($check->count()) {
-                                $this->addError("{$errorItem} already exists!");
+                                $this->addError(sprintf("%s already exists!", $errorItem));
                             }
                             break;
                         case 'email':
@@ -87,12 +87,12 @@ class Validate
                             break;
                         case 'letters':
                             if (is_numeric($value)) {
-                                $this->addError("{$errorItem} must contain only letters!");
+                                $this->addError(sprintf("%s must contain only letters!", $errorItem));
                             }
                             break;
                         case 'characters':
                             if (is_numeric($value) && ctype_alpha($value)) {
-                                $this->addError("{$errorItem} must contain only characters!");
+                                $this->addError(sprintf("%s must contain only characters!", $errorItem));
                             }
                             break;
                     }

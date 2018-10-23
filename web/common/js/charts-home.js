@@ -637,7 +637,7 @@ $(document).ready(function () {
                         '#723ac3',
                         "#864DD9",
                         "#9762e6",
-                        "#a678eb"
+                        "#adb5bd"
                     ]
                 }]
             }

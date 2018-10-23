@@ -1,5 +1,9 @@
 <?php
 require_once 'core/init.php';
+require_once '../vendor/league/csv/autoload.php';
+
+use League\Csv\Reader;
+
 $user   = new CustomerUser();
 $data   = new CustomerProfile();
 
@@ -20,7 +24,7 @@ foreach ($allTables as $value) {
 }
 
 
-if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+if (Input::exists()) {
     $validate = new Validate();
     $validation = $validate->check($_POST, [
         'year'      => ['required' => true],
@@ -28,8 +32,8 @@ if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
         'tables'    => ['required' => true]
     ]);
 
-    if ($validation->passed()) {
 
+    if ($validation->passed()) {
         $year   = Input::post('year');
         $month  = Input::post('month');
         $table  = trim(Input::post('tables'));
@@ -54,12 +58,13 @@ if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
             if (($h = fopen("{$filename}", "r")) !== FALSE) {
                 while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
                     $user->insert($table, [
-                        'offices_id'        => $user->officesId(),
-                        'departments_id'    => $user->departmentId(),
-                        'year'              => $year,
-                        'month'             => $month,
-                        'employees_id'      => $data[0],
-                        'quantity'          => $data[1]
+                        'offices_id'            => $user->officesId(),
+                        'departments_id'        => $user->departmentId(),
+                        'year'                  => $year,
+                        'month'                 => $month,
+                        'employees_id'          => $data[0],
+                        'employees_average_id'  => $data[0]. '_' .$year,
+                        'quantity'              => $data[1]
                     ]);
                 }
                 if ($user->success()) {
@@ -132,7 +137,7 @@ include '../common/includes/head.php';
                               <div class="col-sm-12">
                                   <div class="title">
                                       <strong>Update your database</strong>
-                                      <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-primary btn-sm float-sm-right"><i class="fa fa-info-circle"></i></button>
+                                      <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-primary btn-sm float-sm-right" id="info_upload"><i class="fa fa-info-circle"></i></button>
                                   </div>
                               </div>
 
@@ -178,7 +183,7 @@ include '../common/includes/head.php';
                               </div>
                               <div class="col-sm-2">
                                   <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                  <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
+                                  <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
                               </div>
                           </div>
                       </form>
@@ -214,7 +219,10 @@ include '../common/includes/head.php';
   <?php
   include "./../common/includes/scripts.php";
   ?>
-
+  <script src="./../common/vendor/pulsate/jquery.pulsate.js"></script>
+  <script>
+      $("#info_upload").pulsate({color:"#633b70;"});
+  </script>
   </body>
 </html>
 

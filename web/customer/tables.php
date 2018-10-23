@@ -3,10 +3,18 @@ require_once 'core/init.php';
 $user = new CustomerUser();
 $data = new CustomerProfile();
 
+// All tables, employees id
+$allTables   = $data->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['tables'], false);
+$employeesID = $data->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $user->officesId()], ['id']);
+$allTables   = explode(',', trim($allTables->tables));
+// Trim values
+$allTables   = array_map('trim', $allTables);
 
-// All tables
-$allTables = $data->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['tables'], false);
-$allTables = explode(',', trim($allTables->tables));
+/** Foreach to get employees id */
+foreach ($employeesID as $ids) {
+    //  Employees ids
+    $employeesId[] = $ids->id;
+}
 
 // Conditions for action
 $year   = date('Y');
@@ -21,13 +29,12 @@ $prefix = Params::PREFIX;
         ['month', '=', $month]
     ];
 
+    /** Tables with prefix and without prefixTbl => tbl */
     foreach ($allTables as $value) {
         $tables[$prefix . trim($value)] = trim($value);
     }
-
-    foreach ($tables as $key => $table) {
-        $allRecords[$table] = $data->records($key, $where, ['employees_id', 'quantity']);
-    }
+    // Transform to upper case values of array
+    $tables = array_map('strtoupper', $tables);
 ?>
 
 <!DOCTYPE html>
@@ -63,40 +70,38 @@ include 'includes/navbar.php';
         <section class="no-padding-top">
             <div class="container-fluid">
                 <div class="row">
-                    <?php
-                    foreach ($allRecords as $key => $records) { ?>
-                    <div class="col-sm-3">
+                    <div class="col-lg-12">
                         <div class="block margin-bottom-sm">
-                            <div class="title text-center"><strong class="text-primary"><?php echo ucfirst($key); ?></strong></div>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                            <tr role="row">
-                                                <th class="sorting_asc" tabindex="0" aria-controls="datatable1" rowspan="1" colspan="1"
-                                                    aria-sort="ascending"
-                                                    aria-label="">Name
-                                                </th>
-                                                <th class="sorting" tabindex="0" aria-controls="datatable1" rowspan="1" colspan="1"
-                                                    style="width: 50px;" aria-label="">Data
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        <?php
-                                        foreach ($records as $record) { ?>
+                            <div class="title text-center"><strong class="text-primary">Data for all employees </strong></div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="text-primary">NAME</th>
+                                            <?php foreach ($tables as $upperTable) { ?>
+                                            <th class="text-primary"> <?php echo $upperTable; ?> </th>
+                                            <?php } ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php
+                                        foreach ($employeesId as $id) { ?>
                                             <tr role="row" class="odd">
-                                                <td class="sorting_1"><a
-                                                            href="user_data.php?id=<?php echo $record->employees_id; ?>&table=<?php echo $key; ?>"
-                                                            class="text-white-50"><?php echo $data->records(Params::TBL_EMPLOYEES, ['id', '=', $record->employees_id], ['name'], false)->name; ?></a></td>
-                                                <td class="text-danger"><?php echo $record->quantity; ?></td>
+                                                <td class="">
+                                                    <a href="user_data.php?id=<?php echo $id;?>" class="text-white-50"><?php echo $data->records(Params::TBL_EMPLOYEES, ['id', '=', $id], ['name'], false)->name; ?></a>
+                                                </td>
+                                                <?php foreach ($tables as $k => $v) { ?>
+                                                <td class="text-white-50">
+                                                    <?php echo $data->records($k, ['employees_id', '=', $id,], ['quantity'], false)->quantity; ?>
+                                                </td>
+                                                <?php } ?>
                                             </tr>
-                                        <?php } ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                             </div>
+                                     <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    <?php } ?>
+                    </div>
                 </div>
             </div>
         </section>

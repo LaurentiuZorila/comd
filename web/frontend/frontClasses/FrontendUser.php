@@ -6,7 +6,7 @@
 class FrontendUser
 {
     /**
-     * @var BackendDB|null
+     * @var FrontendDB|null
      */
     private $_db;
 
@@ -66,9 +66,8 @@ class FrontendUser
     const FRONT_TBL = 'cmd_employees';
 
 
-
     /**
-     * User constructor.
+     * FrontendUser constructor.
      * @param null $user
      */
     public function __construct($user = null)
@@ -156,8 +155,9 @@ class FrontendUser
 
     /**
      * @param $table
-     * @param null $customer_id
      * @param array $fields
+     * @param array $conditions
+     * @return bool
      * @throws Exception
      */
     public function update($table, $fields = array(), $conditions = array())
@@ -167,6 +167,7 @@ class FrontendUser
             $this->_error = true;
             throw new Exception('There was a problem, please try again!');
         }
+        return true;
     }
 
 

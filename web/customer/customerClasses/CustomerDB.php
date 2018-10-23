@@ -38,7 +38,7 @@ class CustomerDB
 
 
     /**
-     * DB constructor.
+     * CustomerDB constructor.
      */
     private function __construct()
     {
@@ -61,6 +61,8 @@ class CustomerDB
         }
         return self::$_instance;
     }
+
+
     /**
      * @return PDO
      */
@@ -69,6 +71,7 @@ class CustomerDB
         return $this->_pdo;
     }
 
+
     /**
      * @return mixed
      */
@@ -76,6 +79,7 @@ class CustomerDB
     {
         return call_user_func_array([$this->getPdo(), 'exec'], func_get_args());
     }
+
 
     /**
      * @param $sql
@@ -156,7 +160,7 @@ class CustomerDB
     }
 
 
-    /***
+    /**
      * @param $table
      * @param $where
      * @param array $columns
@@ -171,7 +175,7 @@ class CustomerDB
     /**
      * @param $table
      * @param $where
-     * @return bool|BackendDB
+     * @return bool|CustomerDB
      */
     public function delete($table, $where)
     {
@@ -210,8 +214,8 @@ class CustomerDB
 
     /**
      * @param $table
-     * @param $id
      * @param $fields
+     * @param $conditions
      * @return bool
      */
     public function update($table, $fields, $conditions)
@@ -241,12 +245,12 @@ class CustomerDB
     /**
      * @param $table
      * @param $where
-     * @param array $columns
-     * @return bool|BackendDB
+     * @param string $column
+     * @return bool|CustomerDB
      */
     public function average($table, $where, $column = '')
     {
-        return $this->action(sprintf('SELECT AVG(%s) as average', $column), $table, $where);
+        return $this->action(sprintf('SELECT AVG(%s) as average ', $column), $table, $where);
     }
 
 
@@ -254,7 +258,7 @@ class CustomerDB
      * @param $table
      * @param $where
      * @param string $column
-     * @return bool|BackendDB
+     * @return bool|CustomerDB
      */
     public function sum($table, $where, $column = '')
     {
@@ -271,9 +275,8 @@ class CustomerDB
     }
 
 
-
     /**
-     * @return mixed
+     * @return null
      */
     public function first()
     {

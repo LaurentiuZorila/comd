@@ -2,6 +2,7 @@
 require_once 'core/init.php';
 $user   = new CustomerUser();
 $data   = new CustomerProfile();
+$best   = new Best($user->officesId());
 
 if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
@@ -24,8 +25,10 @@ foreach ($allTables as $table) {
     $tables[trim($table)] = trim($table);
 }
 
+
+
 /** If form is submitted */
-if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+if (Input::exists()) {
     /** Instantiate validation class */
     $validate = new Validate();
     // Check if all fields are filed
@@ -42,14 +45,7 @@ if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
         $officeId   = $user->officesId();
         $npTable    = Input::post('table');
         $table      = Params::PREFIX . trim(Input::post('table'));
-        $errors = [];
         $quantitySum = [];
-
-        /** Get priority table for best operator */
-        $priority       = $data->records(Params::TBL_OFFICE, ['id', '=', $user->customerId()], ['tables_priorities'], false);
-
-        /** Priority table */
-        $priorityTable  = Common::objToArrayOneValue($priority, 'tables_priorities', 1);
 
 
         /** Conditions for action */
@@ -149,7 +145,7 @@ include '../common/includes/head.php';
                     Filters
                 </button>
             </p>
-            <div class="<?php if (Input::exists() && count($errors) == 0 && count($errorNoData) == 0) { echo "collapse";} elseif(!Input::exists()) { echo "collapse"; } else { echo "collapse show"; } ?>" id="filter">
+            <div class="<?php if (Input::exists() && !$validation->countErrors() && count($errorNoData) == 0) { echo "collapse";} elseif(!Input::exists()) { echo "collapse"; } else { echo "collapse show"; } ?>" id="filter">
               <div class="block">
                   <form method="post">
                     <div class="row">
@@ -198,7 +194,7 @@ include '../common/includes/head.php';
 
                             <div class="col-sm-2">
                                 <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
+                                <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
                             </div>
                     </div>
                   </form>
@@ -228,7 +224,7 @@ include '../common/includes/head.php';
                         <div class="title">
                           <div class="icon"><i class="icon-info"></i></div><strong>Total absentees</strong>
                         </div>
-                        <div class="number dashtext-3"><?php echo $sumAbsentees; ?></div>
+                        <div class="number dashtext-3"><?php echo $sumAbsentees > 0 ? $sumAbsentees : 0; ?></div>
                       </div>
                       <div class="progress progress-template">
                         <div role="progressbar" style="width: 100%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
@@ -242,7 +238,7 @@ include '../common/includes/head.php';
                         <div class="title">
                           <div class="icon"><i class="icon-list-1"></i></div><strong>Total furlough</strong>
                         </div>
-                        <div class="number dashtext-3"><?php echo $sumFurlough; ?></div>
+                        <div class="number dashtext-3"><?php echo $sumFurlough > 0 ? $sumFurlough : 0; ?></div>
                       </div>
                       <div class="progress progress-template">
                         <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
@@ -256,7 +252,7 @@ include '../common/includes/head.php';
                             <div class="title">
                                 <div class="icon"><i class="icon-list-1"></i></div><strong>Total unpaid</strong>
                             </div>
-                            <div class="number dashtext-3"><?php echo $sumUnpaid; ?></div>
+                            <div class="number dashtext-3"><?php echo $sumUnpaid > 0 ? $sumUnpaid : 0; ?></div>
                         </div>
                         <div class="progress progress-template">
                             <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
@@ -267,7 +263,9 @@ include '../common/includes/head.php';
           </div>
         </section>
 <!--        ********************       CHARTS         ********************   -->
-          <?php if (Input::exists() && count($errors) === 0 && count($errorNoData) === 0) { ?>
+          <?php
+          /** IF FORM IS SUBMITTED */
+          if (Input::exists() && !$validation->countErrors() && count($errorNoData) === 0) { ?>
                   <section class="no-padding-bottom">
                       <div class="container-fluid">
                           <div class="row">
@@ -290,52 +288,43 @@ include '../common/includes/head.php';
                           </div>
                       </div>
                   </section>
-              <?php } ?>
           <!--        ********************       CHARTS   END      ********************   -->
 
         <section class="no-padding-bottom">
           <div class="container-fluid">
               <!--              FOR BEST OPERATOR-->
             <div class="row">
-              <div class="col-lg-4">
+              <div class="col-lg-2">
                 <div class="user-block block text-center">
                   <div class="avatar"><img src="./../common/img/user.png" alt="..." class="img-fluid">
                     <div class="order dashbg-2">1st</div>
-                  </div><a href="#" class="user-title">
-                    <h3 class="h5">Richard Nevoreski</h3><span>@richardnevo</span></a>
-                  <div class="contributions">Best Operator</div>
-                  <div class="details d-flex">
-                    <div class="item"><i class="icon-info"></i><strong>150</strong></div>
-                    <div class="item"><i class="fa fa-gg"></i><strong>340</strong></div>
-                    <div class="item"><i class="icon-flow-branch"></i><strong>460</strong></div>
-                  </div>
+                  </div><a href="#" class="user-title mb-0"><h3 class="h5"><?php echo $best->getBestEmployeesName(); ?></h3></a>
+                  <div class="contributions mb-2">Best Operator</div>
+                      <?php
+                      foreach ($best->getCommonData() as $key => $commonData) { ?>
+                          <p class="text-primary mb-0"><small><?php echo strtoupper($key) . ' - ' . $commonData; ?></small></p>
+                      <?php } ?>
                 </div>
               </div>
-                <div class="col-lg-4">
+                <div class="col-lg-5">
                     <div class="stats-with-chart-1 block" style="height: 91%;">
-                        <div class="title"> <strong class="d-block">Target</strong><span class="d-block">Lorem ipsum dolor sit</span></div>
+                        <div class="title"> <strong class="d-block"><?php echo strtoupper($best->getFirstPriorityTbl()) . ' AVERAGE'; ?></strong></div>
                         <div class="row d-flex align-items-end justify-content-between">
-                            <div class="col-5">
-                                <div class="text"><strong class="d-block dashtext-3">$740</strong><span class="d-block">May 2017</span><small class="d-block">320 Sales</small></div>
-                            </div>
-                            <div class="col-7">
+                            <div class="col-12">
                                 <div class="bar-chart chart">
-                                    <canvas id="salesBarChart1"></canvas>
+                                    <canvas id="bestFirst" style="display: block; width: 400px; height: 250px;" width="400" height="250"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-5">
                     <div class="stats-with-chart-1 block" style="height: 91%;">
-                        <div class="title"> <strong class="d-block">Quality</strong><span class="d-block">Lorem ipsum dolor sit</span></div>
+                        <div class="title"> <strong class="d-block"><?php echo strtoupper($best->getSecondPriorityTbl()) . ' AVERAGE'; ?></strong></div>
                         <div class="row d-flex align-items-end justify-content-between">
-                            <div class="col-4">
-                                <div class="text"><strong class="d-block dashtext-1">$457</strong><span class="d-block">May 2017</span><small class="d-block">210 Sales</small></div>
-                            </div>
-                            <div class="col-8">
+                            <div class="col-12">
                                 <div class="bar-chart chart">
-                                    <canvas id="visitPieChart"></canvas>
+                                    <canvas id="bestSecond" style="display: block; width: 400px; height: 250px;" width="400" height="250"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -343,8 +332,7 @@ include '../common/includes/head.php';
                 </div>
             </div>
               <!--              BEST OPERATOR END  -->
-            <?php
-            if (Input::exists() && count($errors) === 0 && count($errorNoData) === 0) {
+              <?php
                     $x = 1;
                     foreach ($allData as $key => $value) {
                         ?>
@@ -402,9 +390,11 @@ include '../common/includes/head.php';
     });
 </script>
   <?php
-  if (Input::exists() && count($errors) == 0) {
-          include 'charts/target_chart.php';
-     }
+  /** BEST CHART and Form Chart */
+  if (Input::exists() && !$validation->countErrors() && count($errorNoData) == 0) {
+      include 'charts/bestChart.php';
+      include 'charts/target_chart.php';
+  }
   ?>
   </body>
 </html>

@@ -7,6 +7,7 @@ if (!$user->isLoggedIn()) {
     Redirect::to('login.php');
 }
 
+/** User and department id*/
 $user_id        = $user->userId();
 $department_id  = $user->departmentId();
 
@@ -16,7 +17,7 @@ $offices    = $data->records(Params::TBL_OFFICE, ['departments_id', '=', $depart
 $allUsers   = $data->records(Params::TBL_EMPLOYEES, ['supervisors_id', '=', $user_id]);
 
 
-if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+if (Input::exists()) {
     /** Instantiate validation class */
     $validate = new Validate();
     /** Validate inputs */
@@ -138,7 +139,7 @@ include 'includes/navbar.php';
             include './../common/errors/validationErrors.php';
         }
         /** If get not return data, alert */
-        if (Input::exists('get') && !Input::exists() && $validation->countErrors()) {
+        if (Input::exists('get') && !Input::exists()) {
             include './../common/errors/infoNoDataError.php';
         }
         /** If search not return data, alert */
@@ -205,7 +206,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="col-sm-2">
                                 <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
+                                <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
                             </div>
                         </div>
                     </form>

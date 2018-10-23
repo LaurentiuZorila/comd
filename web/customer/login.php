@@ -1,7 +1,7 @@
 <?php
 require_once 'core/init.php';
 
-if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+if (Input::exists()) {
         $validate = new Validate();
         $validation = $validate->check($_POST, [
             'Username' =>
@@ -30,7 +30,7 @@ if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
                 if ($configured) {
                     Redirect::to('index.php');
                 } else {
-                    Redirect::to('profile-setup/profileconfig.php', ['id' => $user->customerId(), 'setup' => Tokens::randomString(8)]);
+                    Redirect::to('profile-setup/profileconfig.php', ['id' => $user->customerId(), 'setup' => 'sadadsada2323232']);
                 }
             } else {
                 $errors = ['Username or password not valid! Please try again!'];
@@ -90,10 +90,9 @@ include '../common/includes/head.php';
                     </div>
                     <div class="form-group">
                       <input id="login-password" type="password" name="Password" required data-msg="Please enter your password" class="input-material">
-                        <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
                       <label for="login-password" class="label-material">Password</label>
                     </div><button type="submit" id="login" class="btn btn-primary" name="login">Login</button>
-                    <!-- This should be submit button but I replaced it with <a> for demo purposes-->
+                      <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
                   </form><a href="#" class="forgot-pass">Forgot Password?</a><br>
                 </div>
               </div>

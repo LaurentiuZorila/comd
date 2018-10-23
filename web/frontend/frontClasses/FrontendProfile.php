@@ -3,6 +3,8 @@ class FrontendProfile
 {
     private $_db;
 
+    private $_leadsTbl = ['cmd_users'];
+
     /**
      * ProfileDetails constructor.
      */
@@ -12,9 +14,11 @@ class FrontendProfile
     }
 
 
-    /**
+     /**
      * @param $table
      * @param array $where
+     * @param array $column
+     * @param bool $all
      * @return mixed
      */
     public function records($table, array $where, array $column, $all = false)
@@ -51,6 +55,38 @@ class FrontendProfile
             $data[$table] = $this->_db->get(Params::PREFIX . $table, $where, $column)->first();
         }
         return $data;
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function getFeedback($id)
+    {
+        return $this->records(Params::TBL_RATING, ['employees_id', '=', $id], ['user_id', 'rating'], true);
+    }
+
+
+    /**
+     * @param $where
+     * @param $columns
+     * @return mixed
+     */
+    public function getLeads($where, $columns)
+    {
+       $item = ActionConditions::condition($where);
+       return $this->records($this->_leadsTbl[0], $item, $columns, true);
+    }
+
+
+    /**
+     * @param $id
+     * @return int
+     */
+    public function rating($id)
+    {
+        $rating = $this->_db->average(Params::TBL_RATING, ['user_id', '=', $id], 'rating')->first();
+        return (int)round($rating->average);
     }
 
 

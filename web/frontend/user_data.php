@@ -1,10 +1,5 @@
 <?php
 require_once 'core/init.php';
-$user   = new FrontendUser();
-
-if (!$user->isLoggedIn()) {
-    Redirect::to('login.php');
-}
 // User data
 $userData   = BackendDB::getInstance()->get('cmd_users', ['id', '=', $user->userId()])->first();
 
@@ -15,7 +10,7 @@ $allTables = BackendDB::getInstance()->get('cmd_offices', ['id', '=', $userData-
 $allEmployees = BackendDB::getInstance()->get('cmd_employees', ['user_id', '=', $user->userId()], ['id', 'name'])->results();
 
 
-if (Input::exists() && Tokens::checkToken(Input::post('token'))) {
+if (Input::exists() && Token::check(Input::post(Token::$inputName))) {
     $id = Input::post('employees');
     $year = Input::post('year');
     $month = Input::post('month');
@@ -206,7 +201,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="col-sm-2">
                                 <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo Tokens::getToken(); ?>">
+                                <?php Token::input(); ?>
                             </div>
                         </div>
                     </form>
