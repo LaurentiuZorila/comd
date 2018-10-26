@@ -56,43 +56,50 @@ class Validate
                 }
 
                 if ($rule === 'required' && empty($value)) {
-                    $this->addError("All fields are required");
+                    Errors::setErrorType('danger', 'All fields are required');
                 } else if (!empty($value)) {
                     switch ($rule) {
                         case 'min':
                             if (trim(strlen($value)) < $rule_value) {
-                                $this->addError(sprintf("%s must be a minimum of %d characters!", $errorItem, $rule_value));
+                                Errors::setErrorType('danger', sprintf("%s must be a minimum of %d characters!", $errorItem, $rule_value));
                             }
                             break;
                         case 'max':
                             if (trim(strlen($value)) > $rule_value) {
-                                $this->addError(sprintf("%s must be a maximum of %d characters!", $errorItem, $rule_value));
+                                Errors::setErrorType('danger', sprintf("%s must be a maximum of %d characters!", $errorItem, $rule_value));
                             }
                             break;
                         case 'matches':
                             if ($value != $source[$rule_value]) {
-                                $this->addError("Passwords doesn't match!");
+                                Errors::setErrorType('danger', "Passwords doesn't match!");
                             }
                             break;
                         case 'unique':
                             $check = $this->_db->get($rule_value, $where = [$item, '=', $value]);
                             if ($check->count()) {
-                                $this->addError(sprintf("%s already exists!", $errorItem));
+                                Errors::setErrorType('danger', sprintf("%s already exists!", $errorItem));
                             }
                             break;
                         case 'email':
                             if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                                $this->addError('You need to insert a valid email!');
+                                Errors::setErrorType('danger', 'You need to insert a valid email!');
                             }
                             break;
                         case 'letters':
                             if (is_numeric($value)) {
-                                $this->addError(sprintf("%s must contain only letters!", $errorItem));
+                                Errors::setErrorType('danger', sprintf("%s must contain only letters!", $errorItem));
                             }
                             break;
                         case 'characters':
                             if (is_numeric($value) && ctype_alpha($value)) {
-                                $this->addError(sprintf("%s must contain only characters!", $errorItem));
+                                Errors::setErrorType('danger', sprintf("%s must contain only characters!", $errorItem));
+                            }
+                            break;
+                        case 'extension':
+                            $path = $_FILES['fileToUpload']['name'];
+                            $extension  = pathinfo($path, PATHINFO_EXTENSION);
+                            if (in_array($extension, $rule_value)) {
+                                Errors::setErrorType('danger', 'Your file must have CSV extension.');
                             }
                             break;
                     }
@@ -100,7 +107,7 @@ class Validate
             }
         }
 
-        if (empty($this->_errors)) {
+        if (empty(Errors::countAllErrors())) {
             $this->_passed = true;
         }
 

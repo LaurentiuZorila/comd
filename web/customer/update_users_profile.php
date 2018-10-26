@@ -11,22 +11,23 @@ if (Input::exists()) {
     $employeesId    = Input::post('user');
     $departmentId   = Input::post('department');
     $officesId      = Input::post('office');
-    $errors         = [];
-    $updateOk       = [];
-    $updateKo       = [];
 
+    /** Instantiate validate class */
+    $validate = new Validate();
+    /** Check if all fields are not empty */
+    $validation = $validate->check(Input::exists(), [
+        'user'          => ['required' => true],
+        'department'    => ['required' => true],
+        'office'        => ['required' => true]
+    ]);
 
-    if (empty($employeesId) && empty($departmentId) && empty($officesId)) {
-        $errors[] = 1;
-    }
-
-    if (count($errors) == 0) {
+/** Check if validation passed */
+    if ($validation->passed()) {
         $employeesDetails       = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $employeesId], ['departments_id', 'offices_id'], false);
         $employeesRecentTables  = $data->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['tables'], false);
 
         /** Employees tables */
         $empRecentTables  = explode(',', $employeesRecentTables->tables);
-
 
         foreach ($empRecentTables as $allTables) {
             $tables[] = $data::PREFIX . $allTables;
@@ -58,11 +59,10 @@ if (Input::exists()) {
         }
 
         if (!$customerUser->errors()) {
-            $updateOk[] = 1;
+            Errors::setErrorType('success', 'Your database is successfully updated.');
         } elseif ($customerUser->errors()) {
-            $updateKo[] = 1;
+            Errors::setErrorType('danger', 'You have some errors, please try again!');
         }
-
     }
 }
 
@@ -101,12 +101,8 @@ include 'includes/navbar.php';
             </ul>
         </div>
         <?php
-        if (Input::exists() && count($errors) > 0) {
-            include './../common/errors/errorRequired.php';
-        } elseif (Input::exists() && count($updateOk) > 0) {
-            include './../common/errors/uploadSuccess.php';
-        } elseif (Input::exists() && count($updateKo)) {
-            include './../common/errors/uploadError.php';
+        if (Input::exists() && Errors::countAllErrors()) {
+            include './../common/errors/errors.php';
         }
         ?>
         <section class="no-padding-top">

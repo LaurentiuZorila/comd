@@ -14,7 +14,7 @@ if (!$user->isLoggedIn()) {
             <img src="../../common/img/user.png" alt="..." class="img-fluid rounded-circle">
         </div>
         <div class="title">
-            <h1 class="h5"><?php echo escape($user->data()->name);?></h1>
+            <h1 class="h5"><?php echo $user->name(); ?></h1>
         </div>
     </div>
     <!-- Sidebar Navidation Menus--><span class="heading">Main</span>

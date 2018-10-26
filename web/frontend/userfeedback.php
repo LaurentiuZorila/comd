@@ -10,7 +10,7 @@ if (!$user->isLoggedIn()) {
 
 if (Input::exists('get')) {
     if (!empty(Input::get('feedback')) && !empty(Input::get('leadId')) && !empty(Input::get('userId'))) {
-        $db      = FrontendDB::getInstance();
+        $db       = FrontendDB::getInstance();
         $feedback = Input::get('feedback');
         $leadId   = Input::get('leadId');
         $userId   = Input::get('userId');
@@ -22,10 +22,10 @@ if (Input::exists('get')) {
         ]);
 
         if ($insert) {
-            Session::put('FeedbackSuccess', 'Thank you for your feedback!');
+            Session::put('feedbackOk', 'Thank you for your feedback!');
             Redirect::to('feedback.php');
         } else {
-            Session::put('FeedbackFailed', 'Something goes wrong, please try again!');
+            Session::put('feedbackKo', 'Something goes wrong, please try again!');
             Redirect::to('feedback.php');
         }
 

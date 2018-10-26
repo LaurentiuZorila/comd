@@ -23,27 +23,6 @@
 </script>
 
 <script>
-    $( "select[name='teams']" ).change(function () {
-        var userID = $(this).val();
-        if(userID) {
-            $.ajax({
-                url: "includes/response/years.php",
-                dataType: 'Json',
-                data: {'id':userID},
-                success: function(data) {
-                    $('select[name="year"]').empty();
-                    $.each(data, function(key, value) {
-                        $('select[name="year"]').append('<option value="'+ key +'">'+ value +'</option>');
-                    });
-                }
-            });
-        }else{
-            $('select[name="year"]').empty();
-        }
-    });
-</script>
-
-<script>
     $( "select[name='employees']" ).change(function () {
         var employeesID = $(this).val();
         if(employeesID) {

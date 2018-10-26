@@ -25,6 +25,16 @@ class Input
         }
     }
 
+
+    /**
+     * @param $name
+     * @return bool
+     */
+    public static function submit($name)
+    {
+        return (isset($_POST[$name]));
+    }
+
     /**
      * @param $item
      * @return string|array

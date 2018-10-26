@@ -50,8 +50,14 @@ include 'includes/navbar.php';
             </div>
         </div>
             <?php
-            if (Session::exists('FeedbackSuccess') || Session::exists('FeedbackFailed')) {
-                include '../common/errors/feedbackMessage.php';
+            if (Session::exists('feedbackOk')) {
+                Errors::setErrorType('success', Session::get('feedbackOk'));
+                include './../common/errors/errors.php';
+                Session::delete('feedbackOk');
+            } elseif (Session::exists('feedbackKo')) {
+                Errors::setErrorType('success', Session::get('feedbackKo'));
+                include './../common/errors/errors.php';
+                Session::delete('feedbackKo');
             }
             ?>
         <section>

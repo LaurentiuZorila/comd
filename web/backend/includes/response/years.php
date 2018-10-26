@@ -18,23 +18,39 @@ function __autoload($class_name)
     }
 }
 $data       = new BackendProfile();
-$officeId   = $_GET['id'];
+$officeId   = Input::get('id');
 
 $allTables = $data->records(Params::TBL_OFFICE, ['id', '=', $officeId], ['tables']);
 
 foreach (Common::objToArray($allTables, 'tables') as $table) {
+    if (empty($table)) {
+        $tables = [];
+    }
     $tables[] = Params::PREFIX . trim(strtolower($table));
 }
 
-foreach ($tables as $table) {
-    $years[] = $data->records($table, $where =[], ['year']);
-}
-
-foreach ($years as $values) {
-    foreach ($values as $value) {
-        $year[] = $value->year;
-        $year = array_combine($year, $year);
+/** Check if exist year on tables */
+if (count($tables) > 1) {
+    foreach ($tables as $cmdTable) {
+        $years[$cmdTable] = $data->records($cmdTable, $where =['offices_id', '=', $officeId], ['year']);
     }
+} else {
+    $years[] = 'Not found';
 }
 
-echo json_encode(array_unique($year));
+if (count($years) > 1) {
+    $fullArray = [];
+    foreach ($years as $k => $v) {
+        foreach ($k as $val) {
+            for ($i=0;$i<count($years);$i++) {
+                $fullArray[] = $val->year;
+            }
+        }
+   }
+}
+
+
+print_r($fullArray);
+exit;
+
+

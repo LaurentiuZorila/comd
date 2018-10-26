@@ -150,6 +150,8 @@ class FrontendUser
         Session::delete($this->_sessionDepartmentId);
         Session::delete($this->_sessionUserName);
         Session::delete($this->_sessionTeamLeadId);
+        Redirect::to('../index.php');
+        exit;
     }
 
 

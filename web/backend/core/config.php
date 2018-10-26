@@ -17,6 +17,7 @@ return [
         'session_name'          => 'name',
         'session_id'            => 'id',
         'session_department'    => 'department',
-        'token_name'            => 'token'
+        'token_name'            => 'token',
+        'lang_id'               => 'langId'
     ]
 ];

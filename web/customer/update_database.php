@@ -17,11 +17,7 @@ $userData = CustomerDB::getInstance()->get('cmd_users', ['id', '=', $user->custo
 // All tables
 $allTables = $data->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['tables'], false);
 $allTables = explode(',', $allTables->tables);
-
-foreach ($allTables as $value) {
-    $prefix                   = Params::PREFIX;
-    $tables[$prefix . $value] = trim($value);
-}
+array_map('trim', $allTables);
 
 
 if (Input::exists()) {
@@ -32,7 +28,7 @@ if (Input::exists()) {
         'tables'    => ['required' => true]
     ]);
 
-
+    /** Check if validation is passed */
     if ($validation->passed()) {
         $year   = Input::post('year');
         $month  = Input::post('month');
@@ -43,40 +39,37 @@ if (Input::exists()) {
         $path       = $_FILES['fileToUpload']['name'];
         $size       = $_FILES['fileToUpload']['size'];
         $extension  = pathinfo($path, PATHINFO_EXTENSION);
-        /** Allowed extensions */
-        $extensions     = Params::EXTENSIONS;
-
-        /** Errors */
-        $errors         = [];
-        $uploadSuccess  = [];
-        $uploadError    = [];
-        $extensionError = [];
+        /** Allowed extensions for file */
+        $extensions = Params::EXTENSIONS;
 
         // Check for valid extension
         if (in_array($extension, $extensions) && $size > 0) {
             // Open the file for reading
             if (($h = fopen("{$filename}", "r")) !== FALSE) {
+                // Escape first line of file
+                fgetcsv($h);
+                // Read file
                 while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
                     $user->insert($table, [
-                        'offices_id'            => $user->officesId(),
-                        'departments_id'        => $user->departmentId(),
-                        'year'                  => $year,
-                        'month'                 => $month,
-                        'employees_id'          => $data[0],
-                        'employees_average_id'  => $data[0]. '_' .$year,
-                        'quantity'              => $data[1]
+                        'offices_id' => $user->officesId(),
+                        'departments_id' => $user->departmentId(),
+                        'year' => $year,
+                        'month' => $month,
+                        'employees_id' => $data[0],
+                        'employees_average_id' => $data[0] . '_' . $year,
+                        'quantity' => $data[2]
                     ]);
                 }
                 if ($user->success()) {
-                    $uploadSuccess = [1];
+                    Errors::setErrorType('success', 'Your DB is successfully updated.');
                 } else {
-                    $uploadError = [1];
+                    Errors::setErrorType('danger', 'Something is going wrong, please try again.');
                 }
                 // Close the file
                 fclose($h);
             }
         } else {
-            $extensionError = [1];
+            Errors::setErrorType('warning', 'Your file must have CSV extension.');
         }
     }
 }
@@ -115,18 +108,8 @@ include '../common/includes/head.php';
             </li>
           </ul>
         </div>
-          <?php
-          if (!Input::exists()) {
-              include './../common/errors/infoUpdateDB.php';
-          }
-          if (Input::exists() && count($uploadSuccess) > 0) {
-              include './../common/errors/uploadSuccess.php';
-          } elseif (Input::exists() && count($uploadError) > 0) {
-              include './../common/errors/uploadError.php';
-          } elseif (Input::exists() && count($extensionError) > 0) {
-              include './../common/errors/extensionError.php';
-          } elseif (Input::exists() && count($validation->errors()) > 0) {
-              include './../common/errors/validationErrors.php';
+          <?php if (Input::exists() && Errors::countAllErrors()) {
+              include './../common/errors/errors.php';
           }
           ?>
           <section class="no-padding-top no-padding-bottom">
@@ -169,8 +152,8 @@ include '../common/includes/head.php';
                               <div class="col-sm-4">
                                   <select name="tables" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('tables'))) {echo 'is-invalid';} ?>">
                                       <option value="">Select table</option>
-                                      <?php foreach ($tables as $key => $table) { ?>
-                                          <option value="<?php echo $key; ?>"><?php echo strtoupper($table); ?></option>
+                                      <?php foreach ($allTables as $table) { ?>
+                                          <option value="<?php echo $table; ?>"><?php echo strtoupper($table); ?></option>
                                       <?php } ?>
                                   </select>
                                   <?php

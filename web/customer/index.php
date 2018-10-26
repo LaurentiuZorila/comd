@@ -84,7 +84,7 @@ if (Input::exists()) {
             $chartNames = Js::toJson($names);
             $chartValues = Js::chartValues($chartData, 'quantity');
         } else {
-            $errorNoData = [1];
+            Errors::setErrorType('warning', 'Please select other values and try again!');
         }
     }
 }
@@ -113,14 +113,9 @@ include '../common/includes/head.php';
           </div>
         </div>
           <?php
-          if (Input::exists() && count($validation->errors()) > 0) {
-              include './../common/errors/validationErrors.php';
-          }
-
-          if (Input::exists() && count($errorNoData) > 0) {
-              include './../common/errors/infoNoDataError.php';
-          }
-          if (Session::exists('configOk')) { ?>
+                  if (Input::exists() && Errors::countAllErrors()) {
+                      include './../common/errors/errors.php';
+          ?>
           <section>
               <div class="row">
                   <div class="col-lg-12">
@@ -145,7 +140,7 @@ include '../common/includes/head.php';
                     Filters
                 </button>
             </p>
-            <div class="<?php if (Input::exists() && !$validation->countErrors() && count($errorNoData) == 0) { echo "collapse";} elseif(!Input::exists()) { echo "collapse"; } else { echo "collapse show"; } ?>" id="filter">
+            <div class="<?php if (Input::exists() && !!Errors::countAllErrors()) { echo "collapse";} elseif(!Input::exists()) { echo "collapse"; } else { echo "collapse show"; } ?>" id="filter">
               <div class="block">
                   <form method="post">
                     <div class="row">
@@ -265,7 +260,7 @@ include '../common/includes/head.php';
 <!--        ********************       CHARTS         ********************   -->
           <?php
           /** IF FORM IS SUBMITTED */
-          if (Input::exists() && !$validation->countErrors() && count($errorNoData) === 0) { ?>
+          if (Input::exists() && !Errors::countAllErrors()) { ?>
                   <section class="no-padding-bottom">
                       <div class="container-fluid">
                           <div class="row">
@@ -391,7 +386,7 @@ include '../common/includes/head.php';
 </script>
   <?php
   /** BEST CHART and Form Chart */
-  if (Input::exists() && !$validation->countErrors() && count($errorNoData) == 0) {
+  if (Input::exists() && !Errors::countAllErrors()) {
       include 'charts/bestChart.php';
       include 'charts/target_chart.php';
   }

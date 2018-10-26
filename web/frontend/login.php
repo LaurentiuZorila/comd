@@ -1,18 +1,21 @@
 <?php
 require_once 'core/init.php';
 
-if (Input::exists()) {
+if (Input::exists() && Token::check(Input::post(Token::$inputName))) {
+    Token::removeToken();
     /** Instantiate validate class */
     $validate = new Validate();
     /** Check fields */
     $validation = $validate->check($_POST, [
         'username' => [
                 'required'  => true,
-                'min'       => 2
+                'min'       => 2,
+                'max'       => 30
             ],
         'password' => [
                 'required'  => true,
-                'min'       => 5
+                'min'       => 5,
+                'max'       => 20
             ]
     ]);
 
@@ -23,7 +26,7 @@ if (Input::exists()) {
         if ($login) {
             Redirect::to('index.php');
         } else {
-            Session::put('loginFailed', 'Username or password not valid! Please try again!');
+            Errors::setErrorType('danger', 'Username or password not valid, try again!');
         }
     }
 }
@@ -39,21 +42,10 @@ include '../common/includes/head.php';
       <div class="container d-flex align-items-center">
         <div class="form-holder has-shadow">
             <?php
-            if (Input::exists() && $validation->countErrors()) {
-                include '../common/errors/validationErrors.php';
+            if (Input::exists() && Errors::countAllErrors()) {
+                include './../common/errors/errors.php';
             }
-            if (Session::exists('loginFailed')) { ?>
-                <div class="alert alert-danger alert-dismissible fade show">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <strong>Atention!</strong> <?php echo Session::flash('loginFailed'); ?>
-                </div>
-            <? }
-            if (Session::exists('loginOk')) { ?>
-                <div class="alert alert-success alert-dismissible fade show">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <strong>Atention!</strong> <?php echo Session::flash('loginOk'); ?>
-                </div>
-           <?php } ?>
+            ?>
           <div class="row">
             <!-- Logo & Information Panel-->
             <div class="col-lg-6">

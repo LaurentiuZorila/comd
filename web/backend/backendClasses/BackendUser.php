@@ -16,6 +16,11 @@ class BackendUser
     private $_data;
 
     /**
+     * @var
+     */
+    private $_langId;
+
+    /**
      * @var mixed|null
      */
     private $_sessionName;
@@ -39,6 +44,9 @@ class BackendUser
      * @var bool
      */
     private $_error = false;
+
+
+    private $_languages = [1 => 'en', 2 => 'it', 3 => 'ro'];
 
     /**
      * Backend table
@@ -97,9 +105,8 @@ class BackendUser
      */
     public function update($table, $fields = array(), $conditions = array())
     {
-        $this->_error = false;
         if (!$this->_db->update($table, $fields, $conditions)) {
-            $this->_error = true;
+            Errors::setErrorType('danger', 'There was a problem, please try again!');
             throw new Exception('There was a problem, please try again!');
         }
     }
@@ -134,6 +141,7 @@ class BackendUser
             Session::put($this->_sessionName, $this->data()->name);
             Session::put($this->_sessionUserId, $this->data()->id);
             Session::put($this->_sessionDepartmentId, $this->data()->departments_id);
+            $this->_langId = $this->data()->lang;
             return true;
         }
 
@@ -177,6 +185,23 @@ class BackendUser
     public function departmentId()
     {
         return Session::get($this->_sessionDepartmentId);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function name()
+    {
+        return Session::get($this->_sessionName);
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function language()
+    {
+        return $this->_languages[$this->data()->lang];
     }
 
 

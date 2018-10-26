@@ -17,7 +17,6 @@ if (Input::exists()) {
         ]);
 
         if ($validation->passed()) {
-            $errors     = [];
             $user       = new CustomerUser();
             $config     = new CustomerProfile();
             $login      = $user->login(Input::post('Username'), Input::post('Password'));
@@ -33,7 +32,7 @@ if (Input::exists()) {
                     Redirect::to('profile-setup/profileconfig.php', ['id' => $user->customerId(), 'setup' => 'sadadsada2323232']);
                 }
             } else {
-                $errors = ['Username or password not valid! Please try again!'];
+                Errors::setErrorType('danger', 'Username or password not valid! Please try again!');
             }
         }
 }
@@ -49,23 +48,8 @@ include '../common/includes/head.php';
       <div class="container d-flex align-items-center">
         <div class="form-holder has-shadow">
             <?php
-            if (Input::exists() && count($errors) > 0) { ?>
-                <div class="row mb-0">
-                    <div class="col-lg-12">
-                        <div class="card-body">
-                            <div class="alert alert-dismissible fade show badge-danger" role="alert">
-                                <strong class="text-white"> You have some errors! </strong>
-                                <p class="text-white"> <?php echo $errors[0]; ?></p>
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <? }
-            if (Input::exists() && count($validation->errors()) > 0) {
-                include './../common/errors/validationErrors.php';
+            if (Input::exists() && Errors::countAllErrors()) {
+                include './../common/errors/errors.php';
             } ?>
           <div class="row">
             <!-- Logo & Information Panel-->

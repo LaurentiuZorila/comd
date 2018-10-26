@@ -58,9 +58,8 @@ class BackendProfile
      */
     public function rating(array $where)
     {
-        $rating = $this->_db->average(Params::TBL_RATING, $where, 'rating')->results();
-//        return (int)round(Common::columnValues($rating, 'average'));
-        return (int)round($rating->average);
+        $rating = $this->_db->average(Params::TBL_RATING, $where, 'rating')->first()->average;
+        return (float)$rating;
     }
 
 

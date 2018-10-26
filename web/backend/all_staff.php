@@ -1,16 +1,9 @@
 <?php
 require_once 'core/init.php';
-$user  = new BackendUser();
-$data  = new BackendProfile();
 
-if (!$user->isLoggedIn()) {
-    Redirect::to('login.php');
-}
-$allLeads = $data->records(Params::TBL_TEAM_LEAD, ['departments_id', '=', $user->departmentId()], ['id', 'name', 'offices_id', 'departments_id']);
+$allLeads = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['departments_id', '=', $backendUser->departmentId()], ['id', 'name', 'offices_id', 'departments_id']);
 
 ?>
-
-
 
 <!DOCTYPE html>
 <html>
@@ -31,21 +24,21 @@ include 'includes/navbar.php';
             <!-- Page Header-->
             <div class="page-header no-margin-bottom">
                 <div class="container-fluid">
-                    <h2 class="h5 no-margin-bottom">All staff</h2>
+                    <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'All_staff'); ?></h2>
                 </div>
             </div>
             <!-- Breadcrumb-->
             <div class="container-fluid">
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                    <li class="breadcrumb-item active">All staff</li>
+                    <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
+                    <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'All_staff'); ?></li>
                 </ul>
             </div>
             <section>
                 <div class="container-fluid">
                     <div class="row">
                         <?php foreach ($allLeads as $lead) {
-                            $rating = $data->rating(['user_id', '=', $lead->id]);
+                            $rating = $backendUserProfile->rating(['user_id', '=', $lead->id]);
                             ?>
                         <div class="col-md-6 col-xl-4">
                             <div class="card">
@@ -53,9 +46,9 @@ include 'includes/navbar.php';
                                     <div class="media align-items-center"><h1 class="avatar avatar-xl mr-3 text-monospace"><?php echo Common::makeAvatar($lead->name); ?></h1>
                                         <div class="media-body overflow-hidden">
                                             <h3 class="card-text mb-0 text-center" style="color: #9055A2;"><?php echo $lead->name; ?></h3>
-                                            <p class="card-text mb-0 text-uppercase font-weight-bold text-secondary text-center"><?php echo $data->records(Params::TBL_DEPARTMENT, ['id', '=', $lead->departments_id], ['name'], false)->name; ?></p>
-                                            <p class="card-text mb-3 text-uppercase font-weight-bold text-secondary text-center"><?php echo $data->records(Params::TBL_OFFICE, ['id', '=', $lead->offices_id], ['name'], false)->name; ?></p>
-                                            <p class="card-text mb-0 font-weight-bold text-secondary text-center">Rating</p>
+                                            <p class="card-text mb-0 text-uppercase font-weight-bold text-secondary text-center"><?php echo $backendUserProfile->records(Params::TBL_DEPARTMENT, ['id', '=', $lead->departments_id], ['name'], false)->name; ?></p>
+                                            <p class="card-text mb-3 text-uppercase font-weight-bold text-secondary text-center"><?php echo $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $lead->offices_id], ['name'], false)->name; ?></p>
+                                            <p class="card-text mb-0 font-weight-bold text-secondary text-center"><?php echo Translate::t($lang, 'Rating'); ?></p>
                                             <p class="card-text m-b-0 font-weight-bold text-secondary text-center">
                                                 <?php switch ($rating) {
                                                     case '1':

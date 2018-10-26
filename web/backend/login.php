@@ -1,14 +1,19 @@
 <?php
-require_once 'core/init.php';
+require_once 'core/login-init.php';
 
-if (Input::exists() && Token::check(Input::post(Token::$inputName))) {
+
+if (Input::exists() && Tokens::tokenVerify(Input::post('token'))) {
     /** Instantiate validate class */
     $validate = new Validate();
 
     /** Validate fields */
     $validation = $validate->check($_POST, [
-        'username' => ['required'  => true],
-        'password' => ['required'  => true]
+        'username' => [
+                'required'  => true
+        ],
+        'password' => [
+                'required'  => true
+            ]
     ]);
 
     /** Check if validation is passed */
@@ -18,11 +23,7 @@ if (Input::exists() && Token::check(Input::post(Token::$inputName))) {
         if ($login) {
             Redirect::to('index.php');
         } else {
-            Session::put('loginFailed', 'Username or password not valid! Please try again!');
-        }
-    } else {
-        foreach ($validation->errors() as $error) {
-            Session::put('validationError', $error);
+            Errors::setErrorType('danger', 'Username or password not valid! Please try again!');
         }
     }
 }
@@ -38,12 +39,10 @@ include '../common/includes/head.php';
       <div class="container d-flex align-items-center">
         <div class="form-holder has-shadow">
             <?php
-            if (Session::exists('loginFailed')) { ?>
-                <div class="alert alert-danger alert-dismissible fade show">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <strong>Atention!</strong> <?php echo Session::flash('loginFailed'); ?>
-                </div>
-            <? } ?>
+            if (Errors::countAllErrors()) {
+                include './../common/errors/errors.php';
+            }
+            ?>
           <div class="row">
             <!-- Logo & Information Panel-->
             <div class="col-lg-6">
@@ -62,12 +61,12 @@ include '../common/includes/head.php';
                 <div class="content">
                   <form method="post" class="form-validate">
                     <div class="form-group">
-                      <input id="login-username" type="text" name="username" required data-msg="Please enter your username" class="input-material">
+                      <input id="login-username" type="text" name="username" data-msg="Please enter your username" class="input-material">
                       <label for="login-username" class="label-material">User Name</label>
                     </div>
                     <div class="form-group">
-                      <input id="login-password" type="password" name="password" required data-msg="Please enter your password" class="input-material">
-                      <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                      <input id="login-password" type="password" name="password" data-msg="Please enter your password" class="input-material">
+                      <input type="hidden" name="token" value="<?php echo Tokens::getSubmitToken(); ?>">
                       <label for="login-password" class="label-material">Password</label>
                     </div><button type="submit" id="login" class="btn btn-primary" name="login">Login</button>
                     <!-- This should be submit button but I replaced it with <a> for demo purposes-->

@@ -47,7 +47,7 @@ if (Input::exists()) {
             foreach ($allTables as $table) {
                 $prefix     = $data::PREFIX;
                 $key[]      = $table;
-                $values[]   = $data->records($prefix . trim($table), $where, ['quantity'], false)->quantity;
+                $values[]   = empty($data->records($prefix . trim($table), $where, ['quantity'], false)->quantity) ? 0 : $data->records($prefix . trim($table), $where, ['quantity'], false)->quantity;
                 $allData    = array_combine($key, $values);
             }
 
@@ -58,9 +58,10 @@ if (Input::exists()) {
             $officeName = $data->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['name'], false)->name;
             $initials   = Common::makeAvatar($name);
 
+
             /** Check if exists values */
             if (!Common::checkValues($allData)) {
-                $errorNoData = [1];
+                Errors::setErrorType('warning', 'Not found data. Please select other values and try again.');
             }
         }
 }
@@ -70,7 +71,6 @@ if (Input::exists('get') && !Input::exists()) {
     $employeesId    = Input::get('id');
     $year           = date('Y');
     $month          = date('n');
-    $errorsNoData   = [];
 
     /** Conditions for action */
     $where = [
@@ -85,7 +85,7 @@ if (Input::exists('get') && !Input::exists()) {
     foreach ($allTables as $table) {
         $prefix     = $data::PREFIX;
         $key[]      = $table;
-        $values[]   = Common::columnValues($data->records($prefix . $table, $where, ['quantity']), 'quantity');
+        $values[]   = $data->records($prefix . trim($table), $where, ['quantity'], false)->quantity;
         $allData    = array_combine($key, $values);
     }
 
@@ -99,7 +99,7 @@ if (Input::exists('get') && !Input::exists()) {
 
     /** Check if exists values */
     if (!Common::checkValues($allData)) {
-        $errorNoData = [1];
+        Errors::setErrorType('warning', 'Not found data. Please select other values and try again.');
     }
 }
 
@@ -136,12 +136,8 @@ include 'includes/navbar.php';
             </ul>
         </div>
         <?php
-        if (Input::exists() && $validation->countErrors()) {
-            include './../common/errors/validationErrors.php';
-        }
-
-        if (Input::exists() && count($errorNoData) > 0) {
-            include './../common/errors/infoError.php';
+        if (Input::exists() && Errors::countAllErrors()) {
+            include './../common/errors/errors.php';
         }
         ?>
         <section class="no-padding-top no-padding-bottom">
@@ -151,7 +147,7 @@ include 'includes/navbar.php';
                         Filters
                     </button>
                 </p>
-                <div class="<?php if (Input::exists() && !$validation->countErrors() && count($errorNoData) == 0) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
+                <div class="<?php if (Input::exists() && !Errors::countAllErrors()) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
                 <div class="block">
                     <form method="post">
                         <div class="row">
@@ -205,7 +201,7 @@ include 'includes/navbar.php';
             </div>
         </section>
         <?php if (Input::exists('get') || Input::exists()) {
-            if (!$validation->countErrors() && count($errorNoData) == 0) {
+            if (!Errors::countAllErrors()) {
                 $month = Input::post('month');
                 ?>
             <section>
@@ -270,7 +266,7 @@ include 'includes/navbar.php';
 <!-- JavaScript files-->
 <?php
 include "./../common/includes/scripts.php";
-if (Input::exists() && !$validate->countErrors() && count($errorNoData) == 0) {
+if (Input::exists() && !Errors::countAllErrors()) {
     include './charts/useDataChart.php';
 }
 ?>

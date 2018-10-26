@@ -1,20 +1,14 @@
 <?php
 require_once 'core/init.php';
-$user   = new BackendUser();
-$data   = new BackendProfile();
-
-if (!$user->isLoggedIn()) {
-    Redirect::to('login.php');
-}
-
 $leadId         = Input::get('lead_id');
 $officeId       = Input::get('office_id');
+
 /** Lead data */
-$lead       = $data->records(Params::TBL_TEAM_LEAD, ['id', '=', $leadId], ['name', 'id', 'offices_id', 'supervisors_id'], false);
+$lead       = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['id', '=', $leadId], ['name', 'id', 'offices_id', 'supervisors_id'], false);
 /** Lead name */
 $leadName   = $lead->name;
 /** All tables */
-$allTables  = $data->records(Params::TBL_OFFICE, ['id', '=', $lead->offices_id], ['tables'], false)->tables;
+$allTables  = $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $lead->offices_id], ['tables'], false)->tables;
 $allTables  = explode(',', $allTables);
 
 
@@ -23,23 +17,23 @@ if (Input::exists('get')) {
     $officeId           = Input::get('office_id');
 
     /** Staff details */
-    $leadProfile        = $data->records(Params::TBL_TEAM_LEAD, ['id', '=', $leadId],['name', 'id', 'supervisors_id', 'offices_id'], false);
+    $leadProfile        = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['id', '=', $leadId],['name', 'id', 'supervisors_id', 'offices_id'], false);
 
     /** Count employees */
-    $totalEmployees     = $data->count(Params::TBL_EMPLOYEES, ['offices_id', '=', $officeId]);
+    $totalEmployees     = $backendUserProfile->count(Params::TBL_EMPLOYEES, ['offices_id', '=', $officeId]);
 
     /** Department name */
-    $departmentName     = $data->records(Params::TBL_DEPARTMENT, ['id', '=', $leadProfile->supervisors_id], ['name'], false)->name;
+    $departmentName     = $backendUserProfile->records(Params::TBL_DEPARTMENT, ['id', '=', $leadProfile->supervisors_id], ['name'], false)->name;
 
     /** Office name */
-    $officeName         = $data->records(Params::TBL_OFFICE, ['id', '=', $leadProfile->offices_id], ['name'], false)->name;
+    $officeName         = $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $leadProfile->offices_id], ['name'], false)->name;
 
     /** Icons for tables */
     $icon               = ['icon-line-chart', 'icon-dashboard', 'icon-chart'];
 
 
     foreach (Params::PREFIX_TBL_COMMON as $table) {
-        $commonData[] = $data->sum($table, ['offices_id', '=', $officeId], 'quantity');
+        $commonData[] = $backendUserProfile->sum($table, ['offices_id', '=', $officeId], 'quantity');
     }
 
     /** Array with tables and sum of quantity for each table */
@@ -75,11 +69,11 @@ if (Input::exists()) {
         ];
 
         /** Array with all results for one FTE */
-        $chartData      = $data->records($table, $where, ['quantity', 'employees_id']);
+        $chartData      = $backendUserProfile->records($table, $where, ['quantity', 'employees_id']);
 
         /** Employees names */
         foreach ($chartData as $chartNames) {
-            $names[] = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $chartNames->employees_id], ['name'], false)->name;
+            $names[] = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['id', '=', $chartNames->employees_id], ['name'], false)->name;
         }
 
         /** Employees chart names */
@@ -93,7 +87,7 @@ if (Input::exists()) {
 
         /** Chech if exist values for options selected */
         if (count($quantitySum) < 1) {
-            $errorNoData = [1];
+            Errors::setErrorType('warning', 'Not data found, please try again with other values.');
         }
     }
 }
@@ -132,8 +126,8 @@ include 'includes/navbar.php';
             </ul>
         </div>
         <?php
-        if (Input::exists() && $validation->countErrors()) {
-            include './../common/errors/validationErrors.php';
+        if (Input::exists() && Errors::countAllErrors()) {
+            include './../common/errors/errors.php';
         }
         ?>
         <section>
@@ -145,7 +139,7 @@ include 'includes/navbar.php';
                                 Filters
                             </button>
                         </p>
-                        <div class="<?php if (Input::exists() && !$validation->countErrors() && count($errorNoData) == 0) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
+                        <div class="<?php if (Input::exists() && !Errors::countAllErrors()) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
                             <div class="card card-body">
                                 <form method="post">
                                     <div class="row">
@@ -184,7 +178,7 @@ include 'includes/navbar.php';
                                         </div>
                                         <div class="col-sm-12">
                                             <input value="Submit" name="Filter" class="btn btn-outline-primary" type="submit">
-                                            <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                            <input type="hidden" name="token" value="<?php echo Tokens::getSubmitToken(); ?>">
                                         </div>
                                     </div>
                                 </form>
@@ -236,7 +230,7 @@ include 'includes/navbar.php';
                 </div>
             </div>
         </section>
-        <?php if (Input::exists() && !$validation->countErrors()) { ?>
+        <?php if (Input::exists() && !Errors::countAllErrors()) { ?>
         <section>
             <div class="col-md-12">
                 <div class="card text-center">
@@ -290,7 +284,7 @@ include "./../common/includes/scripts.php";
 <?php
 include 'includes/js/ajax_user_profile.php';
 
-if (Input::exists() && !$validation->countErrors()) {
+if (Input::exists() && !Errors::countAllErrors()) {
     include 'charts/profile_chart.php';
 }
 ?>

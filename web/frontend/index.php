@@ -67,7 +67,8 @@ if (Input::exists()) {
         /**  One record if is selected one month form form */
         $data = $profileDetails->records($prefixTbl, $where, ['quantity'])->quantity;
         if ($data == '') {
-            Session::put('DataNotFound', "For {$year} - {$alfaMonth} and table: {$table}, not found data for this search.");
+//            Session::put('DataNotFound', "For {$year} - {$alfaMonth} and table: {$table}, not found data for this search.");
+            Errors::setErrorType('warning', "For {$year} - {$alfaMonth} and table: {$table}, not found data for this search.");
             $data = 0;
         }
 
@@ -130,7 +131,8 @@ if (Input::exists()) {
                 $chartLabels = Js::key($dataAllMonths);
                 $chartValues = Js::values($dataAllMonths);
             } else {
-                Session::put('ChartDataNotFound', "For {$year} - {$alfaMonth} and table: {$table}, not found data, try again.");
+//                Session::put('ChartDataNotFound', "For {$year} - {$alfaMonth} and table: {$table}, not found data, try again.");
+                Errors::setErrorType('warning', "For {$year} - {$alfaMonth} and table: {$table}, not found data, try again.");
             }
         }
     }
@@ -160,14 +162,8 @@ include 'includes/navbar.php';
             </div>
         </div>
         <?php
-        if (Input::exists()) {
-            if ($validate->countErrors()) {
-                include './../common/errors/validationErrors.php';
-            }
-            if (Session::exists('ChartDataNotFound')) {
-                include './../common/errors/infoNoDataError.php';
-                Session::delete('ChartDataNotFound');
-            }
+        if (Input::exists() && Errors::countAllErrors()) {
+            include './../common/errors/errors.php';
         }
         ?>
         <section>
@@ -179,7 +175,7 @@ include 'includes/navbar.php';
                                 Filters
                             </button>
                         </p>
-                        <div class="<?php if (Input::exists() && !$validation->countErrors()) { echo "collapse";} else { echo "collapse show"; } ?>" id="collapseExample">
+                        <div class="<?php if (Input::exists() && !Errors::countAllErrors()) { echo "collapse";} else { echo "collapse show"; } ?>" id="collapseExample">
                             <div class="card card-body">
                                 <form method="post">
                                     <div class="row">
@@ -280,7 +276,7 @@ include 'includes/navbar.php';
                 </div>
             </section>
         <?php }
-        if (Input::exists() && !$validate->countErrors()) {
+        if (Input::exists() && !Errors::countAllErrors()) {
             if (is_numeric(Input::post('month'))) { ?>
                 <section class="no-padding-top no-padding-bottom">
                     <div class="container-fluid">
@@ -375,7 +371,7 @@ include 'includes/navbar.php';
             </section>
         <?php } ?>
         <!--        ********************       CHARTS         ********************   -->
-        <?php if (Input::exists() && !is_numeric(Input::post('month')) && !$validate->countErrors() && !Session::exists('ChartDataNotFound')) { ?>
+        <?php if (Input::exists() && !is_numeric(Input::post('month')) && !Errors::countAllErrors()) { ?>
                 <section class="no-padding-bottom">
                     <div class="container-fluid">
                         <div class="row">
@@ -389,57 +385,6 @@ include 'includes/navbar.php';
                 </section>
         <?php } ?>
         <!--        ********************       CHARTS   END      ********************   -->
-        <section class="no-padding-bottom">
-            <div class="container-fluid">
-                <!--              FOR BEST OPERATOR-->
-                <!--            <div class="row">-->
-                <!--              <div class="col-lg-4">-->
-                <!--                <div class="user-block block text-center">-->
-                <!--                  <div class="avatar"><img src="img/avatar-1.jpg" alt="..." class="img-fluid">-->
-                <!--                    <div class="order dashbg-2">1st</div>-->
-                <!--                  </div><a href="#" class="user-title">-->
-                <!--                    <h3 class="h5">Richard Nevoreski</h3><span>@richardnevo</span></a>-->
-                <!--                  <div class="contributions">Best Operator</div>-->
-                <!--                  <div class="details d-flex">-->
-                <!--                    <div class="item"><i class="icon-info"></i><strong>150</strong></div>-->
-                <!--                    <div class="item"><i class="fa fa-gg"></i><strong>340</strong></div>-->
-                <!--                    <div class="item"><i class="icon-flow-branch"></i><strong>460</strong></div>-->
-                <!--                  </div>-->
-                <!--                </div>-->
-                <!--              </div>-->
-                <!--                <div class="col-lg-4">-->
-                <!--                    <div class="stats-with-chart-1 block" style="height: 91%;">-->
-                <!--                        <div class="title"> <strong class="d-block">Target</strong><span class="d-block">Lorem ipsum dolor sit</span></div>-->
-                <!--                        <div class="row d-flex align-items-end justify-content-between">-->
-                <!--                            <div class="col-5">-->
-                <!--                                <div class="text"><strong class="d-block dashtext-3">$740</strong><span class="d-block">May 2017</span><small class="d-block">320 Sales</small></div>-->
-                <!--                            </div>-->
-                <!--                            <div class="col-7">-->
-                <!--                                <div class="bar-chart chart">-->
-                <!--                                    <canvas id="salesBarChart1"></canvas>-->
-                <!--                                </div>-->
-                <!--                            </div>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                </div>-->
-                <!--                <div class="col-lg-4">-->
-                <!--                    <div class="stats-with-chart-1 block" style="height: 91%;">-->
-                <!--                        <div class="title"> <strong class="d-block">Quality</strong><span class="d-block">Lorem ipsum dolor sit</span></div>-->
-                <!--                        <div class="row d-flex align-items-end justify-content-between">-->
-                <!--                            <div class="col-4">-->
-                <!--                                <div class="text"><strong class="d-block dashtext-1">$457</strong><span class="d-block">May 2017</span><small class="d-block">210 Sales</small></div>-->
-                <!--                            </div>-->
-                <!--                            <div class="col-8">-->
-                <!--                                <div class="bar-chart chart">-->
-                <!--                                    <canvas id="visitPieChart"></canvas>-->
-                <!--                                </div>-->
-                <!--                            </div>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                </div>-->
-                <!--            </div>-->
-            </div>
-        </section>
         <?php
         include '../common/includes/footer.php';
         ?>
@@ -449,10 +394,10 @@ include 'includes/navbar.php';
 <?php
 include "./../common/includes/scripts.php";
 
-if (Input::exists() && is_numeric(Input::post('month'))) {
+if (Input::exists() && is_numeric(Input::post('month')) && !Errors::countAllErrors()) {
     include 'charts/commonDataSingle.php';
 }
-if (Input::exists() && !is_numeric(Input::post('month'))) {
+if (Input::exists() && !is_numeric(Input::post('month')) && !Errors::countAllErrors()) {
     include 'charts/commonDataMultiple.php';
 }
 ?>

@@ -23,12 +23,7 @@ spl_autoload_register(function($class_name){
 
 
 require_once './functions/sanitize.php';
-$backendUser = new BackendUser();
-$backendUserProfile = new BackendProfile();
-if (!$backendUser->isLoggedIn()) {
-    Redirect::to('login.php');
-}
-$lang = $backendUser->language();
+
 
 
 //if (Cookie::exists(Config::get('remember/cookie_name')) && !Session::exists(Config::get('session/session_name'))) {

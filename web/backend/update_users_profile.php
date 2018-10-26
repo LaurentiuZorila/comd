@@ -1,11 +1,9 @@
 <?php
 require_once 'core/init.php';
-$user   = new BackendUser();
-$data   = new BackendProfile();
 
-$departments    = $data->records(Params::TBL_DEPARTMENT, ['1 = 1'], ['id', 'name']);
-$leads          = $data->records(Params::TBL_TEAM_LEAD, ['supervisors_id', '=', $user->userId()], ['id', 'name', 'offices_id']);
-$offices        = $data->records(Params::TBL_OFFICE, ['departments_id', '=', $user->departmentId()]);
+$departments    = $backendUserProfile->records(Params::TBL_DEPARTMENT, ['1 = 1'], ['id', 'name']);
+$leads          = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['supervisors_id', '=', $backendUser->userId()], ['id', 'name', 'offices_id']);
+$offices        = $backendUserProfile->records(Params::TBL_OFFICE, ['departments_id', '=', $backendUser->departmentId()]);
 
 
 if (Input::exists()) {
@@ -35,7 +33,7 @@ if (Input::exists()) {
             'id' => $leadId
         ]);
         if ($user->errors()) {
-            $uploadOk[] = 1;
+            Errors::setErrorType('success', 'Your data base are successfully updated.');
         }
     }
 }
@@ -74,13 +72,11 @@ include 'includes/navbar.php';
                 </li>
             </ul>
         </div>
-        <?php if (Input::exists() && $validate->countErrors()) {
-            include './../common/errors/errorRequired.php';
-         }
-            if (count($uploadOk) > 0) {
-                include './../common/errors/uploadOk.php';
-            }
-         ?>
+        <?php
+        if (Input::exists() && Errors::countAllErrors()) {
+            include './../common/errors/errors.php';
+        }
+        ?>
         <section class="no-padding-top">
             <div class="container-fluid">
                 <div class="row">
@@ -99,7 +95,7 @@ include 'includes/navbar.php';
                                                 <option value="">Select team-leader</option>
                                                 <?php
                                                 foreach ($leads as $lead) { ?>
-                                                    <option value="<?php echo $lead->id; ?>"><?php echo $lead->name; ?><small> (<?php echo $data->records(Params::TBL_OFFICE, ['id', '=', $lead->offices_id], ['name'], false)->name;?>)</small></option>
+                                                    <option value="<?php echo $lead->id; ?>"><?php echo $lead->name; ?><small> (<?php echo $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $lead->offices_id], ['name'], false)->name;?>)</small></option>
                                                 <?php } ?>
                                             </select>
                                         </div>
@@ -132,7 +128,7 @@ include 'includes/navbar.php';
                                     <div class="line"></div>
                                     <div class="col-sm-9 ml-auto">
                                         <input type="submit" name="save" class="btn btn-primary" value="Save"/>
-                                        <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                        <input type="hidden" name="token" value="<?php echo Tokens::getSubmitToken(); ?>">
                                     </div>
                                 </div>
                             </form>
