@@ -128,13 +128,13 @@ if (Input::exists()) {
 
         } else {
             /** All errors (Validate Class errors & Create Class input errors) */
-            $allErrors  = array_unique(array_merge($inputErrors, $validation->errors()));
+            $allErrors  = array_unique(array_merge($inputErrors, Errors::getErrors()));
         }
 
-        if (count($allErrors) === 0)
+        if (!Errors::countAllErrors())
         {
-            Session::put('configOk', 'Now you need to update your database.');
-            Redirect::to('../update_database.php');
+            Errors::setErrorType('success', Translate::t($lang, 'next_update_db'));
+            Redirect::to('../update_database.php?config='. Tokens::getRoute());
         }
 }
 

@@ -25,6 +25,15 @@ spl_autoload_register(function($class_name){
 });
 
 require_once './functions/sanitize.php';
+$user    = new FrontendUser();
+$records = new FrontendProfile();
+
+if (!$user->isLoggedIn()) {
+    Redirect::to('login.php');
+} else {
+    $lang   = $user->language();
+    $langId = $user->language(false);
+}
 
 
 //if (Cookie::exists(Config::get('remember/cookie_name')) && !Session::exists(Config::get('session/session_name'))) {

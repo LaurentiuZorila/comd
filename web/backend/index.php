@@ -23,7 +23,7 @@ $unpaid     = $backendUserProfile->records(Params::TBL_UNPAID, $where, ['quantit
 
 
 /** If form is submitted */
-if (Input::exists()) {
+if (Input::exists() && Tokens::tokenVerify()) {
     /** Instantiate validation class */
     $validate = new Validate();
 
@@ -42,7 +42,6 @@ if (Input::exists()) {
         $officeId       = Input::post('teams');
         $table          = strtolower(trim(Input::post('table')));
         $table          = Params::PREFIX.$table;
-        $quantitySum    = [];
 
         /** Conditions for action */
         $where = [
@@ -159,7 +158,7 @@ include 'includes/navbar.php';
                                 <div class="col-sm-3">
                                     <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
                                         <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
-                                        <?php foreach (Common::getMonths() as $key => $value) { ?>
+                                        <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                             <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                         <?php } ?>
                                     </select>
@@ -170,7 +169,7 @@ include 'includes/navbar.php';
                                 </div>
                                 <div class="col-sm-2">
                                     <input value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit" name="submit">
-                                    <input type="hidden" name="token" value="<?php echo Tokens::getSubmitToken(); ?>">
+                                    <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                 </div>
                             </div>
                         </form>
@@ -198,7 +197,7 @@ include 'includes/navbar.php';
                         <div class="statistic-block block">
                             <div class="progress-details d-flex align-items-end justify-content-between">
                                 <div class="title">
-                                    <div class="icon"><i class="icon-user"></i></div><strong>All staffs</strong>
+                                    <div class="icon"><i class="icon-user"></i></div><strong><?php echo Translate::t($lang, 'All_staff'); ?></strong>
                                 </div>
                                 <div class="number dashtext-1"><?php echo $countStaff; ?></div>
                             </div>
@@ -212,7 +211,7 @@ include 'includes/navbar.php';
                         <div class="statistic-block block">
                             <div class="progress-details d-flex align-items-end justify-content-between">
                                 <div class="title">
-                                    <div class="icon"><i class="icon-user-1"></i></div><strong>All employees</strong>
+                                    <div class="icon"><i class="icon-user-1"></i></div><strong><?php echo Translate::t($lang, 'All_employees'); ?></strong>
                                 </div>
                                 <div class="number dashtext-2"><?php echo $countEmployees; ?></div>
                             </div>
@@ -233,7 +232,7 @@ include 'includes/navbar.php';
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
-                                        <div class="icon"><i class="icon-info"></i></div><strong>Total user absentees</strong>
+                                        <div class="icon"><i class="icon-info"></i></div><strong><?php echo Translate::t($lang, 'Total_user_absentees'); ?></strong>
                                     </div>
                                     <div class="number dashtext-3"><?php echo $countAbsentees; ?></div>
                                 </div>
@@ -246,7 +245,7 @@ include 'includes/navbar.php';
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
-                                        <div class="icon"><i class="icon-list-1"></i></div><strong>Total user furlough</strong>
+                                        <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_furlough'); ?></strong>
                                     </div>
                                     <div class="number dashtext-3"><?php echo $countFurlough; ?></div>
                                 </div>
@@ -259,7 +258,7 @@ include 'includes/navbar.php';
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
-                                        <div class="icon"><i class="icon-list-1"></i></div><strong>Total user unpaid leave</strong>
+                                        <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_unpaid'); ?></strong>
                                     </div>
                                     <div class="number dashtext-3"><?php echo $countUnpaid; ?></div>
                                 </div>
@@ -278,8 +277,8 @@ include 'includes/navbar.php';
                         <div class="col-lg-8">
                             <div class="bar-chart block chart">
                                 <ul class="nav nav-pills card-header-pills">
-                                    <li class="nav-item"><button class="btn btn-primary mr-1 bar" id="bar" type="button">Bar</button></li>
-                                    <li class="nav-item"><button class="btn btn-outline-primary line" id="line" type="button">Line</button></li>
+                                    <li class="nav-item"><button class="btn btn-primary mr-1 bar" id="bar" type="button"><?php echo Translate::t($lang, 'Bar'); ?></button></li>
+                                    <li class="nav-item"><button class="btn btn-outline-primary line" id="line" type="button"><?php echo Translate::t($lang, 'Line'); ?></button></li>
                                 </ul>
                                 <div class="drills-chart block">
                                     <canvas id="backendIndexBarChart" height="150"></canvas>

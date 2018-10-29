@@ -2,7 +2,7 @@
 require_once 'core/login-init.php';
 
 
-if (Input::exists() && Tokens::tokenVerify(Input::post('token'))) {
+if (Input::exists() && Tokens::tokenVerify()) {
     /** Instantiate validate class */
     $validate = new Validate();
 
@@ -21,7 +21,7 @@ if (Input::exists() && Tokens::tokenVerify(Input::post('token'))) {
         $user = new BackendUser();
         $login = $user->login(Input::post('username'), Input::post('password'));
         if ($login) {
-            Redirect::to('index.php');
+            Redirect::to('index.php?r=' . Tokens::getRoute());
         } else {
             Errors::setErrorType('danger', 'Username or password not valid! Please try again!');
         }
@@ -66,7 +66,7 @@ include '../common/includes/head.php';
                     </div>
                     <div class="form-group">
                       <input id="login-password" type="password" name="password" data-msg="Please enter your password" class="input-material">
-                      <input type="hidden" name="token" value="<?php echo Tokens::getSubmitToken(); ?>">
+                      <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                       <label for="login-password" class="label-material">Password</label>
                     </div><button type="submit" id="login" class="btn btn-primary" name="login">Login</button>
                     <!-- This should be submit button but I replaced it with <a> for demo purposes-->

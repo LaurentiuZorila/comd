@@ -1,5 +1,5 @@
 <?php
-require_once 'core/init.php';
+require_once 'core/login-init.php';
 
 if (Input::exists()) {
         $validate = new Validate();
@@ -76,7 +76,7 @@ include '../common/includes/head.php';
                       <input id="login-password" type="password" name="Password" required data-msg="Please enter your password" class="input-material">
                       <label for="login-password" class="label-material">Password</label>
                     </div><button type="submit" id="login" class="btn btn-primary" name="login">Login</button>
-                      <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                      <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                   </form><a href="#" class="forgot-pass">Forgot Password?</a><br>
                 </div>
               </div>

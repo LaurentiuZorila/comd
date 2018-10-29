@@ -40,6 +40,9 @@ class CustomerUser
      */
     private $_sessionDepartmentId;
 
+
+    private $_languages;
+
     /**
      * @var bool
      */
@@ -211,6 +214,14 @@ class CustomerUser
     }
 
     /**
+     * @return mixed
+     */
+    public function name()
+    {
+        return Session::get($this->_sessionName);
+    }
+
+    /**
      * @return mixed|null
      */
     public function customerId()
@@ -244,6 +255,20 @@ class CustomerUser
     {
         return Session::get($this->_sessionDepartmentId);
     }
+
+
+    /**
+     * @param bool $id
+     * @return mixed if id = true return language id if false return language name
+     */
+    public function language($id = true)
+    {
+        if ($id) {
+            return Params::LANG[$this->data()->lang];
+        }
+        return $this->data()->lang;
+    }
+
 
     /**
      * @return bool

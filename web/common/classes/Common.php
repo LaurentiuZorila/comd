@@ -117,18 +117,6 @@ class Common
 
 
     /**
-     * @param $num
-     * @return string
-     *
-     */
-    public static function numberToMonth($num)
-    {
-        $dateObj= DateTime::createFromFormat('!m', $num);
-        return $dateObj->format('F');
-    }
-
-
-    /**
      * @param int $maxYears
      * @param int $startYear
      * @return array
@@ -139,13 +127,53 @@ class Common
         return array_combine($range, $range);
     }
 
+
+    /**
+     * @param $num
+     * @return string
+     *
+     */
+    public static function numberToMonth($num, $language)
+    {
+        switch ($language) {
+            case 'ro':
+                $format = new IntlDateFormatter('ro_RO', IntlDateFormatter::NONE,
+                    IntlDateFormatter::NONE, NULL, NULL, "MMMM");
+                break;
+            case 'en':
+                $format = new IntlDateFormatter('en_US', IntlDateFormatter::NONE,
+                    IntlDateFormatter::NONE, NULL, NULL, "MMMM");
+                break;
+            case 'it':
+                $format = new IntlDateFormatter('it_IT', IntlDateFormatter::NONE,
+                    IntlDateFormatter::NONE, NULL, NULL, "MMMM");
+                break;
+        }
+        return ucfirst(datefmt_format($format, mktime(0, 0, 0, $num, 10)));
+    }
+
+
     /**
      * @return array
      */
-    public static function getMonths() :array
+    public static function getMonths($language) :array
     {
         for ($x = 1; $x < 13; $x++) {
-            $months[$x] = date("F", mktime(0, 0, 0, $x, 10));
+            switch ($language) {
+                case 'ro':
+                    $format = new IntlDateFormatter('ro_RO', IntlDateFormatter::NONE,
+                        IntlDateFormatter::NONE, NULL, NULL, "MMMM");
+                    break;
+                case 'en':
+                    $format = new IntlDateFormatter('en_US', IntlDateFormatter::NONE,
+                        IntlDateFormatter::NONE, NULL, NULL, "MMMM");
+                    break;
+                case 'it':
+                    $format = new IntlDateFormatter('it_IT', IntlDateFormatter::NONE,
+                        IntlDateFormatter::NONE, NULL, NULL, "MMMM");
+                    break;
+            }
+            $months[$x] = ucfirst(datefmt_format($format, mktime(0, 0, 0, $x, 10)));
         }
         return $months;
     }

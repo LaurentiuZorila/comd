@@ -208,6 +208,18 @@ class FrontendUser
 
 
     /**
+     * @param bool $id
+     * @return mixed if id = true return language id if false return language name
+     */
+    public function language($id = true)
+    {
+        if ($id) {
+            return Params::LANG[$this->data()->lang];
+        }
+        return $this->data()->lang;
+    }
+
+    /**
      * @return mixed
      */
     public function departmentId()

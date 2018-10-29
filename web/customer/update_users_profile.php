@@ -1,9 +1,6 @@
 <?php
 require_once 'core/init.php';
-$customerUser  = new CustomerUser();
-$data          = new CustomerProfile();
-
-$allEmployees   = $data->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $customerUser->officesId()], ['name', 'offices_id', 'id', 'departments_id']);
+$allEmployees   = $data->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $user->officesId()], ['name', 'offices_id', 'id', 'departments_id']);
 $departments    = $data->records(Params::TBL_DEPARTMENT, [], ['id', 'name']);
 
 
@@ -33,7 +30,7 @@ if (Input::exists()) {
             $tables[] = $data::PREFIX . $allTables;
         }
 
-        $customerUser->update($data::TBL_EMPLOYEES, [
+        $user->update($data::TBL_EMPLOYEES, [
             'departments_id' => $departmentId,
             'offices_id'     => $officesId
         ], [
@@ -41,7 +38,7 @@ if (Input::exists()) {
         ]);
 
 
-        $customerUser->insert(Params::TBL_CHANGES, [
+        $user->insert(Params::TBL_CHANGES, [
                 'employees_id'              => $employeesId,
                 'current_departments_id'    => $employeesDetails->departments_id,
                 'current_offices_id'        => $employeesDetails->offices_id,
@@ -50,7 +47,7 @@ if (Input::exists()) {
             ]);
 
         foreach ($tables as $table) {
-            $customerUser->update($table, [
+            $user->update($table, [
                 'departments_id' => $departmentId,
                 'offices_id'     => $officesId
             ], [
@@ -58,15 +55,13 @@ if (Input::exists()) {
             ]);
         }
 
-        if (!$customerUser->errors()) {
-            Errors::setErrorType('success', 'Your database is successfully updated.');
-        } elseif ($customerUser->errors()) {
-            Errors::setErrorType('danger', 'You have some errors, please try again!');
+        if (!$user->errors()) {
+            Errors::setErrorType('success', Translate::t($lang, 'Db_success'));
+        } elseif ($user->errors()) {
+            Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
         }
     }
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -88,15 +83,15 @@ include 'includes/navbar.php';
         <!-- Page Header-->
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom">Update user profile </h2>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Update_employees_profile'); ?></h2>
             </div>
         </div>
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php">Home</a>
+                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a>
                 </li>
-                <li class="breadcrumb-item active">Update user profile
+                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Update_employees_profile'); ?>
                 </li>
             </ul>
         </div>
@@ -111,14 +106,14 @@ include 'includes/navbar.php';
                     <!-- Form Elements -->
                     <div class="col-lg-12">
                         <div class="block">
-                            <div class="title"><strong>Update user</strong></div>
+                            <div class="title"><strong><?php echo Translate::t($lang, 'Update_employees_profile'); ?></strong></div>
                             <div class="block-body">
                                 <form class="form-horizontal" method="post">
                                     <div class="form-group row">
-                                        <label class="col-sm-3 form-control-label">Select employees</label>
+                                        <label class="col-sm-3 form-control-label"><?php echo Translate::t($lang, 'Select_Employees'); ?></label>
                                         <div class="col-sm-9">
                                             <select name="user" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('user'))) {echo 'is-invalid';} ?>">
-                                                <option value="">Select user</option>
+                                                <option value=""><?php echo Translate::t($lang, 'Select_Employees'); ?></option>
                                                 <?php
                                                 foreach ($allEmployees as $employees) { ?>
                                                     <option value="<?php echo $employees->id; ?>"><?php echo $employees->name; ?><small>(<?php echo escape($data->records(Params::TBL_DEPARTMENT, ['id', '=', $employees->departments_id], ['name'], false)->name);?> - <?php echo escape($data->records(Params::TBL_OFFICE, ['id', '=', $employees->offices_id], ['name'], false)->name); ?>)</small></option>
@@ -126,17 +121,17 @@ include 'includes/navbar.php';
                                             </select>
                                             <?php
                                             if (Input::exists() && empty(Input::post('user'))) { ?>
-                                                <div class="invalid-feedback">Please select year.</div>
+                                                <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                             <?php }?>
                                         </div>
                                     </div>
 
                                     <div class="line"></div>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 form-control-label">Department to move:</label>
+                                        <label class="col-sm-3 form-control-label"><?php echo Translate::t($lang, 'New_depart'); ?></label>
                                         <div class="col-sm-9">
                                             <select name="department" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('department'))) {echo 'is-invalid';} ?>">
-                                                <option value="">Select department</option>
+                                                <option value=""><?php echo Translate::t($lang, 'Select_depart'); ?></option>
                                                 <?php
                                                 foreach ($departments as $department) { ?>
                                                 <option value="<?php echo $department->id; ?>"><?php echo $department->name; ?></option>
@@ -144,28 +139,28 @@ include 'includes/navbar.php';
                                             </select>
                                             <?php
                                             if (Input::exists() && empty(Input::post('department'))) { ?>
-                                                <div class="invalid-feedback">Please select year.</div>
+                                                <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                             <?php }?>
                                         </div>
                                     </div>
 
                                     <div class="line"></div>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 form-control-label">Office to move:</label>
+                                        <label class="col-sm-3 form-control-label"><?php echo Translate::t($lang, 'New_office'); ?></label>
                                         <div class="col-sm-9">
                                             <select name="office" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('office'))) {echo 'is-invalid';} ?>">
-                                                <option value="">Select office</option>
+                                                <option value=""><?php echo Translate::t($lang, 'Select_office'); ?></option>
                                             </select>
                                             <?php
                                             if (Input::exists() && empty(Input::post('office'))) { ?>
-                                                <div class="invalid-feedback">Please select year.</div>
+                                                <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                             <?php }?>
                                         </div>
                                     </div>
                                     <div class="line"></div>
                                     <div class="col-sm-9 ml-auto">
-                                        <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
-                                        <button type="submit" name="save" class="btn btn-primary">Save changes</button>
+                                        <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
+                                        <button type="submit" name="save" class="btn btn-primary"><?php echo Translate::t($lang, 'Save'); ?></button>
                                     </div>
                                 </form>
                             </div>

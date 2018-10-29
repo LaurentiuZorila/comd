@@ -44,7 +44,7 @@ foreach ($prefixTables as $prefixTable) {
 foreach ($allMonths as $months) {
     foreach ($months as $month) {
         $numberMonths[]     = $month;
-        $textualMonths[]    = Common::getMonths()[$month];
+        $textualMonths[]    = Common::getMonths($lang)[$month];
         $month              = array_combine($numberMonths, $textualMonths);
     }
 }

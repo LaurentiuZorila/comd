@@ -7,7 +7,7 @@
             $.ajax({
                 url: "includes/response/profile_months.php",
                 dataType: 'Json',
-                data: {'table': $('select[name="table"]').val(), 'offices_id': <?php echo $officeId; ?>, 'year':year },
+                data: {'table': $('select[name="table"]').val(), 'offices_id': <?= $officeId; ?>, 'year':year, 'lang': <?= $langId; ?> },
                 success: function(data) {
                     $('select[name="month"]').empty();
                     $.each(data, function(key, value) {

@@ -29,6 +29,11 @@ class Params
     const PREFIX            = 'cmd_';
 
     /**
+     * Languages
+     */
+    const LANG              = [1 => 'en', 2 => 'it', 3 => 'ro'];
+
+    /**
      * Changes table
      */
     const TBL_CHANGES       = 'cmd_changes';

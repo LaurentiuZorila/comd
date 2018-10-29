@@ -82,7 +82,7 @@ class BackendProfile
             $objDataValues  = $this->_db->get(Params::PREFIX . $table, $where, $value)->results();
 
             foreach ($objDataKey as $dataKey) {
-                $dataKeys[] = Common::getMonths()[$dataKey->$keyColumn];
+                $dataKeys[] = Common::getMonths($lang)[$dataKey->$keyColumn];
             }
 
             foreach ($objDataValues as $dataValue) {

@@ -29,7 +29,7 @@
                     <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages">
                         <a href="#" class="dropdown-item message d-flex align-items-center">
                             <div class="profile">
-                                <div class="status offline"></div>
+                                <div class="status online"></div>
                             </div>
                             <div class="content"><strong class="d-block"><?php echo $backendUser->name(); ?></strong><span class="d-block"><?php echo Translate::t($lang, 'navNotification'); ?></span>
                                 <small class="date d-block"><?php echo date("h:i A"); ?></small>
@@ -80,24 +80,35 @@
                 <!-- Megamenu end     -->
                 <!-- Languages dropdown    -->
                 <div class="list-inline-item dropdown">
+                    <?php
+                    if ($lang === 'en') { ?>
                     <a id="languages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link language dropdown-toggle">
-                        <img src="./../common/img/flag/_england.png" alt="English"><span class="d-none d-sm-inline-block">English</span>
+                        <img src="./../common/img/flag/_england.png" alt="English"><span class="d-none d-sm-inline-block"><?php echo Translate::t($lang, 'english'); ?></span>
                     </a>
+                    <?php } elseif ($lang === 'ro') {  ?>
+                    <a id="languages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link language dropdown-toggle">
+                        <img src="/../common/img/flag/RO.png" alt="English"><span class="d-none d-sm-inline-block"><?php echo Translate::t($lang, 'romanian'); ?></span>
+                    </a>
+                    <?php } elseif ($lang === 'it') { ?>
+                    <a id="languages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link language dropdown-toggle">
+                        <img src="/../common/img/flag/IT.png" alt="English"><span class="d-none d-sm-inline-block"><?php echo Translate::t($lang, 'italian'); ?></span>
+                    </a>
+                    <?php } ?>
                     <div aria-labelledby="languages" class="dropdown-menu">
                         <a rel="nofollow" href="language.php?lang=2" class="dropdown-item">
-                            <img src="/../common/img/flag/IT.png" alt="English" class="mr-2"><span>Italian<small> (not present)</small></span>
+                            <img src="/../common/img/flag/IT.png" alt="English" class="mr-2"><span><?php echo Translate::t($lang, 'italian'); ?><small> (not present)</small></span>
                         </a>
                         <a rel="nofollow" href="language.php?lang=3" class="dropdown-item">
-                            <img src="/../common/img/flag/RO.png" alt="English" class="mr-2"><span>Romanian<small> (not present)</small></span>
+                            <img src="/../common/img/flag/RO.png" alt="English" class="mr-2"><span><?php echo Translate::t($lang, 'romanian'); ?><small> (not present)</small></span>
                         </a>
                         <a rel="nofollow" href="language.php?lang=1" class="dropdown-item">
-                            <img src="/../common/img/flag/_england.png" alt="English" class="mr-2"><span>English<small></small></span>
+                            <img src="/../common/img/flag/_england.png" alt="English" class="mr-2"><span><?php echo Translate::t($lang, 'english'); ?><small></small></span>
                         </a>
                     </div>
                 </div>
                 <!-- Log out               -->
                 <div class="list-inline-item logout">
-                    <a id="logout" href="logout.php" class="nav-link">Logout <i class="icon-logout"></i></a>
+                    <a id="logout" href="logout.php" class="nav-link"><?php echo Translate::t($lang, 'logout'); ?> <i class="icon-logout"></i></a>
                 </div>
             </div>
         </div>

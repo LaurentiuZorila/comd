@@ -46,8 +46,6 @@ class BackendUser
     private $_error = false;
 
 
-    private $_languages = [1 => 'en', 2 => 'it', 3 => 'ro'];
-
     /**
      * Backend table
      */
@@ -97,22 +95,25 @@ class BackendUser
         return false;
     }
 
+
     /**
      * @param $table
-     * @param null $customer_id
      * @param array $fields
+     * @param array $conditions
      * @throws Exception
      */
     public function update($table, $fields = array(), $conditions = array())
     {
         if (!$this->_db->update($table, $fields, $conditions)) {
-            Errors::setErrorType('danger', 'There was a problem, please try again!');
+            Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
             throw new Exception('There was a problem, please try again!');
         }
+        Errors::setErrorType('success', Translate::t($lang, 'Db_success'));
     }
 
 
     /**
+     * @param $table
      * @param array $fields
      * @throws Exception
      */
@@ -141,7 +142,6 @@ class BackendUser
             Session::put($this->_sessionName, $this->data()->name);
             Session::put($this->_sessionUserId, $this->data()->id);
             Session::put($this->_sessionDepartmentId, $this->data()->departments_id);
-            $this->_langId = $this->data()->lang;
             return true;
         }
 
@@ -171,7 +171,7 @@ class BackendUser
 
 
     /**
-     * @return mixed|null
+     * @return mixed
      */
     public function userId()
     {
@@ -197,11 +197,15 @@ class BackendUser
 
 
     /**
-     * @return mixed
+     * @param bool $id
+     * @return mixed if id = true return language id if false return language name
      */
-    public function language()
+    public function language($id = true)
     {
-        return $this->_languages[$this->data()->lang];
+        if ($id) {
+            return Params::LANG[$this->data()->lang];
+        }
+        return $this->data()->lang;
     }
 
 

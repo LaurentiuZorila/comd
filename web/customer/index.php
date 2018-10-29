@@ -1,12 +1,6 @@
 <?php
 require_once 'core/init.php';
-$user   = new CustomerUser();
-$data   = new CustomerProfile();
 $best   = new Best($user->officesId());
-
-if (!$user->isLoggedIn()) {
-    Redirect::to('login.php');
-}
 
 /** Count all employees */
 $countUsers = $data->count(Params::TBL_EMPLOYEES, ['offices_id', '=', $user->officesId()]);
@@ -84,7 +78,7 @@ if (Input::exists()) {
             $chartNames = Js::toJson($names);
             $chartValues = Js::chartValues($chartData, 'quantity');
         } else {
-            Errors::setErrorType('warning', 'Please select other values and try again!');
+            Errors::setErrorType('warning', Translate::t($lang, 'Not_found_data'));
         }
     }
 }
@@ -109,35 +103,19 @@ include '../common/includes/head.php';
       <div class="page-content">
         <div class="page-header">
           <div class="container-fluid">
-            <h2 class="h5 no-margin-bottom">Dashboard</h2>
+            <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Dashboard'); ?></h2>
           </div>
         </div>
           <?php
-                  if (Input::exists() && Errors::countAllErrors()) {
-                      include './../common/errors/errors.php';
+          if (Input::exists() && Errors::countAllErrors()) {
+              include './../common/errors/errors.php';
+            }
           ?>
-          <section>
-              <div class="row">
-                  <div class="col-lg-12">
-                      <div class="card-body">
-                          <div class="alert alert-dismissible fade show badge-warning" role="alert">
-                              <strong class="text-white"> Your profile is configured.  </strong>
-                              <p class="text-white mb-0"> <?php echo Session::flash('configOk'); ?> </p>
-                              <p class="text-white mb-0">Click this <a href="update_database.php">link</a> to update your database.</p>
-                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                              </button>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </section>
-          <?php } ?>
         <section class="no-padding-top no-padding-bottom">
             <div class="col-lg-12">
             <p>
                 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
-                    Filters
+                    <?php echo Translate::t($lang, 'Filters'); ?>
                 </button>
             </p>
             <div class="<?php if (Input::exists() && !!Errors::countAllErrors()) { echo "collapse";} elseif(!Input::exists()) { echo "collapse"; } else { echo "collapse show"; } ?>" id="filter">
@@ -145,11 +123,11 @@ include '../common/includes/head.php';
                   <form method="post">
                     <div class="row">
                         <div class="col-sm-12">
-                            <div class="title"><strong>Filters</strong></div>
+                            <div class="title"><strong><?php echo Translate::t($lang, 'Filters'); ?></strong></div>
                         </div>
                             <div class="col-sm-4">
                                 <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} else { echo 'mb-3';}?>">
-                                    <option value="">Select Year</option>
+                                    <option value=""><?php echo Translate::t($lang, 'Select_year'); ?></option>
                                     <?php
                                     foreach (Common::getYearsList() as $year) { ?>
                                         <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
@@ -157,39 +135,39 @@ include '../common/includes/head.php';
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('year'))) { ?>
-                                    <div class="invalid-feedback">Year field are required!</div>
+                                    <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                 <?php }?>
                             </div>
 
                             <div class="col-sm-4">
                               <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) { echo 'is-invalid'; } else { echo 'mb-3';} ?>">
-                                  <option value="">Select Month</option>
-                                  <?php foreach (Common::getMonths() as $key => $value) { ?>
+                                  <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
+                                  <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                   <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                   <?php } ?>
                               </select>
                               <?php
                               if (Input::exists() && empty(Input::post('month'))) { ?>
-                                  <div class="invalid-feedback">Month field are required!</div>
+                                  <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                               <?php }?>
                             </div>
 
                             <div class="col-sm-4">
                                 <select name="table" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                    <option value="">Select Table</option>
+                                    <option value=""><?php echo Translate::t($lang, 'Select_table'); ?></option>
                                     <?php foreach ($tables as $key => $table) { ?>
                                         <option value="<?php echo $key; ?>"><?php echo strtoupper($table); ?></option>
                                     <?php } ?>
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('table'))) { ?>
-                                    <div class="invalid-feedback">Table field are required!</div>
+                                    <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                 <?php }?>
                             </div>
 
                             <div class="col-sm-2">
-                                <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                <input value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit">
+                                <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                             </div>
                     </div>
                   </form>
@@ -203,7 +181,7 @@ include '../common/includes/head.php';
                     <div class="statistic-block block">
                       <div class="progress-details d-flex align-items-end justify-content-between">
                         <div class="title">
-                          <div class="icon"><i class="icon-user-1"></i></div><strong>Total employees</strong>
+                          <div class="icon"><i class="icon-user-1"></i></div><strong><?php echo Translate::t($lang, 'All_employees'); ?></strong>
                         </div>
                         <div class="number dashtext-1"><?php echo $countUsers; ?></div>
                       </div>
@@ -217,7 +195,7 @@ include '../common/includes/head.php';
                     <div class="statistic-block block">
                       <div class="progress-details d-flex align-items-end justify-content-between">
                         <div class="title">
-                          <div class="icon"><i class="icon-info"></i></div><strong>Total absentees</strong>
+                          <div class="icon"><i class="icon-info"></i></div><strong><?php echo Translate::t($lang, 'Total_user_absentees'); ?></strong>
                         </div>
                         <div class="number dashtext-3"><?php echo $sumAbsentees > 0 ? $sumAbsentees : 0; ?></div>
                       </div>
@@ -231,7 +209,7 @@ include '../common/includes/head.php';
                     <div class="statistic-block block">
                       <div class="progress-details d-flex align-items-end justify-content-between">
                         <div class="title">
-                          <div class="icon"><i class="icon-list-1"></i></div><strong>Total furlough</strong>
+                          <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_furlough'); ?></strong>
                         </div>
                         <div class="number dashtext-3"><?php echo $sumFurlough > 0 ? $sumFurlough : 0; ?></div>
                       </div>
@@ -245,7 +223,7 @@ include '../common/includes/head.php';
                     <div class="statistic-block block">
                         <div class="progress-details d-flex align-items-end justify-content-between">
                             <div class="title">
-                                <div class="icon"><i class="icon-list-1"></i></div><strong>Total unpaid</strong>
+                                <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_unpaid'); ?></strong>
                             </div>
                             <div class="number dashtext-3"><?php echo $sumUnpaid > 0 ? $sumUnpaid : 0; ?></div>
                         </div>
@@ -271,8 +249,8 @@ include '../common/includes/head.php';
 <!--                                          <li class="nav-item"><button class="btn btn-outline-primary line" id="line" type="button">Line</button></li>-->
 <!--                                      </ul>-->
                                       <div class="btn-group btn-group-sm float-sm-right" role="group" aria-label="Charts type">
-                                          <button class="btn btn-primary bar" id="bar" type="button">Bar</button>
-                                          <button class="btn btn-outline-primary line" id="line" type="button">Line</button>
+                                          <button class="btn btn-primary bar" id="bar" type="button"><?php echo Translate::t($lang, 'Bar'); ?></button>
+                                          <button class="btn btn-outline-primary line" id="line" type="button"><?php echo Translate::t($lang, 'Line'); ?></button>
                                       </div>
                                       <div class="drills-chart block">
                                           <canvas id="target_customer_chart_bar" height="150" style="display: block;"></canvas>
@@ -294,7 +272,7 @@ include '../common/includes/head.php';
                   <div class="avatar"><img src="./../common/img/user.png" alt="..." class="img-fluid">
                     <div class="order dashbg-2">1st</div>
                   </div><a href="#" class="user-title mb-0"><h3 class="h5"><?php echo $best->getBestEmployeesName(); ?></h3></a>
-                  <div class="contributions mb-2">Best Operator</div>
+                  <div class="contributions mb-2"><?php echo Translate::t($lang, 'Best_operator'); ?></div>
                       <?php
                       foreach ($best->getCommonData() as $key => $commonData) { ?>
                           <p class="text-primary mb-0"><small><?php echo strtoupper($key) . ' - ' . $commonData; ?></small></p>
@@ -303,7 +281,7 @@ include '../common/includes/head.php';
               </div>
                 <div class="col-lg-5">
                     <div class="stats-with-chart-1 block" style="height: 91%;">
-                        <div class="title"> <strong class="d-block"><?php echo strtoupper($best->getFirstPriorityTbl()) . ' AVERAGE'; ?></strong></div>
+                        <div class="title"> <strong class="d-block"><?php echo strtoupper($best->getFirstPriorityTbl()) . Translate::t($lang, 'Average'); ?></strong></div>
                         <div class="row d-flex align-items-end justify-content-between">
                             <div class="col-12">
                                 <div class="bar-chart chart">
@@ -315,7 +293,7 @@ include '../common/includes/head.php';
                 </div>
                 <div class="col-lg-5">
                     <div class="stats-with-chart-1 block" style="height: 91%;">
-                        <div class="title"> <strong class="d-block"><?php echo strtoupper($best->getSecondPriorityTbl()) . ' AVERAGE'; ?></strong></div>
+                        <div class="title"> <strong class="d-block"><?php echo strtoupper($best->getSecondPriorityTbl()) . Translate::t($lang, 'Average');  ?></strong></div>
                         <div class="row d-flex align-items-end justify-content-between">
                             <div class="col-12">
                                 <div class="bar-chart chart">
@@ -342,7 +320,7 @@ include '../common/includes/head.php';
                                     </a>
                                 </div>
                                 <div class="col-lg-4 text-center">
-                                    <div class="contributions" data-toggle="tooltip" data-placement="top" title="Month"><?php echo escape(ucfirst($npTable)) . ' - ' . escape(Common::getMonths()[$month]); ?></div>
+                                    <div class="contributions" data-toggle="tooltip" data-placement="top" title="Month"><?php echo escape(ucfirst($npTable)) . ' - ' . escape(Common::getMonths($lang)[$month]); ?></div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="details d-flex">

@@ -56,28 +56,28 @@ class Validate
                 }
 
                 if ($rule === 'required' && empty($value)) {
-                    Errors::setErrorType('danger', 'All fields are required');
+                    Errors::setErrorType('danger', Translate::t($lang, 'all_required'));
                 } else if (!empty($value)) {
                     switch ($rule) {
                         case 'min':
                             if (trim(strlen($value)) < $rule_value) {
-                                Errors::setErrorType('danger', sprintf("%s must be a minimum of %d characters!", $errorItem, $rule_value));
+                                Errors::setErrorType('danger', sprintf("%s %s %d %s!", $errorItem, Translate::t($lang, 'validation_minimum'), $rule_value, Translate::t($lang, 'characters')));
                             }
                             break;
                         case 'max':
                             if (trim(strlen($value)) > $rule_value) {
-                                Errors::setErrorType('danger', sprintf("%s must be a maximum of %d characters!", $errorItem, $rule_value));
+                                Errors::setErrorType('danger', sprintf("%s %s %d %s!", $errorItem, Translate::t($lang, 'validation_max'), $rule_value, Translate::t($lang, 'characters')));
                             }
                             break;
                         case 'matches':
                             if ($value != $source[$rule_value]) {
-                                Errors::setErrorType('danger', "Passwords doesn't match!");
+                                Errors::setErrorType('danger', Translate::t($lang, 'pass_no_match'));
                             }
                             break;
                         case 'unique':
                             $check = $this->_db->get($rule_value, $where = [$item, '=', $value]);
                             if ($check->count()) {
-                                Errors::setErrorType('danger', sprintf("%s already exists!", $errorItem));
+                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($lang, 'already_exists')));
                             }
                             break;
                         case 'email':
@@ -87,19 +87,19 @@ class Validate
                             break;
                         case 'letters':
                             if (is_numeric($value)) {
-                                Errors::setErrorType('danger', sprintf("%s must contain only letters!", $errorItem));
+                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($lang, 'only_letters')));
                             }
                             break;
                         case 'characters':
                             if (is_numeric($value) && ctype_alpha($value)) {
-                                Errors::setErrorType('danger', sprintf("%s must contain only characters!", $errorItem));
+                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($lang, 'only_char')));
                             }
                             break;
                         case 'extension':
                             $path = $_FILES['fileToUpload']['name'];
                             $extension  = pathinfo($path, PATHINFO_EXTENSION);
                             if (in_array($extension, $rule_value)) {
-                                Errors::setErrorType('danger', 'Your file must have CSV extension.');
+                                Errors::setErrorType('danger', Translate::t($lang, 'Csv_extension'));
                             }
                             break;
                     }

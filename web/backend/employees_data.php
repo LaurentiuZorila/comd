@@ -11,7 +11,7 @@ $offices    = $backendUserProfile->records(Params::TBL_OFFICE, ['departments_id'
 $allUsers   = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['supervisors_id', '=', $user_id]);
 
 
-if (Input::exists()) {
+if (Input::exists() && Tokens::tokenVerify()) {
     /** Instantiate validation class */
     $validate = new Validate();
     /** Validate inputs */
@@ -184,7 +184,7 @@ include 'includes/navbar.php';
                             <div class="col-sm-6">
                                 <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
                                     <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
-                                    <?php foreach (Common::getMonths() as $key => $value) { ?>
+                                    <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                         <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                     <?php } ?>
                                 </select>
@@ -195,7 +195,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="col-sm-2">
                                 <input value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                             </div>
                         </div>
                     </form>
@@ -212,8 +212,8 @@ if (Input::exists() && !Errors::countAllErrors()) { ?>
                     </div>
                     <div class="card-body">
                         <h5 class="card-title text-center"><?php echo $allOfficesData->name; ?></h5>
-                        <p class="card-text text-center text-white-50"><?php echo Translate::t($lang, 'Data_for') . $monthName . ', ' . Input::post('year'); ?></p>
-                        <p class="card-text text-center text-white-50">Leads:
+                        <p class="card-text text-center text-white-50"><?php echo Translate::t($lang, 'Data_for ') . $monthName . ', ' . Input::post('year'); ?></p>
+                        <p class="card-text text-center text-white-50"><?php Translate::t($lang, 'Leads'); ?>:
                             <?php
                             foreach ($leadsName as $leadName) {
                                 if (count($leadsName) > 1) {

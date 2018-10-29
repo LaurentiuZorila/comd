@@ -74,7 +74,7 @@ include 'includes/navbar.php';
                                             </p>
                                         </div>
                                     </div>
-                                    <a href="staff_profile.php?office_id=<?php echo $lead->offices_id;?>&lead_id=<?php echo $lead->id; ?>&token=<?php echo ''; ?> " class="tile-link"></a>
+                                    <a href="staff_profile.php?office_id=<?php echo $lead->offices_id;?>&lead_id=<?php echo $lead->id; ?>&token=<?php echo ''; ?>&lang=<?= $lang; ?> " class="tile-link"></a>
                                 </div>
                             </div>
                         </div>

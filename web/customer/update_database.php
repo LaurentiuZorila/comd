@@ -1,16 +1,8 @@
 <?php
 require_once 'core/init.php';
 require_once '../vendor/league/csv/autoload.php';
-
 use League\Csv\Reader;
 
-$user   = new CustomerUser();
-$data   = new CustomerProfile();
-
-
-if (!$user->isLoggedIn()) {
-    Redirect::to('login.php');
-}
 // User data
 $userData = CustomerDB::getInstance()->get('cmd_users', ['id', '=', $user->customerId()])->first();
 
@@ -61,15 +53,15 @@ if (Input::exists()) {
                     ]);
                 }
                 if ($user->success()) {
-                    Errors::setErrorType('success', 'Your DB is successfully updated.');
+                    Errors::setErrorType('success', Translate::t($lang, 'Db_success'));
                 } else {
-                    Errors::setErrorType('danger', 'Something is going wrong, please try again.');
+                    Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
                 }
                 // Close the file
                 fclose($h);
             }
         } else {
-            Errors::setErrorType('warning', 'Your file must have CSV extension.');
+            Errors::setErrorType('warning', Translate::t($lang, 'Csv_extension'));
         }
     }
 }
@@ -95,20 +87,23 @@ include '../common/includes/head.php';
         <!-- Page Header-->
         <div class="page-header no-margin-bottom">
           <div class="container-fluid">
-            <h2 class="h5 no-margin-bottom">Update database </h2>
+            <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Update_db'); ?></h2>
 
           </div>
         </div>
         <!-- Breadcrumb-->
         <div class="container-fluid">
           <ul class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index.php">Home</a>
+            <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a>
             </li>
-            <li class="breadcrumb-item active">Update database
+            <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Update_db'); ?>
             </li>
           </ul>
         </div>
           <?php if (Input::exists() && Errors::countAllErrors()) {
+              include './../common/errors/errors.php';
+          }
+          if (Input::existsName('get', 'config') && Errors::countAllErrors()) {
               include './../common/errors/errors.php';
           }
           ?>
@@ -119,14 +114,14 @@ include '../common/includes/head.php';
                           <div class="row">
                               <div class="col-sm-12">
                                   <div class="title">
-                                      <strong>Update your database</strong>
+                                      <strong><?php echo Translate::t($lang, 'Update_db'); ?></strong>
                                       <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-primary btn-sm float-sm-right" id="info_upload"><i class="fa fa-info-circle"></i></button>
                                   </div>
                               </div>
 
                               <div class="col-sm-4">
                                   <select name="year" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} ?>">
-                                      <option value="">Select Year</option>
+                                      <option value=""><?php echo Translate::t($lang, 'Select_year'); ?></option>
                                       <?php
                                       foreach (Common::getYearsList() as $year) { ?>
                                           <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
@@ -134,39 +129,39 @@ include '../common/includes/head.php';
                                   </select>
                                   <?php
                                     if (Input::exists() && empty(Input::post('year'))) { ?>
-                                        <div class="invalid-feedback">Please select year.</div>
+                                        <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                   <?php }?>
                               </div>
                               <div class="col-sm-4">
                                   <select name="month" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} ?>">
-                                      <option value="">Select Month</option>
-                                      <?php foreach (Common::getMonths() as $key => $value) { ?>
+                                      <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
+                                      <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                           <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                       <?php } ?>
                                   </select>
                                   <?php
                                   if (Input::exists() && empty(Input::post('month'))) { ?>
-                                      <div class="invalid-feedback">Please select month.</div>
+                                      <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                   <?php }?>
                               </div>
                               <div class="col-sm-4">
                                   <select name="tables" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('tables'))) {echo 'is-invalid';} ?>">
-                                      <option value="">Select table</option>
+                                      <option value=""><?php echo Translate::t($lang, 'Select_table'); ?></option>
                                       <?php foreach ($allTables as $table) { ?>
                                           <option value="<?php echo $table; ?>"><?php echo strtoupper($table); ?></option>
                                       <?php } ?>
                                   </select>
                                   <?php
                                   if (Input::exists() && empty(Input::post('tables'))) { ?>
-                                      <div class="invalid-feedback">Please select table.</div>
+                                      <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                   <?php }?>
                               </div>
                               <div class="col-sm-12 pb-3">
                               <input type="file" name="fileToUpload" id="fileToUpload">
                               </div>
                               <div class="col-sm-2">
-                                  <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                  <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                  <input value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit">
+                                  <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                               </div>
                           </div>
                       </form>
@@ -177,17 +172,15 @@ include '../common/includes/head.php';
           <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade text-left show" style="display: none;">
               <div role="document" class="modal-dialog">
                   <div class="modal-content">
-                      <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3">Please make attention!</strong>
+                      <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3"><?php echo Translate::t($lang, 'Make_attention'); ?></strong>
                           <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
                       </div>
                       <div class="modal-body">
-                          <p> Your file must have .csv extension (e.g. absentees.csv). </p>
-                          <p> Your file doesn't need contain headers. </p>
-                          <p> Download your file from <a href="download.php">here</a>!</p>
-                          <p> For other information please contact administrator. </p>
+                          <p> <?php echo Translate::t($lang, 'Csv_extension'); ?> </p>
+                          <p> <?php echo Translate::t($lang, 'Download_file_from'); ?>: <a href="download.php"><?php echo Translate::t($lang, 'File'); ?></a></p>
                       </div>
                       <div class="modal-footer">
-                          <button type="button" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                          <button type="button" data-dismiss="modal" class="btn btn-secondary"><?php echo Translate::t($lang, 'Close'); ?></button>
                       </div>
                   </div>
               </div>

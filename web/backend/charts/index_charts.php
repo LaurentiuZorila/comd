@@ -34,7 +34,7 @@
             labels: <?php echo $chartNames; ?>,
             datasets: [
                 {
-                    label: "<?php echo ucfirst(Input::post('table')) . '-' . Common::getMonths()[Input::post('month')]; ?>",
+                    label: "<?php echo ucfirst(Input::post('table')) . '-' . Common::getMonths($lang)[Input::post('month')]; ?>",
                     backgroundColor: "#864DD9",
                     hoverBackgroundColor: "#864DD9",
                     borderColor: "#864DD9",
@@ -76,7 +76,7 @@
             labels: <?php echo $chartNames; ?>,
             datasets: [
                 {
-                    label: "<?php echo ucfirst(Input::post('table')) . '-' . Common::getMonths()[Input::post('month')]; ?>",
+                    label: "<?php echo ucfirst(Input::post('table')) . '-' . Common::getMonths($lang)[Input::post('month')]; ?>",
                     backgroundColor: "#864DD9",
                     hoverBackgroundColor: "#864DD9",
                     borderColor: "#864DD9",

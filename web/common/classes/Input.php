@@ -27,6 +27,27 @@ class Input
 
 
     /**
+     * @param string $type
+     * @param $name
+     * @return bool
+     */
+    public static function existsName($type = 'post', $name)
+    {
+        switch ($type) {
+            case 'post':
+                return (!empty($_POST[$name]));
+                break;
+            case 'get':
+                return (!empty($_GET[$name]));
+                break;
+            default:
+                return false;
+                break;
+        }
+    }
+
+
+    /**
      * @param $name
      * @return bool
      */

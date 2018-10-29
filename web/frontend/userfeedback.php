@@ -22,10 +22,10 @@ if (Input::exists('get')) {
         ]);
 
         if ($insert) {
-            Session::put('feedbackOk', 'Thank you for your feedback!');
+            Errors::setErrorType('success', 'Thank you for feedback!');
             Redirect::to('feedback.php');
         } else {
-            Session::put('feedbackKo', 'Something goes wrong, please try again!');
+            Errors::setErrorType('danger', 'Db_error');
             Redirect::to('feedback.php');
         }
 

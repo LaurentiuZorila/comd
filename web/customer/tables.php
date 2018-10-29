@@ -1,7 +1,5 @@
 <?php
 require_once 'core/init.php';
-$user = new CustomerUser();
-$data = new CustomerProfile();
 
 // All tables, employees id
 $allTables   = $data->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['tables'], false);
@@ -56,15 +54,15 @@ include 'includes/navbar.php';
         <!-- Page Header-->
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom">Tables</h2>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Table'); ?></h2>
             </div>
         </div>
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                <li class="breadcrumb-item active">All users</li>
-                <li class="breadcrumb-item active"><?php echo 'Data for month: '. Common::getMonths()[$month]; ?></li>
+                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
+                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'All_users'); ?></li>
+                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Data_for') . Common::getMonths($lang)[$month]; ?></li>
             </ul>
         </div>
         <section class="no-padding-top">
@@ -72,12 +70,12 @@ include 'includes/navbar.php';
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="block margin-bottom-sm">
-                            <div class="title text-center"><strong class="text-primary">Data for all employees </strong></div>
+                            <div class="title text-center"><strong class="text-primary"><?php echo Translate::t($lang, 'Data_for') . ' ' . Translate::t($lang, 'All_employees'); ?></strong></div>
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
                                         <tr role="row">
-                                            <th class="text-primary">NAME</th>
+                                            <th class="text-primary"><?php echo Translate::t($lang, 'Name'); ?></th>
                                             <?php foreach ($tables as $upperTable) { ?>
                                             <th class="text-primary"> <?php echo $upperTable; ?> </th>
                                             <?php } ?>

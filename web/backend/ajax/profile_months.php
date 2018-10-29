@@ -28,7 +28,7 @@ $year       = Input::get('year');
 $allMonths   = $data->records($table, [['offices_id', '=', $officesId], 'AND', ['year', '=', $year]], ['month']);
 
 foreach ($allMonths as $months) {
-     $month[$months->month] = Common::getMonths()[$months->month];
+     $month[$months->month] = Common::getMonths($lang)[$months->month];
 }
 
 echo json_encode($month);

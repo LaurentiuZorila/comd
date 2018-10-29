@@ -1,11 +1,5 @@
 <?php
 require_once 'core/init.php';
-$user    = new FrontendUser();
-$records = new FrontendProfile();
-
-if (!$user->isLoggedIn()) {
-    Redirect::to('login.php');
-}
 
 /** All leads */
 $teamLeads = $records->getLeads(['departments_id', $user->departmentId()], ['name', 'id']);
@@ -75,9 +69,9 @@ include 'includes/navbar.php';
                             <div class="contributions">
                                 <?php
                                 if (in_array($leads->id, $noFeedback)) {
-                                        echo 'Thanks four your feedback';
+                                        echo Translate::t($lang, 'Feedback_given');
                                         } else {
-                                           echo 'Give me a feedback';
+                                           echo Translate::t($lang, 'Feedback_given');
                                         }
                                 ?>
                             </div>
@@ -86,7 +80,7 @@ include 'includes/navbar.php';
                             <div class="contributions text-monospace text-center">
                                 <?php
                                 if (in_array($leads->id, $noFeedback)) {
-                                    echo 'Rating ' . $records->rating($leads->id) . '/5' . '<br />';
+                                    echo Translate::t($lang, 'Rating') . $records->rating($leads->id) . '/5' . '<br />';
                                     for ($i=1;$i<6;$i++) {
                                         if ($i<= $records->rating($leads->id)) { ?>
                                         <a class="text-secondary" href="#"><span class="fa fa-star checked"></span></a>
@@ -105,7 +99,7 @@ include 'includes/navbar.php';
                         if (in_array($leads->id, $noFeedback)) { ?>
                         <div class="col-lg-3 text-center">
                             <div class="contributions text-monospace">
-                                <span><?php echo 'Given stars ' . $givenFeedbacks[$leads->id]; ?></span><span class="fa fa-star ml-1 text-danger rating-face" ></span>
+                                <span><?php echo Translate::t($lang, 'Given_stars') . ' ' . $givenFeedbacks[$leads->id]; ?></span><span class="fa fa-star ml-1 text-danger rating-face" ></span>
                             </div>
                         </div>
                         <?php } ?>

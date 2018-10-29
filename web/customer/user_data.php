@@ -1,12 +1,5 @@
 <?php
 require_once 'core/init.php';
-$user   = new CustomerUser();
-$data   = new CustomerProfile();
-
-
-if (!$user->isLoggedIn()) {
-    Redirect::to('login.php');
-}
 
 /** All tables */
 $allTables = $data->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['tables'], false);
@@ -61,7 +54,7 @@ if (Input::exists()) {
 
             /** Check if exists values */
             if (!Common::checkValues($allData)) {
-                Errors::setErrorType('warning', 'Not found data. Please select other values and try again.');
+                Errors::setErrorType('warning', Translate::t($lang, 'Not_found_data'));
             }
         }
 }
@@ -99,7 +92,7 @@ if (Input::exists('get') && !Input::exists()) {
 
     /** Check if exists values */
     if (!Common::checkValues($allData)) {
-        Errors::setErrorType('warning', 'Not found data. Please select other values and try again.');
+        Errors::setErrorType('warning', Translate::t($lang, 'Not_found_data'));
     }
 }
 
@@ -125,14 +118,14 @@ include 'includes/navbar.php';
         <!-- Page Header-->
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom">Users</h2>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Employees'); ?></h2>
             </div>
         </div>
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                <li class="breadcrumb-item active">Employees data</li>
+                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
+                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Employees_details'); ?></li>
             </ul>
         </div>
         <?php
@@ -144,7 +137,7 @@ include 'includes/navbar.php';
             <div class="col-lg-12">
                 <p>
                     <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
-                        Filters
+                        <?php echo Translate::t($lang, 'Filters'); ?>
                     </button>
                 </p>
                 <div class="<?php if (Input::exists() && !Errors::countAllErrors()) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
@@ -152,11 +145,11 @@ include 'includes/navbar.php';
                     <form method="post">
                         <div class="row">
                             <div class="col-sm-12">
-                                <div class="title"><strong>Filters</strong></div>
+                                <div class="title"><strong><?php echo Translate::t($lang, 'Filters'); ?></strong></div>
                             </div>
                             <div class="col-sm-4">
                                 <select name="year" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} ?>">
-                                    <option value="">Select Year</option>
+                                    <option value=""><?php echo Translate::t($lang, 'Select_year'); ?></option>
                                     <?php
                                     foreach (Common::getYearsList() as $year) { ?>
                                         <option><?php echo $year; ?></option>
@@ -164,36 +157,36 @@ include 'includes/navbar.php';
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('year'))) { ?>
-                                    <div class="invalid-feedback">Select year!</div>
+                                    <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                 <?php }?>
                             </div>
                             <div class="col-sm-4">
                                 <select name="month" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} ?>">
-                                    <option value="">Select Month</option>
-                                    <?php foreach (Common::getMonths() as $key => $value) { ?>
+                                    <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
+                                    <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                         <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                     <?php } ?>
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('month'))) { ?>
-                                    <div class="invalid-feedback">Select month!</div>
+                                    <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                 <?php }?>
                             </div>
                             <div class="col-sm-4">
                                 <select name="employees" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('employees'))) {echo 'is-invalid';} ?>">
-                                    <option value="">Select employees</option>
+                                    <option value=""><?php echo Translate::t($lang, 'Select_Employees'); ?></option>
                                     <?php foreach ($allEmployees as $employees) { ?>
                                         <option value="<?php echo $employees->id; ?>"><?php echo $employees->name; ?></option>
                                     <?php } ?>
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('employees'))) { ?>
-                                    <div class="invalid-feedback">Select employees!</div>
+                                    <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                 <?php }?>
                             </div>
                             <div class="col-sm-2">
-                                <input value="Submit" class="btn btn-outline-secondary" type="submit">
-                                <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
+                                <input value="<? echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit">
+                                <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                             </div>
                         </div>
                     </form>
@@ -213,7 +206,7 @@ include 'includes/navbar.php';
                                 </div>
                                 <div class="card-body text-center">
                                     <h4 class="mb-3 text-gray-light"><?php echo $name; ?></h4>
-                                    <p class="mb-4"><?php echo Common::numberToMonth($month) . ' - ' . Input::post('year'); ?></p>
+                                    <p class="mb-4"><?php echo Common::numberToMonth($month, $lang) . ' - ' . Input::post('year'); ?></p>
                                 </div>
                             </div>
                         </div>

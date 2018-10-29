@@ -5,6 +5,7 @@
 
 class Tokens
 {
+    private static $_inputName = 'Token';
 
     /**
      * @return mixed|null
@@ -82,12 +83,23 @@ class Tokens
        return self::setSubmitToken();
     }
 
+
+    /**
+     * @return string
+     */
+    public static function getInputName()
+    {
+        return self::$_inputName;
+    }
+
+
     /**
      * @param $token
      * @return bool
      */
-    public static function tokenVerify($token)
+    public static function tokenVerify()
     {
+        $token = Input::post(self::$_inputName);
         $submitToken = self::sessionName();
         if (Session::exists($submitToken) && hash_equals($token, Session::get($submitToken))) {
             Session::delete($submitToken);
@@ -101,13 +113,23 @@ class Tokens
      * @param $token
      * @return bool
      */
-    public static function routeTokenVerify($token)
+    public static function routeTokenVerify()
     {
+        $token = Input::get('r');
         $routeToken = self::routeSession();
         if (Session::exists($routeToken) && hash_equals($token, Session::get($routeToken))) {
             Session::delete($routeToken);
             return true;
         }
-        Redirect::to('./../error/notFoundToken.php');
+        return false;
     }
+
+
+    public static function getLastDataRoute()
+    {
+        $year   = date('Y');
+        $month  = date('n');
+
+    }
+
 }

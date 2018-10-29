@@ -94,10 +94,9 @@ class FrontendProfile
      * @param $table
      * @param array $where
      * @param array $columns
-     * @return array key => values
-     * @uses first column is key and second is value only for 2 columns
+     * @return array
      */
-    public function arrayMultipleRecords($table, array $where, array $columns)
+    public function arrayMultipleRecords($table, array $where, array $columns, $lang)
     {
         if (count($columns) == 2) {
             //Array with key
@@ -112,7 +111,7 @@ class FrontendProfile
             $objDataKey     = $this->_db->get($table, $where, $key)->results();
             $objDataValues  = $this->_db->get($table, $where, $value)->results();
             foreach ($objDataKey as $dataKey) {
-                $dataKeys[] = Common::getMonths()[$dataKey->$keyColumn];
+                $dataKeys[] = Common::getMonths($lang)[$dataKey->$keyColumn];
             }
             foreach ($objDataValues as $dataValue) {
                 $dataValues[] = $dataValue->$valueColumn;

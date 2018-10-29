@@ -15,6 +15,7 @@ $allTables  = explode(',', $allTables);
 if (Input::exists('get')) {
     $leadId             = Input::get('lead_id');
     $officeId           = Input::get('office_id');
+    $language           = Input::get('lang');
 
     /** Staff details */
     $leadProfile        = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['id', '=', $leadId],['name', 'id', 'supervisors_id', 'offices_id'], false);
@@ -41,7 +42,7 @@ if (Input::exists('get')) {
 
 }
 
-if (Input::exists()) {
+if (Input::exists() && Tokens::tokenVerify()) {
     /** Instantiate validate class */
     $validate = new Validate();
 
@@ -87,7 +88,7 @@ if (Input::exists()) {
 
         /** Chech if exist values for options selected */
         if (count($quantitySum) < 1) {
-            Errors::setErrorType('warning', 'Not data found, please try again with other values.');
+            Errors::setErrorType('warning', Translate::t($lang, 'Not_found_data'));
         }
     }
 }
@@ -121,8 +122,8 @@ include 'includes/navbar.php';
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                <li class="breadcrumb-item active">Profile </li>
+                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
+                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Profile'); ?> </li>
             </ul>
         </div>
         <?php
@@ -136,7 +137,7 @@ include 'includes/navbar.php';
                     <div class="col-lg-12">
                         <p>
                             <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
-                                Filters
+                                <?php echo Translate::t($lang, 'Filters'); ?>
                             </button>
                         </p>
                         <div class="<?php if (Input::exists() && !Errors::countAllErrors()) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
@@ -145,40 +146,40 @@ include 'includes/navbar.php';
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <select name="table" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                                <option value="">Select Table</option>
+                                                <option value=""><?php echo Translate::t($lang, 'Select_table'); ?></option>
                                                 <?php foreach ($allTables as $table) { ?>
                                                     <option value="<?php echo escape(trim($table)); ?>"><?php echo strtoupper($table); ?></option>
                                                 <?php } ?>
                                             </select>
                                             <?php
                                             if (Input::exists() && empty(Input::post('table'))) { ?>
-                                                <div class="invalid-feedback mb-3">Team field are required!</div>
+                                                <div class="invalid-feedback mb-3"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                             <?php }?>
                                         </div>
                                         <div class="col-sm-4">
                                             <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                                <option value="">Select Year</option>
+                                                <option value=""><?php echo Translate::t($lang, 'Select_year'); ?></option>
                                                 <?php foreach (Common::getYearsList() as $year) { ?>
                                                 <option value="<?php echo  $year; ?>"><?php echo $year; ?></option>
                                                 <?php } ?>
                                             </select>
                                             <?php
                                             if (Input::exists() && empty(Input::post('year'))) { ?>
-                                                <div class="invalid-feedback mb-3">Year field are required!</div>
+                                                <div class="invalid-feedback mb-3"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                             <?php }?>
                                         </div>
                                         <div class="col-sm-4">
                                             <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                                <option value="">Select Month</option>
+                                                <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
                                             </select>
                                             <?php
                                             if (Input::exists() && empty(Input::post('month'))) { ?>
-                                                <div class="invalid-feedback mb-3">Month field are required!</div>
+                                                <div class="invalid-feedback mb-3"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                             <?php }?>
                                         </div>
                                         <div class="col-sm-12">
-                                            <input value="Submit" name="Filter" class="btn btn-outline-primary" type="submit">
-                                            <input type="hidden" name="token" value="<?php echo Tokens::getSubmitToken(); ?>">
+                                            <input value="<?php echo Translate::t($lang, 'Submit'); ?>" name="Filter" class="btn btn-outline-primary" type="submit">
+                                            <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                         </div>
                                     </div>
                                 </form>
@@ -191,7 +192,7 @@ include 'includes/navbar.php';
                                 <h4 class="text-gray-light text-center"><?php echo $leadName; ?></h4>
                             </div>
                             <div class="card-body text-center">
-                                <p class=""><?php echo escape($departmentName) . ' - ' .escape($officeName); ?></p>
+                                <p class=""><?php echo strtoupper(escape($departmentName)) . ' - ' .escape($officeName); ?></p>
                             </div>
                         </div>
                     </div>
@@ -199,7 +200,7 @@ include 'includes/navbar.php';
                         <div class="statistic-block block">
                             <div class="progress-details d-flex align-items-end justify-content-between">
                                 <div class="title">
-                                    <div class="icon"><i class="icon-user-1"></i></div><strong>Total employees</strong>
+                                    <div class="icon"><i class="icon-user-1"></i></div><strong><?php echo Translate::t($lang, 'Total_employees'); ?></strong>
                                 </div>
                                 <div class="number dashtext-2"><?php echo $totalEmployees; ?></div>
                             </div>
@@ -215,7 +216,7 @@ include 'includes/navbar.php';
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
-                                        <div class="icon"><i class="<?php echo $icon[$x]; ?>"></i></div><strong>Total <?php echo strtoupper($table); ?></strong>
+                                        <div class="icon"><i class="<?php echo $icon[$x]; ?>"></i></div><strong><?php echo Translate::t($lang, 'Total') . ' ' . Translate::t($lang, $table); ?></strong>
                                     </div>
                                     <div class="number dashtext-2"><?php echo $quantity; ?></div>
                                 </div>
@@ -236,8 +237,8 @@ include 'includes/navbar.php';
                 <div class="card text-center">
                     <div class="card-header pt-2">
                         <ul class="nav nav-pills card-header-pills">
-                            <li class="nav-item"><button class="btn btn-primary mr-1 bar" id="bar" type="button">Bar</button></li>
-                            <li class="nav-item"><button class="btn btn-outline-primary line" id="line" type="button">Line</button></li>
+                            <li class="nav-item"><button class="btn btn-primary mr-1 bar" id="bar" type="button"><?php echo Translate::t($lang, 'Bar'); ?></button></li>
+                            <li class="nav-item"><button class="btn btn-outline-primary line" id="line" type="button"><?php echo Translate::t($lang, 'Line'); ?></button></li>
                         </ul>
                     </div>
                     <div class="pie-chart chart block">

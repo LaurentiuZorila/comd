@@ -5,10 +5,13 @@ spl_autoload_register(function($class_name){
 
     //commonClasses directories
     $directorys = array(
-        'backendClasses/',
-        '../common/classes/'
+        'frontClasses/',
+        'common/classes/',
+        '../frontClasses/',
+        '../common/classes/',
+        '../../common/classes/',
+        '../../frontClasses/'
     );
-
     //for each directory
     foreach($directorys as $directory)
     {
@@ -21,16 +24,8 @@ spl_autoload_register(function($class_name){
     }
 });
 
-
 require_once './functions/sanitize.php';
-$backendUser = new BackendUser();
-$backendUserProfile = new BackendProfile();
-if (!$backendUser->isLoggedIn()) {
-    Redirect::to('login.php');
-} else {
-    $lang   = $backendUser->language();
-    $langId = $backendUser->language(false);
-}
+
 
 
 //if (Cookie::exists(Config::get('remember/cookie_name')) && !Session::exists(Config::get('session/session_name'))) {
@@ -38,7 +33,7 @@ if (!$backendUser->isLoggedIn()) {
 //    $hashCheck = DB::getInstance()->get('users_session', array('hash', '=', $hash));
 //    if ($hashCheck->count()) {
 //        //echo 'Hash matches, log user in';
-//        $user = new BackendUser($hashCheck->first()->user_id);
+//        $user = new User($hashCheck->first()->user_id);
 //        $user->login();
 //    }
 //}

@@ -210,11 +210,11 @@ class BackendDB
 
     /**
      * @param $table
-     * @param $id
-     * @param $fields
+     * @param array $fields
+     * @param array $conditions
      * @return bool
      */
-    public function update($table, $fields, $conditions)
+    public function update($table, array $fields, array $conditions)
     {
         $set = [];
         foreach ($fields as $name => $value) {
@@ -241,8 +241,8 @@ class BackendDB
     /**
      * @param $table
      * @param $where
-     * @param array $columns
-     * @return bool|BackendDB
+     * @param string $column
+     * @return BackendDB|bool
      */
     public function average($table, $where, $column = '')
     {
