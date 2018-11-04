@@ -5,16 +5,22 @@ class FrontendProfile
 
     private $_leadsTbl = ['cmd_users'];
 
+    private $_year;
+
+    private $_month;
+
     /**
-     * ProfileDetails constructor.
+     * FrontendProfile constructor.
      */
     public function __construct()
     {
         $this->_db = FrontendDB::getInstance();
+        $this->_year = date('Y');
+        $this->_month = date('n');
     }
 
 
-     /**
+    /**
      * @param $table
      * @param array $where
      * @param array $column
@@ -32,6 +38,7 @@ class FrontendProfile
 
     /**
      * @param array $where
+     * @param string $column
      * @return array
      */
     public function sumAllCommonData(array $where, $column = '')
@@ -46,6 +53,7 @@ class FrontendProfile
 
     /**
      * @param array $where
+     * @param array $column
      * @return array
      */
     public function commonDetails(array $where, array $column)
@@ -59,7 +67,7 @@ class FrontendProfile
 
     /**
      * @param $id
-     * @return array
+     * @return mixed
      */
     public function getFeedback($id)
     {
@@ -91,22 +99,26 @@ class FrontendProfile
 
 
     /**
+     * @param $lang
      * @param $table
-     * @param array $where
-     * @param array $columns
+     * @param $where
+     * @param $columns
      * @return array
      */
-    public function arrayMultipleRecords($table, array $where, array $columns, $lang)
+    public function arrayMultipleRecords($table, $where, $columns, $lang)
     {
         if (count($columns) == 2) {
+
+            list($filed, $item) = $columns;
+
             //Array with key
-            $key[]          = $columns[0];
+            $key[]          = $filed;
             // Array with value
-            $value[]        = $columns[1];
+            $value[]        = $item;
             // String key
-            $keyColumn      = $columns[0];
+            $keyColumn      = $filed;
             // String value
-            $valueColumn    = $columns[1];
+            $valueColumn    = $item;
 
             $objDataKey     = $this->_db->get($table, $where, $key)->results();
             $objDataValues  = $this->_db->get($table, $where, $value)->results();
@@ -132,6 +144,5 @@ class FrontendProfile
     {
         return $this->_db->get('cmd_unpaid', $where, ['hours'])->first();
     }
-
 
 }

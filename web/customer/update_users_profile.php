@@ -1,13 +1,13 @@
 <?php
 require_once 'core/init.php';
-$allEmployees   = $data->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $user->officesId()], ['name', 'offices_id', 'id', 'departments_id']);
-$departments    = $data->records(Params::TBL_DEPARTMENT, [], ['id', 'name']);
+$allEmployees   = $leadData->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $lead->officesId()], ['name', 'offices_id', 'id', 'departments_id']);
+$departments    = $leadData->records(Params::TBL_DEPARTMENT, [], ['id', 'name']);
 
 
 if (Input::exists()) {
-    $employeesId    = Input::post('user');
-    $departmentId   = Input::post('department');
-    $officesId      = Input::post('office');
+    $employeesId    = Common::valuesToInsert(Input::post('user'));
+    $departmentId   = Common::valuesToInsert(Input::post('department'));
+    $officesId      = Common::valuesToInsert(Input::post('office'));
 
     /** Instantiate validate class */
     $validate = new Validate();
@@ -27,10 +27,10 @@ if (Input::exists()) {
         $empRecentTables  = explode(',', $employeesRecentTables->tables);
 
         foreach ($empRecentTables as $allTables) {
-            $tables[] = $data::PREFIX . $allTables;
+            $tables[] = Params::PREFIX . $allTables;
         }
 
-        $user->update($data::TBL_EMPLOYEES, [
+        $lead->update($data::TBL_EMPLOYEES, [
             'departments_id' => $departmentId,
             'offices_id'     => $officesId
         ], [
@@ -38,7 +38,7 @@ if (Input::exists()) {
         ]);
 
 
-        $user->insert(Params::TBL_CHANGES, [
+        $lead->insert(Params::TBL_CHANGES, [
                 'employees_id'              => $employeesId,
                 'current_departments_id'    => $employeesDetails->departments_id,
                 'current_offices_id'        => $employeesDetails->offices_id,
@@ -47,7 +47,7 @@ if (Input::exists()) {
             ]);
 
         foreach ($tables as $table) {
-            $user->update($table, [
+            $lead->update($table, [
                 'departments_id' => $departmentId,
                 'offices_id'     => $officesId
             ], [
@@ -66,9 +66,12 @@ if (Input::exists()) {
 
 <!DOCTYPE html>
 <html>
-<?php
-include '../common/includes/head.php';
-?>
+<head>
+    <?php
+    include '../common/includes/head.php';
+    ?>
+    <link rel="stylesheet" href="./../common/css/spiner/style.css">
+</head>
 <body>
 <?php
 include 'includes/navbar.php';
@@ -84,6 +87,13 @@ include 'includes/navbar.php';
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
                 <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Update_employees_profile'); ?></h2>
+            </div>
+        </div>
+        <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
+            <div class="loader loader-3">
+                <div class="dot dot1"></div>
+                <div class="dot dot2"></div>
+                <div class="dot dot3"></div>
             </div>
         </div>
         <!-- Breadcrumb-->
@@ -116,7 +126,7 @@ include 'includes/navbar.php';
                                                 <option value=""><?php echo Translate::t($lang, 'Select_Employees'); ?></option>
                                                 <?php
                                                 foreach ($allEmployees as $employees) { ?>
-                                                    <option value="<?php echo $employees->id; ?>"><?php echo $employees->name; ?><small>(<?php echo escape($data->records(Params::TBL_DEPARTMENT, ['id', '=', $employees->departments_id], ['name'], false)->name);?> - <?php echo escape($data->records(Params::TBL_OFFICE, ['id', '=', $employees->offices_id], ['name'], false)->name); ?>)</small></option>
+                                                    <option value="<?php echo $employees->id; ?>"><?php echo $employees->name; ?><small>(<?php echo escape($leadData->records(Params::TBL_DEPARTMENT, ['id', '=', $employees->departments_id], ['name'], false)->name);?> - <?php echo escape($leadData->records(Params::TBL_OFFICE, ['id', '=', $employees->offices_id], ['name'], false)->name); ?>)</small></option>
                                                 <?php } ?>
                                             </select>
                                             <?php
@@ -159,7 +169,7 @@ include 'includes/navbar.php';
                                     </div>
                                     <div class="line"></div>
                                     <div class="col-sm-9 ml-auto">
-                                        <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
+                                        <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
                                         <button type="submit" name="save" class="btn btn-primary"><?php echo Translate::t($lang, 'Save'); ?></button>
                                     </div>
                                 </form>
@@ -181,6 +191,10 @@ include "./../common/includes/scripts.php";
 <?php
 include 'includes/js/offices.php';
 ?>
-
+<script>
+    $('#Submit').click(function(){
+        $('#myModal').modal('show');
+    });
+</script>
 </body>
 </html>

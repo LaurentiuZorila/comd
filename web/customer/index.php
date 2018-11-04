@@ -1,17 +1,17 @@
 <?php
 require_once 'core/init.php';
-$best   = new Best($user->officesId());
+$best   = new Best($lead->officesId());
 
 /** Count all employees */
-$countUsers = $data->count(Params::TBL_EMPLOYEES, ['offices_id', '=', $user->officesId()]);
+$countUsers = $leadData->count(Params::TBL_EMPLOYEES, ['offices_id', '=', $lead->officesId()]);
 
 /** Data for common tables */
-$sumFurlough   = $data->sum(Params::TBL_FURLOUGH, ['offices_id', '=', $user->officesId()], 'quantity');
-$sumAbsentees  = $data->sum(Params::TBL_ABSENTEES, ['offices_id', '=', $user->officesId()], 'quantity');
-$sumUnpaid     = $data->sum(Params::TBL_UNPAID, ['offices_id', '=', $user->officesId()], 'quantity');
+$sumFurlough   = $leadData->sum(Params::TBL_FURLOUGH, ['offices_id', '=', $lead->officesId()], 'quantity');
+$sumAbsentees  = $leadData->sum(Params::TBL_ABSENTEES, ['offices_id', '=', $lead->officesId()], 'quantity');
+$sumUnpaid     = $leadData->sum(Params::TBL_UNPAID, ['offices_id', '=', $lead->officesId()], 'quantity');
 
 /** tables for user */
-$allTables  = $data->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['tables'], false);
+$allTables  = $leadData->records(Params::TBL_OFFICE, ['id', '=', $lead->officesId()], ['tables'], false);
 $allTables  = explode(',', trim($allTables->tables));
 
 /** Array with tables $k => $v */
@@ -36,8 +36,8 @@ if (Input::exists()) {
     if ($validation->passed()) {
         $year       = Input::post('year');
         $month      = Input::post('month');
-        $officeId   = $user->officesId();
-        $npTable    = Input::post('table');
+        $officeId   = $lead->officesId();
+        $npTable    = Translate::t($lang, strtolower(Input::post('table')), ['ucfirst' => true]);
         $table      = Params::PREFIX . trim(Input::post('table'));
         $quantitySum = [];
 
@@ -52,16 +52,16 @@ if (Input::exists()) {
         ];
 
         /** Array with all results for one FTE to use in chart */
-        $chartData  = $data->records($table, $where, ['quantity', 'employees_id']);
+        $chartData  = $leadData->records($table, $where, ['quantity', 'employees_id']);
 
         /** Chart names */
         foreach ($chartData as $chartNames) {
-            $names[] = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $chartNames->employees_id], ['name'], false)->name;
+            $names[] = $leadData->records(Params::TBL_EMPLOYEES, ['id', '=', $chartNames->employees_id], ['name'], false)->name;
         }
 
         /** Quantity data */
-        foreach ($chartData as $datas) {
-            $quantity[] = $datas->quantity;
+        foreach ($chartData as $data) {
+            $quantity[] = $data->quantity;
         }
 
         // Insert returned values in array
@@ -87,13 +87,17 @@ if (Input::exists()) {
 
 <!DOCTYPE html>
 <html>
-<?php
-include '../common/includes/head.php';
-?>
+<head>
+    <?php
+    include '../common/includes/head.php';
+    ?>
+    <link rel="stylesheet" href="./../common/css/spiner/style.css">
+</head>
   <body>
   <?php
   include 'includes/navbar.php';
   ?>
+
     <div class="d-flex align-items-stretch">
       <!-- Sidebar Navigation-->
         <?php
@@ -106,6 +110,13 @@ include '../common/includes/head.php';
             <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Dashboard'); ?></h2>
           </div>
         </div>
+          <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
+              <div class="loader loader-3">
+                  <div class="dot dot1"></div>
+                  <div class="dot dot2"></div>
+                  <div class="dot dot3"></div>
+              </div>
+          </div>
           <?php
           if (Input::exists() && Errors::countAllErrors()) {
               include './../common/errors/errors.php';
@@ -114,11 +125,11 @@ include '../common/includes/head.php';
         <section class="no-padding-top no-padding-bottom">
             <div class="col-lg-12">
             <p>
-                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
+                <button class="btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
                     <?php echo Translate::t($lang, 'Filters'); ?>
                 </button>
             </p>
-            <div class="<?php if (Input::exists() && !!Errors::countAllErrors()) { echo "collapse";} elseif(!Input::exists()) { echo "collapse"; } else { echo "collapse show"; } ?>" id="filter">
+            <div class="<?php if (Input::exists() && !Errors::countAllErrors()) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
               <div class="block">
                   <form method="post">
                     <div class="row">
@@ -156,7 +167,7 @@ include '../common/includes/head.php';
                                 <select name="table" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
                                     <option value=""><?php echo Translate::t($lang, 'Select_table'); ?></option>
                                     <?php foreach ($tables as $key => $table) { ?>
-                                        <option value="<?php echo $key; ?>"><?php echo strtoupper($table); ?></option>
+                                        <option value="<?php echo $key; ?>"><?php echo Translate::t($lang, $table, ['ucfirst' => true]); ?></option>
                                     <?php } ?>
                                 </select>
                                 <?php
@@ -166,7 +177,7 @@ include '../common/includes/head.php';
                             </div>
 
                             <div class="col-sm-2">
-                                <input value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit">
+                                <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
                                 <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                             </div>
                     </div>
@@ -249,8 +260,8 @@ include '../common/includes/head.php';
 <!--                                          <li class="nav-item"><button class="btn btn-outline-primary line" id="line" type="button">Line</button></li>-->
 <!--                                      </ul>-->
                                       <div class="btn-group btn-group-sm float-sm-right" role="group" aria-label="Charts type">
-                                          <button class="btn btn-primary bar" id="bar" type="button"><?php echo Translate::t($lang, 'Bar'); ?></button>
-                                          <button class="btn btn-outline-primary line" id="line" type="button"><?php echo Translate::t($lang, 'Line'); ?></button>
+                                          <button class="btn-sm btn-primary bar" id="bar" type="button"><?php echo Translate::t($lang, 'Bar'); ?></button>
+                                          <button class="btn-sm btn-outline-primary line" id="line" type="button"><?php echo Translate::t($lang, 'Line'); ?></button>
                                       </div>
                                       <div class="drills-chart block">
                                           <canvas id="target_customer_chart_bar" height="150" style="display: block;"></canvas>
@@ -271,17 +282,17 @@ include '../common/includes/head.php';
                 <div class="user-block block text-center">
                   <div class="avatar"><img src="./../common/img/user.png" alt="..." class="img-fluid">
                     <div class="order dashbg-2">1st</div>
-                  </div><a href="#" class="user-title mb-0"><h3 class="h5"><?php echo $best->getBestEmployeesName(); ?></h3></a>
-                  <div class="contributions mb-2"><?php echo Translate::t($lang, 'Best_operator'); ?></div>
+                  </div><a href="#" class="user-title mb-0 dashtext-4"><h3 class="h5"><?php echo $best->getBestEmployeesName(); ?></h3></a>
+                  <div class="contributions mb-2 dashtext-4"><?php echo Translate::t($lang, 'Best_operator'); ?></div>
                       <?php
                       foreach ($best->getCommonData() as $key => $commonData) { ?>
-                          <p class="text-primary mb-0"><small><?php echo strtoupper($key) . ' - ' . $commonData; ?></small></p>
+                          <p class="text-white-50 mb-0"><small><?php echo strtoupper($key) . ' - ' . $commonData; ?></small></p>
                       <?php } ?>
                 </div>
               </div>
                 <div class="col-lg-5">
                     <div class="stats-with-chart-1 block" style="height: 91%;">
-                        <div class="title"> <strong class="d-block"><?php echo strtoupper($best->getFirstPriorityTbl()) . Translate::t($lang, 'Average'); ?></strong></div>
+                        <div class="title"> <strong class="d-block"><?php echo Translate::t($lang, $best->getFirstPriorityTbl(), ['ucfirst' => true]) . ' ' . Translate::t($lang, 'Average', ['strtolower' => true]); ?></strong></div>
                         <div class="row d-flex align-items-end justify-content-between">
                             <div class="col-12">
                                 <div class="bar-chart chart">
@@ -293,7 +304,7 @@ include '../common/includes/head.php';
                 </div>
                 <div class="col-lg-5">
                     <div class="stats-with-chart-1 block" style="height: 91%;">
-                        <div class="title"> <strong class="d-block"><?php echo strtoupper($best->getSecondPriorityTbl()) . Translate::t($lang, 'Average');  ?></strong></div>
+                        <div class="title"> <strong class="d-block"><?php echo Translate::t($lang, $best->getSecondPriorityTbl(), ['ucfirst' => true]) . ' ' . Translate::t($lang, 'Average', ['strtolower' => true]);  ?></strong></div>
                         <div class="row d-flex align-items-end justify-content-between">
                             <div class="col-12">
                                 <div class="bar-chart chart">
@@ -348,6 +359,11 @@ include '../common/includes/head.php';
   include "./../common/includes/scripts.php";
   ?>
 <script>
+
+    $('#Submit').click(function(){
+        $('#myModal').modal('show');
+    });
+
     $("#bar").click(function(){
         $('.line').removeClass('btn-primary').addClass('btn-outline-primary');
         $('.bar').removeClass('btn-outline-primary').addClass('btn-primary');

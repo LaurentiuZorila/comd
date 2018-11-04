@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'mysql' => [
+        'host'      => 'laur-mysql',
+        'username'  => 'laur',
+        'password'  => 'laur',
+        'db'        => 'laur'
+    ],
     'submit_session'  => [
         'token'         => '7a96526b918d697cacf1c29fbbc95ac2',
         'token_hash'    => '4791d0801ecc8adde8e08ce3e9c15aa2'

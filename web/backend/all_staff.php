@@ -7,9 +7,13 @@ $allLeads = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['departments_id
 
 <!DOCTYPE html>
 <html>
-<?php
-include '../common/includes/head.php';
-?>
+<!--HEAD-->
+<head>
+    <?php
+    include '../common/includes/head.php';
+    ?>
+</head>
+<!--BODY-->
 <body>
 <?php
 include 'includes/navbar.php';

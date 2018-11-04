@@ -1,11 +1,5 @@
 <?php
 require_once 'core/init.php';
-$user    = new FrontendUser();
-$records = new FrontendProfile();
-
-if (!$user->isLoggedIn()) {
-    Redirect::to('login.php');
-}
 
 $name           = $user->name();
 $departmentName = $records->records(Params::TBL_DEPARTMENT, ['id', '=', $user->departmentId()], ['name'], false);
@@ -45,8 +39,8 @@ if (Input::exists()) {
 
         /** If validation is passed */
         if ($validation->passed()) {
-            $first_name = trim(Input::post('first_name'));
-            $last_name  = trim(Input::post('last_name'));
+            $first_name = Common::valuesToInsert(Input::post('first_name'));
+            $last_name  = Common::valuesToInsert(Input::post('last_name'));
             $name       = $first_name . ' ' . $last_name;
             $username   = trim(Input::post('username'));
             $password   = trim(Input::post('password'));
@@ -72,9 +66,12 @@ if (Input::exists()) {
 
 <!DOCTYPE html>
 <html>
-<?php
-include '../common/includes/head.php';
-?>
+<head>
+    <?php
+    include '../common/includes/head.php';
+    ?>
+    <link rel="stylesheet" href="./../common/css/spiner/style.css">
+</head>
 <body>
 <?php
 include 'includes/navbar.php';
@@ -88,14 +85,21 @@ include 'includes/navbar.php';
         <!-- Page Header-->
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom">Profile</h2>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Profile'); ?></h2>
+            </div>
+        </div>
+        <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
+            <div class="loader loader-3">
+                <div class="dot dot1"></div>
+                <div class="dot dot2"></div>
+                <div class="dot dot3"></div>
             </div>
         </div>
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
-                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Profile'); ?> </li>
+                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Edit_profile'); ?> </li>
             </ul>
         </div>
         <?php
@@ -128,37 +132,37 @@ include 'includes/navbar.php';
                                     <div class="col-sm-4 col-md-4">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t($lang, 'FN'); ?></label>
-                                            <input type="text" name="first_name" placeholder="First name" class="form-control" value="<?php if (Input::exists()) { echo $first_name; }?>">
+                                            <input type="text" name="first_name" placeholder="<?php echo Translate::t($lang, 'FN'); ?>" class="form-control" value="<?php if (Input::exists()) { echo $first_name; }?>">
                                         </div>
                                     </div>
                                     <div class="col-sm-8 col-md-8">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t($lang, 'LN'); ?></label>
-                                            <input type="text" name="last_name" placeholder="Last Name" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>">
+                                            <input type="text" name="last_name" placeholder="<?php echo Translate::t($lang, 'LN'); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>">
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-3">
                                         <div class="form-group mb-4">
-                                            <label class="form-label"><?php echo Translate::t($lang, 'User_n'); ?></label>
-                                            <input type="text" name="username" placeholder="Username" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>">
+                                            <label class="form-label"><?php echo Translate::t($lang, 'Username'); ?></label>
+                                            <input type="text" name="username" placeholder="<?php echo Translate::t($lang, 'Username'); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-4">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t($lang, 'Pass'); ?></label>
-                                            <input type="text" name="password" placeholder="Password" class="form-control">
+                                            <input type="text" name="password" placeholder="<?php echo Translate::t($lang, 'Pass'); ?>" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-4">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t($lang, 'Pass_again'); ?></label>
-                                            <input type="text" name="repeat_password" placeholder="Password again" class="form-control">
+                                            <input type="text" name="repeat_password" placeholder="<?php echo Translate::t($lang, 'Pass_again'); ?>" class="form-control">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-footer text-right">
-                                <input type="submit" name="Update" class="btn btn-primary" value="<?php echo Translate::t($lang, 'Submit'); ?>">
+                                <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
                                 <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                             </div>
                         </form>
@@ -174,5 +178,10 @@ include 'includes/navbar.php';
 <?php
 include "./../common/includes/scripts.php";
 ?>
+<script>
+    $('#Submit').click(function(){
+        $('#myModal').modal('show');
+    });
+</script>
 </body>
 </html>

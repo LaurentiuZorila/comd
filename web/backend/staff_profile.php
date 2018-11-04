@@ -16,6 +16,21 @@ if (Input::exists('get')) {
     $leadId             = Input::get('lead_id');
     $officeId           = Input::get('office_id');
     $language           = Input::get('lang');
+    $year               = date('Y');
+
+    /** All employees for one lead */
+    $allEmployees = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $leadId], ['offices_id', 'departments_id', 'name', 'id']);
+    foreach ($allEmployees as $employees) {
+        // Array with employees id
+        $employeesId[$employees->id] = $employees->name;
+    }
+
+    /** Common data for lead employees  */
+    foreach ($employeesId as $employeeId => $employeesName) {
+        $employeesFurlough[]  = ['name' =>$employeesName,'avg' => $backendUserProfile->sum(Params::TBL_FURLOUGH, ActionConditions::condition(['employees_average_id', $employeeId], true), 'quantity'), 'id' => $employeeId];
+        $employeesAbsentees[] = ['name' =>$employeesName, 'avg' => $backendUserProfile->sum(Params::TBL_ABSENTEES, ActionConditions::conditions(['employees_average_id', $employeeId . '_' . date('Y')]), 'quantity'), 'id' => $employeeId];
+        $employeesUnpaid[]    = ['name' =>$employeesName, 'avg' => $backendUserProfile->sum(Params::TBL_UNPAID, ActionConditions::conditions(['employees_average_id', $employeeId . '_' . date('Y')]), 'quantity'), 'id' => $employeeId];
+    }
 
     /** Staff details */
     $leadProfile        = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['id', '=', $leadId],['name', 'id', 'supervisors_id', 'offices_id'], false);
@@ -32,9 +47,8 @@ if (Input::exists('get')) {
     /** Icons for tables */
     $icon               = ['icon-line-chart', 'icon-dashboard', 'icon-chart'];
 
-
     foreach (Params::PREFIX_TBL_COMMON as $table) {
-        $commonData[] = $backendUserProfile->sum($table, ['offices_id', '=', $officeId], 'quantity');
+        $commonData[] = $backendUserProfile->sum($table, ActionConditions::condition(['offices_id', $officeId]), 'quantity');
     }
 
     /** Array with tables and sum of quantity for each table */
@@ -59,6 +73,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
         $table      = Params::PREFIX . trim(Input::post('table'));
         $year       = Input::post('year');
         $month      = Input::post('month');
+        $tableForChart  = Translate::t($lang, strtolower(Input::post('table')), ['ucfirst' => true]);
 
         /** Conditions for action */
         $where = [
@@ -99,9 +114,12 @@ if (Input::exists() && Tokens::tokenVerify()) {
 
 <!DOCTYPE html>
 <html>
-<?php
-include '../common/includes/head.php';
-?>
+<head>
+    <?php
+    include '../common/includes/head.php';
+    ?>
+    <link rel="stylesheet" href="./../common/css/spiner/style.css">
+</head>
 <body>
 <?php
 include 'includes/navbar.php';
@@ -116,7 +134,14 @@ include 'includes/navbar.php';
         <!-- Page Header-->
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom">Profile</h2>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Profile'); ?></h2>
+            </div>
+        </div>
+        <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
+            <div class="loader loader-3">
+                <div class="dot dot1"></div>
+                <div class="dot dot2"></div>
+                <div class="dot dot3"></div>
             </div>
         </div>
         <!-- Breadcrumb-->
@@ -136,11 +161,11 @@ include 'includes/navbar.php';
                 <div class="row">
                     <div class="col-lg-12">
                         <p>
-                            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
+                            <button class="btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
                                 <?php echo Translate::t($lang, 'Filters'); ?>
                             </button>
                         </p>
-                        <div class="<?php if (Input::exists() && !Errors::countAllErrors()) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
+                        <div class="<?php if (Input::exists() && Errors::countAllErrors()) { echo "collapse show";} else { echo "collapse"; } ?>" id="filter">
                             <div class="card card-body">
                                 <form method="post">
                                     <div class="row">
@@ -177,8 +202,8 @@ include 'includes/navbar.php';
                                                 <div class="invalid-feedback mb-3"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                             <?php }?>
                                         </div>
-                                        <div class="col-sm-12">
-                                            <input value="<?php echo Translate::t($lang, 'Submit'); ?>" name="Filter" class="btn btn-outline-primary" type="submit">
+                                        <div class="col-sm-12 mb-0">
+                                            <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
                                             <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                         </div>
                                     </div>
@@ -197,7 +222,7 @@ include 'includes/navbar.php';
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-3">
-                        <div class="statistic-block block">
+                        <div class="statistic-block block pb-1">
                             <div class="progress-details d-flex align-items-end justify-content-between">
                                 <div class="title">
                                     <div class="icon"><i class="icon-user-1"></i></div><strong><?php echo Translate::t($lang, 'Total_employees'); ?></strong>
@@ -207,21 +232,31 @@ include 'includes/navbar.php';
                             <div class="progress progress-template">
                                 <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
                             </div>
+                            <div class="mt-2 mb-1">
+                                <button class="btn-sm btn-outline-secondary col-sm-6" type="button" data-toggle="collapse" data-target="4"  aria-expanded="false" aria-controls="filter" id="employeeTable">
+                                    <?php echo Translate::t($lang, 'show'); ?> <i class="fa fa-user-o"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <?php
                     $x = 0;
                     foreach ($dataCommonTables as $table => $quantity) { ?>
                         <div class="col-md-3 col-sm-3">
-                            <div class="statistic-block block">
+                            <div class="statistic-block block pb-1">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
                                         <div class="icon"><i class="<?php echo $icon[$x]; ?>"></i></div><strong><?php echo Translate::t($lang, 'Total') . ' ' . Translate::t($lang, $table); ?></strong>
                                     </div>
-                                    <div class="number dashtext-2"><?php echo $quantity; ?></div>
+                                    <div class="number <?php echo Params::DASH['text'][$x]; ?>"><?php echo $quantity; ?></div>
                                 </div>
                                 <div class="progress progress-template">
-                                    <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
+                                    <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template <?php echo Params::DASH['bg'][$x]; ?>"></div>
+                                </div>
+                                <div class="mt-2 mb-1">
+                                    <button class="btn-sm btn-outline-secondary col-sm-6 common" type="button" data-toggle="collapse" data-target="<?= $x; ?>" id="">
+                                        <?php echo Translate::t($lang, 'show'); ?> <i class="<?php echo $icon[$x]; ?>"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -231,14 +266,187 @@ include 'includes/navbar.php';
                 </div>
             </div>
         </section>
-        <?php if (Input::exists() && !Errors::countAllErrors()) { ?>
+
+        <!--        Collapse Employees table -->
+        <section class="no-padding-top collapse allCollapse" id="4">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="block">
+                            <div class="title"><strong><?php echo Translate::t($lang, 'All_employees'); ?></strong>
+                                <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th><?php echo Translate::t($lang, 'Name'); ?></th>
+                                        <th><?php echo Translate::t($lang, 'Team'); ?></th>
+                                        <th><?php echo Translate::t($lang, 'Depart'); ?></th>
+                                        <th><?php echo Translate::t($lang, 'Action'); ?></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php
+                                    $x = 1;
+                                    foreach ($allEmployees as $employees) { ?>
+                                        <tr>
+                                            <th scope="row"><?php echo $x; ?></th>
+                                            <td><a href="employees_data.php?employees_id=<?php echo $employees->id; ?>"><?php echo $employees->name; ?></a></td>
+                                            <td><?php echo $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $employees->offices_id], ['name'], false)->name; ?></td>
+                                            <td><?php echo $backendUserProfile->records(Params::TBL_DEPARTMENT, ['id', '=', $employees->departments_id], ['name'], false)->name ;?></td>
+                                            <td><a href="employees_data.php?employees_id=<?php echo $employees->id; ?>"><i class="fa fa-user"></i></a></td>
+                                        </tr>
+                                        <?php
+                                        $x++;
+                                    } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--        Collapse furlough  -->
+        <section class="no-padding-top collapse allCollapse" id="0">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="block">
+                            <div class="title"><strong><?php echo Translate::t($lang, 'furlough'); ?></strong>
+                                <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th><?php echo Translate::t($lang, 'Name'); ?></th>
+                                        <th><?php echo Translate::t($lang, 'Team_furlough'); ?></th>
+                                        <th><?php echo Translate::t($lang, 'furlough'); ?></th>
+                                        <th><?php echo Translate::t($lang, 'percentage', ['ucfirst' => true]); ?></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php
+                                    $x = 1;
+                                    foreach ($employeesFurlough as $employeesData) { ?>
+                                        <tr>
+                                            <th scope="row"><?php echo $x; ?></th>
+                                            <td><a href="employees_data.php?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
+                                            <td><?php echo (int)$dataCommonTables['furlough']; ?></td>
+                                            <td><?php echo $employeesData['avg'];?></td>
+                                            <td><?php echo Common::percentage($dataCommonTables['furlough'], $employeesData['avg']); ?></td>
+                                        </tr>
+                                        <?php
+                                        $x++;
+                                    } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--        Collapse absentees -->
+        <section class="no-padding-top collapse allCollapse" id="1">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="block">
+                            <div class="title"><strong><?php echo Translate::t($lang, 'absentees'); ?></strong>
+                                <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th><?php echo Translate::t($lang, 'Name'); ?></th>
+                                        <th><?php echo Translate::t($lang, 'Team_absentees'); ?></th>
+                                        <th><?php echo Translate::t($lang, 'absentees'); ?></th>
+                                        <th><?php echo Translate::t($lang, 'percentage', ['ucfirst' => true]); ?></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php
+                                    $x = 1;
+                                    foreach ($employeesAbsentees as $employeesData) { ?>
+                                        <tr>
+                                            <th scope="row"><?php echo $x; ?></th>
+                                            <td><a href="employees_data.php?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
+                                            <td><?php echo (int)$dataCommonTables['absentees']; ?></td>
+                                            <td><?php echo $employeesData['avg'];?></td>
+                                            <td><?php echo Common::percentage($dataCommonTables['absentees'], $employeesData['avg']); ?></td>
+                                        </tr>
+                                        <?php
+                                        $x++;
+                                    } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--        Collapse unpaid -->
+        <section class="no-padding-top collapse allCollapse" id="2">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="block">
+                            <div class="title"><strong><?php echo Translate::t($lang, 'unpaid'); ?></strong>
+                                <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv""><i class="fa fa-close"></i></button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th><?php echo Translate::t($lang, 'Name'); ?></th>
+                                        <th><?php echo Translate::t($lang, 'Team_unpaid'); ?></th>
+                                        <th><?php echo Translate::t($lang, 'unpaid'); ?></th>
+                                        <th><?php echo Translate::t($lang, 'percentage', ['ucfirst' => true]); ?></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php
+                                    $x = 1;
+                                    foreach ($employeesUnpaid as $employeesData) { ?>
+                                        <tr>
+                                            <th scope="row"><?php echo $x; ?></th>
+                                            <td><a href="employees_data.php?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
+                                            <td><?php echo (int)$dataCommonTables['unpaid']; ?></td>
+                                            <td><?php echo $employeesData['avg'];?></td>
+                                            <td><?php echo Common::percentage($dataCommonTables['unpaid'], $employeesData['avg']); ?></td>
+                                        </tr>
+                                        <?php
+                                        $x++;
+                                    } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <?php
+        if (Input::exists() && !Errors::countAllErrors()) { ?>
         <section>
             <div class="col-md-12">
                 <div class="card text-center">
                     <div class="card-header pt-2">
                         <ul class="nav nav-pills card-header-pills">
-                            <li class="nav-item"><button class="btn btn-primary mr-1 bar" id="bar" type="button"><?php echo Translate::t($lang, 'Bar'); ?></button></li>
-                            <li class="nav-item"><button class="btn btn-outline-primary line" id="line" type="button"><?php echo Translate::t($lang, 'Line'); ?></button></li>
+                            <li class="nav-item"><button class="btn-sm btn-primary mr-1 bar" id="bar" type="button"><?php echo Translate::t($lang, 'Bar'); ?></button></li>
+                            <li class="nav-item"><button class="btn-sm btn-outline-primary line" id="line" type="button"><?php echo Translate::t($lang, 'Line'); ?></button></li>
                         </ul>
                     </div>
                     <div class="pie-chart chart block">
@@ -259,7 +467,7 @@ include 'includes/navbar.php';
             </div>
         </section>
         <?php }
-        include '../common/includes/footer.php';
+        include './../common/includes/footer.php';
         ?>
     </div>
 </div>
@@ -268,18 +476,53 @@ include 'includes/navbar.php';
 include "./../common/includes/scripts.php";
 ?>
 <script>
+    $('#Submit').click(function(){
+        $('#myModal').modal('show');
+    });
+
+    // Click to view table employees
+    $ ( '#employeeTable' ).on('click', function () {
+        $( '.allCollapse:visible' ).hide();
+        var $this = $(this);
+        $( '#' + $this.data("target")).show(function () {
+            $( '#' + $this.data("target")).fadeIn(3000);
+        });
+    });
+
+    // Click to view common
+    $ ( '.common' ).on('click', function () {
+        $( '.allCollapse:visible' ).hide();
+        var $this = $(this);
+        $( '#' + $this.data("target")).show(function () {
+            $( '#' + $this.data("target")).fadeIn(3000);
+        });
+    });
+
+    // Click close div
+    $ ( '.closeDiv' ).on('click', function () {
+        $( '.allCollapse:visible' ).fadeOut("slow" );
+    });
+
+
+    $ ( '.hide' ).on('click', function () {
+        $( '.allCollapse:visible' ).hide(function () {
+            $(this).fadeOut(3000);
+        });
+    });
+
+
     $("#bar").click(function(){
         $('.line').removeClass('btn-primary').addClass('btn-outline-primary');
         $('.bar').removeClass('btn-outline-primary').addClass('btn-primary');
-        $("#profile_bar_chart").show();
         $("#profile_line_chart").hide();
+        $("#profile_bar_chart").show();
     });
 
     $("#line").click(function(){
         $('.bar').removeClass('btn-primary').addClass('btn-outline-primary');
         $('.line').removeClass('btn-outline-primary').addClass('btn-primary');
-        $("#profile_line_chart").show();
         $("#profile_bar_chart").hide();
+        $("#profile_line_chart").show();
     });
 </script>
 <?php

@@ -33,6 +33,7 @@ if (!$user->isLoggedIn()) {
 } else {
     $lang   = $user->language();
     $langId = $user->language(false);
+    Session::put('lang', $lang);
 }
 
 

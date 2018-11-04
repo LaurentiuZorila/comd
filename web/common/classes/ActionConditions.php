@@ -8,16 +8,17 @@
 
 class ActionConditions
 {
-    private static $_columns = ['id', 'name', 'offices_id', 'departments_id', 'supervisors_id'];
+    private static $_columns = ['id', 'name', 'offices_id', 'departments_id', 'supervisors_id', 'year', 'month', 'user_id', 'employees_average_id', 'quantity'];
 
     /**
      * @param array $array
      * @param array $conditions
      * @return array
      */
-    public static function conditions(array $array, array $conditions) :array
+    public static function conditions(array $array, array $conditions = []) :array
     {
         $x = 1;
+        // If condition is empty $cond = AND
         if (!empty($conditions)) {
             foreach ($conditions as $v) {
                 $cond[] = [$v];
@@ -26,6 +27,7 @@ class ActionConditions
             $cond = ['AND'];
         }
 
+        // if value is: $where = ['field', '=', 'value']
         foreach ($array as $item) {
             if (is_string($item)) {
                 list($field, $value) = $array;
@@ -33,6 +35,7 @@ class ActionConditions
                     $where = [$field, '=', $value];
                 }
             }
+            // if value is: $where = [['field', 'value'], ['field','value']]
             if (is_array($item)) {
                 list($field, $value) = $item;
                 if (in_array($field, self::$_columns)) {
@@ -48,21 +51,33 @@ class ActionConditions
             }
             $x++;
         }
-        if (count($array) === count($conditions)) {
-            return $where;
-        }
+        return $where;
     }
 
 
     /**
-     * @param array $array
+     * @param $array
+     * @param bool $year
      * @return array
      */
-    public static function condition(array $array)
+    public static function condition($array, $year = false)
     {
-        list($field, $value) = $array;
-        if (in_array($field, self::$_columns)) {
-            return [$field, '=', $value];
+        //If year is true year = date('Y') -> this is for average
+        if ($year) {
+            //Current year
+            $year = date('Y');
+            list($field, $value) = $array;
+            if (in_array($field, self::$_columns)) {
+                $value = $value . '_' . $year;
+                $record = [$field, '=', $value];
+            }
+        } else {
+            list($field, $value) = $array;
+            if (in_array($field, self::$_columns)) {
+                $record = [$field, '=', $value];
+            }
         }
+
+        return $record;
     }
 }

@@ -318,4 +318,7 @@ class FrontendDB
     {
         return number_format($item, 2);
     }
+
+
+
 }

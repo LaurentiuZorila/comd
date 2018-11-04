@@ -124,12 +124,4 @@ class Tokens
         return false;
     }
 
-
-    public static function getLastDataRoute()
-    {
-        $year   = date('Y');
-        $month  = date('n');
-
-    }
-
 }

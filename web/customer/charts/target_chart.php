@@ -33,7 +33,7 @@
             labels: <?php echo $chartNames; ?>,
             datasets: [
                 {
-                    label: "<?php echo ucfirst($npTable); ?>",
+                    label: "<?php echo ucfirst($npTable) . ' - ' . Common::getMonths($lang)[$month] . ' - ' . Input::post('year'); ?>",
                     fill: true,
                     lineTension: 0,
                     backgroundColor: "rgba(134, 77, 217, 0.88)",
@@ -90,7 +90,7 @@
             labels: <?php echo $chartNames; ?>,
             datasets: [
                 {
-                    label: "<?php echo ucfirst($npTable); ?>",
+                    label: "<?php echo ucfirst($npTable) . ' - ' . Common::getMonths($lang)[$month] . ' - ' . Input::post('year'); ?>",
                     fill: true,
                     lineTension: 0,
                     backgroundColor: "rgba(134, 77, 217, 0.88)",

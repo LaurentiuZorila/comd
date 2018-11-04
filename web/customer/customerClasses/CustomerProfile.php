@@ -7,12 +7,6 @@ class CustomerProfile
 {
     private $_db;
 
-    const TBL_EMPLOYEES     = 'cmd_employees';
-    const TBL_TEAM_LEAD     = 'cmd_users';
-    const TBL_RATING        = 'cmd_rating';
-    const TBL_COMMON_PREFIX = ['cmd_unpaid', 'cmd_furlough', 'cmd_absentees'];
-    const TBL_COMMON        = ['unpaid', 'furlough', 'absentees'];
-    const PREFIX            = 'cmd_';
     const CONFIGURED        = 1;
 
     /**
@@ -29,7 +23,7 @@ class CustomerProfile
      * @param array $where
      * @param array $column
      * @param bool $all
-     * @return mixed
+     * @return mixed|null
      */
     public function records($table, array $where, $column = ['*'], $all = true)
     {
@@ -43,7 +37,7 @@ class CustomerProfile
     /**
      * @param $table
      * @param array $where
-     * @return mixed
+     * @return int
      */
     public function count($table, array $where)
     {
@@ -54,7 +48,8 @@ class CustomerProfile
     /**
      * @param $table
      * @param array $where
-     * @return int
+     * @param $column
+     * @return mixed
      */
     public function sum($table, array $where, $column)
     {
@@ -75,13 +70,13 @@ class CustomerProfile
 
 
     /**
-     * @param array $where
-     * @return float
+     * @param $id
+     * @return int
      */
-    public function rating(array $where)
+    public function rating($id)
     {
-        $rating = $this->_db->average(self::TBL_RATING, $where, 'rating')->results();
-        return round(Common::columnValues($rating, 'average'));
+        $rating = $this->_db->average(Params::TBL_RATING, ['user_id', '=', $id], 'rating')->first();
+        return (int)round($rating->average);
     }
 
 
@@ -103,7 +98,7 @@ class CustomerProfile
             $objDataValues  = $this->_db->get(self::PREFIX . $table, $where, $value)->results();
 
             foreach ($objDataKey as $dataKey) {
-                $dataKeys[] = Common::getMonths($lang)[$dataKey->$keyColumn];
+                $dataKeys[] = Common::getMonths(Session::get('lang'))[$dataKey->$keyColumn];
             }
 
             foreach ($objDataValues as $dataValue) {

@@ -2,8 +2,8 @@
 require_once 'core/init.php';
 
 // All tables, employees id
-$allTables   = $data->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['tables'], false);
-$employeesID = $data->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $user->officesId()], ['id']);
+$allTables   = $leadData->records(Params::TBL_OFFICE, ['id', '=', $lead->officesId()], ['tables'], false);
+$employeesID = $leadData->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $lead->officesId()], ['id']);
 $allTables   = explode(',', trim($allTables->tables));
 // Trim values
 $allTables   = array_map('trim', $allTables);
@@ -22,7 +22,7 @@ $prefix = Params::PREFIX;
     $where = [
         ['year', '=', $year],
         'AND',
-        ['offices_id', '=', $user->officesId()],
+        ['offices_id', '=', $lead->officesId()],
         'AND',
         ['month', '=', $month]
     ];
@@ -37,9 +37,11 @@ $prefix = Params::PREFIX;
 
 <!DOCTYPE html>
 <html>
-<?php
-include '../common/includes/head.php';
-?>
+<head>
+    <?php
+    include '../common/includes/head.php';
+    ?>
+</head>
 <body>
 <?php
 include 'includes/navbar.php';
@@ -61,7 +63,6 @@ include 'includes/navbar.php';
         <div class="container-fluid">
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
-                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'All_users'); ?></li>
                 <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Data_for') . Common::getMonths($lang)[$month]; ?></li>
             </ul>
         </div>
@@ -70,7 +71,7 @@ include 'includes/navbar.php';
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="block margin-bottom-sm">
-                            <div class="title text-center"><strong class="text-primary"><?php echo Translate::t($lang, 'Data_for') . ' ' . Translate::t($lang, 'All_employees'); ?></strong></div>
+                            <div class="title text-center"><strong class="text-primary"><?php echo Translate::t($lang, 'Data_for') . ' ' . Translate::t($lang, 'All_employees', ['strtolower' => true]); ?></strong></div>
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
@@ -86,11 +87,11 @@ include 'includes/navbar.php';
                                         foreach ($employeesId as $id) { ?>
                                             <tr role="row" class="odd">
                                                 <td class="">
-                                                    <a href="user_data.php?id=<?php echo $id;?>" class="text-white-50"><?php echo $data->records(Params::TBL_EMPLOYEES, ['id', '=', $id], ['name'], false)->name; ?></a>
+                                                    <a href="user_data.php?id=<?php echo $id;?>" class="text-white-50"><?php echo $leadData->records(Params::TBL_EMPLOYEES, ['id', '=', $id], ['name'], false)->name; ?></a>
                                                 </td>
                                                 <?php foreach ($tables as $k => $v) { ?>
                                                 <td class="text-white-50">
-                                                    <?php echo $data->records($k, ['employees_id', '=', $id,], ['quantity'], false)->quantity; ?>
+                                                    <?php echo $leadData->records($k, ['employees_id', '=', $id,], ['quantity'], false)->quantity; ?>
                                                 </td>
                                                 <?php } ?>
                                             </tr>

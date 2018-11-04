@@ -13,7 +13,7 @@ require_once 'core/init.php';
             <h1 class="h5"><?php echo $backendUser->name(); ?></h1>
         </div>
     </div>
-    <!-- Sidebar Navidation Menus--><span class="heading">Main</span>
+    <!-- Sidebar Navidation Menus-->
     <ul class="list-unstyled">
         <li class="active"><a href="index.php?r=<?php echo Tokens::getRoute(); ?>" > <i class="icon-home"></i><?php echo Translate::t($lang, 'Home'); ?> </a></li>
         <li><a href="employees.php?r=<?php echo Tokens::getRoute(); ?>" > <i class="icon-grid"></i><?php echo Translate::t($lang, 'All_employees'); ?></a></li>

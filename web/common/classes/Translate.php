@@ -48,7 +48,7 @@ class Translate
             'Db_success'        => 'Baza de date a fost updatata cu succes.',
             'Db_error'          => 'Ceva nu a mers corect, reincearca',
             'Csv_extension'     => 'Fisierul trebuie sa aiba terminatia .CVS',
-            'Update_user_profile' => 'Modifica profil',
+            'Update_user_profile' => 'Muta staff',
             'Select_leader'     => 'Selecteaza team leader',
             'New_depart'        => 'Noul departament',
             'Select_depart'     => 'Selecteaza departament',
@@ -57,20 +57,19 @@ class Translate
             'Save'              => 'Salveaza',
             'Best_operator'     => 'Best operator',
             'Average'           => 'Media',
-            'Update_db'         => 'Actualizeaza Baza de date',
+            'Update_db'         => 'Actualizeaza DB',
             'Make_attention'    => 'Atentie',
             'Close'             => 'Inchide',
             'File_no_header'    => 'Pentru cele mai bune rezultate utilizati modelul de file de mai jos.)',
             'Download_file_from'    => 'Descarca file-ul de aici',
             'File'              => 'File',
-            'Update_employees_profile' => 'Actualizeaza operator',
+            'Update_employees_profile' => 'Actualizeaza OP',
             'Employees'         => 'Operatori',
             'Given_stars'       => 'Feedback dat',
             'Click_filter_for_data' => 'Apasa pe filtru pentru a cauta alte date',
             'Unpaid_h'          => 'Ore neplatite',
             'Days'              => 'Zile',
             'Day'               => 'Zi',
-            'Team_absentees'    => 'Abesente echipa',
             'Profile_success_updated' => 'Profilul a fost actualizat cu succes',
             'Edit_profile'      => 'Modifica profilul',
             'FN'                => 'Nume',
@@ -110,6 +109,29 @@ class Translate
             'view_data'         => 'Vezi date',
             'nav_update_profile'    => 'De aici poti modifica datele de utilizator (nume, prenume, username sau parola)',
             'nav_give_feedback' => 'Daca nu ai lasata inca un feedback, voteaza apasand butonul de mai jos',
+            'well_done'         => 'Operatione efectuata cu success',
+            'something_wrong'   => 'Sau gasit niste erori',
+            'info'              => 'Info',
+            'thk_feedback'      => 'Multumesc pentru feedback-ul acordat',
+            'for'               => 'pentru',
+            'for_this'          => 'pentru aceasta',
+            'not_found'         => 'nu sau gasit date',
+            'try_search_another'    => 'incearca sa cauti dupa alte date',
+            'your_rating'       => 'Rating-ul tau',
+            'show'              => 'Vezi',
+            'percentage'        => 'procent',
+            'Team_furlough'     => 'Concedii echipa',
+            'Team_unpaid'       => 'Zile neplatite echipa',
+            'Team_absentees'    => 'Absente echipa',
+            'view_employees'    => 'Vezi operatori',
+            'view_staff'        => 'Vezi staff',
+            'view_employees_nav_details'        => 'Din aceasta sectiunde poti vizualiza toti operatorii de pe toate departamentele',
+            'view_employees_nav_data_details'   => 'Apasa icoana de mai jos pentru a vizualiza datele operatorilor pentru fiecare luna sau an',
+            'view_staff_nav_details'            => 'Pentru a vizualiza tot staff-ul',
+            'move_staff_nav'        => 'Daca vrei sa muti vreun staff apasa sectiunea de mai jos',
+            'update_profile_nav'    => 'Din acceasta sectiune poti modifica datele tale personale',
+            'not_found_leads'   => 'Nu sau gasit team leaderi',
+
         ];
     }
 
@@ -127,7 +149,7 @@ class Translate
             'All_users'         => 'All staff',
             'All_employees'     => 'All employees',
             'Name'              => 'Name',
-            'Team'              => 'Squadra',
+            'Team'              => 'Team',
             'Depart'            => 'Department',
             'Action'            => 'Action',
             'Employees_details' => 'Employees details',
@@ -146,14 +168,14 @@ class Translate
             'Select_table'      => 'Select table',
             'Offices'           => 'Offices',
             'Total_user_absentees'  => 'Total absentees',
-            'Total_user_furlough'   => 'Total furlough',
+            'Total_user_furlough'   => 'Total furloughs',
             'Total_user_unpaid' => 'Total unpaid',
             'Profile'           => 'Profile',
             'Total_employees'   => 'Total employees',
             'Db_success'        => 'Your data base are successfully updated.',
             'Db_error'          => 'Something is going wrong, please try again',
             'Csv_extension'     => 'Your file must have .CVS extension',
-            'Update_user_profile' => 'Update profile',
+            'Update_user_profile' => 'Move staff',
             'Select_leader'     => 'Select team leader',
             'New_depart'        => 'New department',
             'Select_depart'     => 'Select department',
@@ -175,7 +197,6 @@ class Translate
             'Unpaid_h'          => 'Unpaird hours',
             'Days'              => 'Days',
             'Day'               => 'Day',
-            'Team_absentees'    => 'Team absentees',
             'Profile_success_updated' => 'Your profile is successfully updated',
             'Edit_profile'      => 'Edit profile',
             'FN'                => 'First name',
@@ -183,7 +204,7 @@ class Translate
             'Username'           => 'Username',
             'Pass'              => 'Password',
             'Pass_again'        => 'Repeat password',
-            'Feedback_given'    => 'Thank you for your feedback',
+            'Feedback_given'    => 'Thanks for your feedback',
             'Leads'             => 'Team Leader',
             'Total'             => 'Total',
             'furlough'          => 'Furlough',
@@ -215,6 +236,28 @@ class Translate
             'view_data'         => 'View data',
             'nav_update_profile'    => 'From here you cand modify you account data (first name, last name, username or password)',
             'nav_give_feedback' => 'If you don\'t give you feedback, give you rating by clicking on button bellow',
+            'well_done'         => 'Well done',
+            'something_wrong'   => 'Something is going wrong',
+            'info'              => 'Info',
+            'thk_feedback'      => 'Thanks for your feedback',
+            'for'               => 'for',
+            'for_this'          => 'for this',
+            'not_found'         => 'not data found',
+            'try_search_another'    => 'try to search another data',
+            'your_rating'       => 'Your rating',
+            'show'              => 'Show',
+            'percentage'        => 'percentage',
+            'Team_furlough'     => 'Team furlough',
+            'Team_unpaid'       => 'Team unpaid',
+            'Team_absentees'    => 'Team absentees',
+            'view_employees'    => 'View employees',
+            'view_staff'        => 'View staff',
+            'view_employees_nav_details'        => 'Click on icon below to view all employees form all departments',
+            'view_employees_nav_data_details'   => 'Click on icon below to view all employees data for all years and moths',
+            'view_staff_nav_details'            => 'Click on icon below to view all staff',
+            'move_staff_nav'    => 'If you want to move one staff click icon bellow',
+            'update_profile_nav'    => 'Form here you can update your profile account',
+            'not_found_leads'   => 'Not found leads',
         ];
     }
 
@@ -257,7 +300,7 @@ class Translate
             'Db_success'        => 'Bb è stata correttamente aggiornata',
             'Db_error'          => 'La tua azione non e andata a buon fine, riprova',
             'Csv_extension'     => 'Il file deve avvere esstensione .CSV',
-            'Update_user_profile' => 'Aggiorna profilo',
+            'Update_user_profile' => 'Sposta staff',
             'Select_leader'     => 'Seleziona team leader',
             'New_depart'        => 'Nuovo dipartimento',
             'Select_depart'     => 'Seleziona dipartimento',
@@ -274,20 +317,19 @@ class Translate
             'File'              => 'File',
             'Update_employees_profile' => 'Aggiorna dipendente',
             'Employees'         => 'Dipenteni',
-            'Given_stars'       => 'Feedback dato',
+            'Given_stars'       => 'Tuo feedback',
             'Click_filter_for_data' => 'Clicca filtro per cerccare altri dati',
             'Unpaid_h'          => 'Ore permeso',
             'Days'              => 'Giorni',
             'Day'               => 'Giorno',
-            'Team_absentees'    => 'Assenze squadra',
             'Profile_success_updated' => 'Profilo è stato aggiornato',
-            'Edit_profile'      => 'Modifica profile',
+            'Edit_profile'      => 'Modifica profilo',
             'FN'                => 'Cognome',
             'LN'                => 'Nome',
             'Username'          => 'Nome utente',
             'Pass'              => 'Parola',
             'Pass_again'        => 'Ripetere parola',
-            'Feedback_given'    => 'Grazie per il tuo feedback',
+            'Feedback_given'    => 'Grazie per feedback',
             'Leads'             => 'Team Leader',
             'Total'             => 'Totale',
             'furlough'          => 'Ferie',
@@ -319,6 +361,28 @@ class Translate
             'view_data'         => 'Vedi i dati',
             'nav_update_profile'    => 'Da qui poi modificare i dati del tuo account (nome, cognome, nome utente o parola)',
             'nav_give_feedback' => 'Se non hai lasciato il tuo feedback, fai click soto per dare il tuo feedback',
+            'well_done'         => 'Operazione effetuata con successo',
+            'something_wrong'   => 'L\'operazione effetuata ritorna errori',
+            'info'              => 'Informazione',
+            'thk_feedback'      => 'Grazie per il tuo feedback',
+            'for'               => 'per',
+            'for_this'          => 'per il',
+            'not_found'         => 'non sono trovati dati',
+            'try_search_another'    => 'prova a cercare altri dati',
+            'your_rating'       => 'Tuo rating',
+            'show'              => 'Apri',
+            'percentage'        => 'percentuale',
+            'Team_furlough'     => 'Ferie squadra',
+            'Team_unpaid'       => 'Permeso squadra',
+            'Team_absentees'    => 'Assenze squadra',
+            'view_employees'    => 'Vedi gli operatori',
+            'view_staff'        => 'Vedi i staff',
+            'view_employees_nav_details'        => 'Cicca sulla icona in basso per vissaulizzare tutti operatori per tutti dipartimenti',
+            'view_employees_nav_data_details'   => 'Cicca sullla icona in basso per vissaulizzare dati dei operatori per ogni messe e anno',
+            'view_staff_nav_details'            => 'Cicca sulla icona in basso per vissaulizzare tutti i staff',
+            'move_staff_nav'    => 'Se voi spostare un staff clica sull icone presente in basso',
+            'update_profile_nav'    => 'Se voi cambiari gli tue dati clicca icona presente in basso',
+            'not_found_leads'   => 'Non sono trovati team leader',
         ];
     }
 
@@ -333,6 +397,8 @@ class Translate
             return self::langIT();
         } elseif (is_null($lang)) {
             return self::langEN();
+        } else {
+            return self::langEN();
         }
     }
 
@@ -344,14 +410,20 @@ class Translate
      */
     public static function t($lang, $string, $params = [])
     {
+        // If empty params return string from translation
         if (empty($params)) {
             return !empty(self::getLang($lang)[$string]) ? self::getLang($lang)[$string] : $string;
         }
+        // Check params
         foreach ($params as $k => $v) {
             if ($k === 'ucfirst' && $v && !empty(self::getLang($lang)[$string])) {
                 return !empty(self::getLang($lang)[$string]) ? ucfirst(self::getLang($lang)[$string]) : $string;
             } elseif ($k === 'strtoupper' && $v && !empty(self::getLang($lang)[$string])) {
                 return !empty(self::getLang($lang)[$string]) ? strtoupper(self::getLang($lang)[$string]) : $string;
+            } elseif ($k === 'strtolower' && $v && !empty(self::getLang($lang)[$string])) {
+                return !empty(self::getLang($lang)[$string]) ? strtolower(self::getLang($lang)[$string]) : $string;
+            } else {
+                return !empty(self::getLang($lang)[$string]) ? self::getLang($lang)[$string] : $string;
             }
         }
     }

@@ -22,11 +22,9 @@ if (Input::exists('get')) {
         ]);
 
         if ($insert) {
-            Errors::setErrorType('success', 'Thank you for feedback!');
-            Redirect::to('feedback.php');
+            Redirect::to('feedback.php?feedbackOk=success');
         } else {
-            Errors::setErrorType('danger', 'Db_error');
-            Redirect::to('feedback.php');
+            Redirect::to('feedback.php?feedbackOk=failed');
         }
 
     } else {

@@ -2,18 +2,19 @@
 /**
  * Class CommonConfig
  */
-
 class CommonConfig
 {
+    /**
+     * @param null $path
+     * @return mixed|null
+     */
     public static function get($path = null)
     {
         if (!$path) {
             return null;
         }
-
         $config = static::all();
         $path   = explode('/', $path);
-
         foreach ($path as $bit) {
             if (isset($config[$bit])) {
                 $config = $config[$bit];
@@ -22,6 +23,10 @@ class CommonConfig
         return $config;
     }
 
+
+    /**
+     * @return mixed
+     */
     public static function all()
     {
         static $config;

@@ -1,8 +1,7 @@
 <?php
-
 /**
- * Database CommonDB
- */
+* Database CommonDB
+*/
 class CommonDB
 {
     /**
@@ -13,69 +12,50 @@ class CommonDB
     /**
      * @var PDO
      */
-    private $_pdo;
 
+    private $_pdo;
     /**
      * @var
      */
     private $_query;
 
     /**
-     * @var bool
-     */
-    private $_error = false;
-
-    /**
      * @var
      */
     private $_results;
-
 
     /**
      * @var int
      */
     private $_count = 0;
 
-
     /**
-     * DB constructor.
+     * CommonDB constructor.
      */
     private function __construct()
     {
+        $host       = CommonConfig::get('mysql/host');
+        $dbName     = CommonConfig::get('mysql/db');
+        $userName   = CommonConfig::get('mysql/username');
+        $psw        = CommonConfig::get('mysql/password');
         try {
-            $this->_pdo = new PDO('mysql:host=' . Config::get('mysql/host') . ';dbname=' . Config::get('mysql/db'), Config::get('mysql/username'), Config::get('mysql/password'));
+            $this->_pdo = new PDO('mysql:host=' . $host . ';dbname=' . $dbName, $userName, $psw);
         } catch (PDOException $e) {
             die($e->getMessage());
         }
     }
-
 
     /**
      * @return BackendDB|null
      */
     public static function getInstance()
     {
-
         if (!isset(self::$_instance)) {
             self::$_instance = new static();
         }
         return self::$_instance;
     }
-    /**
-     * @return PDO
-     */
-    public function getPdo()
-    {
-        return $this->_pdo;
-    }
 
-    /**
-     * @return mixed
-     */
-    public function execute()
-    {
-        return call_user_func_array([$this->getPdo(), 'exec'], func_get_args());
-    }
 
     /**
      * @param $sql
@@ -85,7 +65,6 @@ class CommonDB
     public function query($sql, $params = array(), $conditions = array())
     {
         $this->_error = false;
-
         if ($this->_query = $this->_pdo->prepare($sql)) {
             $x = 1;
             if (count($params)) {
@@ -107,7 +86,6 @@ class CommonDB
         return $this;
     }
 
-
     /**
      * @param $action
      * @param $table
@@ -116,14 +94,13 @@ class CommonDB
      */
     public function action($action, $table, $where = [])
     {
-        // if value is: $where = ['field', '=', 'value']
+// if value is: $where = ['field', '=', 'value']
         if (is_string($where[0])) {
             $where = [$where];
         }
-
         $operators = array('=', '>', '<', '>=', '<=');
         $condition = [];
-        $params    = [];
+        $params = [];
         foreach ($where as $item) {
             if (is_array($item) && count($item) === 3) {
                 list($field, $operator, $value) = $item;
@@ -131,7 +108,7 @@ class CommonDB
                     continue;
                 }
                 $condition[] = sprintf('`%s` %s ?', $field, $operator);
-                $params[]    = $value;
+                $params[] = $value;
                 continue;
             }
             if (is_string($item) && in_array(strtoupper($item), ['AND', 'OR'])) {
@@ -139,21 +116,16 @@ class CommonDB
                 continue;
             }
         }
-
         if (empty($condition)) {
             $condition = ['1 = 1'];
         }
-
         $condition = implode(' ', $condition);
         $sql = "{$action} FROM `{$table}` WHERE {$condition}";
-
         if (!$this->query($sql, $params)->error()) {
             return $this;
         }
-
         return false;
     }
-
 
     /**
      * @param $table
@@ -168,30 +140,6 @@ class CommonDB
 
 
     /**
-     * @param $table
-     * @param $where
-     * @param array $columns
-     * @return bool|BackendDB
-     */
-    public function average($table, $where, $column = '')
-    {
-        return $this->action(sprintf('SELECT AVG(%s) as average', $column), $table, $where);
-    }
-
-
-    /**
-     * @param $table
-     * @param $where
-     * @param string $column
-     * @return bool|BackendDB
-     */
-    public function sum($table, $where, $column = '')
-    {
-        return $this->action(sprintf('SELECT SUM(%s) as sum', $column), $table, $where);
-    }
-
-
-    /**
      * @return mixed
      */
     public function results()
@@ -199,31 +147,12 @@ class CommonDB
         return $this->_results;
     }
 
-
     /**
      * @return mixed
      */
     public function first()
     {
         return ($results = $this->results()) && !empty($results[0]) ? $results[0] : null;
-    }
-
-
-    /**
-     * @return bool
-     */
-    public function error()
-    {
-        return $this->_error;
-    }
-
-
-    /**
-     * @return int
-     */
-    public function count()
-    {
-        return $this->_count;
     }
 
 }

@@ -8,6 +8,12 @@ $teamLeads = $records->getLeads(['departments_id', $user->departmentId()], ['nam
 foreach ($teamLeads as $leads) {
     $leadsId[] = $leads->id;
 }
+
+if (Input::existsName('get', 'feedbackOk')) {
+    Errors::setErrorType('success', Translate::t($lang, 'thk_feedback'));
+} elseif (Input::existsName('get', 'feedbackKo')) {
+    Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
+}
 /** Get not rated leads  */
 if (count($records->getFeedback($user->userId())) > 0) {
     foreach ($records->getFeedback($user->userId()) as $item) {
@@ -24,9 +30,11 @@ if (count($records->getFeedback($user->userId())) > 0) {
 
 <!DOCTYPE html>
 <html>
+<head>
 <?php
 include '../common/includes/head.php';
 ?>
+</head>
 <body>
 <?php
 include 'includes/navbar.php';
@@ -40,18 +48,12 @@ include 'includes/navbar.php';
     <div class="page-content">
         <div class="page-header">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom">Feedback</h2>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'feedback'); ?></h2>
             </div>
         </div>
             <?php
-            if (Session::exists('feedbackOk')) {
-                Errors::setErrorType('success', Session::get('feedbackOk'));
+            if (Input::exists('get') && Errors::countAllErrors()) {
                 include './../common/errors/errors.php';
-                Session::delete('feedbackOk');
-            } elseif (Session::exists('feedbackKo')) {
-                Errors::setErrorType('success', Session::get('feedbackKo'));
-                include './../common/errors/errors.php';
-                Session::delete('feedbackKo');
             }
             ?>
         <section>
@@ -71,7 +73,7 @@ include 'includes/navbar.php';
                                 if (in_array($leads->id, $noFeedback)) {
                                         echo Translate::t($lang, 'Feedback_given');
                                         } else {
-                                           echo Translate::t($lang, 'Feedback_given');
+                                           echo Translate::t($lang, 'give_feedback');
                                         }
                                 ?>
                             </div>
@@ -80,7 +82,7 @@ include 'includes/navbar.php';
                             <div class="contributions text-monospace text-center">
                                 <?php
                                 if (in_array($leads->id, $noFeedback)) {
-                                    echo Translate::t($lang, 'Rating') . $records->rating($leads->id) . '/5' . '<br />';
+                                    echo Translate::t($lang, 'Rating') . ' ' . $records->rating($leads->id) . '/5' . '<br />';
                                     for ($i=1;$i<6;$i++) {
                                         if ($i<= $records->rating($leads->id)) { ?>
                                         <a class="text-secondary" href="#"><span class="fa fa-star checked"></span></a>
@@ -90,7 +92,7 @@ include 'includes/navbar.php';
                                     }
                                 } else {
                                     for ($i = 1; $i < 6; $i++) { ?>
-                                        <a class="text-danger" href="userfeedback.php?feedback=<?php echo $i; ?>&leadId=<?php echo $leads->id; ?>&userId=<?php echo $user->userId(); ?>"><span class="fa fa-star"></span></a>
+                                        <a class="btn-sm btn-outline-primary" href="userfeedback.php?feedback=<?php echo $i; ?>&leadId=<?php echo $leads->id; ?>&userId=<?php echo $user->userId(); ?>"><span class="fa fa-star"></span></a>
                                     <?php }
                                 }?>
                             </div>

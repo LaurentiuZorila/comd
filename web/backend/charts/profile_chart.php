@@ -32,7 +32,7 @@
             labels: <?php echo $chartNames; ?>,
             datasets: [
                 {
-                    label: "<?php echo Common::getMonths($lang)[$month]; ?>",
+                    label: "<?php echo $tableForChart . ' - ' . Common::getMonths($lang)[$month] . ' - ' . Input::post('year'); ?>",
                     fill: true,
                     lineTension: 0,
                     backgroundColor: "rgba(134, 77, 217, 0.88)",
@@ -87,7 +87,7 @@
             labels: <?php echo $chartNames; ?>,
             datasets: [
                 {
-                    label: "<?php echo Common::getMonths($lang)[$month]; ?>",
+                    label: "<?php echo $tableForChart . ' - ' . Common::getMonths($lang)[$month] . ' - ' . Input::post('year'); ?>",
                     fill: true,
                     lineTension: 0,
                     backgroundColor: "rgba(134, 77, 217, 0.88)",

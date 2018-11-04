@@ -38,9 +38,12 @@ if (Input::exists() && Tokens::tokenVerify()) {
 
 <!DOCTYPE html>
 <html>
-<?php
-include '../common/includes/head.php';
-?>
+<head>
+    <?php
+    include '../common/includes/head.php';
+    ?>
+    <link rel="stylesheet" href="./../common/css/spiner/style.css">
+</head>
 <body>
 <?php
 include 'includes/navbar.php';
@@ -56,6 +59,13 @@ include 'includes/navbar.php';
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
                 <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Update_user_profile'); ?></h2>
+            </div>
+        </div>
+        <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
+            <div class="loader loader-3">
+                <div class="dot dot1"></div>
+                <div class="dot dot2"></div>
+                <div class="dot dot3"></div>
             </div>
         </div>
         <!-- Breadcrumb-->
@@ -122,7 +132,7 @@ include 'includes/navbar.php';
 
                                     <div class="line"></div>
                                     <div class="col-sm-9 ml-auto">
-                                        <input type="submit" name="save" class="btn btn-primary" value="<?php echo Translate::t($lang, 'Save'); ?>"/>
+                                        <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
                                         <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                     </div>
                                 </div>
@@ -145,6 +155,10 @@ include "./../common/includes/scripts.php";
 
 include 'includes/js/ajax_update_lead.php';
 ?>
-
+<script>
+    $('#Submit').click(function(){
+        $('#myModal').modal('show');
+    });
+</script>
 </body>
 </html>

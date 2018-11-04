@@ -31,7 +31,7 @@
                             <div class="profile">
                                 <div class="status online"></div>
                             </div>
-                            <div class="content"><strong class="d-block"><?php echo $user->name(); ?></strong><span class="d-block"><?php echo Translate::t($lang, 'navNotification'); ?></span>
+                            <div class="content"><strong class="d-block"><?php echo $lead->name(); ?></strong><span class="d-block"><?php echo Translate::t($lang, 'navNotification'); ?></span>
                                 <small class="date d-block"><?php echo date("h:i A"); ?></small>
                             </div>
                         </a>

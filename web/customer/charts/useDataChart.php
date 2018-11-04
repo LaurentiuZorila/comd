@@ -32,7 +32,7 @@
             labels: <?php echo Js::key($allData); ?>,
             datasets: [
                 {
-                    label: "<?php echo Common::getMonths($lang)[$month]; ?>",
+                    label: "<?php echo Common::getMonths($lang)[$month] . ' - ' . Input::post('year'); ?>",
                     fill: true,
                     lineTension: 0,
                     backgroundColor: "rgba(134, 77, 217, 0.88)",

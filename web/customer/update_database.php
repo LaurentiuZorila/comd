@@ -4,10 +4,10 @@ require_once '../vendor/league/csv/autoload.php';
 use League\Csv\Reader;
 
 // User data
-$userData = CustomerDB::getInstance()->get('cmd_users', ['id', '=', $user->customerId()])->first();
+$userData = CustomerDB::getInstance()->get('cmd_users', ['id', '=', $lead->customerId()])->first();
 
 // All tables
-$allTables = $data->records(Params::TBL_OFFICE, ['id', '=', $user->officesId()], ['tables'], false);
+$allTables = $leadData->records(Params::TBL_OFFICE, ['id', '=', $lead->officesId()], ['tables'], false);
 $allTables = explode(',', $allTables->tables);
 array_map('trim', $allTables);
 
@@ -42,9 +42,9 @@ if (Input::exists()) {
                 fgetcsv($h);
                 // Read file
                 while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
-                    $user->insert($table, [
-                        'offices_id' => $user->officesId(),
-                        'departments_id' => $user->departmentId(),
+                    $lead->insert($table, [
+                        'offices_id' => $lead->officesId(),
+                        'departments_id' => $lead->departmentId(),
                         'year' => $year,
                         'month' => $month,
                         'employees_id' => $data[0],
@@ -52,7 +52,7 @@ if (Input::exists()) {
                         'quantity' => $data[2]
                     ]);
                 }
-                if ($user->success()) {
+                if ($lead->success()) {
                     Errors::setErrorType('success', Translate::t($lang, 'Db_success'));
                 } else {
                     Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
@@ -70,9 +70,12 @@ if (Input::exists()) {
 
 <!DOCTYPE html>
 <html>
-<?php
-include '../common/includes/head.php';
-?>
+<head>
+    <?php
+    include '../common/includes/head.php';
+    ?>
+    <link rel="stylesheet" href="./../common/css/spiner/style.css">
+</head>
   <body>
   <?php
   include 'includes/navbar.php';
@@ -88,9 +91,15 @@ include '../common/includes/head.php';
         <div class="page-header no-margin-bottom">
           <div class="container-fluid">
             <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Update_db'); ?></h2>
-
           </div>
         </div>
+          <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade show">
+              <div class="loader loader-3">
+                  <div class="dot dot1"></div>
+                  <div class="dot dot2"></div>
+                  <div class="dot dot3"></div>
+              </div>
+          </div>
         <!-- Breadcrumb-->
         <div class="container-fluid">
           <ul class="breadcrumb">
@@ -160,7 +169,7 @@ include '../common/includes/head.php';
                               <input type="file" name="fileToUpload" id="fileToUpload">
                               </div>
                               <div class="col-sm-2">
-                                  <input value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit">
+                                  <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
                                   <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                               </div>
                           </div>
@@ -197,6 +206,9 @@ include '../common/includes/head.php';
   ?>
   <script src="./../common/vendor/pulsate/jquery.pulsate.js"></script>
   <script>
+      $('#Submit').click(function(){
+          $('#myModal').modal('show');
+      });
       $("#info_upload").pulsate({color:"#633b70;"});
   </script>
   </body>

@@ -60,15 +60,21 @@ class Js
 
 
     /**
-     * @param $array
+     * @param $items
+     * @param array $params
      * @return string
-     * @uses on array
      */
-    public static function key($items)
+    public static function key($items, $params = [])
     {
+        $lang = Session::get('lang');
+
         if (count($items) > 0) {
             foreach ($items as $key => $value) {
-                $keys[] = strtoupper($key);
+                if (!empty($params)) {
+                    $keys[] = Translate::t($lang, $key, $params);
+                } else {
+                    $keys[] = Translate::t($lang, $key);
+                }
             }
             return self::toJson($keys);
         }

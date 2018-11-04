@@ -11,10 +11,16 @@
                     {
                         xAxes: [{
                             display: false,
-                            barPercentage: 0.2
+                            barPercentage: 0.5,
+                            gridLines: {
+                                color: 'transparent'
+                            },
                         }],
                         yAxes: [{
-                            display: true
+                            display: true,
+                            gridLines: {
+                                color: 'transparent'
+                            },
                         }],
                     },
                 legend: {
@@ -28,7 +34,7 @@
                     label: "<?php echo ucfirst($best->getFirstPriorityTbl(false)); ?>",
                     backgroundColor: [<?php echo $best->getChartColor(true)?>],
                     borderColor: '#723ac3',
-                    borderWidth: 1,
+                    borderWidth: 0.1,
                     data: [<?php echo $best->getChartValues(); ?>]
                 }
             ]
@@ -44,10 +50,16 @@
                     {
                         xAxes: [{
                             display: false,
-                            barPercentage: 0.2
+                            barPercentage: 0.5,
+                            gridLines: {
+                                color: 'transparent'
+                            },
                         }],
                         yAxes: [{
-                            display: true
+                            display: true,
+                            gridLines: {
+                                color: 'transparent'
+                            },
                         }],
                     },
                 legend: {
@@ -61,7 +73,7 @@
                     label: "<?php echo ucfirst($best->getSecondPriorityTbl(false)); ?>",
                     backgroundColor: [<?php echo $best->getChartColor(false)?>],
                     borderColor: '#EF8C99',
-                    borderWidth: 0.8,
+                    borderWidth: 0.1,
                     data: [<?php echo $best->getChartValues(false); ?>]
                 }
             ]

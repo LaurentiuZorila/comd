@@ -6,7 +6,7 @@
 class CustomerUser
 {
     /**
-     * @var BackendDB|null
+     * @var CustomerDB|null
      */
     private $_customerDB;
 
@@ -41,7 +41,10 @@ class CustomerUser
     private $_sessionDepartmentId;
 
 
-    private $_languages;
+    private $_fname;
+
+
+    private $_lname;
 
     /**
      * @var bool
@@ -74,6 +77,8 @@ class CustomerUser
         $this->_sessionDepartmentId = Config::get('session/session_department_id');
         $this->_sessionOfficeId     = Config::get('session/session_office_id');
         $this->_sessionSupervisorId = Config::get('session/session_supervisor_id');
+        $this->_fname               = Config::get('session/session_fname');
+        $this->_lname               = Config::get('session/session_lname');
 
 
         if (!$user) {
@@ -143,6 +148,7 @@ class CustomerUser
 
 
     /**
+     * @param $table
      * @param array $fields
      * @throws Exception
      */
@@ -173,6 +179,8 @@ class CustomerUser
             Session::put($this->_sessionDepartmentId, $this->data()->departments_id);
             Session::put($this->_sessionOfficeId, $this->data()->offices_id);
             Session::put($this->_sessionSupervisorId, $this->data()->supervisors_id);
+            Session::put($this->_fname, $this->data()->fname);
+            Session::put($this->_lname, $this->data()->lname);
             return true;
         }
 
@@ -189,6 +197,8 @@ class CustomerUser
         Session::delete($this->_sessionDepartmentId);
         Session::delete($this->_sessionOfficeId);
         Session::delete($this->_sessionSupervisorId);
+        Session::delete($this->_lname);
+        Session::delete($this->_fname);
         Redirect::to('/index.php');
         exit;
     }
@@ -214,6 +224,23 @@ class CustomerUser
     }
 
     /**
+     * @return mixed|null
+     */
+    public function fName()
+    {
+        return Session::get($this->_fname);
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function lName()
+    {
+        return Session::get($this->_lname);
+    }
+
+
+    /**
      * @return mixed
      */
     public function name()
@@ -221,8 +248,18 @@ class CustomerUser
         return Session::get($this->_sessionName);
     }
 
+
     /**
-     * @return mixed|null
+     * @return mixed
+     */
+    public function uName()
+    {
+        return $this->data()->username;
+    }
+
+
+    /**
+     * @return mixed
      */
     public function customerId()
     {

@@ -29,7 +29,7 @@ if (Input::exists()) {
                 if ($configured) {
                     Redirect::to('index.php');
                 } else {
-                    Redirect::to('profile-setup/profileconfig.php', ['id' => $user->customerId(), 'setup' => 'sadadsada2323232']);
+                    Redirect::to('profile-setup/profileconfig.php', ['id' => $user->customerId(), 'setup' => Tokens::getRoute()]);
                 }
             } else {
                 Errors::setErrorType('danger', 'Username or password not valid! Please try again!');
@@ -40,9 +40,11 @@ if (Input::exists()) {
 
 <!DOCTYPE html>
 <html>
-<?php
-include '../common/includes/head.php';
-?>
+<head>
+    <?php
+    include '../common/includes/head.php';
+    ?>
+</head>
   <body>
      <div class="login-page">
       <div class="container d-flex align-items-center">

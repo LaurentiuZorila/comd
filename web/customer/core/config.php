@@ -18,6 +18,8 @@ return [
         'session_department_id' => 'department_id',
         'session_office_id'     => 'office_id',
         'session_supervisor_id' => 'supervisor_id',
+        'session_fname'         => 'first_name',
+        'session_lname'         => 'last_name',
         'token'                 => '',
         'token_hash'            => '',
         'token_id'              => 'token_id',

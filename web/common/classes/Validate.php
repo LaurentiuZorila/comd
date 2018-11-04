@@ -20,6 +20,8 @@ class Validate
      */
     private $_db = null;
 
+    private $_lang;
+
 
 
     /**
@@ -28,6 +30,7 @@ class Validate
     public function __construct()
     {
         $this->_db = CommonDB::getInstance();
+        $this->_lang = Session::get('lang');
     }
 
 
@@ -56,28 +59,28 @@ class Validate
                 }
 
                 if ($rule === 'required' && empty($value)) {
-                    Errors::setErrorType('danger', Translate::t($lang, 'all_required'));
+                    Errors::setErrorType('danger', Translate::t($this->_lang, 'all_required', ['ucfirst' => true]));
                 } else if (!empty($value)) {
                     switch ($rule) {
                         case 'min':
                             if (trim(strlen($value)) < $rule_value) {
-                                Errors::setErrorType('danger', sprintf("%s %s %d %s!", $errorItem, Translate::t($lang, 'validation_minimum'), $rule_value, Translate::t($lang, 'characters')));
+                                Errors::setErrorType('danger', sprintf("%s %s %d %s!", $errorItem, Translate::t($this->_lang, 'validation_minimum'), $rule_value, Translate::t($this->_lang, 'characters')));
                             }
                             break;
                         case 'max':
                             if (trim(strlen($value)) > $rule_value) {
-                                Errors::setErrorType('danger', sprintf("%s %s %d %s!", $errorItem, Translate::t($lang, 'validation_max'), $rule_value, Translate::t($lang, 'characters')));
+                                Errors::setErrorType('danger', sprintf("%s %s %d %s!", $errorItem, Translate::t($this->_lang, 'validation_max'), $rule_value, Translate::t($this->_lang, 'characters')));
                             }
                             break;
                         case 'matches':
-                            if ($value != $source[$rule_value]) {
-                                Errors::setErrorType('danger', Translate::t($lang, 'pass_no_match'));
+                            if ($value !== $source[$rule_value]) {
+                                Errors::setErrorType('danger', Translate::t($this->_lang, 'pass_no_match'));
                             }
                             break;
                         case 'unique':
                             $check = $this->_db->get($rule_value, $where = [$item, '=', $value]);
                             if ($check->count()) {
-                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($lang, 'already_exists')));
+                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($this->_lang, 'already_exists')));
                             }
                             break;
                         case 'email':
@@ -87,19 +90,19 @@ class Validate
                             break;
                         case 'letters':
                             if (is_numeric($value)) {
-                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($lang, 'only_letters')));
+                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($this->_lang, 'only_letters')));
                             }
                             break;
                         case 'characters':
                             if (is_numeric($value) && ctype_alpha($value)) {
-                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($lang, 'only_char')));
+                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($this->_lang, 'only_char')));
                             }
                             break;
                         case 'extension':
                             $path = $_FILES['fileToUpload']['name'];
                             $extension  = pathinfo($path, PATHINFO_EXTENSION);
                             if (in_array($extension, $rule_value)) {
-                                Errors::setErrorType('danger', Translate::t($lang, 'Csv_extension'));
+                                Errors::setErrorType('danger', Translate::t($this->_lang, 'Csv_extension'));
                             }
                             break;
                     }

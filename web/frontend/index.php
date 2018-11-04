@@ -1,6 +1,7 @@
 <?php
 require_once 'core/init.php';
 
+
 $tables = $records->records(Params::TBL_OFFICE, ['id', '=', $user->officeId()], ['tables'], false);
 $tables = explode(',', $tables->tables);
 
@@ -24,7 +25,14 @@ if (!Input::exists()) {
     ];
 }
 
-if (Input::exists() && Tokens::tokenVerify()) {
+if (Input::noPost() && Input::existsName('get', 'lastData')) {
+    $lastData = new LastData();
+    $lang = $user->language();
+    $lastDataChartLabel = $lastData->chartData('key', $lang);
+    $lastDataChartKey   = $lastData->chartData('label', $lang);
+}
+
+if (Input::exists()) {
     Session::delete('InfoAlert');
     $validate   = new Validate();
     $validation = $validate->check($_POST, [
@@ -126,7 +134,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
                 $chartLabels = Js::key($dataAllMonths);
                 $chartValues = Js::values($dataAllMonths);
             } else {
-                Errors::setErrorType('warning', Translate::t($lang, 'Not_found_data'));
+                Errors::setErrorType('warning', 'Not_found_data');
             }
         }
     }
@@ -136,9 +144,12 @@ if (Input::exists() && Tokens::tokenVerify()) {
 
 <!DOCTYPE html>
 <html>
+<head>
 <?php
 include '../common/includes/head.php';
 ?>
+<link rel="stylesheet" href="./../common/css/spiner/style.css">
+</head>
 <body>
 <?php
 include 'includes/navbar.php';
@@ -152,11 +163,21 @@ include 'includes/navbar.php';
     <div class="page-content">
         <div class="page-header">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom">Dashboard</h2>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Dashboard'); ?></h2>
+            </div>
+        </div>
+        <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
+            <div class="loader loader-3">
+                <div class="dot dot1"></div>
+                <div class="dot dot2"></div>
+                <div class="dot dot3"></div>
             </div>
         </div>
         <?php
         if (Input::exists() && Errors::countAllErrors()) {
+            include './../common/errors/errors.php';
+        }
+        if (Input::noPost() && Input::existsName('get', 'lastData') && Errors::countAllErrors()) {
             include './../common/errors/errors.php';
         }
         ?>
@@ -165,7 +186,7 @@ include 'includes/navbar.php';
                 <div class="row">
                     <div class="col-lg-12">
                         <p>
-                            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            <button class="btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                                 <?php echo Translate::t($lang, 'Filters'); ?>
                             </button>
                         </p>
@@ -218,7 +239,7 @@ include 'includes/navbar.php';
                                         </div>
 
                                         <div class="col-sm-2">
-                                            <input value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit">
+                                            <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
                                             <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                         </div>
                                     </div>
@@ -280,7 +301,7 @@ include 'includes/navbar.php';
                                     <div class="progress-details d-flex align-items-end justify-content-between">
                                         <div class="title">
                                             <div class="icon"><i class="icon-info"></i></div>
-                                            <strong><?php echo strtoupper(Input::post('table')). ' - ' . Common::numberToMonth($month, $lang) . ' - ' . Input::post('year'); ?></strong>
+                                            <strong><?php echo Translate::t($lang, 'target') . ' - ' . Common::numberToMonth($month, $lang) . ' - ' . Input::post('year'); ?></strong>
                                         </div>
                                         <div class="number dashtext-1"><?php echo $data; ?></div>
                                     </div>
@@ -376,6 +397,19 @@ include 'includes/navbar.php';
                         </div>
                     </div>
                 </section>
+        <?php }
+        if (Input::noPost() && Input::existsName('get', 'lastData') && !Errors::countAllErrors()) { ?>
+            <section class="no-padding-bottom">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="drills-chart block">
+                                <canvas id="lastDataChart" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         <?php } ?>
         <!--        ********************       CHARTS   END      ********************   -->
         <?php
@@ -393,7 +427,14 @@ if (Input::exists() && is_numeric(Input::post('month')) && !Errors::countAllErro
 if (Input::exists() && !is_numeric(Input::post('month')) && !Errors::countAllErrors()) {
     include 'charts/commonDataMultiple.php';
 }
+if (Input::noPost() && Input::existsName('get', 'lastData') && !Errors::countAllErrors()) {
+    include 'charts/last_data_chart.php';
+}
 ?>
-
+<script>
+    $('#Submit').click(function(){
+        $('#myModal').modal('show');
+    });
+</script>
 </body>
 </html>

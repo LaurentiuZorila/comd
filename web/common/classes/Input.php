@@ -31,14 +31,14 @@ class Input
      * @param $name
      * @return bool
      */
-    public static function existsName($type = 'post', $name)
+    public static function existsName($type, $name)
     {
         switch ($type) {
             case 'post':
-                return (!empty($_POST[$name]));
+                return (isset($_POST[$name]));
                 break;
             case 'get':
-                return (!empty($_GET[$name]));
+                return (isset($_GET[$name]));
                 break;
             default:
                 return false;
@@ -97,18 +97,13 @@ class Input
     }
 
 
+
     /**
-     * @param $item
-     * @return array|string
+     * @return bool
      */
-    public static function getInput($item)
+    public static function noPost()
     {
-        if (self::exists()) {
-            return self::post($item);
-        }
-        if (self::exists('get')) {
-            return self::get($item);
-        }
+        return !self::exists() && self::exists('get') ? true : false;
     }
 
 }

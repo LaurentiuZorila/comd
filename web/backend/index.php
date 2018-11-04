@@ -84,9 +84,11 @@ if (Input::exists() && Tokens::tokenVerify()) {
 
 <!DOCTYPE html>
 <html>
-<?php
-include '../common/includes/head.php';
-?>
+<head>
+    <?php
+    include '../common/includes/head.php';
+    ?>
+</head>
 <body>
 <?php
 include 'includes/navbar.php';
@@ -101,6 +103,13 @@ include 'includes/navbar.php';
         <div class="page-header">
             <div class="container-fluid">
                 <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Dashboard'); ?></h2>
+            </div>
+        </div>
+        <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
+            <div class="loader loader-3">
+                <div class="dot dot1"></div>
+                <div class="dot dot2"></div>
+                <div class="dot dot3"></div>
             </div>
         </div>
         <?php if (Input::exists() && Errors::countAllErrors()) {
@@ -168,7 +177,7 @@ include 'includes/navbar.php';
                                     <?php }?>
                                 </div>
                                 <div class="col-sm-2">
-                                    <input value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit" name="submit">
+                                    <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
                                     <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                 </div>
                             </div>
@@ -281,8 +290,8 @@ include 'includes/navbar.php';
                                     <li class="nav-item"><button class="btn btn-outline-primary line" id="line" type="button"><?php echo Translate::t($lang, 'Line'); ?></button></li>
                                 </ul>
                                 <div class="drills-chart block">
-                                    <canvas id="backendIndexBarChart" height="150"></canvas>
-                                    <canvas id="backendIndexLineChart" height="150" style="display: none;"></canvas>
+                                    <canvas id="backendIndexBarChart" style="display: block; width: 494px; height: 250px;" width="494" height="250" class="chartjs-render-monitor"></canvas>
+                                    <canvas id="backendIndexLineChart" style="display: none; width: 494px; height: 247px;" width="494" height="247" class="chartjs-render-monitor"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -373,6 +382,11 @@ if (Input::exists() && !Errors::countAllErrors()) {
         $("#backendIndexLineChart").show();
         $("#backendIndexBarChart").hide();
     });
+
+    $('#Submit').click(function(){
+        $('#myModal').modal('show');
+    });
+
 
 </script>
 

@@ -1,5 +1,6 @@
 <?php
 require_once 'core/init.php';
+$rating = $leadData->rating($lead->customerId());
 
 
 ?>
@@ -11,7 +12,18 @@ require_once 'core/init.php';
             <img src="../../common/img/user.png" alt="..." class="img-fluid rounded-circle">
         </div>
         <div class="title">
-            <h1 class="h5"><?php echo escape($user->name());?></h1>
+            <h1 class="h5 mb-4"><?php echo escape($lead->name());?></h1>
+            <div class="contributions text-monospace text-center">
+                <?php
+                for ($i=1;$i<6;$i++) {
+                    if ($i <= $rating) { ?>
+                        <a class="text-secondary" href="#"><span class="fa fa-star checked"></span></a>
+                    <?php } else { ?>
+                        <a class="text-secondary" href="#"><span class="fa fa-star"></span></a>
+                    <?php }
+                } ?>
+                <a class="text-white-50" href="#"><?php echo $rating . '/5'; ?></a>
+            </div>
         </div>
     </div>
     <!-- Sidebar Navidation Menus--><span class="heading">Main</span>
@@ -28,7 +40,7 @@ require_once 'core/init.php';
         </li>
         <li><a href="#profile" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i><?php echo Translate::t($lang, 'Profile'); ?> </a>
             <ul id="profile" class="collapse list-unstyled ">
-                <li><a href="alldata.php"><i class="icon-settings"></i><?php echo Translate::t($lang, 'my_profile'); ?></a></li>
+                <li><a href="update_profile.php"><i class="icon-settings"></i><?php echo Translate::t($lang, 'my_profile'); ?></a></li>
                 <li><a href="logout.php"> <i class="icon-logout"></i><?php echo Translate::t($lang, 'logout'); ?> </a></li>
             </ul>
         </li>

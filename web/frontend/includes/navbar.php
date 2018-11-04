@@ -56,7 +56,7 @@
                                     <li><?php echo Translate::t($lang, 'nav_give_feedback'); ?></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-3 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'Update_user_profile', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-3 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'my_profile', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
                                     <li><?php echo Translate::t($lang, 'nav_update_profile'); ?></li>
                                 </ul>
@@ -65,9 +65,9 @@
                             </div>
                         </div>
                         <div class="row megamenu-buttons text-center">
-                            <div class="col-lg-3 col-md-4"><a href="index.php?lastdata=" class="d-block megamenu-button-link dashbg-1"><i class="fa fa-bar-chart-o"></i><strong><?php echo Translate::t($lang, 'view_data')?></strong></a></div>
+                            <div class="col-lg-3 col-md-4"><a href="index.php?officeId=<?php echo $user->officeId(); ?>&userId=<?php echo $user->userId(); ?>&lastData=<?php echo Tokens::getRoute(); ?>" class="d-block megamenu-button-link dashbg-1"><i class="fa fa-bar-chart-o"></i><strong><?php echo Translate::t($lang, 'view_data')?></strong></a></div>
                             <div class="col-lg-3 col-md-4"><a href="feedback.php" class="d-block megamenu-button-link dashbg-4"><i class="fa fa-star-half-full"></i><strong><?php echo Translate::t($lang, 'feedback'); ?></strong></a></div>
-                            <div class="col-lg-3 col-md-4"><a href="update_profile.php" class="d-block megamenu-button-link dashbg-2"><i class="icon-user"></i><strong><?php echo Translate::t($lang, 'Update_user_profile'); ?></strong></a></div>
+                            <div class="col-lg-3 col-md-4"><a href="update_profile.php" class="d-block megamenu-button-link dashbg-2"><i class="icon-user"></i><strong><?php echo Translate::t($lang, 'my_profile'); ?></strong></a></div>
                             <div class="col-lg-3 col-md-4"><a href="logout.php" class="d-block megamenu-button-link dashbg-3"><i class="icon-logout"></i><strong><?php echo Translate::t($lang, 'logout'); ?></strong></a></div>
                         </div>
                     </div>

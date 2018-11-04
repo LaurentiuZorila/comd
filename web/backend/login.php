@@ -31,9 +31,11 @@ if (Input::exists() && Tokens::tokenVerify()) {
 
 <!DOCTYPE html>
 <html>
-<?php
-include '../common/includes/head.php';
-?>
+<head>
+    <?php
+    include '../common/includes/head.php';
+    ?>
+</head>
   <body>
      <div class="login-page">
       <div class="container d-flex align-items-center">

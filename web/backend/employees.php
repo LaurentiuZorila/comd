@@ -7,9 +7,11 @@ $allEmployees = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['department
 
 <!DOCTYPE html>
 <html>
-<?php
-include '../common/includes/head.php';
-?>
+<head>
+    <?php
+    include '../common/includes/head.php';
+    ?>
+</head>
 <body>
 <?php
 include 'includes/navbar.php';

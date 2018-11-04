@@ -40,15 +40,21 @@ if (Input::exists() && Tokens::tokenVerify()) {
         /** All Leads for selected office details */
         $allLeads       = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['offices_id', '=', $employeesData->offices_id], ['name']);
 
+
         /** Team Leads names */
-        foreach ($allLeads as $leads) {
-            $leadsName[] = $leads->name;
+        if (!empty($allLeads)) {
+            foreach ($allLeads as $leads) {
+                $leadsName[] = $leads->name;
+            }
+        } else {
+            $leadsName[] = Translate::t($lang, 'not_found_leads', ['ucfirst' => true]);
         }
+
 
         /** Employees name */
         $employeesName  = $employeesData->name;
         /** Month name */
-        $monthName      = Common::numberToMonth($month);
+        $monthName      = Common::numberToMonth($month, $lang);
 
         /** Arrays with tables */
         $tables = explode(',', trim($allOfficesData->tables));
@@ -83,7 +89,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
         /** Array with tables and values(quantity) */
         $allData = array_combine($key, $values);
 
-        $chartLabels = Js::key($allData);
+        $chartLabels = Js::key($allData, ['strtoupper' => true]);
         $chartValues = Js::values($allData);
 
         /** Check if exists values for selected options */
@@ -103,9 +109,12 @@ if (!empty(Input::get('employees_id')) && !Input::exists()) {
 
 <!DOCTYPE html>
 <html>
-<?php
-include '../common/includes/head.php';
-?>
+<head>
+    <?php
+    include '../common/includes/head.php';
+    ?>
+    <link rel="stylesheet" href="./../common/css/spiner/style.css">
+</head>
 <body>
 <?php
 include 'includes/navbar.php';
@@ -120,6 +129,13 @@ include 'includes/navbar.php';
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
                 <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'All_employees'); ?></h2>
+            </div>
+        </div>
+        <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
+            <div class="loader loader-3">
+                <div class="dot dot1"></div>
+                <div class="dot dot2"></div>
+                <div class="dot dot3"></div>
             </div>
         </div>
         <!-- Breadcrumb-->
@@ -137,7 +153,7 @@ include 'includes/navbar.php';
         <section class="no-padding-top no-padding-bottom">
             <div class="col-lg-12">
                 <p>
-                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
+                    <button class="btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
                         <?php echo Translate::t($lang, 'Filters'); ?>
                     </button>
                 </p>
@@ -194,7 +210,7 @@ include 'includes/navbar.php';
                                 <?php }?>
                             </div>
                             <div class="col-sm-2">
-                                <input value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit">
+                                <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
                                 <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                             </div>
                         </div>
@@ -212,8 +228,8 @@ if (Input::exists() && !Errors::countAllErrors()) { ?>
                     </div>
                     <div class="card-body">
                         <h5 class="card-title text-center"><?php echo $allOfficesData->name; ?></h5>
-                        <p class="card-text text-center text-white-50"><?php echo Translate::t($lang, 'Data_for ') . $monthName . ', ' . Input::post('year'); ?></p>
-                        <p class="card-text text-center text-white-50"><?php Translate::t($lang, 'Leads'); ?>:
+                        <p class="card-text text-center text-white-50"><?php echo Translate::t($lang, 'Data_for') . ' ' . $monthName . ', ' . Input::post('year'); ?></p>
+                        <p class="card-text text-center text-white-50"><?php echo Translate::t($lang, 'Leads'); ?>:
                             <?php
                             foreach ($leadsName as $leadName) {
                                 if (count($leadsName) > 1) {
@@ -224,32 +240,7 @@ if (Input::exists() && !Errors::countAllErrors()) { ?>
                             }
                             echo implode(', ', $leadsName);
                             ?>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section>
-            <div class="col-md-12">
-                <div class="card text-center">
-                    <div class="card-header pt-2">
-                        <ul class="nav nav-pills card-header-pills">
-                            <li class="nav-item"><button class="btn btn-primary mr-1 bar" id="bar" type="button"><?php echo Translate::t($lang, 'Bar');?></button></li>
-                            <li class="nav-item"><button class="btn btn-outline-primary line" id="line" type="button"><?php echo Translate::t($lang, 'Line');?></button></li>
-                        </ul>
-                    </div>
-                    <div class="pie-chart chart block">
-                        <div class="pie-chart chart margin-bottom-sm">
-                            <div style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;" class="chartjs-size-monitor">
-                                <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                                    <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
-                                </div>
-                                <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                                    <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
-                                </div>
-                            </div>
-                            <canvas id="all_data_bar" style="display: block; width: 494px; height: 147px;" width="494" height="147" class="chartjs-render-monitor"></canvas>
-                            <canvas id="all_data_line" style="display: none; width: 494px; height: 145px;" width="494" height="145" class="chartjs-render-monitor"></canvas>
-                        </div>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -274,6 +265,32 @@ if (Input::exists() && !Errors::countAllErrors()) { ?>
                             <?php } ?>
                         </div>
                     </div>
+                </div>
+        </section>
+        <section>
+            <div class="col-md-12">
+                <div class="card text-center">
+                    <div class="card-header pt-2">
+                        <ul class="nav nav-pills card-header-pills">
+                            <li class="nav-item"><button class="btn-sm btn-primary mr-1 bar" id="bar" type="button"><?php echo Translate::t($lang, 'Bar');?></button></li>
+                            <li class="nav-item"><button class="btn-sm btn-outline-primary line" id="line" type="button"><?php echo Translate::t($lang, 'Line');?></button></li>
+                        </ul>
+                    </div>
+                    <div class="pie-chart chart block">
+                        <div class="pie-chart chart margin-bottom-sm">
+                            <div style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;" class="chartjs-size-monitor">
+                                <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                                    <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+                                </div>
+                                <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                                    <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+                                </div>
+                            </div>
+                            <canvas id="all_data_bar" style="display: block; width: 494px; height: 147px;" width="494" height="147" class="chartjs-render-monitor"></canvas>
+                            <canvas id="all_data_line" style="display: none; width: 494px; height: 145px;" width="494" height="145" class="chartjs-render-monitor"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     <?php } ?>
@@ -292,6 +309,11 @@ if (Input::exists() && !Errors::countAllErrors()) {
 }
 include 'includes/js/ajax.php';
 ?>
+<script>
+    $('#Submit').click(function(){
+        $('#myModal').modal('show');
+    });
+</script>
 
 <script>
     $("#bar").click(function(){

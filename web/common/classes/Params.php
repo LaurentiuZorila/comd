@@ -97,4 +97,10 @@ class Params
      * Max characters allowed
      */
     const MAX_INPUT         = 50;
+
+    const DASH              = [
+                                'text' => ['dashtext-1', 'dashtext-2', 'dashtext-3', 'dashtext-4'],
+                                'bg'  => ['dashbg-1', 'dashbg-2', 'dashbg-3', 'dashbg-4', 'dashbg-5']
+                               ];
+
 }

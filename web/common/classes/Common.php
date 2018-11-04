@@ -2,55 +2,9 @@
 class Common
 {
     /**
-     * @var BackendDB|null
-     */
-    private $_db;
-
-    /**
      *  Allowed characters for profile setup
      */
     const ALLOWED_CHARACTERS = ['<', '>'];
-
-    /**
-     * Common constructor.
-     */
-    public function __construct()
-    {
-        $this->_db = CommonDB::getInstance();
-    }
-
-
-    /**
-     * @param $table
-     * @param array $where
-     * @param array $column
-     * @param bool $all
-     * @return mixed
-     */
-    public function records($table, array $where, array $column = ['*'], $all = true)
-    {
-        foreach ($column as $col) {
-            if (in_array($col, Params::ALLOWED_COLUMNS)) {
-                if ($all) {
-                    return $this->_db->get($table, $where, $column)->results();
-                } else {
-                    return $this->_db->get($table, $where, $column)->first();
-                }
-            }
-            return false;
-        }
-    }
-
-
-    /**
-     * @param $lead_id
-     * @return float average
-     */
-    public function rating(array $where)
-    {
-        $rating = $this->_db->average(Params::TBL_RATING, $where, 'rating')->results();
-        return round(Values::columnValues($rating, 'average'));
-    }
 
 
     /**
@@ -69,37 +23,6 @@ class Common
         return false;
     }
 
-
-    /**
-     * @param $items
-     * @param $column
-     * @return mixed , transform OBJ to string for one column
-     */
-    public static function columnValues($items, $column)
-    {
-        foreach ($items as $item) {
-            return $item->$column;
-        }
-    }
-
-
-    /***
-     * @param $obj
-     * @param $column
-     * @param $returnedKey
-     * @return mixed
-     */
-    public static function objToArrayOneValue($obj, $column, $returnedKey)
-    {
-        $obj       = json_decode($obj->$column);
-        $arrItem   = (array) $obj;
-        ksort($arrItem, SORT_NUMERIC);
-        array_map('trim', $arrItem);
-        foreach ($arrItem as $key => $value) {
-            $item[$key] = $value;
-        }
-        return $item[$returnedKey];
-    }
 
 
     /**
@@ -255,6 +178,36 @@ class Common
     public static function toArray($json)
     {
         return (array)json_decode($json);
+    }
+
+
+    /**
+     * @param $item
+     * @return array|string
+     */
+    public static function valuesToInsert($item)
+    {
+        if (is_array($item)) {
+            $data = array_map('trim', $item);
+            $data = array_map('strtolower', $item);
+            return $data;
+        } else {
+            $data = strtolower(trim($item));
+        }
+        return $data;
+    }
+
+
+    /**
+     * @param $total
+     * @param $divisor
+     * @param bool $sign
+     * @return string
+     */
+    public static function percentage($total, $divisor, $sign = true)
+    {
+        $percentage =  $divisor / $total * 100;
+        return ($sign) ? self::number($percentage) . '%' : self::number($percentage);
     }
 
 }

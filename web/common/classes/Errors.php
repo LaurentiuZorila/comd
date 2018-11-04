@@ -22,10 +22,10 @@ class Errors
     private static $_type;
 
     private static $_messageType = [
-        self::SUCCESS => 'Well done.',
-        self::WARNING => 'Make attention.',
-        self::DANGER  => 'Something is going wrong.',
-        self::INFO    => 'Info!'
+        self::SUCCESS => 'well_done',
+        self::WARNING => 'Make_attention',
+        self::DANGER  => 'something_wrong',
+        self::INFO    => 'info'
         ];
 
     const SUCCESS = 'success';
@@ -78,16 +78,16 @@ class Errors
     {
         switch (self::$_type) {
             case self::WARNING:
-                return self::getWarningErrors();
+                return array_unique(self::getWarningErrors());
                 break;
             case self::DANGER:
                 return array_unique(self::getDangerErrors());
                 break;
             case self::INFO:
-                return self::getInfoErrors();
+                return array_unique(self::getInfoErrors());
                 break;
             case self::SUCCESS:
-                return self::getSuccessErrors();
+                return array_unique(self::getSuccessErrors());
                 break;
         }
     }
