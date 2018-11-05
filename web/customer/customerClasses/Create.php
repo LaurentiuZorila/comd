@@ -28,14 +28,17 @@ class Create
 
     /**
      * @param $table
+     * @param string $quantityType
      * @return mixed
      */
-    public function createTable($table)
+    public function createTable($table, $quantityType = 'int')
     {
         $table  = trim(strtolower($table));
         $tbl    = Params::PREFIX . $table;
 
-        $sql = " 
+        switch ($quantityType) {
+            case 'int':
+                $sql = " 
             CREATE TABLE IF NOT EXISTS {$tbl} (
                 id                    INT AUTO_INCREMENT PRIMARY KEY, 
                 offices_id            INT(11),
@@ -44,8 +47,23 @@ class Create
                 employees_average_id  VARCHAR(255),
                 year                  YEAR(4),
                 month                 TINYINT(2),
-                quantity              SMALLINT(5)
+                quantity              INT(11)
             )";
+                break;
+            case 'float':
+                $sql = " 
+            CREATE TABLE IF NOT EXISTS {$tbl} (
+                id                    INT AUTO_INCREMENT PRIMARY KEY, 
+                offices_id            INT(11),
+                departments_id        INT(11),
+                employees_id          INT(11),
+                employees_average_id  VARCHAR(255),
+                year                  YEAR(4),
+                month                 TINYINT(2),
+                quantity              FLOAT(5)
+            )";
+                break;
+        }
 
         if ($this->_toCreate) {
             try {

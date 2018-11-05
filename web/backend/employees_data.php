@@ -224,10 +224,11 @@ if (Input::exists() && !Errors::countAllErrors()) { ?>
         <section>
             <div class="col-md-12">
                 <div class="card text-white bg-dark">
-                    <div class="card-header card-header-transparent text-center"><?php echo $employeesName; ?>
+                    <div class="card-header card-header-transparent text-center">
+                        <h3><?php echo $employeesName; ?></h3>
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title text-center"><?php echo $allOfficesData->name; ?></h5>
+                        <h5 class="card-title text-center text-white-50"><?php echo $allOfficesData->name; ?></h5>
                         <p class="card-text text-center text-white-50"><?php echo Translate::t($lang, 'Data_for') . ' ' . $monthName . ', ' . Input::post('year'); ?></p>
                         <p class="card-text text-center text-white-50"><?php echo Translate::t($lang, 'Leads'); ?>:
                             <?php
@@ -258,7 +259,14 @@ if (Input::exists() && !Errors::countAllErrors()) { ?>
                                         <strong class="d-block dashtext-1"><?php echo $value; ?></strong>
                                         <span class="d-block"><?php echo strtoupper($key); ?></span>
                                         <div class="progress progress-template progress-small">
+                                            <?php
+                                            if ($value < 0) {
+                                                $positiveValue = -$value; ?>
+                                            <div role="progressbar" style="width: <?php echo $positiveValue; ?>%;"aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template progress-bar-small dashbg-5"></div>
+                                            <?php } else { ?>
                                             <div role="progressbar" style="width: <?php echo $value; ?>%;"aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template progress-bar-small dashbg-2"></div>
+                                            <?php }
+                                            ?>
                                         </div>
                                     </div>
                                 </div>

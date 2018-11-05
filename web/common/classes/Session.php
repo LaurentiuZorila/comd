@@ -36,7 +36,13 @@ class Session {
      * @return mixed
      */
     public static function put($name, $value) {
-        $_SESSION[$name] = $value;
+        if (is_array($name)) {
+            foreach ($name as $item) {
+                $_SESSION[$item] = $value;
+            }
+        } else {
+            $_SESSION[$name] = $value;
+        }
         return $value;
     }
 

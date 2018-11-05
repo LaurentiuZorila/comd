@@ -215,9 +215,7 @@ include 'includes/navbar.php';
                         <div class="card card-profile">
                             <div class="card-header">
                                 <h4 class="text-gray-light text-center"><?php echo $leadName; ?></h4>
-                            </div>
-                            <div class="card-body text-center">
-                                <p class=""><?php echo strtoupper(escape($departmentName)) . ' - ' .escape($officeName); ?></p>
+                                <p class="text-center mt-2 mb-0"><?php echo strtoupper(escape($departmentName)) . ' - ' .escape($officeName); ?></p>
                             </div>
                         </div>
                     </div>
@@ -500,11 +498,6 @@ include "./../common/includes/scripts.php";
 
     // Click close div
     $ ( '.closeDiv' ).on('click', function () {
-        $( '.allCollapse:visible' ).fadeOut("slow" );
-    });
-
-
-    $ ( '.hide' ).on('click', function () {
         $( '.allCollapse:visible' ).hide(function () {
             $(this).fadeOut(3000);
         });

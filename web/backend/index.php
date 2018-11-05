@@ -119,7 +119,7 @@ include 'includes/navbar.php';
         <section class="no-padding-top no-padding-bottom">
             <div class="col-lg-12">
                 <p>
-                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
+                    <button class="btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
                         <?php echo Translate::t($lang, 'Filters'); ?>
                     </button>
                 </p>
@@ -286,8 +286,8 @@ include 'includes/navbar.php';
                         <div class="col-lg-8">
                             <div class="bar-chart block chart">
                                 <ul class="nav nav-pills card-header-pills">
-                                    <li class="nav-item"><button class="btn btn-primary mr-1 bar" id="bar" type="button"><?php echo Translate::t($lang, 'Bar'); ?></button></li>
-                                    <li class="nav-item"><button class="btn btn-outline-primary line" id="line" type="button"><?php echo Translate::t($lang, 'Line'); ?></button></li>
+                                    <li class="nav-item"><button class="btn-sm btn-primary mr-1 bar" id="bar" type="button"><?php echo Translate::t($lang, 'Bar'); ?></button></li>
+                                    <li class="nav-item"><button class="btn-sm btn-outline-primary line" id="line" type="button"><?php echo Translate::t($lang, 'Line'); ?></button></li>
                                 </ul>
                                 <div class="drills-chart block">
                                     <canvas id="backendIndexBarChart" style="display: block; width: 494px; height: 250px;" width="494" height="250" class="chartjs-render-monitor"></canvas>

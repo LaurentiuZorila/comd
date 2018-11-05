@@ -20,8 +20,8 @@ class Validate
      */
     private $_db = null;
 
-    private $_lang;
 
+    private $_lang;
 
 
     /**
@@ -39,7 +39,7 @@ class Validate
      * @param array $items
      * @return $this
      */
-    public function check($source, $items = [])
+    public function check($source, $items = [], $hasErrors = false)
     {
         foreach ($items as $item => $rules) {
             foreach ($rules as $rule => $rule_value) {
@@ -51,7 +51,7 @@ class Validate
                     $needlePosition = strpos($item, '_');
                     $firstItem      = substr($item, 0, $needlePosition);
                     $secondItem     = substr($item, $needlePosition + 1);
-                    $errorItem      = ucfirst($firstItem) . ' ' . ucfirst($secondItem);
+                    $errorItem      = ucfirst($firstItem) . ' ' . strtolower($secondItem);
                     $errorItem      = escape($errorItem);
                 } else {
                     $errorItem = ucfirst($item);
@@ -74,6 +74,9 @@ class Validate
                             break;
                         case 'matches':
                             if ($value !== $source[$rule_value]) {
+                                if ($hasErrors) {
+                                    Session::put($item, 'has-error');
+                                }
                                 Errors::setErrorType('danger', Translate::t($this->_lang, 'pass_no_match'));
                             }
                             break;
@@ -105,7 +108,61 @@ class Validate
                                 Errors::setErrorType('danger', Translate::t($this->_lang, 'Csv_extension'));
                             }
                             break;
-                    }
+                        case 'equals':
+                            $check    = Common::checkLastCharacter($value);
+                            $matched  = Common::checkLastCharacter($source[$rule_value]);
+                            $check    = explode(',', $check);
+                            $matched  = explode(',', $matched);
+                            if (count($check) !== count($matched)) {
+                                if ($hasErrors) {
+                                    Session::put($item, 'has-error');
+                                    Errors::setErrorType('danger', sprintf("You must have same number of %s as tables", strtolower($errorItem)));
+                                } else {
+                                    Errors::setErrorType('danger', sprintf("You must have same number of %s as tables", strtolower($errorItem)));
+                                }
+                            }
+                            break;
+                        case 'numbers':
+                            $pos = strpos($value, ',');
+                            if ($pos > 0) {
+                                $values = explode(',', $value);
+                                foreach ($values as $v) {
+                                    if (!is_numeric($v) && $hasErrors) {
+                                        Session::put($item, 'has-error');
+                                        Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($this->_lang, 'only_numbers')));
+                                    } elseif (!is_numeric($v)) {
+                                        Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($this->_lang, 'only_numbers')));
+                                    }
+                                }
+                            } elseif (!is_numeric($value) && $hasErrors) {
+                                Session::put($item, 'has-error');
+                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($this->_lang, 'only_numbers')));
+                            } elseif (!is_numeric($value)) {
+                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($this->_lang, 'only_numbers')));
+                            }
+                            break;
+                        case 'dataType':
+                            $pos = strpos($value, ',');
+                            if ($pos > 0) {
+                                $values = explode(',', strtolower($value));
+                                foreach ($values as $v) {
+                                    if (!in_array($v, Params::DATADISPLAY) && $hasErrors) {
+                                        Session::put($item, 'has-error');
+                                        Errors::setErrorType('danger', sprintf("Data allowed to insert in field %s are: NUMBER OR PERCENTAGE", $errorItem));
+                                    } elseif (!in_array($v, Params::DATADISPLAY)) {
+                                        Errors::setErrorType('danger', sprintf("Data allowed to insert in field %s are: NUMBER OR PERCENTAGE", $errorItem));
+                                    }
+                                }
+                            }
+                            break;
+                        case 'blanks':
+                            if (strpos($value, ' ') > 0 && $hasErrors) {
+                                Session::put($item, 'has-error');
+                                Errors::setErrorType('danger', sprintf("%s doesn't need contain blank spaces", $errorItem));
+                            } elseif (strpos($value, ' ')) {
+                                Errors::setErrorType('danger', sprintf("%s doesn't need contain blank spaces", $errorItem));
+                            }
+                        }
                 }
             }
         }

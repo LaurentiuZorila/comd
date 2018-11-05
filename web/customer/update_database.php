@@ -27,41 +27,53 @@ if (Input::exists()) {
         $table  = trim(Input::post('tables'));
         $table  = Params::PREFIX . $table;
 
-        $filename   = $_FILES['fileToUpload']['tmp_name'];
-        $path       = $_FILES['fileToUpload']['name'];
-        $size       = $_FILES['fileToUpload']['size'];
-        $extension  = pathinfo($path, PATHINFO_EXTENSION);
-        /** Allowed extensions for file */
-        $extensions = Params::EXTENSIONS;
+        $months = $leadData->records($table, [['offices_id', '=', $lead->officesId()], 'AND', ['year', '=', $year]], ['month']);
+        foreach ($months as $dbMonth) {
+            $allMonths[] = $dbMonth->month;
+            // Months from database
+            $allMonths = array_unique($allMonths);
+        }
 
-        // Check for valid extension
-        if (in_array($extension, $extensions) && $size > 0) {
-            // Open the file for reading
-            if (($h = fopen("{$filename}", "r")) !== FALSE) {
-                // Escape first line of file
-                fgetcsv($h);
-                // Read file
-                while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
-                    $lead->insert($table, [
-                        'offices_id' => $lead->officesId(),
-                        'departments_id' => $lead->departmentId(),
-                        'year' => $year,
-                        'month' => $month,
-                        'employees_id' => $data[0],
-                        'employees_average_id' => $data[0] . '_' . $year,
-                        'quantity' => $data[2]
-                    ]);
+        /** Check if for selected month exists records */
+        if (!in_array($month, $allMonths)) {
+            $filename   = $_FILES['fileToUpload']['tmp_name'];
+            $path       = $_FILES['fileToUpload']['name'];
+            $size       = $_FILES['fileToUpload']['size'];
+            $extension  = pathinfo($path, PATHINFO_EXTENSION);
+            /** Allowed extensions for file */
+            $extensions = Params::EXTENSIONS;
+
+            // Check for valid extension
+            if (in_array($extension, $extensions) && $size > 0) {
+                // Open the file for reading
+                if (($h = fopen("{$filename}", "r")) !== FALSE) {
+                    // Escape first line of file
+                    fgetcsv($h);
+                    // Read file
+                    while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
+                        $lead->insert($table, [
+                            'offices_id' => $lead->officesId(),
+                            'departments_id' => $lead->departmentId(),
+                            'year' => $year,
+                            'month' => $month,
+                            'employees_id' => $data[0],
+                            'employees_average_id' => $data[0] . '_' . $year,
+                            'quantity' => $data[2]
+                        ]);
+                    }
+                    if ($lead->success()) {
+                        Errors::setErrorType('success', Translate::t($lang, 'Db_success'));
+                    } else {
+                        Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
+                    }
+                    // Close the file
+                    fclose($h);
                 }
-                if ($lead->success()) {
-                    Errors::setErrorType('success', Translate::t($lang, 'Db_success'));
-                } else {
-                    Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
-                }
-                // Close the file
-                fclose($h);
+            } else {
+                Errors::setErrorType('warning', Translate::t($lang, 'Csv_extension'));
             }
         } else {
-            Errors::setErrorType('warning', Translate::t($lang, 'Csv_extension'));
+            Errors::setErrorType('info', Translate::t($lang, 'data_month_exists'));
         }
     }
 }
@@ -112,8 +124,11 @@ if (Input::exists()) {
           <?php if (Input::exists() && Errors::countAllErrors()) {
               include './../common/errors/errors.php';
           }
-          if (Input::existsName('get', 'config') && Errors::countAllErrors()) {
+          if (Input::existsName('get', 'config') && Input::noPost() &&  Errors::countAllErrors()) {
               include './../common/errors/errors.php';
+          }
+          if (Session::exists('success')) {
+              include './../common/errors/profileConfigOk.php';
           }
           ?>
           <section class="no-padding-top no-padding-bottom">
@@ -124,7 +139,7 @@ if (Input::exists()) {
                               <div class="col-sm-12">
                                   <div class="title">
                                       <strong><?php echo Translate::t($lang, 'Update_db'); ?></strong>
-                                      <button type="button" data-toggle="modal" data-target="#myModal" class="btn btn-primary btn-sm float-sm-right" id="info_upload"><i class="fa fa-info-circle"></i></button>
+                                      <button type="button" data-toggle="modal" data-target="#info_modal" class="btn btn-primary btn-sm float-sm-right" id="info_upload"><i class="fa fa-info-circle"></i></button>
                                   </div>
                               </div>
 
@@ -178,7 +193,7 @@ if (Input::exists()) {
               </div>
           </section>
           <!-- Modal-->
-          <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade text-left show" style="display: none;">
+          <div id="info_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade text-left show" style="display: none;">
               <div role="document" class="modal-dialog">
                   <div class="modal-content">
                       <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3"><?php echo Translate::t($lang, 'Make_attention'); ?></strong>
@@ -206,7 +221,7 @@ if (Input::exists()) {
   ?>
   <script src="./../common/vendor/pulsate/jquery.pulsate.js"></script>
   <script>
-      $('#Submit').click(function(){
+      $('#myModal').click(function(){
           $('#myModal').modal('show');
       });
       $("#info_upload").pulsate({color:"#633b70;"});

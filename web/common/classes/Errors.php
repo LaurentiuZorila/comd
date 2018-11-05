@@ -97,7 +97,7 @@ class Errors
      */
     private static function getSuccessErrors()
     {
-        return self::$_successErrors;
+        return array_unique(self::$_successErrors);
     }
 
     /**
@@ -105,7 +105,7 @@ class Errors
      */
     private static function getDangerErrors()
     {
-        return self::$_dangerErrors;
+        return array_unique(self::$_dangerErrors);
     }
 
 
@@ -114,7 +114,7 @@ class Errors
      */
     private static function getWarningErrors()
     {
-        return self::$_warningErrors;
+        return array_unique(self::$_warningErrors);
     }
 
     /**
@@ -122,7 +122,7 @@ class Errors
      */
     private static function getInfoErrors()
     {
-        return self::$_infoErrors;
+        return array_unique(self::$_infoErrors);
     }
 
 

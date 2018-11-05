@@ -22,6 +22,7 @@ function __autoload($class_name)
 $tables     = Input::get('tables');
 $cond       = Input::get('conditions');
 $priorities = Input::get('priority');
+$dataDisplay = Input::get('dataDisplay');
 
 /** Remove comma if exist at the end of string */
 $tables     = Common::checkLastCharacter($tables);
@@ -33,9 +34,19 @@ $arrayTables        = explode(',', $tables);
 $arrayCond          = explode(',', $cond);
 $arrayPriorities    = explode(',', $priorities);
 $arrayTables        = array_map('strtoupper', $arrayTables);
+$arrayDisplayData   = explode(',', $dataDisplay);
+
+/** Array conditions explanation */
+foreach ($arrayCond as $conditions) {
+    if ($conditions === '>') {
+        $arrayConditions[] = 'Your condition: ' . $conditions . '  This means best value for this table is highest value';
+    } elseif ($conditions === '<') {
+        $arrayConditions[] = 'Your condition: ' . $conditions . '  This means best value for this table is lowest value';
+    }
+}
 
 for ($x=0; $x < count($arrayTables); $x++) {
-    $assocArray[$arrayTables[$x]] = [$arrayCond[$x], $arrayPriorities[$x]];
+    $assocArray[$arrayTables[$x]] = [$arrayConditions[$x], $arrayPriorities[$x], $arrayDisplayData[$x]];
 }
 
 echo json_encode($assocArray);

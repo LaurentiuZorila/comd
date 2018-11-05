@@ -46,34 +46,41 @@
                 <div class="list-inline-item dropdown menu-large"><a href="#" data-toggle="dropdown" class="nav-link">Mega <i class="fa fa-ellipsis-v"></i></a>
                     <div class="dropdown-menu megamenu">
                         <div class="row">
-                            <div class="col-lg-3 col-md-6"><strong class="text-uppercase">Elements Heading</strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'All_employees', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
-                                    <li><a href="#">Lorem ipsum dolor</a></li>
+                                    <li><a href="#"><?php echo Translate::t($lang, 'view_employees_nav_details', ['ucfirst' => true]); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-3 col-md-6"><strong class="text-uppercase">Elements Heading</strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'employees_data', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
-                                    <li><a href="#">Lorem ipsum dolor</a></li>
+                                    <li><a href="#"><?php echo Translate::t($lang, 'view_employees_nav_data_details', ['ucfirst' => true]); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-3 col-md-6"><strong class="text-uppercase">Elements Heading</strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'update_data', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
-                                    <li><a href="#">Lorem ipsum dolor</a></li>
+                                    <li><a href="#"><?php echo Translate::t($lang, 'update_db_navbar', ['ucfirst' => true]); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-3 col-md-6"><strong class="text-uppercase">Elements Heading</strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'Update_user_profile', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
-                                    <li><a href="#">Lorem ipsum dolor</a></li>
+                                    <li><a href="#"><?php echo Translate::t($lang, 'move_staff_nav', ['ucfirst' => true]); ?></a></li>
                                 </ul>
+                            </div>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'my_profile', ['strtoupper' => true]); ?></strong>
+                                <ul class="list-unstyled mb-3">
+                                    <li><a href="#"><?php echo Translate::t($lang, 'update_profile_nav', ['ucfirst' => true]); ?></a></li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'logout', ['strtoupper' => true]); ?></strong>
                             </div>
                         </div>
                         <div class="row megamenu-buttons text-center">
-                            <div class="col-lg-2 col-md-4"><a href="#" class="d-block megamenu-button-link dashbg-1"><i class="fa fa-clock-o"></i><strong>Demo 1</strong></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="#" class="d-block megamenu-button-link dashbg-2"><i class="fa fa-clock-o"></i><strong>Demo 2</strong></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="#" class="d-block megamenu-button-link dashbg-3"><i class="fa fa-clock-o"></i><strong>Demo 3</strong></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="#" class="d-block megamenu-button-link dashbg-4"><i class="fa fa-clock-o"></i><strong>Demo 4</strong></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="#" class="d-block megamenu-button-link bg-danger"><i class="fa fa-clock-o"></i><strong>Demo 5</strong></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="#" class="d-block megamenu-button-link bg-info"><i class="fa fa-clock-o"></i><strong>Demo 6</strong></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="tables.php" class="d-block btn-dark"><i class="icon-user" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="user_data.php" class="d-block btn-dark"><i class="icon-chart" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="update_database.php" class="d-block btn-dark"><i class="icon-three-cells" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="update_users_profile.php" class="d-block btn-dark"><i class="icon-flow-branch" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="update_profile.php" class="d-block btn-dark"><i class="icon-settings" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="logout.php" class="d-block btn-dark"><i class="icon-logout" style="font-size: 20px;"></i></a></div>
                         </div>
                     </div>
                 </div>

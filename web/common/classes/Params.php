@@ -103,4 +103,6 @@ class Params
                                 'bg'  => ['dashbg-1', 'dashbg-2', 'dashbg-3', 'dashbg-4', 'dashbg-5']
                                ];
 
+    const DATADISPLAY       = ['number', 'percentage'];
+
 }

@@ -8,99 +8,97 @@ if (empty(Input::get('setup')) && !$customer->isLoggedIn()) {
     Redirect::to('../login.php');
 }
 
+$tablesText     = 'By default common tables are created (e.g. furlough, absentees, unpaid leaves). Insert tables names what you want to create followed by comma (e.g target,quality etc..)';
+$condText       = 'For each table inserted you need assign one symbol(>, <). If for first table highest data are best data, you need yo insert symbol \'>\', if lowest data are best data you need to insert symbol \'<\'. Please make attention!';
+$prioritiesText = 'For each table inserted you need assign PRIORITIES (most important table must have assigned 1 value.). For each table assign values for your own priorities. MAKE ATTENTION THIS SETTING IS IMPORTANT TO CALCULATE BEST EMPLOYEES!';
+$dataDisplayText = 'For each table you need to insert how data are displayed followed by comma e.g (if your table display numbers you need to insert: NUMBER, if your table need display percentage you need to insert: PERCENTAGE.';
+
 $customerId         = Input::get('id');
 $customerDetails    = $records->records(Params::TBL_TEAM_LEAD, ['id', '=', $customerId], ['username', 'name', 'id', 'offices_id', 'password'], false);
 
+// If form is submitted
 if (Input::exists()) {
-    $newTables          = Input::post('tables');
-    $defaultPassword    = Input::post('Password');
-    $new_password       = Input::post('new_password');
-    $confirm_pass       = Input::post('confirm_password');
-    $passwordHash       = password_hash(Input::post('new_password'), PASSWORD_DEFAULT);
-    $bestConditions     = Input::post('tables_conditions');
-    $tablePriority      = Input::post('tables_priorities');
-
-    /** User details */
-    $customerId         = $customerDetails->id;
-    $officesId          = $customerDetails->offices_id;
-
-    /** Input errors */
-    $inputErrors  = [];
-
-    /** Check if all fields are filed */
-    if (empty($newTables) || empty($defaultPassword) || empty($confirm_pass) || empty($bestConditions) || empty($tablePriority)) {
-        $requiredErrors[] = 'All fields are required!';
-    }
-
-    /** Check if default password is correct */
-    if (!password_verify($defaultPassword, $customerDetails->password)) {
-        $inputErrors[] = 'Password inserted are wrong!';
-        Session::put('wrongPassword', 'has-error');
-    }
-
-    /** Check if passwords match */
-    if ($new_password !== $confirm_pass) {
-        Session::put('matchPasswords', 'has-error');
-    }
-
-    /** Remove comma if exist at the end of strings */
-    $bestConditions = Common::checkLastCharacter($bestConditions);
-    $tablePriority  = Common::checkLastCharacter($tablePriority);
-    $newTables      = Common::checkLastCharacter($newTables);
-    $columnTables   = $newTables . ',' . implode(',', Params::TBL_COMMON);
-
-    /** Array with conditions */
-    $conditions = explode(',', trim($bestConditions));
-    /** Array with priorities */
-    $priorities = explode(',', trim($tablePriority));
-    /** Array with tables to create */
-    $newTables = explode(',', trim($newTables));
-
-    /** Check if conditions are same with tables to create */
-    if (count($conditions) != count($newTables)) {
-        $inputErrors[] = 'You must have same number of conditions as tables!';
-        Session::put('conditions', 'has-error');
-    } else {
-        /** Json with tables conditions table : conditions */
-        $tablesConditions = Common::toJson(Common::assocArray($newTables, $conditions));
-        /** Json with tables conditions table : priorities */
-        $tablesPriorities = Common::toJson(Common::assocArray($priorities, $newTables));
-    }
-
-
-    foreach ($newTables as $newTable) {
-        /** Tables to create with prefix */
-        $tables[] = trim($newTable);
-    }
-
-        /** Instantiate Validate class */
-        $validate   = new Validate();
-        $validation = $validate->check($_POST, [
-            'Password' => [
-                'required'  => true,
-                'min'       => Params::MIN_INPUT,
-                'max'       => Params::MAX_INPUT
-            ],
-            'new_password' => [
-                'required'  => true,
-                'min'       => Params::MIN_INPUT,
-                'max'       => Params::MAX_INPUT
-            ],
-            'confirm_password' => [
-                'required'  => true,
-                'matches'   => 'new_password'
-            ],
-            'tables' => [
-                'required' => true
-            ],
-            'tables_conditions' => [
-                'required' => true
-            ]
-        ]);
-
+    /** Instantiate Validate class */
+    $validate   = new Validate();
+    $validation = $validate->check($_POST, [
+        'Password' => [
+            'required'  => true,
+            'min'       => Params::MIN_INPUT,
+            'max'       => Params::MAX_INPUT
+        ],
+        'new_password' => [
+            'required'  => true,
+            'min'       => Params::MIN_INPUT,
+            'max'       => Params::MAX_INPUT
+        ],
+        'confirm_password' => [
+            'required'  => true,
+            'matches'   => 'new_password'
+        ],
+        'tables' => [
+            'required'  => true,
+            'blanks'    => true
+        ],
+        'tables_conditions' => [
+            'required'  => true,
+            'equals'    => 'tables',
+            'blanks'    => true
+        ],
+        'tables_priorities' => [
+            'required'  => true,
+            'equals'    => 'tables',
+            'numbers'   => true,
+            'blanks'    => true
+        ],
+        'data_display' => [
+            'required'  => true,
+            'equals'    => 'tables',
+            'dataType'  => Params::DATADISPLAY,
+            'blanks'    => true
+        ]
+    ], true);
 
         /** Check if validation is passed and not found errors */
-        if (count($requiredErrors) === 0 && count($inputErrors) === 0 && $validation->passed()) {
+        if ($validation->passed()) {
+            $newTables          = Input::post('tables');
+            $defaultPassword    = Input::post('Password');
+            $new_password       = Input::post('new_password');
+            $confirm_pass       = Input::post('confirm_password');
+            $passwordHash       = password_hash(Input::post('new_password'), PASSWORD_DEFAULT);
+            $bestConditions     = Input::post('tables_conditions');
+            $tablePriority      = Input::post('tables_priorities');
+            $tableDataDisplay   = strtolower(Input::post('data_display'));
+
+            /** Remove comma if exist at the end of strings */
+            $bestConditions     = Common::checkLastCharacter($bestConditions);
+            $tablePriority      = Common::checkLastCharacter($tablePriority);
+            $newTables          = Common::checkLastCharacter($newTables);
+            $tableDataDisplay   = Common::checkLastCharacter($tableDataDisplay);
+            $commonTables       = $newTables . ',' . implode(',', Params::TBL_COMMON);
+
+            /** Array with conditions */
+            $conditions = explode(',', trim($bestConditions));
+            /** Array with priorities */
+            $priorities = explode(',', trim($tablePriority));
+            /** Array with displayData */
+            $displayData = explode(',', trim($tableDataDisplay));
+            /** Array with tables to create */
+            $newTables = explode(',', trim($newTables));
+
+            /** Json with tables conditions table : conditions */
+            $tablesConditions = Common::toJson(Common::assocArray($newTables, $conditions));
+            /** Json with tables conditions table : priorities */
+            $tablesPriorities = Common::toJson(Common::assocArray($priorities, $newTables));
+            /** Json with tables : data display */
+            $tablesDisplay = Common::toJson(Common::assocArray($newTables, $displayData));
+            /** Tables */
+            $tablesToCreate = Common::assocArray($newTables, $displayData);
+
+            /** User details */
+            $customerId         = $customerDetails->id;
+            $officesId          = $customerDetails->offices_id;
+
+
             /** Update users table with new password */
             $customer->update(Params::TBL_TEAM_LEAD, [
                 'password' => $passwordHash
@@ -110,30 +108,32 @@ if (Input::exists()) {
 
             /** Update offices table with new tables and configured */
             $customer->update(Params::TBL_OFFICE, [
-                'tables'            => $columnTables,
-                'configured'        => CustomerProfile::CONFIGURED,
-                'tables_conditions' => $tablesConditions,
-                'tables_priorities' => $tablesPriorities
+                'tables'                => $commonTables,
+                'configured'            => CustomerProfile::CONFIGURED,
+                'tables_conditions'     => $tablesConditions,
+                'tables_priorities'     => $tablesPriorities,
+                'data_visualisation'    => $tablesDisplay
             ], [
                 'id' => $customerDetails->offices_id
             ]);
 
             /** Instantiate Create Class */
             $create = new Create();
-
             /** Create tables */
-            foreach ($tables as $table) {
-                $create->createTable($table);
+            foreach ($tablesToCreate as $table => $type) {
+                if ($type === 'number') {
+                    $create->createTable($table, 'int');
+                } elseif ($type === 'percentage') {
+                    $create->createTable($table, 'float');
+                }
+
             }
 
-        } else {
-            /** All errors (Validate Class errors & Create Class input errors) */
-            $allErrors  = array_unique(array_merge($inputErrors, Errors::getErrors()));
         }
 
         if (!Errors::countAllErrors())
         {
-            Errors::setErrorType('success', Translate::t($lang, 'next_update_db'));
+            Session::put('success', Translate::t($lang, 'next_update_db'));
             Redirect::to('../update_database.php?config='. Tokens::getRoute());
         }
 }
@@ -197,14 +197,14 @@ if (Input::exists()) {
 		            <!--      Wizard container        -->
 		            <div class="wizard-container">
                         <?php
-                        if (Input::exists() && count($allErrors) > 0) { ?>
+                        if (Input::exists() && Errors::countAllErrors()) { ?>
                             <div class="alert alert-danger">
                                 <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
                                     <i class="tim-icons icon-simple-remove">x</i>
                                 </button>
                                 <span><b>You have some errors!</b></span>
                                 <?php
-                                foreach ($allErrors as $allError) {
+                                foreach (Errors::getErrors() as $allError) {
                                     echo '<p>' . $allError . '</p>';
                                     }
                                     foreach ($validation->errors() as $errors) {
@@ -274,7 +274,7 @@ if (Input::exists()) {
                                                 <span class="input-group-addon">
                                                     <i class="material-icons">lock</i>
                                                 </span>
-                                                    <div class="form-group label-floating newPass <?php if (Session::exists('matchPasswords')) { echo Session::get('matchPasswords'); } ?>" data-toggle="wizard-radio">
+                                                    <div class="form-group label-floating newPass <?php if (Session::exists('new_password')) { echo Session::get('new_password'); } ?>" data-toggle="wizard-radio">
                                                         <label class="control-label">New password <small>(required)</small></label>
                                                         <input name="new_password" type="password" class="form-control" id="newPass" required>
                                                     </div>
@@ -285,7 +285,7 @@ if (Input::exists()) {
                                                 <span class="input-group-addon">
                                                     <i class="material-icons">lock</i>
                                                 </span>
-                                                    <div class="form-group label-floating againPass <?php if (Session::exists('matchPasswords')) { echo Session::flash('matchPasswords'); } ?>" data-toggle="wizard-radio">
+                                                    <div class="form-group label-floating againPass <?php if (Session::exists('confirm_password')) { echo Session::flash('confirm_password'); } ?>" data-toggle="wizard-radio">
                                                         <label class="control-label">Password again <small>(required)</small></label>
                                                         <input name="confirm_password" type="password" class="form-control" id="againPass" required>
                                                     </div>
@@ -298,29 +298,35 @@ if (Input::exists()) {
 		                                    <div class="col-sm-12">
 		                                        <h4 class="info-text"> Config your data base! </h4>
 		                                    </div>
-		                                    <div class="col-sm-5">
-	                                        	<div class="form-group label-floating <?php if (Session::exists('conditions')) { echo Session::get('conditions'); } ?> " data-toggle="wizard-radio" rel="tooltip" title="By default common tables are created (e.g. furlough, absentees, unpaid leaves). Insert tables names what you want to create followed by comma (e.g target,quality etc..)">
-	                                        		<label class="control-label">Insert your tables to create</label>
-	                                    			<input type="text" class="form-control" name="tables" id="tablesToCreate">
+		                                    <div class="col-sm-3">
+	                                        	<div class="form-group label-floating <?php if (Session::exists('tables')) { echo Session::get('tables'); } ?> " data-toggle="wizard-radio" rel="tooltip" title="<?php echo $tablesText; ?>">
+	                                        		<label class="control-label">Tables to create</label>
+	                                    			<input type="text" class="form-control" name="tables" id="tablesToCreate" value="<?php if (Input::exists()) { echo Input::post('tables'); }; ?>" />
 	                                        	</div>
 		                                    </div>
                                             <div class="col-sm-3">
-                                                <div class="form-group label-floating <?php if (Session::exists('conditions')) { echo Session::flash('conditions'); } ?>" data-toggle="wizard-radio" rel="tooltip" title="For each table inserted you need assign one symbol(>, <). If for first table highest data are best data, you need yo insert symbol '>', if lowest data are best data you need to insert symbol '<'. Please make attention!">
-                                                    <label class="control-label">Best</label>
-                                                    <input type="text" class="form-control" name="tables_conditions" id="tables_conditions">
+                                                <div class="form-group label-floating <?php if (Session::exists('tables_conditions')) { echo Session::flash('tables_conditions'); } ?>" data-toggle="wizard-radio" rel="tooltip" title="<?php echo $condText; ?>">
+                                                    <label class="control-label">Tables conditions</label>
+                                                    <input type="text" class="form-control" name="tables_conditions" id="tables_conditions" value="<?php if (Input::exists()) { echo Input::post('tables_conditions'); }; ?>" />
                                                 </div>
                                             </div>
                                             <div class="col-sm-3">
-                                                <div class="form-group label-floating <?php if (Session::exists('conditions')) { echo Session::flash('conditions'); } ?>" data-toggle="wizard-radio" rel="tooltip" title="For each table inserted you need assign PRIORITIES (most important table must have assigned 1 value.). For each table assign values for your own priorities. MAKE ATTENTION THIS SETTING IS IMPORTANT TO CALCULATE BEST EMPLOYEES!">
+                                                <div class="form-group label-floating <?php if (Session::exists('tables_priorities')) { echo Session::flash('tables_priorities'); } ?>" data-toggle="wizard-radio" rel="tooltip" title="<?php echo $prioritiesText; ?>">
                                                     <label class="control-label">Priorities tables</label>
-                                                    <input type="text" class="form-control" name="tables_priorities" id="tables_priorities">
+                                                    <input type="text" class="form-control" name="tables_priorities" id="tables_priorities" value="<?php if (Input::exists()) { echo Input::post('tables_priorities'); }; ?>" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group label-floating <?php if (Session::exists('data_display')) { echo Session::flash('data_display'); } ?>" data-toggle="wizard-radio" rel="tooltip" title="<?php echo $dataDisplayText; ?>">
+                                                    <label class="control-label">Data display</label>
+                                                    <input type="text" class="form-control" name="data_display" id="data_display" value="<?php if (Input::exists()) { echo Input::post('data_display'); }; ?>" />
                                                 </div>
                                             </div>
                                             <div class="col-sm-2 col-sm-offset-0">
-                                                <input type="button" class="btn btn-primary addTable" id="addTable" value="Add">
+                                                <input type="button" class="btn btn-primary btn-sm addTable" id="addTable" value="Add">
                                             </div>
                                             <div class="col-sm-2 col-sm-offset-0">
-                                                <input type="button" class="btn btn-primary removeTable" id="removeTable" style="display: none;" value="Remove">
+                                                <input type="button" class="btn btn-primary btn-sm removeTable" id="removeTable" style="display: none;" value="Remove">
                                             </div>
 		                                </div>
                                         <div class="row">
@@ -332,6 +338,7 @@ if (Input::exists()) {
                                                         <th>Table</th>
                                                         <th>Condition</th>
                                                         <th>Priorites</th>
+                                                        <th>Data display</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody id="tbodyTables">
@@ -343,9 +350,9 @@ if (Input::exists()) {
 		                            </div>
 		                        </div>
 		                        <div class="wizard-footer">
-		                            <div class="pull-right">
+		                            <div class="pull-right hiddenAppear">
 		                                <input type='button' class='btn btn-next btn-fill btn-primary btn-wd' name='next' value='Next' />
-		                                <input type="submit" class='btn btn-finish btn-fill btn-primary btn-wd' name="finish" value='Finish' />
+		                                <input type="submit" class='btn btn-fill btn-primary btn-wd finishBtn' name="finish" value='Finish' style="display: none;"/>
 		                            </div>
 
 		                            <div class="pull-left">
@@ -362,7 +369,7 @@ if (Input::exists()) {
 
 	    <div class="footer">
 	        <div class="container text-center">
-	             Made with <i class="fa fa-heart heart"></i> by <a href="http://www.creative-tim.com">Creative Tim</a>. Free download <a href="http://www.creative-tim.com/product/bootstrap-wizard">here.</a>
+	             Made with <i class="fa fa-heart heart"></i> by <a href="http://www.creative-tim.com">Creative Tim
 	        </div>
 	    </div>
 	</div>
@@ -384,21 +391,33 @@ include 'newPasswords.php';
 ?>
 <script>
     $("#addTable").click(function () {
-        var conditions = $( "#tables_conditions" ).val();
-        var tables     = $("#tablesToCreate").val();
-        var priorities = $( "#tables_priorities" ).val();
+        var conditions  = $( "#tables_conditions" ).val();
+        var tables      = $("#tablesToCreate").val();
+        var priorities  = $( "#tables_priorities" ).val();
+        var displayData = $("#data_display").val();
 
-        if (conditions && tables) {
+        $(".hiddenAppear").append('<input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">');
+
+        if (conditions && tables && priorities) {
             $.ajax({
                 url: "ajax/tables.php",
                 dataType: 'Json',
-                data: {'tables': tables, 'conditions': conditions, 'priority': priorities},
+                data: {'tables': tables, 'conditions': conditions, 'priority': priorities, 'dataDisplay': displayData},
                 success: function (data) {
                     $("#addTable").css("display","none");
                     $("#removeTable").css("display","block");
+                    $(".finishBtn").show();
                     $("#tables").show();
                     $.each(data, function (key, value) {
-                        $("#tbodyTables").append('<tr><td class="text-center">#</td><td class="text-primary">' + key + '</td> <td class="text-primary">' + value[0] + '</td><td class="text-primary">' + value[1] + '</td></tr>');
+                        $("#tbodyTables").append(
+                            '<tr>' +
+                            '<td class="text-center">#</td>' +
+                            '<td class="text-primary">' + key + '</td>' +
+                            '<td class="text-primary">' + value[0] + '</td>' +
+                            '<td class="text-primary">' + value[1] + '</td>' +
+                            '<td class="text-primary">' + value[2] +
+                            '</tr>'
+                        );
                     });
                 }
             });
@@ -412,9 +431,11 @@ include 'newPasswords.php';
         $( "#tables_conditions" ).val("");
         $("#tablesToCreate").val("");
         $("#tables_priorities").val("");
+        $("#data_display").val("");
         $("#tbodyTables tr").remove();
         $("#removeTable").hide();
         $("#tables").hide();
+        $(".finishBtn").hide();
     });
 
 </script>

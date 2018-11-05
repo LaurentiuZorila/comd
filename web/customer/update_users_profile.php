@@ -122,7 +122,7 @@ include 'includes/navbar.php';
                                     <div class="form-group row">
                                         <label class="col-sm-3 form-control-label"><?php echo Translate::t($lang, 'Select_Employees'); ?></label>
                                         <div class="col-sm-9">
-                                            <select name="user" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('user'))) {echo 'is-invalid';} ?>">
+                                            <select name="user" class="form-control <?php if (Input::exists() && empty(Input::post('user'))) {echo 'is-invalid';} ?>">
                                                 <option value=""><?php echo Translate::t($lang, 'Select_Employees'); ?></option>
                                                 <?php
                                                 foreach ($allEmployees as $employees) { ?>
@@ -140,7 +140,7 @@ include 'includes/navbar.php';
                                     <div class="form-group row">
                                         <label class="col-sm-3 form-control-label"><?php echo Translate::t($lang, 'New_depart'); ?></label>
                                         <div class="col-sm-9">
-                                            <select name="department" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('department'))) {echo 'is-invalid';} ?>">
+                                            <select name="department" class="form-control <?php if (Input::exists() && empty(Input::post('department'))) {echo 'is-invalid';} ?>">
                                                 <option value=""><?php echo Translate::t($lang, 'Select_depart'); ?></option>
                                                 <?php
                                                 foreach ($departments as $department) { ?>
@@ -158,7 +158,7 @@ include 'includes/navbar.php';
                                     <div class="form-group row">
                                         <label class="col-sm-3 form-control-label"><?php echo Translate::t($lang, 'New_office'); ?></label>
                                         <div class="col-sm-9">
-                                            <select name="office" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('office'))) {echo 'is-invalid';} ?>">
+                                            <select name="office" class="form-control <?php if (Input::exists() && empty(Input::post('office'))) {echo 'is-invalid';} ?>">
                                                 <option value=""><?php echo Translate::t($lang, 'Select_office'); ?></option>
                                             </select>
                                             <?php
@@ -170,7 +170,7 @@ include 'includes/navbar.php';
                                     <div class="line"></div>
                                     <div class="col-sm-9 ml-auto">
                                         <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
-                                        <button type="submit" name="save" class="btn btn-primary"><?php echo Translate::t($lang, 'Save'); ?></button>
+                                        <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                     </div>
                                 </form>
                             </div>
