@@ -199,6 +199,21 @@ class Common
 
 
     /**
+     * @param array $params
+     * @return mixed
+     */
+    public static function dbValues($params = [])
+    {
+        foreach ($params as $key => $param) {
+            foreach ($param as $value) {
+                $data = $value($key);
+            }
+        }
+        return $data;
+    }
+
+
+    /**
      * @param $total
      * @param $divisor
      * @param bool $sign

@@ -22,11 +22,12 @@ require_once 'core/init.php';
         <li><a href="#update" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i><?php echo Translate::t($lang, 'update_data'); ?></a>
             <ul id="update" class="collapse list-unstyled ">
                 <li><a href="update_users_profile.php?r=<?php echo Tokens::getRoute(); ?>"> <i class="icon-user"></i><?php echo Translate::t($lang, 'Update_user_profile'); ?></a></li>
+                <li><a href="add_users.php?r=<?php echo Tokens::getRoute(); ?>"> <i class="fa fa-user-plus"></i><?php echo Translate::t($lang, 'add_user'); ?></a></li>
             </ul>
         </li>
         <li><a href="#profile" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i><?php echo Translate::t($lang, 'Profile'); ?></a>
             <ul id="profile" class="collapse list-unstyled ">
-                <li><a href="alldata.php?r=<?php echo Tokens::getRoute(); ?>"><i class="icon-settings"></i><?php echo Translate::t($lang, 'my_profile'); ?></a></li>
+                <li><a href="update_profile.php?r=<?php echo Tokens::getRoute(); ?>"><i class="icon-settings"></i><?php echo Translate::t($lang, 'my_profile'); ?></a></li>
                 <li><a href="logout.php"> <i class="icon-logout"></i><?php echo Translate::t($lang, 'logout'); ?> </a></li>
             </ul>
         </li>

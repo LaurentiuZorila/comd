@@ -303,35 +303,6 @@ include 'includes/navbar.php';
                                 </div>
                             </div>
                         </div>
-                        <!--                  <div class="col-lg-8">-->
-                        <!--                      <div class="bar-chart block chart">-->
-                        <!--                          <ul class="nav nav-pills card-header-pills">-->
-                        <!--                              <li class="nav-item"><button class="btn btn-primary mr-1 bar" id="bar" type="button">Bar</button></li>-->
-                        <!--                              <li class="nav-item"><button class="btn btn-outline-primary line" id="line" type="button">Line</button></li>-->
-                        <!--                          </ul>-->
-                        <!--                          <div class="bar-chart chart"><div style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;" class="chartjs-size-monitor">-->
-                        <!--                                  <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">-->
-                        <!--                                      <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>-->
-                        <!--                                  </div>-->
-                        <!--                                  <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">-->
-                        <!--                                      <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>-->
-                        <!--                                  </div>-->
-                        <!--                              </div>-->
-                        <!--                              <canvas id="backendIndexBarChart" style="display: block; width: 682px; height: 375px;" width="682" height="375" class="chartjs-render-monitor"></canvas>-->
-                        <!--                              <canvas id="backendIndexLineChart" style="display: none; width: 682px; height: 370px;" width="682" height="370" class="chartjs-render-monitor"></canvas>-->
-                        <!--                          </div>-->
-                        <!--                      </div>-->
-                        <!--                  </div>-->
-                        <!--                  <div class="col-md-4">-->
-                        <!--                      <div class="pie-chart chart block">-->
-                        <!--                          <div class="title">-->
-                        <!--                              <strong>All absentees</strong>-->
-                        <!--                          </div>-->
-                        <!--                          <div class="pie-chart chart margin-bottom-sm"><div style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;" class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>-->
-                        <!--                              <canvas id="totalCommonTables" style="display: block; width: 494px; height: 542px;" width="494" height="542" class="chartjs-render-monitor"></canvas>-->
-                        <!--                          </div>-->
-                        <!--                      </div>-->
-                        <!--                  </div>-->
                     </div>
                 </div>
             </section>

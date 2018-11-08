@@ -41,9 +41,15 @@ class CustomerUser
     private $_sessionDepartmentId;
 
 
+    /**
+     * @var mixed|null
+     */
     private $_fname;
 
 
+    /**
+     * @var mixed|null
+     */
     private $_lname;
 
     /**
@@ -119,14 +125,15 @@ class CustomerUser
      * @param $table
      * @param array $fields
      * @param array $conditions
+     * @return bool
      * @throws Exception
      */
     public function update($table, $fields = array(), $conditions = array())
     {
         if (!$this->_customerDB->update($table, $fields, $conditions)) {
-            $this->_error = true;
             throw new Exception('There was a problem, please try again!');
         }
+        $this->_success = true;
     }
 
 
@@ -137,9 +144,7 @@ class CustomerUser
      */
     public function insert($table, $fields)
     {
-        $this->_error = false;
         if (!$this->_customerDB->insert($table, $fields)) {
-            $this->_error = true;
             throw new Exception('There was a problem, please try again!');
         } else {
             $this->_success = true;
@@ -154,11 +159,10 @@ class CustomerUser
      */
     public function create($table, $fields = array())
     {
-        $this->_error = false;
         if (!$this->_customerDB->insert($table, $fields)) {
-            $this->_error = true;
             throw new Exception('There was a problem creating an account!!');
         }
+        $this->_success = true;
     }
 
 
@@ -323,6 +327,9 @@ class CustomerUser
         return $this->_error;
     }
 
+    /**
+     * @return bool
+     */
     public function success()
     {
         return $this->_success;

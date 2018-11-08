@@ -1,12 +1,9 @@
 <?php
 require_once 'core/init.php';
 
-$name           = $lead->name();
-$departmentName = $leadData->records(Params::TBL_DEPARTMENT, ['id', '=', $lead->departmentId()], ['name'], false);
-$officeName     = $leadData->records(Params::TBL_OFFICE, ['id', '=', $lead->officesId()], ['name'], false);
-$rating         = $leadData->rating($lead->customerId());
+$name           = $backendUser->name();
 
-if (Input::exists() && Tokens::tokenVerify(Tokens::getInputName())) {
+if (Input::exists()) {
     /** Instantiate validate class */
     $validate = new Validate();
 
@@ -23,36 +20,41 @@ if (Input::exists() && Tokens::tokenVerify(Tokens::getInputName())) {
                 'max'       => 50
             ],
             'password' =>  [
-                'required'  => true,
-                'min'   => 6,
-                'max'   => 30
+                'matches_db'    => [
+                        'id'    => $backendUser->userId(),
+                        'table' => Params::TBL_SUPERVISORS
+                    ]
             ],
-            'repeat_password'   =>  [
-                'matches'   => 'password'
+            'new_password' =>  [
+                'required'  => true,
+                'min'       => 6,
+                'max'       => 30
             ]
         ]);
 
         /** If validation is passed */
         if ($validation->passed()) {
-            $first_name = Common::valuesToInsert(Input::post('first_name'));
-            $last_name  = Common::valuesToInsert(Input::post('last_name'));
+            $first_name = Common::dbValues([Input::post('first_name') => ['trim', 'ucfirst']]);
+            $last_name  = Common::dbValues([Input::post('last_name') => ['trim', 'ucfirst']]);
             $name       = $first_name . ' ' . $last_name;
-            $username   = trim(Input::post('username'));
-            $password   = trim(Input::post('password'));
+            $username   = Common::dbValues([Input::post('username') => ['trim']]);
+            $password   = Input::post('new_password');
             $password   = password_hash($password, PASSWORD_DEFAULT);
 
-            /** Update employees table */
-            $update = $lead->update(Params::TBL_TEAM_LEAD, [
+            /** Update supervisor table */
+            $update = $backendUser->update(Params::TBL_SUPERVISORS, [
+                'fname'     => $first_name,
+                'lname'     => $last_name,
                 'name'      => $name,
                 'password'  => $password
             ], [
-                'id' => $lead->customerId()
+                'id' => $backendUser->userId()
             ]);
 
             if ($update) {
                 Errors::setErrorType('success', Translate::t($lang, 'Profile_success_updated'));
             } else {
-                Errors::setErrorType('success', Translate::t($lang, 'Db_error'));
+                Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
             }
         }
 }
@@ -110,19 +112,8 @@ include 'includes/navbar.php';
                                 <h4 class="mb-2 mt-1 text-gray-light text-center"><?php echo $name; ?></h4>
                             </div>
                             <div class="card-body text-center"><img src="./../common/img/user.png" class="card-profile-img">
-                                <p class="mb-1"><?php echo strtoupper($departmentName->name); ?></p>
-                                <p class="mb-1"><?php echo $officeName->name; ?></p>
-                                <div class="contributions text-monospace text-center">
-                                    <?php
-                                    for ($i=1;$i<6;$i++) {
-                                        if ($i <= $rating) { ?>
-                                            <a class="text-secondary" href="#"><span class="fa fa-star checked"></span></a>
-                                        <?php } else { ?>
-                                            <a class="text-secondary" href="#"><span class="fa fa-star"></span></a>
-                                        <?php }
-                                    } ?>
-                                    <a class="text-white-50" href="#"><?php echo $rating . '/5'; ?></a>
-                                </div>
+                                <p class="mb-1">Depart</p>
+                                <p class="mb-1">Offices</p>
                             </div>
                         </div>
                     </div>
@@ -136,37 +127,37 @@ include 'includes/navbar.php';
                                     <div class="col-sm-4 col-md-4">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t($lang, 'FN'); ?></label>
-                                            <input type="text" name="first_name" placeholder="<?php echo $lead->fName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $first_name; }?>">
+                                            <input type="text" name="first_name" placeholder="<?php echo $backendUser->fName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $first_name; }?>">
                                         </div>
                                     </div>
                                     <div class="col-sm-8 col-md-8">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t($lang, 'LN'); ?></label>
-                                            <input type="text" name="last_name" placeholder="<?php echo $lead->lName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>">
+                                            <input type="text" name="last_name" placeholder="<?php echo $backendUser->lName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>">
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-3">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t($lang, 'Username'); ?></label>
-                                            <input type="text" name="username" placeholder="<?php echo $lead->uName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>" disabled>
+                                            <input type="text" name="username" placeholder="<?php echo $backendUser->uName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>" disabled>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-4">
                                         <div class="form-group mb-4">
-                                            <label class="form-label"><?php echo Translate::t($lang, 'Pass'); ?></label>
-                                            <input type="text" name="password" placeholder="<?php echo Translate::t($lang, 'Pass'); ?>" class="form-control">
+                                            <label class="form-label"><?php echo Translate::t($lang, 'current_pass'); ?></label>
+                                            <input type="text" name="password" placeholder="<?php echo Translate::t($lang, 'current_pass'); ?>" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-4">
                                         <div class="form-group mb-4">
-                                            <label class="form-label"><?php echo Translate::t($lang, 'Pass_again'); ?></label>
-                                            <input type="text" name="repeat_password" placeholder="<?php echo Translate::t($lang, 'Pass_again'); ?>" class="form-control">
+                                            <label class="form-label"><?php echo Translate::t($lang, 'new_pass'); ?></label>
+                                            <input type="text" name="new_password" placeholder="<?php echo Translate::t($lang, 'new_pass'); ?>" class="form-control">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-footer text-right">
-                                <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
+                                <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
                                 <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                             </div>
                         </form>

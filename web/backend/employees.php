@@ -33,7 +33,7 @@ include 'includes/navbar.php';
         <div class="container-fluid">
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
-                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'All_users'); ?></li>
+                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'All_employees'); ?></li>
             </ul>
         </div>
         <section class="no-padding-top">

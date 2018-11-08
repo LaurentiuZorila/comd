@@ -129,9 +129,27 @@ class Errors
     /**
      * @return bool
      */
-    public static function countAllErrors()
+    public static function countAllErrors($type = 'all')
     {
-        self::$_errors = array_merge(self::$_warningErrors, self::$_dangerErrors, self::$_infoErrors, self::$_successErrors);
-        return count(self::$_errors) > 0 ? true : false;
+        if (!empty($type)) {
+            switch ($type) {
+                case 'info':
+                    return count(self::$_infoErrors) > 0 ? true : false;
+                    break;
+                case 'danger':
+                    return count(self::$_dangerErrors) > 0 ? true : false;
+                    break;
+                case 'warning':
+                    return count(self::$_warningErrors) > 0 ? true : false;
+                    break;
+                case 'success':
+                    return count(self::$_successErrors) > 0 ? true : false;
+                    break;
+                case 'all':
+                    self::$_errors = array_merge(self::$_warningErrors, self::$_dangerErrors, self::$_infoErrors, self::$_successErrors);
+                    return count(self::$_errors) > 0 ? true : false;
+                    break;
+            }
+        }
     }
 }

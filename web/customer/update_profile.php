@@ -23,36 +23,41 @@ if (Input::exists() && Tokens::tokenVerify(Tokens::getInputName())) {
                 'max'       => 50
             ],
             'password' =>  [
-                'required'  => true,
-                'min'   => 6,
-                'max'   => 30
+                'matches_db'    => [
+                    'id'    => $lead->customerId(),
+                    'table' => Params::TBL_TEAM_LEAD
+                ]
             ],
-            'repeat_password'   =>  [
-                'matches'   => 'password'
+            'new_password' =>  [
+                'required'  => true,
+                'min'       => 6,
+                'max'       => 30
             ]
         ]);
 
         /** If validation is passed */
         if ($validation->passed()) {
-            $first_name = Common::valuesToInsert(Input::post('first_name'));
-            $last_name  = Common::valuesToInsert(Input::post('last_name'));
+            $first_name = Common::dbValues([Input::post('first_name') => ['trim', 'ucfirst']]);
+            $last_name  = Common::dbValues([Input::post('last_name') => ['trim', 'ucfirst']]);
             $name       = $first_name . ' ' . $last_name;
-            $username   = trim(Input::post('username'));
-            $password   = trim(Input::post('password'));
+            $username   = Common::dbValues([Input::post('username') => ['trim']]);
+            $password   = trim(Input::post('new_password'));
             $password   = password_hash($password, PASSWORD_DEFAULT);
 
             /** Update employees table */
             $update = $lead->update(Params::TBL_TEAM_LEAD, [
+                'fname' => $first_name,
+                'lname'     => $last_name,
                 'name'      => $name,
                 'password'  => $password
             ], [
                 'id' => $lead->customerId()
             ]);
 
-            if ($update) {
+            if ($lead->success()) {
                 Errors::setErrorType('success', Translate::t($lang, 'Profile_success_updated'));
             } else {
-                Errors::setErrorType('success', Translate::t($lang, 'Db_error'));
+                Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
             }
         }
 }
@@ -153,14 +158,14 @@ include 'includes/navbar.php';
                                     </div>
                                     <div class="col-lg-6 col-md-4">
                                         <div class="form-group mb-4">
-                                            <label class="form-label"><?php echo Translate::t($lang, 'Pass'); ?></label>
-                                            <input type="text" name="password" placeholder="<?php echo Translate::t($lang, 'Pass'); ?>" class="form-control">
+                                            <label class="form-label"><?php echo Translate::t($lang, 'current_pass'); ?></label>
+                                            <input type="text" name="password" placeholder="<?php echo Translate::t($lang, 'current_pass'); ?>" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-4">
                                         <div class="form-group mb-4">
-                                            <label class="form-label"><?php echo Translate::t($lang, 'Pass_again'); ?></label>
-                                            <input type="text" name="repeat_password" placeholder="<?php echo Translate::t($lang, 'Pass_again'); ?>" class="form-control">
+                                            <label class="form-label"><?php echo Translate::t($lang, 'new_pass'); ?></label>
+                                            <input type="text" name="new_password" placeholder="<?php echo Translate::t($lang, 'new_pass'); ?>" class="form-control">
                                         </div>
                                     </div>
                                 </div>

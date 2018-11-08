@@ -24,7 +24,7 @@ if (Input::exists()) {
     if ($validation->passed()) {
         $year   = Input::post('year');
         $month  = Input::post('month');
-        $table  = trim(Input::post('tables'));
+        $table  = Common::dbValues([Input::post('tables') => ['trim']]);
         $table  = Params::PREFIX . $table;
 
         $months = $leadData->records($table, [['offices_id', '=', $lead->officesId()], 'AND', ['year', '=', $year]], ['month']);

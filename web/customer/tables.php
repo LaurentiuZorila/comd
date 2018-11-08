@@ -16,7 +16,7 @@ foreach ($employeesID as $ids) {
 
 // Conditions for action
 $year   = date('Y');
-$month  = 1;
+$month  = date('n') - 1;
 $prefix = Params::PREFIX;
 
     $where = [
@@ -33,6 +33,7 @@ $prefix = Params::PREFIX;
     }
     // Transform to upper case values of array
     $tables = array_map('strtoupper', $tables);
+
 ?>
 
 <!DOCTYPE html>
@@ -41,6 +42,7 @@ $prefix = Params::PREFIX;
     <?php
     include '../common/includes/head.php';
     ?>
+    <link rel="stylesheet" href="./../common/css/spiner/style.css">
 </head>
 <body>
 <?php
@@ -59,26 +61,56 @@ include 'includes/navbar.php';
                 <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Table'); ?></h2>
             </div>
         </div>
+        <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
+            <div class="loader loader-3">
+                <div class="dot dot1"></div>
+                <div class="dot dot2"></div>
+                <div class="dot dot3"></div>
+            </div>
+        </div>
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
-                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Data_for') . Common::getMonths($lang)[$month]; ?></li>
+                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Data') . ' ' . Common::getMonths($lang)[$month]; ?></li>
             </ul>
         </div>
+
         <section class="no-padding-top">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="block margin-bottom-sm">
-                            <div class="title text-center"><strong class="text-primary"><?php echo Translate::t($lang, 'Data_for') . ' ' . Translate::t($lang, 'All_employees', ['strtolower' => true]); ?></strong></div>
+                            <div class="title text-center">
+                                <div class="col-sm-3">
+                                    <div class="btn-group btn-block" id="changeMonth">
+                                        <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <?php echo Translate::t($lang, 'Select_month'); ?>
+                                        </button>
+                                        <div class="dropdown-menu btn-block">
+                                            <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
+                                                <a class="dropdown-item changeMonth" href="?month=<?php echo $key; ?>"><?php echo $value; ?></a>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <strong class="text-primary">
+                                    <?php
+                                    if (Input::exists('get')) {
+                                    echo Translate::t($lang, 'Data') . ' ' . Translate::t($lang, 'All_employees', ['strtolower' => true]) . ' - ' . Common::numberToMonth(Input::get('month'), $lang) . ' - ' . date('Y');
+                                    } else {
+                                    echo Translate::t($lang, 'Data') . ' ' . Translate::t($lang, 'All_employees', ['strtolower' => true]) . ' - ' . Common::numberToMonth($month, $lang) . ' - ' . date('Y');
+                                    }
+                                    ?>
+                                </strong>
+                            </div>
                             <div class="table-responsive">
-                                <table class="table">
+                                <table class="table" id="employeesTable">
                                     <thead>
                                         <tr role="row">
                                             <th class="text-primary"><?php echo Translate::t($lang, 'Name'); ?></th>
-                                            <?php foreach ($tables as $upperTable) { ?>
-                                            <th class="text-primary"> <?php echo $upperTable; ?> </th>
+                                            <?php foreach ($tables as $table) { ?>
+                                            <th class="text-primary"> <?php echo Translate::t($lang, $table, ['strtoupper' => true]); ?> </th>
                                             <?php } ?>
                                         </tr>
                                     </thead>
@@ -91,7 +123,11 @@ include 'includes/navbar.php';
                                                 </td>
                                                 <?php foreach ($tables as $k => $v) { ?>
                                                 <td class="text-white-50">
-                                                    <?php echo $leadData->records($k, ['employees_id', '=', $id,], ['quantity'], false)->quantity; ?>
+                                                    <?php
+                                                    if (Input::exists('get')) {
+                                                    echo $leadData->records($k, [['employees_id', '=', $id], 'AND', ['month', '=', Input::get('month')], 'AND', ['year', '=', date('Y')]], ['quantity'], false)->quantity;
+                                                    }
+                                                    ?>
                                                 </td>
                                                 <?php } ?>
                                             </tr>
@@ -112,7 +148,13 @@ include 'includes/navbar.php';
 <!-- JavaScript files-->
 <?php
 include "./../common/includes/scripts.php";
+include "./includes/js/table.php";
 ?>
+<script>
+    $('.changeMonth').click(function(){
+        $('#myModal').modal('show');
+    });
+</script>
 
 </body>
 </html>

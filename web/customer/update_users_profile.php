@@ -4,15 +4,11 @@ $allEmployees   = $leadData->records(Params::TBL_EMPLOYEES, ['offices_id', '=', 
 $departments    = $leadData->records(Params::TBL_DEPARTMENT, [], ['id', 'name']);
 
 
-if (Input::exists()) {
-    $employeesId    = Common::valuesToInsert(Input::post('user'));
-    $departmentId   = Common::valuesToInsert(Input::post('department'));
-    $officesId      = Common::valuesToInsert(Input::post('office'));
-
+if (Input::exists() && Tokens::tokenVerify(Input::post(Tokens::getInputName()))) {
     /** Instantiate validate class */
     $validate = new Validate();
     /** Check if all fields are not empty */
-    $validation = $validate->check(Input::exists(), [
+    $validation = $validate->check($_POST, [
         'user'          => ['required' => true],
         'department'    => ['required' => true],
         'office'        => ['required' => true]
@@ -20,8 +16,12 @@ if (Input::exists()) {
 
 /** Check if validation passed */
     if ($validation->passed()) {
-        $employeesDetails       = $data->records(Params::TBL_EMPLOYEES, ['id', '=', $employeesId], ['departments_id', 'offices_id'], false);
-        $employeesRecentTables  = $data->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['tables'], false);
+        $employeesId    = Input::post('user');
+        $departmentId   = Input::post('department');
+        $officesId      = Input::post('office');
+
+        $employeesDetails       = $leadData->records(Params::TBL_EMPLOYEES, ['id', '=', $employeesId], ['departments_id', 'offices_id'], false);
+        $employeesRecentTables  = $leadData->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['tables'], false);
 
         /** Employees tables */
         $empRecentTables  = explode(',', $employeesRecentTables->tables);
@@ -30,7 +30,7 @@ if (Input::exists()) {
             $tables[] = Params::PREFIX . $allTables;
         }
 
-        $lead->update($data::TBL_EMPLOYEES, [
+        $lead->update(Params::TBL_EMPLOYEES, [
             'departments_id' => $departmentId,
             'offices_id'     => $officesId
         ], [
@@ -49,15 +49,16 @@ if (Input::exists()) {
         foreach ($tables as $table) {
             $lead->update($table, [
                 'departments_id' => $departmentId,
-                'offices_id'     => $officesId
+                'offices_id'     => $officesId,
+                'employees_average_id'  => $employeesId . '_' . date('Y')
             ], [
                 'employees_id' => $employeesId
             ]);
         }
 
-        if (!$user->errors()) {
+        if ($lead->success()) {
             Errors::setErrorType('success', Translate::t($lang, 'Db_success'));
-        } elseif ($user->errors()) {
+        } else {
             Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
         }
     }

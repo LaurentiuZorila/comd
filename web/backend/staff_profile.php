@@ -19,7 +19,8 @@ if (Input::exists('get')) {
     $year               = date('Y');
 
     /** All employees for one lead */
-    $allEmployees = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $leadId], ['offices_id', 'departments_id', 'name', 'id']);
+    $allEmployees = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $officeId], ['offices_id', 'departments_id', 'name', 'id']);
+
     foreach ($allEmployees as $employees) {
         // Array with employees id
         $employeesId[$employees->id] = $employees->name;

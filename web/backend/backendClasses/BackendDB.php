@@ -146,7 +146,7 @@ class BackendDB
         }
 
         $condition = implode(' ', $condition);
-        $sql = "{$action} FROM `{$table}` WHERE {$condition}";
+        $sql = sprintf("%s FROM %s WHERE %s", $action, $table, $condition);
 
         if (!$this->query($sql, $params)->error()) {
             return $this;
@@ -162,7 +162,7 @@ class BackendDB
      * @param array $columns
      * @return bool|BackendDB
      */
-    public function get($table, $where, array $columns = ['*'])
+    public function get($table, $where, $columns = ['*'])
     {
         return $this->action('SELECT ' . implode(', ', $columns), $table, $where);
     }

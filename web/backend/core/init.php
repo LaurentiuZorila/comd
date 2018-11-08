@@ -1,6 +1,5 @@
 <?php
 session_start(); // global settings
-
 spl_autoload_register(function($class_name){
 
     //commonClasses directories

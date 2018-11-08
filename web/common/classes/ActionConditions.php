@@ -24,7 +24,9 @@ class ActionConditions
                 $cond[] = [$v];
             }
         } else {
-            $cond = ['AND'];
+            for ($i=0; $i < count($array) - 1; $i++) {
+                $cond[] = 'AND';
+            }
         }
 
         // if value is: $where = ['field', '=', 'value']
@@ -44,7 +46,7 @@ class ActionConditions
                         if (count($cond) < 2) {
                             $where = array_merge($where, $cond);
                         } else {
-                            $where = array_merge($where, $cond[$x - 1]);
+                            $where = array_merge($where, $cond);
                         }
                     }
                 }

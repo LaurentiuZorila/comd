@@ -20,6 +20,11 @@ class CommonDB
     private $_query;
 
     /**
+     * @var bool
+     */
+    private $_error = false;
+
+    /**
      * @var
      */
     private $_results;
@@ -94,13 +99,14 @@ class CommonDB
      */
     public function action($action, $table, $where = [])
     {
-// if value is: $where = ['field', '=', 'value']
+        // if value is: $where = ['field', '=', 'value']
         if (is_string($where[0])) {
             $where = [$where];
         }
+
         $operators = array('=', '>', '<', '>=', '<=');
         $condition = [];
-        $params = [];
+        $params    = [];
         foreach ($where as $item) {
             if (is_array($item) && count($item) === 3) {
                 list($field, $operator, $value) = $item;
@@ -108,7 +114,7 @@ class CommonDB
                     continue;
                 }
                 $condition[] = sprintf('`%s` %s ?', $field, $operator);
-                $params[] = $value;
+                $params[]    = $value;
                 continue;
             }
             if (is_string($item) && in_array(strtoupper($item), ['AND', 'OR'])) {
@@ -116,14 +122,18 @@ class CommonDB
                 continue;
             }
         }
+
         if (empty($condition)) {
             $condition = ['1 = 1'];
         }
+
         $condition = implode(' ', $condition);
-        $sql = "{$action} FROM `{$table}` WHERE {$condition}";
+        $sql = sprintf("%s FROM %s WHERE %s", $action, $table, $condition);
+
         if (!$this->query($sql, $params)->error()) {
             return $this;
         }
+
         return false;
     }
 
@@ -153,6 +163,24 @@ class CommonDB
     public function first()
     {
         return ($results = $this->results()) && !empty($results[0]) ? $results[0] : null;
+    }
+
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return $this->_count;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function error()
+    {
+        return $this->_error;
     }
 
 }

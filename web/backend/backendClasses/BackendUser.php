@@ -18,7 +18,20 @@ class BackendUser
     /**
      * @var
      */
-    private $_langId;
+    private $_lang;
+
+
+    /**
+     * @var mixed|null
+     */
+    private $_fname;
+
+
+    /**
+     * @var mixed|null
+     */
+    private $_lname;
+
 
     /**
      * @var mixed|null
@@ -34,6 +47,11 @@ class BackendUser
      * @var mixed|null
      */
     private $_sessionDepartmentId;
+
+    /**
+     * @var mixed|null
+     */
+    private $_sessionOfficeId;
 
     /**
      * @var bool
@@ -62,6 +80,10 @@ class BackendUser
         $this->_sessionName         = Config::get('session/session_name');
         $this->_sessionUserId       = Config::get('session/session_id');
         $this->_sessionDepartmentId = Config::get('session/session_department');
+        $this->_sessionOfficeId     = Config::get('session/session_office');
+        $this->_fname               = Config::get('session/session_fname');
+        $this->_lname               = Config::get('session/session_lname');
+        $this->_lang                = Session::get('lang');
 
         if (!$user) {
             if (Session::exists($this->_sessionUserId)) {
@@ -100,21 +122,22 @@ class BackendUser
      * @param $table
      * @param array $fields
      * @param array $conditions
+     * @return bool
      * @throws Exception
      */
     public function update($table, $fields = array(), $conditions = array())
     {
         if (!$this->_db->update($table, $fields, $conditions)) {
-            Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
             throw new Exception('There was a problem, please try again!');
         }
-        Errors::setErrorType('success', Translate::t($lang, 'Db_success'));
+        return true;
     }
 
 
     /**
      * @param $table
      * @param array $fields
+     * @return bool
      * @throws Exception
      */
     public function create($table, $fields = array())
@@ -124,6 +147,7 @@ class BackendUser
             $this->_error = true;
             throw new Exception('There was a problem creating an account!!');
         }
+        return true;
     }
 
 
@@ -142,6 +166,9 @@ class BackendUser
             Session::put($this->_sessionName, $this->data()->name);
             Session::put($this->_sessionUserId, $this->data()->id);
             Session::put($this->_sessionDepartmentId, $this->data()->departments_id);
+            Session::put($this->_sessionOfficeId, $this->data()->offices_id);
+            Session::put($this->_fname, $this->data()->fname);
+            Session::put($this->_lname, $this->data()->lname);
             return true;
         }
 
@@ -157,7 +184,11 @@ class BackendUser
         Session::delete($this->_sessionName);
         Session::delete($this->_sessionUserId);
         Session::delete($this->_sessionDepartmentId);
+        Session::delete($this->_sessionOfficeId);
+        Session::delete($this->_lname);
+        Session::delete($this->_fname);
         Redirect::to('../index.php');
+        exit;
     }
 
 
@@ -190,9 +221,44 @@ class BackendUser
     /**
      * @return mixed
      */
+    public function officesId()
+    {
+        return Session::get($this->_sessionOfficeId);
+    }
+
+
+    /**
+     * @return mixed|null
+     */
+    public function fName()
+    {
+        return Session::get($this->_fname);
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function lName()
+    {
+        return Session::get($this->_lname);
+    }
+
+
+    /**
+     * @return mixed
+     */
     public function name()
     {
         return Session::get($this->_sessionName);
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function uName()
+    {
+        return $this->data()->username;
     }
 
 

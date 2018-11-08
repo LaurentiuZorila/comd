@@ -28,12 +28,12 @@ class Translate
             'Employees_details' => 'Detalii operatori',
             'Filters'           => 'Filtreaza',
             'Select_team'       => 'Selecteaza echipa',
-            'This_field_required'   => 'Acest camp trebuie completat',
+            'This_field_required'   => 'Acest camp trebuie este obligatoriu',
             'Select_Employees'  => 'Selecteaza operatoru',
             'Select_year'       => 'Selecteaza anul',
             'Select_month'      => 'Selecteaza luna',
             'Submit'            => 'Aplica',
-            'Data_for'          => 'Date pentru',
+            'Data'              => 'Date',
             'Bar'               => 'Bar',
             'Line'              => 'Linii',
             'Not_found_data'    => 'Nu s-au gasit date pentru aceasta cautare, slecteaza alte valori si reincearca.',
@@ -134,7 +134,13 @@ class Translate
             'only_numbers'      => 'trebuie sa contina doar numere',
             'data_month_exists' => 'Pentru filterele alese in baza de date sau gasit date existente',
             'update_db_navbar'  => 'Din aceasta sectiune poti incarca datele operatorilor pentru ficare luna si pentru toate tablele',
-
+            'new_pass'          => 'Noua parola',
+            'current_pass'      => 'Parola actuala',
+            'wrong_password'    => 'Parola introdusa este gresita, reincearca',
+            'rules_not_allowed' => 'Your rules does\'t matches with validation',
+            'add_user'          => 'Adauga useri',
+            'create'            => 'Creaza user',
+            'default_pass'      => 'Parola default este',
         ];
     }
 
@@ -163,7 +169,7 @@ class Translate
             'Select_year'       => 'Select year',
             'Select_month'      => 'Select month',
             'Submit'            => 'Submit',
-            'Data_for'          => 'Data for',
+            'Data'              => 'Data',
             'Bar'               => 'Bar',
             'Line'              => 'Line',
             'Not_found_data'    => 'No data found. Please select other values and try again.',
@@ -204,7 +210,7 @@ class Translate
             'Edit_profile'      => 'Edit profile',
             'FN'                => 'First name',
             'LN'                => 'Last name',
-            'Username'           => 'Username',
+            'Username'          => 'Username',
             'Pass'              => 'Password',
             'Pass_again'        => 'Repeat password',
             'Feedback_given'    => 'Thanks for your feedback',
@@ -264,6 +270,13 @@ class Translate
             'only_numbers'      => 'must contain only numbers',
             'data_month_exists' => 'For this filters in DB results data, please check again',
             'update_db_navbar'  => 'From this section you can update data base for your employees for each month and each table',
+            'new_pass'          => 'New Password',
+            'current_pass'      => 'Current password',
+            'wrong_password'    => 'You have inserted worng password, try again',
+            'rules_not_allowed' => 'Your rules does\'t matches with validation',
+            'add_user'          => 'Add users',
+            'create'            => 'Add user',
+            'default_pass'      => 'Default password for user created',
         ];
     }
 
@@ -291,7 +304,7 @@ class Translate
             'Select_year'       => 'Seleziona anno',
             'Select_month'      => 'Seleziona mese',
             'Submit'            => 'Invia',
-            'Data_for'          => 'Dati per',
+            'Data'              => 'Dati',
             'Bar'               => 'Barre',
             'Line'              => 'Linee',
             'Not_found_data'    => 'Non sono trovati i dati, cerca con altri valori.',
@@ -392,6 +405,13 @@ class Translate
             'only_numbers'      => 'deve contenere solo i numeri',
             'data_month_exists' => 'Per questo filtro in DB risultano già dati presenti, fai una verifica e prova un\'altra volta',
             'update_db_navbar'  => 'Da questa sezione poi aggioarea la DB per tutti operatori per tutte mese e per tutte tabelle',
+            'new_pass'          => 'Nuova parola',
+            'current_pass'      => 'Parola attuale',
+            'wrong_password'    => 'Parola inserita risulta errata, prova un\'altra volta',
+            'rules_not_allowed' => 'Your rules does\'t matches with validation',
+            'add_user'          => 'Aggiungi uttenti',
+            'create'            => 'Aggiungi utente',
+            'default_pass'      => 'Parola di default è',
         ];
     }
 

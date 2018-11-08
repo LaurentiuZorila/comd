@@ -21,7 +21,15 @@ class Validate
     private $_db = null;
 
 
+    /**
+     * @var mixed
+     */
     private $_lang;
+
+    /**
+     * @var array
+     */
+    private $_ruleColumn = ['table', 'id'];
 
 
     /**
@@ -81,9 +89,21 @@ class Validate
                             }
                             break;
                         case 'unique':
-                            $check = $this->_db->get($rule_value, $where = [$item, '=', $value]);
+                            $check = $this->_db->get($rule_value, [$item, '=', $value], [$item]);
                             if ($check->count()) {
                                 Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($this->_lang, 'already_exists')));
+                            }
+                            break;
+                        case 'matches_db':
+                            foreach ($rule_value as $key => $rule) {
+                                if (!in_array($key, $this->_ruleColumn)) {
+                                    Errors::setErrorType('danger', sprintf("%s", Translate::t($this->_lang, 'rules_not_allowed' )));
+                                } else {
+                                    $getP = $this->_db->get($rule_value['table'], ['id', $rule_value['id']], [$item])->first()->$item;
+                                    if (!password_verify($value, $getP)) {
+                                        Errors::setErrorType('danger', sprintf("%s", Translate::t($this->_lang, 'wrong_password')));
+                                    }
+                                }
                             }
                             break;
                         case 'email':
@@ -174,14 +194,6 @@ class Validate
         return $this;
     }
 
-
-    /**
-     * @param $error
-     */
-    private function addError($error)
-    {
-        $this->_errors[] = $error;
-    }
 
 
     /***

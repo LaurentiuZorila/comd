@@ -3,7 +3,6 @@
 <script>
     $( "select[name='teams']" ).change(function () {
         var officeId = $(this).val();
-        console.log(officeId);
         if(officeId) {
             $.ajax({
                 url: "includes/response/staff_employees.php",

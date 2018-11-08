@@ -34,6 +34,11 @@ class Params
     const LANG              = [1 => 'en', 2 => 'it', 3 => 'ro'];
 
     /**
+     * Default Language
+     */
+    const DEFAULTLANG       = 1;
+
+    /**
      * Changes table
      */
     const TBL_CHANGES       = 'cmd_changes';
@@ -62,6 +67,9 @@ class Params
      * Employees table
      */
     const TBL_EMPLOYEES     = 'cmd_employees';
+
+
+    const EMPLOYEESTBL      = 'employees';
 
     /**
      * Rating table
