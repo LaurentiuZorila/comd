@@ -1,5 +1,6 @@
 {
     "require": {
-        "league/csv": "^9.0"
+        "league/csv": "^9.0",
+        "lasserafn/php-initial-avatar-generator": "^3.0"
     }
 }

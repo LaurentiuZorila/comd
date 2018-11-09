@@ -1,9 +1,13 @@
 <?php
 require_once 'core/init.php';
 
-$name           = $backendUser->name();
+$name = $backendUser->name();
+$where = ActionCond::where(['id', $backendUser->departmentId()]);
+$departmentName = $backendUserProfile->records(Params::TBL_DEPARTMENT, $where, ['name'], false);
+$offices        = $backendUserProfile->records(Params::TBL_OFFICE, ActionCond::where(['departments_id', $backendUser->departmentId()]), ['name']);
 
-if (Input::exists()) {
+
+if (Input::exists() && Tokens::tokenVerify(Tokens::getInputName())) {
     /** Instantiate validate class */
     $validate = new Validate();
 
@@ -34,7 +38,7 @@ if (Input::exists()) {
 
         /** If validation is passed */
         if ($validation->passed()) {
-            $first_name = Common::dbValues([Input::post('first_name') => ['trim', 'ucfirst']]);
+            $first_name = Common::dbValues([Input::post('first_name'), ['trim', 'ucfirst']]);
             $last_name  = Common::dbValues([Input::post('last_name') => ['trim', 'ucfirst']]);
             $name       = $first_name . ' ' . $last_name;
             $username   = Common::dbValues([Input::post('username') => ['trim']]);
@@ -108,12 +112,14 @@ include 'includes/navbar.php';
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="card card-profile">
-                            <div style="" class="card-header">
-                                <h4 class="mb-2 mt-1 text-gray-light text-center"><?php echo $name; ?></h4>
-                            </div>
+                            <div style="background-image: url(./../common/img/wallp.jpg);" class="card-header"></div>
                             <div class="card-body text-center"><img src="./../common/img/user.png" class="card-profile-img">
-                                <p class="mb-1">Depart</p>
-                                <p class="mb-1">Offices</p>
+                                <h4 class="mb-3 text-gray-light"><?php echo $name; ?></h4>
+                                <h5 class="mb-1"><?php echo Translate::t($lang, 'Depart', ['ucfirst' => true]) . ': ' . $departmentName->name; ?> </h5>
+                                <h5 class="mb-1"><?php echo Translate::t($lang, 'Offices', ['ucfirst' => true]);?> : </h5>
+                                <?php foreach ($offices as $office) { ?>
+                                <p class="mb-0 text-muted"><?php echo $office->name; ?></p>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
@@ -157,7 +163,7 @@ include 'includes/navbar.php';
                                 </div>
                             </div>
                             <div class="card-footer text-right">
-                                <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
+                                <button id="Submit" name="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
                                 <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                             </div>
                         </form>

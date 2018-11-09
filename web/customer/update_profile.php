@@ -111,12 +111,11 @@ include 'includes/navbar.php';
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="card card-profile">
-                            <div style="" class="card-header">
-                                <h4 class="mb-2 mt-1 text-gray-light text-center"><?php echo $name; ?></h4>
-                            </div>
+                            <div style="background-image: url(./../common/img/wallp.jpg);" class="card-header"></div>
                             <div class="card-body text-center"><img src="./../common/img/user.png" class="card-profile-img">
-                                <p class="mb-1"><?php echo strtoupper($departmentName->name); ?></p>
-                                <p class="mb-1"><?php echo $officeName->name; ?></p>
+                                <h4 class="mb-3 text-gray-light"><?php echo $name; ?></h4>
+                                <h5 class="mb-1"><?php echo strtoupper($departmentName->name); ?></h5>
+                                <h5 class="mb-1"><?php echo $officeName->name; ?></h5>
                                 <div class="contributions text-monospace text-center">
                                     <?php
                                     for ($i=1;$i<6;$i++) {

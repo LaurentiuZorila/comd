@@ -14,7 +14,9 @@ return [
     ],
 
     'frontSession' => [
-        'session_name'          => 'FrontendUser',
+        'session_name'          => 'name',
+        'session_fname'         => 'fname',
+        'session_lname'         => 'lname',
         'session_username'      => 'username',
         'session_id'            => 'id',
         'session_office'        => 'office_id',

@@ -114,7 +114,7 @@ class Common
         foreach ($name as $item) {
             $value .= substr($item, 0, 1);
         }
-        return $value;
+        return strtoupper($value);
     }
 
 
@@ -205,8 +205,15 @@ class Common
     public static function dbValues($params = [])
     {
         foreach ($params as $key => $param) {
-            foreach ($param as $value) {
-                $data = $value($key);
+            // Check if exist two words in field
+            if (strpos($key, ' ') > 0 && in_array('ucfirst', $param)) {
+                $item = explode(' ', $key);
+                $items = array_map('ucfirst', $item);
+                $data = implode(' ', $items);
+            } else {
+                foreach ($param as $value) {
+                    $data = $value($key);
+                }
             }
         }
         return $data;

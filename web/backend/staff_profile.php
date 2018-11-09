@@ -28,9 +28,9 @@ if (Input::exists('get')) {
 
     /** Common data for lead employees  */
     foreach ($employeesId as $employeeId => $employeesName) {
-        $employeesFurlough[]  = ['name' =>$employeesName,'avg' => $backendUserProfile->sum(Params::TBL_FURLOUGH, ActionConditions::condition(['employees_average_id', $employeeId], true), 'quantity'), 'id' => $employeeId];
-        $employeesAbsentees[] = ['name' =>$employeesName, 'avg' => $backendUserProfile->sum(Params::TBL_ABSENTEES, ActionConditions::conditions(['employees_average_id', $employeeId . '_' . date('Y')]), 'quantity'), 'id' => $employeeId];
-        $employeesUnpaid[]    = ['name' =>$employeesName, 'avg' => $backendUserProfile->sum(Params::TBL_UNPAID, ActionConditions::conditions(['employees_average_id', $employeeId . '_' . date('Y')]), 'quantity'), 'id' => $employeeId];
+        $employeesFurlough[]  = ['name' =>$employeesName,'avg' => $backendUserProfile->sum(Params::TBL_FURLOUGH, ActionCond::condition(['employees_average_id', $employeeId], true), 'quantity'), 'id' => $employeeId];
+        $employeesAbsentees[] = ['name' =>$employeesName, 'avg' => $backendUserProfile->sum(Params::TBL_ABSENTEES, ActionCond::condition(['employees_average_id', $employeeId . '_' . date('Y')]), 'quantity'), 'id' => $employeeId];
+        $employeesUnpaid[]    = ['name' =>$employeesName, 'avg' => $backendUserProfile->sum(Params::TBL_UNPAID, ActionCond::condition(['employees_average_id', $employeeId . '_' . date('Y')]), 'quantity'), 'id' => $employeeId];
     }
 
     /** Staff details */
@@ -49,7 +49,7 @@ if (Input::exists('get')) {
     $icon               = ['icon-line-chart', 'icon-dashboard', 'icon-chart'];
 
     foreach (Params::PREFIX_TBL_COMMON as $table) {
-        $commonData[] = $backendUserProfile->sum($table, ActionConditions::condition(['offices_id', $officeId]), 'quantity');
+        $commonData[] = $backendUserProfile->sum($table, ActionCond::where(['offices_id', $officeId]), 'quantity');
     }
 
     /** Array with tables and sum of quantity for each table */
@@ -110,8 +110,6 @@ if (Input::exists() && Tokens::tokenVerify()) {
 }
 
 ?>
-
-
 
 <!DOCTYPE html>
 <html>
@@ -213,11 +211,16 @@ include 'includes/navbar.php';
                         </div>
                     </div>
                     <div class="col-lg-12">
-                        <div class="card card-profile">
-                            <div class="card-header">
-                                <h4 class="text-gray-light text-center"><?php echo $leadName; ?></h4>
-                                <p class="text-center mt-2 mb-0"><?php echo strtoupper(escape($departmentName)) . ' - ' .escape($officeName); ?></p>
-                            </div>
+                        <div class="card">
+                            <blockquote class="blockquote mb-0 card-body">
+                                <h3><?php echo $leadName; ?></h3>
+                                <footer class="blockquote-footer">
+                                    <small class="text-muted"><?php echo strtoupper($departmentName); ?></small>
+                                </footer>
+                                <footer class="blockquote-footer">
+                                    <small class="text-muted"><?php echo strtoupper($officeName); ?></small>
+                                </footer>
+                            </blockquote>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-3">

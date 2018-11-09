@@ -1,10 +1,7 @@
 <?php
 require_once 'core/init.php';
-$where = ActionCond::where(['departments_id', $backendUser->departmentId()]);
-$offices = $backendUserProfile->records(Params::TBL_OFFICE, $where, ['id', 'name']);
 
-
-if (Input::exists() && Tokens::tokenVerify()) {
+if (Input::exists()) {
     /** Instantiate validate class */
     $validate   = new Validate();
     /** Check finput fields */
@@ -23,10 +20,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
             'required'  => true,
             'min'       => 2,
             'max'       => 20,
-            'unique'    => Params::TBL_TEAM_LEAD
-        ],
-        'offices'       => [
-                'required'  => true
+            'unique'    => Params::TBL_EMPLOYEES
         ]
     ]);
 
@@ -37,12 +31,11 @@ if (Input::exists() && Tokens::tokenVerify()) {
         $lname     = Common::dbValues([Input::post('last_name') => ['trim', 'ucfirst']]);
         $username  = Common::dbValues([Input::post('username') => ['trim']]);
         $name      = $fname . ' ' . $lname;
-        $officeId  = Input::post('offices');
 
-        $create = $backendUser->create(Params::TBL_TEAM_LEAD, [
-                'departments_id'   => $backendUser->departmentId(),
-                'offices_id'       => $officeId,
-                'supervisors_id'   => $backendUser->userId(),
+        $create = $lead->create(Params::TBL_EMPLOYEES, [
+                'departments_id'   => $lead->departmentId(),
+                'offices_id'       => $lead->officesId(),
+                'supervisors_id'   => $lead->supervisorId(),
                 'lang'             => Params::DEFAULTLANG,
                 'fname'            => $fname,
                 'lname'            => $lname,
@@ -51,7 +44,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
                 'password'         => password_hash('parola', PASSWORD_DEFAULT)
         ]);
 
-        if ($create) {
+        if ($lead->success()) {
             Errors::setErrorType('info', Translate::t($lang, 'Db_success'));
             Errors::setErrorType('info', Translate::t($lang, 'default_pass') . ': parola');
             Errors::setErrorType('info', sprintf("%s: %s - %s: parola", Translate::t($lang, 'Username'), $username, Translate::t($lang, 'Pass')));
@@ -163,26 +156,6 @@ include 'includes/navbar.php';
                                     </div>
 
                                     <div class="line"></div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-3 form-control-label">
-                                        <?php if (Input::exists() && empty(Input::post('offices'))) { ?>
-                                            <h6 class="text-danger"><?php echo Translate::t($lang, 'Select_office'); ?><i class="fa fa-asterisk text-very-small align-text-top text-danger"></i></h6>
-                                        <?php } else { ?>
-                                            <h6><?php echo Translate::t($lang, 'Select_office'); ?></h6>
-                                        <?php } ?>
-                                        </label>
-                                        <div class="form-group col-sm-9">
-                                            <select name="offices" class="form-control <?php if (Input::exists() && empty(Input::post('offices'))) {echo 'is-invalid';} ?>">
-                                                <option value="" class="text-white-50"><?php echo Translate::t($lang, 'Select_office', ['ucfirst' => true]); ?></option>
-                                                <?php foreach ($offices as $office) { ?>
-                                                <option value="<?php echo $office->id; ?>"><?php echo $office->name; ?></option>
-                                                <?php } ?>
-                                            </select>
-                                        </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="line"></div>
                                     <div class="col-sm-9 ml-auto">
                                         <div class="form-group row">
                                             <button id="Submit" name="add" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'create'); ?></button>
@@ -207,7 +180,6 @@ include 'includes/navbar.php';
 <?php
 include "./../common/includes/scripts.php";
 
-include 'includes/js/ajax_update_lead.php';
 ?>
 <script>
     $('#Submit').click(function(){

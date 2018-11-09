@@ -148,7 +148,6 @@ include 'includes/navbar.php';
 <!-- JavaScript files-->
 <?php
 include "./../common/includes/scripts.php";
-include "./includes/js/table.php";
 ?>
 <script>
     $('.changeMonth').click(function(){

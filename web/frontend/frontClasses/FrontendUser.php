@@ -28,6 +28,16 @@ class FrontendUser
     /**
      * @var
      */
+    private $_sessionLname;
+
+    /**
+     * @var
+     */
+    private $_sessionFname;
+
+    /**
+     * @var
+     */
     private $_sessionUserName;
 
     /**
@@ -61,6 +71,11 @@ class FrontendUser
     private $_sessionTeamLeadId;
 
     /**
+     * @var
+     */
+    private $_success = false;
+
+    /**
      * front table
      */
     const FRONT_TBL = 'cmd_employees';
@@ -74,6 +89,8 @@ class FrontendUser
     {
         $this->_db                  = FrontendDB::getInstance();
         $this->_sessionName         = Config::get('frontSession/session_name');
+        $this->_sessionFname        = Config::get('frontSession/session_fname');
+        $this->_sessionLname        = Config::get('frontSession/session_lname');
         $this->_sessionUserName     = Config::get('frontSession/session_username');
         $this->_sessionUserId       = Config::get('frontSession/session_id');
         $this->_sessionDepartmentId = Config::get('frontSession/session_department');
@@ -128,6 +145,8 @@ class FrontendUser
 
         if (password_verify($password, $this->data()->password)) {
             Session::put($this->_sessionName, $this->data()->name);
+            Session::put($this->_sessionFname, $this->data()->fname);
+            Session::put($this->_sessionLname, $this->data()->lname);
             Session::put($this->_sessionUserName, $this->data()->username);
             Session::put($this->_sessionUserId, $this->data()->id);
             Session::put($this->_sessionDepartmentId, $this->data()->departments_id);
@@ -144,6 +163,8 @@ class FrontendUser
     public function logout()
     {
         Session::delete($this->_sessionName);
+        Session::delete($this->_sessionFname);
+        Session::delete($this->_sessionLname);
         Session::delete($this->_sessionUserId);
         Session::delete($this->_sessionSupervisorId);
         Session::delete($this->_sessionOfficeId);
@@ -159,17 +180,14 @@ class FrontendUser
      * @param $table
      * @param array $fields
      * @param array $conditions
-     * @return bool
      * @throws Exception
      */
     public function update($table, $fields = array(), $conditions = array())
     {
-        $this->_error = false;
         if (!$this->_db->update($table, $fields, $conditions)) {
-            $this->_error = true;
             throw new Exception('There was a problem, please try again!');
         }
-        return true;
+        $this->_success = true;
     }
 
 
@@ -204,6 +222,23 @@ class FrontendUser
     public function name()
     {
         return Session::get($this->_sessionName);
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function fName()
+    {
+        return Session::get($this->_sessionFname);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function lName()
+    {
+        return Session::get($this->_sessionLname);
     }
 
 
@@ -259,5 +294,13 @@ class FrontendUser
     public function isLoggedIn()
     {
         return $this->_isLoggedIn;
+    }
+
+    /**
+     * @return bool
+     */
+    public function dbSuccess()
+    {
+        return $this->_success;
     }
 }

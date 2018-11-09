@@ -41,9 +41,9 @@ class LastData
     private function where($multiple = true)
     {
         if ($multiple) {
-            return ActionConditions::conditions([['id', $this->_uId], ['year', $this->_year], ['month', $this->_month]]);
+            return ActionCond::where([['id', $this->_uId], ['year', $this->_year], ['month', $this->_month]]);
         } else {
-            return ActionConditions::conditions(['id', $this->_officeId]);
+            return ActionCond::where(['id', $this->_officeId]);
         }
     }
 

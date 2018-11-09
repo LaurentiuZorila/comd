@@ -1,7 +1,6 @@
 <?php
 require_once 'core/init.php';
 
-
 $tables = $records->records(Params::TBL_OFFICE, ['id', '=', $user->officeId()], ['tables'], false);
 $tables = explode(',', $tables->tables);
 
@@ -16,13 +15,11 @@ if (!Input::exists()) {
     // Current month
     //date('n') - 1;
     $month = 1;
-    $where = [
-        ['employees_id', '=', $user->userId()],
-        'AND',
-        ['year', '=', $year],
-        'AND',
-        ['month', '=', $month]
-    ];
+    $where = ActionCond::where([
+        ['employees_id', $user->userId()],
+        ['year', $year],
+        ['month', $month]
+    ]);
 }
 
 if (Input::noPost() && Input::existsName('get', 'lastData')) {
@@ -50,27 +47,23 @@ if (Input::exists()) {
 
     if (is_numeric($month)) {
         // Conditions for action
-        $where = [
-            ['employees_id', '=', $user->userId()],
-            'AND',
-            ['year', '=', $year],
-            'AND',
-            ['month', '=', $month]
-        ];
+        $where = ActionCond::where([
+            ['employees_id', $user->userId()],
+            ['year', $year],
+            ['month', $month]
+        ]);
 
         // Conditions for COUNT action (total)
-        $whereSum = [
-            ['offices_id', '=', $user->officeId()],
-            'AND',
-            ['year', '=', $year],
-            'AND',
-            ['month', '=', $month]
-        ];
+        $whereSum = ActionCond::where([
+            ['offices_id', $user->officeId()],
+            ['year', $year],
+            ['month', $month]
+        ]);
 
         /**  One record if is selected one month form form */
         $data = $records->records($prefixTbl, $where, ['quantity'])->quantity;
         if ($data == '') {
-            Errors::setErrorType('warning', Translate::t($lang, 'Not_found_data'));
+            Errors::setErrorType('info', Translate::t($lang, 'Not_found_data'));
             $data = 0;
         }
 
@@ -88,18 +81,16 @@ if (Input::exists()) {
         /** If user search data for all months */
         if (!is_numeric($month)) {
             // Conditions for action
-            $where = [
-                ['employees_id', '=', $user->userId()],
-                'AND',
-                ['year', '=', $year]
-            ];
+            $where = ActionCond::where([
+                ['employees_id', $user->userId()],
+                ['year', $year]
+            ]);
 
             // Conditions for COUNT action (total)
-            $sumCommonDataAll = [
-                ['offices_id', '=', $user->officeId()],
-                'AND',
-                ['year', '=', $year]
-            ];
+            $sumCommonDataAll = ActionCond::where([
+                ['offices_id', $user->officeId()],
+                ['year', $year]
+            ]);
 
             /** Selected chart */
             $dataAllMonths = $records->arrayMultipleRecords($prefixTbl, $where, ['month', 'quantity'], $lang);
@@ -134,7 +125,7 @@ if (Input::exists()) {
                 $chartLabels = Js::key($dataAllMonths);
                 $chartValues = Js::values($dataAllMonths);
             } else {
-                Errors::setErrorType('warning', 'Not_found_data');
+                Errors::setErrorType('info', Translate::t($lang, 'Not_found_data'));
             }
         }
     }
@@ -265,7 +256,7 @@ include 'includes/navbar.php';
                                         <div class="title">
                                             <div class="icon"><i class="icon-list"></i></div><strong><?php echo Translate::t($lang, $table); ?></strong>
                                         </div>
-                                        <div class="number dashtext-2"><?php echo $value->quantity; ?></div>
+                                        <div class="number dashtext-2"><?php echo !empty($value->quantity) ? $value->quantity : 0; ?></div>
                                     </div>
                                     <div class="progress progress-template">
                                         <div role="progressbar" style="width: 100%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
@@ -279,7 +270,7 @@ include 'includes/navbar.php';
                                     <div class="title">
                                         <div class="icon"><i class="icon-list"></i></div><strong><?php echo Translate::t($lang, 'Unpaid_h'); ?></strong>
                                     </div>
-                                    <div class="number dashtext-2"><?php echo $records->unpaidHours($where)->hours; ?>h</div>
+                                    <div class="number dashtext-2"><?php echo !empty($records->unpaidHours($where)->hours) ? $records->unpaidHours($where)->hours : 0; ?>h</div>
                                 </div>
                                 <div class="progress progress-template">
                                     <div role="progressbar" style="width: 100%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>

@@ -141,6 +141,9 @@ class Translate
             'add_user'          => 'Adauga useri',
             'create'            => 'Creaza user',
             'default_pass'      => 'Parola default este',
+            'not_found_current_month' => sprintf('Pentru luna %s - %d nu sau gasit date', self::currentMonth(), date('Y')),
+            'no_file_selected'  => 'Nu exista file',
+            'click_here_to_upload'  => 'Apasa aici pentru a incarca un file',
         ];
     }
 
@@ -277,6 +280,9 @@ class Translate
             'add_user'          => 'Add users',
             'create'            => 'Add user',
             'default_pass'      => 'Default password for user created',
+            'not_found_current_month' => sprintf('Not found data for month %s - %d', self::currentMonth(), date('Y')),
+            'no_file_selected'  => 'No file selected',
+            'click_here_to_upload'  => 'Click here to upload you file',
         ];
     }
 
@@ -412,10 +418,16 @@ class Translate
             'add_user'          => 'Aggiungi uttenti',
             'create'            => 'Aggiungi utente',
             'default_pass'      => 'Parola di default è',
+            'not_found_current_month' => sprintf('Per mese %s - %d non sono trovati dati', self::currentMonth(), date('Y')),
+            'no_file_selected'  => 'Nesun file presente',
+            'click_here_to_upload'  => 'Clicca qui per caricare il tuo file',
         ];
     }
 
-
+    /**
+     * @param $lang
+     * @return array
+     */
     public static function getLang($lang)
     {
         if ($lang === 'ro') {
@@ -457,5 +469,13 @@ class Translate
         }
     }
 
+
+    /**
+     * @return string
+     */
+    public static function currentMonth()
+    {
+        return Common::numberToMonth(date('n') - 1, Session::get('lang'));
+    }
 
 }

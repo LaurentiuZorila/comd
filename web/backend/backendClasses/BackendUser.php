@@ -80,7 +80,6 @@ class BackendUser
         $this->_sessionName         = Config::get('session/session_name');
         $this->_sessionUserId       = Config::get('session/session_id');
         $this->_sessionDepartmentId = Config::get('session/session_department');
-        $this->_sessionOfficeId     = Config::get('session/session_office');
         $this->_fname               = Config::get('session/session_fname');
         $this->_lname               = Config::get('session/session_lname');
         $this->_lang                = Session::get('lang');
@@ -166,7 +165,6 @@ class BackendUser
             Session::put($this->_sessionName, $this->data()->name);
             Session::put($this->_sessionUserId, $this->data()->id);
             Session::put($this->_sessionDepartmentId, $this->data()->departments_id);
-            Session::put($this->_sessionOfficeId, $this->data()->offices_id);
             Session::put($this->_fname, $this->data()->fname);
             Session::put($this->_lname, $this->data()->lname);
             return true;
@@ -184,7 +182,6 @@ class BackendUser
         Session::delete($this->_sessionName);
         Session::delete($this->_sessionUserId);
         Session::delete($this->_sessionDepartmentId);
-        Session::delete($this->_sessionOfficeId);
         Session::delete($this->_lname);
         Session::delete($this->_fname);
         Redirect::to('../index.php');
@@ -216,14 +213,6 @@ class BackendUser
     public function departmentId()
     {
         return Session::get($this->_sessionDepartmentId);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function officesId()
-    {
-        return Session::get($this->_sessionOfficeId);
     }
 
 

@@ -7,20 +7,60 @@ namespace Composer\Autoload;
 class ComposerStaticInitdec23b5739f60d3067b85c83a7794b52
 {
     public static $files = array (
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '9e4824c5afbdc1482b6025ce3d4dfde8' => __DIR__ . '/..' . '/league/csv/src/functions_include.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        'P' => 
+        array (
+            'Psr\\Http\\Message\\' => 17,
+        ),
         'L' => 
         array (
             'League\\Csv\\' => 11,
+            'LasseRafn\\Initials\\' => 19,
+            'LasseRafn\\InitialAvatarGenerator\\' => 33,
+            'LasseRafn\\' => 10,
+        ),
+        'I' => 
+        array (
+            'Intervention\\Image\\' => 19,
+        ),
+        'G' => 
+        array (
+            'GuzzleHttp\\Psr7\\' => 16,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
         'League\\Csv\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/csv/src',
+        ),
+        'LasseRafn\\Initials\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/lasserafn/php-initials/src',
+        ),
+        'LasseRafn\\InitialAvatarGenerator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/lasserafn/php-initial-avatar-generator/src',
+        ),
+        'LasseRafn\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/lasserafn/php-string-script-language/src',
+        ),
+        'Intervention\\Image\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image',
+        ),
+        'GuzzleHttp\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
         ),
     );
 

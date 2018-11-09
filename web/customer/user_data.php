@@ -205,57 +205,60 @@ include 'includes/navbar.php';
             if (!Errors::countAllErrors()) {
                 $month = Input::post('month');
                 ?>
-            <section>
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="card card-profile text-center">
-                                <div class="card-header"><?php echo $officeName; ?>
-                                </div>
-                                <div class="card-body text-center">
-                                    <h4 class="mb-3 text-gray-light"><?php echo $name; ?></h4>
-                                    <p class="mb-4"><?php echo Common::numberToMonth($month, $lang) . ' - ' . Input::post('year'); ?></p>
-                                </div>
-                            </div>
+        <section>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <blockquote class="blockquote mb-0 card-body">
+                                <h3><?php echo $officeName; ?></h3>
+                                <footer class="blockquote-footer">
+                                    <small class="text-muted"><?php echo $name; ?></small>
+                                </footer>
+                                <footer class="blockquote-footer">
+                                    <small class="text-muted"><?php echo Common::numberToMonth($month, $lang) . ' - ' . Input::post('year'); ?></small>
+                                </footer>
+                            </blockquote>
                         </div>
                     </div>
                 </div>
-            </section>
-                <section class="no-padding-bottom">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="stats-2-block block d-flex">
-                                    <?php foreach ($allData as $key => $value) { ?>
-                                        <div class="stats-2 d-flex">
-                                            <div class="stats-2-arrow low"><i class="fa fa-line-chart"></i></div>
-                                            <div class="stats-2-content">
-                                                <strong class="d-block dashtext-1"><?php echo $value == '' || $value == null ? 0 : $value; ?></strong>
-                                                <span class="d-block"><? echo strtoupper($key); ?></span>
-                                                <div class="progress progress-template progress-small">
-                                                    <div role="progressbar" style="width: <?php echo $value; ?>%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template progress-bar-small dashbg-2"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php } ?>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="drills-chart block">
-                                    <div style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;" class="chartjs-size-monitor">
-                                        <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                                            <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
-                                        </div>
-                                        <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                                            <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+            </div>
+        </section>
+        <section class="no-padding-bottom">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="stats-2-block block d-flex">
+                            <?php foreach ($allData as $key => $value) { ?>
+                                <div class="stats-2 d-flex">
+                                    <div class="stats-2-arrow low"><i class="fa fa-line-chart"></i></div>
+                                    <div class="stats-2-content">
+                                        <strong class="d-block dashtext-1"><?php echo $value == '' || $value == null ? 0 : $value; ?></strong>
+                                        <span class="d-block"><? echo strtoupper($key); ?></span>
+                                        <div class="progress progress-template progress-small">
+                                            <div role="progressbar" style="width: <?php echo $value; ?>%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template progress-bar-small dashbg-2"></div>
                                         </div>
                                     </div>
-                                    <canvas id="all_data" style="display: block; width: 494px; height: 247px;" width="494" height="147" class="chartjs-render-monitor"></canvas>
                                 </div>
-                            </div>
+                            <?php } ?>
                         </div>
                     </div>
-                </section>
+                    <div class="col-lg-12">
+                        <div class="drills-chart block">
+                            <div style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;" class="chartjs-size-monitor">
+                                <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                                    <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+                                </div>
+                                <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                                    <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+                                </div>
+                            </div>
+                            <canvas id="all_data" style="display: block; width: 494px; height: 247px;" width="494" height="147" class="chartjs-render-monitor"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         <?php }
     }?>
     </div>

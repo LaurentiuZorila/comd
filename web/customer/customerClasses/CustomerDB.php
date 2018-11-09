@@ -203,7 +203,7 @@ class CustomerDB
             $x++;
         }
 
-        $sql = "INSERT INTO {$table} (`" . implode('`,`', $keys) . "`) VALUES ({$values})";
+        $sql = sprintf('INSERT INTO %s (`%s`) VALUES (%s)', $table, implode('`,`', $keys), $values);
 
         if (!$this->query($sql, $fields)->error()) {
             return true;

@@ -36,6 +36,7 @@ $rating = $leadData->rating($lead->customerId());
             <ul id="update" class="collapse list-unstyled ">
                 <li><a href="update_database.php"><i class="icon-dashboard"></i><?php echo Translate::t($lang, 'Update_db'); ?></a></li>
                 <li><a href="update_users_profile.php"> <i class="icon-user"></i><?php echo Translate::t($lang, 'Update_employees_profile'); ?> </a></li>
+                <li><a href="add_users.php"> <i class="fa fa-user-plus"></i><?php echo Translate::t($lang, 'add_user'); ?> </a></li>
             </ul>
         </li>
         <li><a href="#profile" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i><?php echo Translate::t($lang, 'Profile'); ?> </a>

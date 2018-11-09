@@ -60,7 +60,7 @@ class FrontendProfile
     {
         $data = [];
         foreach (Params::TBL_COMMON as $table) {
-            $data[$table] = $this->_db->get(Params::PREFIX . $table, $where, $column)->first();
+            $data[$table] = !empty($this->_db->get(Params::PREFIX . $table, $where, $column)->first()) ? $this->_db->get(Params::PREFIX . $table, $where, $column)->first() : 0;
         }
         return $data;
     }
@@ -82,7 +82,7 @@ class FrontendProfile
      */
     public function getLeads($where, $columns)
     {
-       $item = ActionConditions::condition($where);
+       $item = ActionCond::where($where);
        return $this->records($this->_leadsTbl[0], $item, $columns, true);
     }
 

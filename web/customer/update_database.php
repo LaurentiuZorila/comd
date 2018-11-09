@@ -134,7 +134,7 @@ if (Input::exists()) {
           <section class="no-padding-top no-padding-bottom">
               <div class="col-lg-12">
                   <div class="block">
-                      <form method="post" enctype="multipart/form-data">
+                      <form method="post" enctype="multipart/form-data" class="dropzone" id="my-awesome-dropzone">
                           <div class="row">
                               <div class="col-sm-12">
                                   <div class="title">

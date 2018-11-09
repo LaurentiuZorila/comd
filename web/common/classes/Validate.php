@@ -91,7 +91,7 @@ class Validate
                         case 'unique':
                             $check = $this->_db->get($rule_value, [$item, '=', $value], [$item]);
                             if ($check->count()) {
-                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($this->_lang, 'already_exists')));
+                                Errors::setErrorType('danger', sprintf("%s: %s %s", $errorItem, $value,Translate::t($this->_lang, 'already_exists')));
                             }
                             break;
                         case 'matches_db':

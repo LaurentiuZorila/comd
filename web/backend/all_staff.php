@@ -47,9 +47,9 @@ include 'includes/navbar.php';
                         <div class="col-md-6 col-xl-4">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="media align-items-center"><h1 class="avatar avatar-xl mr-3 text-monospace"><?php echo Common::makeAvatar($lead->name); ?></h1>
+                                    <div class="media align-items-center"><h1 class="dashtext-1"><?php echo Common::makeAvatar($lead->name); ?></h1>
                                         <div class="media-body overflow-hidden">
-                                            <h3 class="card-text mb-0 text-center" style="color: #9055A2;"><?php echo $lead->name; ?></h3>
+                                            <h3 class="card-text mb-0 text-center dashtext-2" style="color: #9055A2;"><?php echo $lead->name; ?></h3>
                                             <p class="card-text mb-0 text-uppercase font-weight-bold text-secondary text-center"><?php echo $backendUserProfile->records(Params::TBL_DEPARTMENT, ['id', '=', $lead->departments_id], ['name'], false)->name; ?></p>
                                             <p class="card-text mb-3 text-uppercase font-weight-bold text-secondary text-center"><?php echo $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $lead->offices_id], ['name'], false)->name; ?></p>
                                             <p class="card-text mb-0 font-weight-bold text-secondary text-center"><?php echo Translate::t($lang, 'Rating'); ?></p>

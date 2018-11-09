@@ -5,7 +5,7 @@ $name           = $user->name();
 $departmentName = $records->records(Params::TBL_DEPARTMENT, ['id', '=', $user->departmentId()], ['name'], false);
 $officeName     = $records->records(Params::TBL_OFFICE, ['id', '=', $user->officeId()], ['name'], false);
 
-if (Input::exists()) {
+if (Input::exists() && Tokens::tokenVerify(Tokens::getInputName())) {
     /** Instantiate validate class */
         $validate = new Validate();
 
@@ -55,7 +55,7 @@ if (Input::exists()) {
                 'id' => $user->userId()
             ]);
 
-            if ($update) {
+            if ($user->dbSuccess()) {
                 Errors::setErrorType('success', Translate::t($lang, 'Profile_success_updated'));
             } else {
                 Errors::setErrorType('success', Translate::t($lang, 'Db_error'));
@@ -112,13 +112,11 @@ include 'includes/navbar.php';
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="card card-profile">
-                            <div style="" class="card-header">
-                                <h4 class="mb-2 mt-1 text-gray-light text-center"><?php echo $name; ?></h4>
-                            </div>
+                            <div style="background-image: url(./../common/img/wallp.jpg);" class="card-header"></div>
                             <div class="card-body text-center"><img src="./../common/img/user.png" class="card-profile-img">
-                                <p class="mb-1"><?php echo $departmentName->name; ?></p>
-                                <p class="mb-1"><?php echo $officeName->name; ?></p>
-                                <button class="btn btn-outline-secondary"><span class="fa fa-twitter"></span> Follow</button>
+                                <h4 class="mb-3 text-gray-light"><?php echo $name; ?></h4>
+                                <h5 class="mb-1"><?php echo strtoupper($departmentName->name); ?></h5>
+                                <h5 class="mb-1"><?php echo $officeName->name; ?></h5>
                             </div>
                         </div>
                     </div>
@@ -132,19 +130,19 @@ include 'includes/navbar.php';
                                     <div class="col-sm-4 col-md-4">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t($lang, 'FN'); ?></label>
-                                            <input type="text" name="first_name" placeholder="<?php echo Translate::t($lang, 'FN'); ?>" class="form-control" value="<?php if (Input::exists()) { echo $first_name; }?>">
+                                            <input type="text" name="first_name" placeholder="<?php echo $user->fName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $first_name; }?>">
                                         </div>
                                     </div>
                                     <div class="col-sm-8 col-md-8">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t($lang, 'LN'); ?></label>
-                                            <input type="text" name="last_name" placeholder="<?php echo Translate::t($lang, 'LN'); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>">
+                                            <input type="text" name="last_name" placeholder="<?php echo $user->lName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>">
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-3">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t($lang, 'Username'); ?></label>
-                                            <input type="text" name="username" placeholder="<?php echo Translate::t($lang, 'Username'); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>">
+                                            <input type="text" name="username" placeholder="<?php echo $user->userName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>" disabled>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-4">
