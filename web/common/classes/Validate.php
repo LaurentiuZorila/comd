@@ -45,6 +45,7 @@ class Validate
     /**
      * @param $source
      * @param array $items
+     * @param bool $hasErrors
      * @return $this
      */
     public function check($source, $items = [], $hasErrors = false)

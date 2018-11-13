@@ -93,3 +93,31 @@
         }
     });
 </script>
+
+<script>
+    var MEDICALCHART    = $('#medicalChart');
+    var medical_Pie_Chart = new Chart(MEDICALCHART, {
+        type: 'pie',
+        options: {
+            legend: {
+                display: false
+            }
+        },
+        data: {
+            labels: <?php echo $medicalChartLabel; ?>,
+            datasets: [
+                {
+                    data: [<?php echo $medicalChartValues; ?>],
+                    borderWidth: 0,
+                    backgroundColor: [
+                        '#723ac3',
+                        "#a678eb"
+                    ],
+                    hoverBackgroundColor: [
+                        '#723ac3',
+                        "#a678eb"
+                    ]
+                }]
+        }
+    });
+</script>

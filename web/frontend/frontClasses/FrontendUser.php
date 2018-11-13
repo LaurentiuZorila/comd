@@ -132,6 +132,7 @@ class FrontendUser
         return false;
     }
 
+
     /**
      * @param null $username
      * @param null $password
@@ -157,22 +158,36 @@ class FrontendUser
         return false;
     }
 
+
     /**
-     * Process logout
+     * @param bool $redirect
      */
-    public function logout()
+    public function logout($redirect = true)
     {
-        Session::delete($this->_sessionName);
-        Session::delete($this->_sessionFname);
-        Session::delete($this->_sessionLname);
-        Session::delete($this->_sessionUserId);
-        Session::delete($this->_sessionSupervisorId);
-        Session::delete($this->_sessionOfficeId);
-        Session::delete($this->_sessionDepartmentId);
-        Session::delete($this->_sessionUserName);
-        Session::delete($this->_sessionTeamLeadId);
-        Redirect::to('../index.php');
-        exit;
+        if ($redirect) {
+            Session::delete($this->_sessionName);
+            Session::delete($this->_sessionFname);
+            Session::delete($this->_sessionLname);
+            Session::delete($this->_sessionUserId);
+            Session::delete($this->_sessionSupervisorId);
+            Session::delete($this->_sessionOfficeId);
+            Session::delete($this->_sessionDepartmentId);
+            Session::delete($this->_sessionUserName);
+            Session::delete($this->_sessionTeamLeadId);
+            Redirect::to('../index.php');
+        } else {
+            Session::delete($this->_sessionName);
+            Session::delete($this->_sessionFname);
+            Session::delete($this->_sessionLname);
+            Session::delete($this->_sessionUserId);
+            Session::delete($this->_sessionSupervisorId);
+            Session::delete($this->_sessionOfficeId);
+            Session::delete($this->_sessionDepartmentId);
+            Session::delete($this->_sessionUserName);
+            Session::delete($this->_sessionTeamLeadId);
+        }
+
+
     }
 
 
@@ -185,6 +200,20 @@ class FrontendUser
     public function update($table, $fields = array(), $conditions = array())
     {
         if (!$this->_db->update($table, $fields, $conditions)) {
+            throw new Exception('There was a problem, please try again!');
+        }
+        $this->_success = true;
+    }
+
+
+    /**
+     * @param $table
+     * @param $where
+     * @throws Exception
+     */
+    public function delete($table, $where)
+    {
+        if (!$this->_db->delete($table, $where)) {
             throw new Exception('There was a problem, please try again!');
         }
         $this->_success = true;

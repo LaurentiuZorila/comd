@@ -144,6 +144,10 @@ class Translate
             'not_found_current_month' => sprintf('Pentru luna %s - %d nu sau gasit date', self::currentMonth(), date('Y')),
             'no_file_selected'  => 'Nu exista file',
             'click_here_to_upload'  => 'Apasa aici pentru a incarca un file',
+            'login_again'       => 'Trebuie sa te logezi din nou, in cateva secunde vei fi redirectionat catre pagina de login',
+            'medical'           => 'Medical',
+            'Total_user_medical'   => 'Total medical',
+            'Team_medical'      => 'Ziele medical echipa',
         ];
     }
 
@@ -283,6 +287,10 @@ class Translate
             'not_found_current_month' => sprintf('Not found data for month %s - %d', self::currentMonth(), date('Y')),
             'no_file_selected'  => 'No file selected',
             'click_here_to_upload'  => 'Click here to upload you file',
+            'login_again'       => 'You must to login again, in a few seconds you will be redirected to login page',
+            'medical'           => 'Medical',
+            'Total_user_medical'   => 'Total medical',
+            'Team_medical'      => 'Team medical leaves',
         ];
     }
 
@@ -421,6 +429,10 @@ class Translate
             'not_found_current_month' => sprintf('Per mese %s - %d non sono trovati dati', self::currentMonth(), date('Y')),
             'no_file_selected'  => 'Nesun file presente',
             'click_here_to_upload'  => 'Clicca qui per caricare il tuo file',
+            'login_again'       => 'Deve fare il login di nuovo, in qualche secondi provederemo con uscita',
+            'medical'           => 'Malattia',
+            'Total_user_medical'   => 'Totale malattia',
+            'Team_medical'      => 'Malattia squandra',
         ];
     }
 

@@ -1,7 +1,7 @@
 <?php
 require_once 'core/init.php';
 
-$tables = $records->records(Params::TBL_OFFICE, ['id', '=', $user->officeId()], ['tables'], false);
+$tables = $frontProfile->records(Params::TBL_OFFICE, ['id', '=', $frontUser->officeId()], ['tables'], false);
 $tables = explode(',', $tables->tables);
 
 
@@ -16,7 +16,7 @@ if (!Input::exists()) {
     //date('n') - 1;
     $month = 1;
     $where = ActionCond::where([
-        ['employees_id', $user->userId()],
+        ['employees_id', $frontUser->userId()],
         ['year', $year],
         ['month', $month]
     ]);
@@ -24,7 +24,7 @@ if (!Input::exists()) {
 
 if (Input::noPost() && Input::existsName('get', 'lastData')) {
     $lastData = new LastData();
-    $lang = $user->language();
+    $lang = $frontUser->language();
     $lastDataChartLabel = $lastData->chartData('key', $lang);
     $lastDataChartKey   = $lastData->chartData('label', $lang);
 }
@@ -48,67 +48,72 @@ if (Input::exists()) {
     if (is_numeric($month)) {
         // Conditions for action
         $where = ActionCond::where([
-            ['employees_id', $user->userId()],
+            ['employees_id', $frontUser->userId()],
             ['year', $year],
             ['month', $month]
         ]);
 
         // Conditions for COUNT action (total)
         $whereSum = ActionCond::where([
-            ['offices_id', $user->officeId()],
+            ['offices_id', $frontUser->officeId()],
             ['year', $year],
             ['month', $month]
         ]);
 
         /**  One record if is selected one month form form */
-        $data = $records->records($prefixTbl, $where, ['quantity'])->quantity;
+        $data = $frontProfile->records($prefixTbl, $where, ['quantity'])->quantity;
         if ($data == '') {
             Errors::setErrorType('info', Translate::t($lang, 'Not_found_data'));
             $data = 0;
         }
 
         /** Common data for user */
-        $userFurlough = $records->commonDetails($where, ['quantity'])['furlough']->quantity;
-        $userAbsentees = $records->commonDetails($where, ['quantity'])['absentees']->quantity;
-        $userUnpaidDays = $records->commonDetails($where, ['quantity'])['unpaid']->quantity;
+        $userFurlough     = $frontProfile->commonDetails($where, ['quantity'])['furlough']->quantity;
+        $userAbsentees    = $frontProfile->commonDetails($where, ['quantity'])['absentees']->quantity;
+        $userUnpaidDays   = $frontProfile->commonDetails($where, ['quantity'])['unpaid']->quantity;
+        $userMedicalLeave = $frontProfile->commonDetails($where, ['quantity'])['medical']->quantity;
 
         /** Total data for common tables */
-        $totalFurloughs = $records->sumAllCommonData($whereSum, 'quantity')['furlough']->total;
-        $totalAbsentees = $records->sumAllCommonData($whereSum, 'quantity')['absentees']->total;
-        $totalUnpaid = $records->sumAllCommonData($whereSum, 'quantity')['unpaid']->total;
+        $totalFurloughs     = $frontProfile->sumAllCommonData($whereSum, 'quantity')['furlough']->total;
+        $totalAbsentees     = $frontProfile->sumAllCommonData($whereSum, 'quantity')['absentees']->total;
+        $totalUnpaid        = $frontProfile->sumAllCommonData($whereSum, 'quantity')['unpaid']->total;
+        $userMedicalLeave   = $frontProfile->sumAllCommonData($whereSum, 'quantity')['medical']->total;
     }
 
         /** If user search data for all months */
         if (!is_numeric($month)) {
             // Conditions for action
             $where = ActionCond::where([
-                ['employees_id', $user->userId()],
+                ['employees_id', $frontUser->userId()],
                 ['year', $year]
             ]);
 
             // Conditions for COUNT action (total)
             $sumCommonDataAll = ActionCond::where([
-                ['offices_id', $user->officeId()],
+                ['offices_id', $frontUser->officeId()],
                 ['year', $year]
             ]);
 
             /** Selected chart */
-            $dataAllMonths = $records->arrayMultipleRecords($prefixTbl, $where, ['month', 'quantity'], $lang);
+            $dataAllMonths = $frontProfile->arrayMultipleRecords($prefixTbl, $where, ['month', 'quantity'], $lang);
 
             /** Common charts */
-            $furloughCommon   = $records->arrayMultipleRecords(Params::TBL_FURLOUGH, $where, ['month', 'quantity'], $lang);
-            $absenteesCommon  = $records->arrayMultipleRecords(Params::TBL_ABSENTEES, $where, ['month', 'quantity'], $lang);
-            $unpaidCommon     = $records->arrayMultipleRecords(Params::TBL_UNPAID, $where, ['month', 'quantity'], $lang);
+            $furloughCommon        = $frontProfile->arrayMultipleRecords(Params::TBL_FURLOUGH, $where, ['month', 'quantity'], $lang);
+            $absenteesCommon       = $frontProfile->arrayMultipleRecords(Params::TBL_ABSENTEES, $where, ['month', 'quantity'], $lang);
+            $unpaidCommon          = $frontProfile->arrayMultipleRecords(Params::TBL_UNPAID, $where, ['month', 'quantity'], $lang);
+            $medicalLeaveCommon    = $frontProfile->arrayMultipleRecords(Params::TBL_MEDICAL, $where, ['month', 'quantity'], $lang);
 
             /** Total data for all employees from common charts */
-            $totalFurloughs = $records->sumAllCommonData($sumCommonDataAll, 'quantity')['furlough']->total;
-            $totalAbsentees = $records->sumAllCommonData($sumCommonDataAll, 'quantity')['absentees']->total;
-            $totalUnpaid    = $records->sumAllCommonData($sumCommonDataAll, 'quantity')['unpaid']->total;
+            $totalFurloughs = $frontProfile->sumAllCommonData($sumCommonDataAll, 'quantity')['furlough']->total;
+            $totalAbsentees = $frontProfile->sumAllCommonData($sumCommonDataAll, 'quantity')['absentees']->total;
+            $totalUnpaid    = $frontProfile->sumAllCommonData($sumCommonDataAll, 'quantity')['unpaid']->total;
+            $totalMedical   = $frontProfile->sumAllCommonData($sumCommonDataAll, 'quantity')['medical']->total;
 
             /** User total data for all months */
-            $userFurlough   = $records->sumAllCommonData($where, 'quantity')['furlough']->total;
-            $userAbsentees  = $records->sumAllCommonData($where, 'quantity')['absentees']->total;
-            $userUnpaidDays = $records->sumAllCommonData($where, 'quantity')['unpaid']->total;
+            $userFurlough   = $frontProfile->sumAllCommonData($where, 'quantity')['furlough']->total;
+            $userAbsentees  = $frontProfile->sumAllCommonData($where, 'quantity')['absentees']->total;
+            $userUnpaidDays = $frontProfile->sumAllCommonData($where, 'quantity')['unpaid']->total;
+            $userMedical    = $frontProfile->sumAllCommonData($where, 'quantity')['medical']->total;
 
             /** Common charts */
             $furloughChartLabel     = Js::key($furloughCommon);
@@ -119,6 +124,9 @@ if (Input::exists()) {
 
             $unpaidChartLabel       = Js::key($unpaidCommon);
             $unpaidChartValues      = Js::values($unpaidCommon);
+
+            $medicalChartLabel      = Js::key($medicalLeaveCommon);
+            $medicalChartValues     = Js::values($medicalLeaveCommon);
 
             /** Selected table chart */
             if (!empty($dataAllMonths)) {
@@ -247,10 +255,10 @@ include 'includes/navbar.php';
             <section class="no-padding-top no-padding-bottom">
                 <div class="container-fluid">
                     <div class="row">
-                        <?php foreach ($records->commonDetails($where, ['quantity']) as $table => $value) {
+                        <?php foreach ($frontProfile->commonDetails($where, ['quantity']) as $table => $value) {
                             $table = $table === Translate::t($lang, 'unpaid') ? Translate::t($lang, 'unpaid_days') : $table;
                             ?>
-                            <div class="col-md-3 col-sm-6">
+                            <div class="col-lg-3 col-sm-3">
                                 <div class="statistic-block block">
                                     <div class="progress-details d-flex align-items-end justify-content-between">
                                         <div class="title">
@@ -264,13 +272,13 @@ include 'includes/navbar.php';
                                 </div>
                             </div>
                         <?php } ?>
-                        <div class="col-md-3 col-sm-6">
+                        <div class="col-lg-3 col-sm-3">
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
                                         <div class="icon"><i class="icon-list"></i></div><strong><?php echo Translate::t($lang, 'Unpaid_h'); ?></strong>
                                     </div>
-                                    <div class="number dashtext-2"><?php echo !empty($records->unpaidHours($where)->hours) ? $records->unpaidHours($where)->hours : 0; ?>h</div>
+                                    <div class="number dashtext-2"><?php echo !empty($frontProfile->unpaidHours($where)->hours) ? $frontProfile->unpaidHours($where)->hours : 0; ?>h</div>
                                 </div>
                                 <div class="progress progress-template">
                                     <div role="progressbar" style="width: 100%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
@@ -292,7 +300,7 @@ include 'includes/navbar.php';
                                     <div class="progress-details d-flex align-items-end justify-content-between">
                                         <div class="title">
                                             <div class="icon"><i class="icon-info"></i></div>
-                                            <strong><?php echo Translate::t($lang, 'target') . ' - ' . Common::numberToMonth($month, $lang) . ' - ' . Input::post('year'); ?></strong>
+                                            <strong><?php echo Translate::t($lang, Input::post('table'), ['strtoupper' => true]) . ' - ' . Common::numberToMonth($month, $lang) . ' - ' . Input::post('year'); ?></strong>
                                         </div>
                                         <div class="number dashtext-1"><?php echo $data; ?></div>
                                     </div>
@@ -329,6 +337,30 @@ include 'includes/navbar.php';
                                 </div>
                             </div>
                         </div>
+<!--                        MEDICAL LEAVE-->
+                        <div class="col-lg-4">
+                            <div class="stats-with-chart-1 block">
+                                <div class="title"><strong class="d-block"><?php echo Translate::t($lang, 'medical'); ?></strong></div>
+                                <div class="row d-flex align-items-end justify-content-between">
+                                    <div class="col-5">
+                                        <div class="text"><strong
+                                                    class="d-block dashtext-3"><?php echo $userMedical; ?>
+                                                <small><?php echo $day = $userMedical > 1 ? Translate::t($lang, 'Days') : Translate::t($lang, 'Day'); ?></small>
+                                            </strong>
+                                            <span class="d-block"><?php echo Common::getMonths($lang)[$month] . ' ' . Input::post('year'); ?></span>
+                                            <small class="d-block"><?php echo Translate::t($lang, 'Total_user_furlough') . ' ' . $totalMedical; ?></small>
+                                        </div>
+                                    </div>
+                                    <div class="col-7">
+                                        <div class="bar-chart chart">
+                                            <canvas id="medicalChart" style="display: block; width: 166px; height: 157px;" width="166" height="157" class="chartjs-render-monitor"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+<!--                        ABSENTEES-->
                         <div class="col-lg-4">
                             <div class="stats-with-chart-1 block">
                                 <div class="title"><strong class="d-block"><?php echo Translate::t($lang, 'absentees');  ?></strong></div>
@@ -350,6 +382,7 @@ include 'includes/navbar.php';
                                 </div>
                             </div>
                         </div>
+                        <!--UNPAID LEAVE-->
                         <div class="col-lg-4">
                             <div class="stats-with-chart-1 block">
                                 <div class="title"><strong class="d-block"><?php echo Translate::t($lang, 'Total_user_unpaid'); ?></strong></div>

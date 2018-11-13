@@ -59,6 +59,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
         $countFurlough  = $backendUserProfile->sum(Params::TBL_FURLOUGH, $where, 'quantity');
         $countAbsentees = $backendUserProfile->sum(Params::TBL_ABSENTEES, $where, 'quantity');
         $countUnpaid    = $backendUserProfile->sum(Params::TBL_UNPAID, $where, 'quantity');
+        $countMedical   = $backendUserProfile->sum(Params::TBL_MEDICAL, $where, 'quantity');
 
         /** Check if search return records */
         foreach ($chartData as $value) {
@@ -73,7 +74,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
         if (count($quantitySum) > 1) {
             $chartNames     = Js::toJson($names);
             $chartValues    = Js::chartValues($chartData, 'quantity');
-            $pieCommonData  = $countFurlough . ', ' . $countAbsentees . ', ' . $countUnpaid;
+            $pieCommonData  = $countFurlough . ', ' . $countAbsentees . ', ' . $countUnpaid . ',' . $countMedical;
         } else {
             Errors::setErrorType('warning', Translate::t($lang, 'Not_found_data'));
         }
@@ -270,6 +271,20 @@ include 'includes/navbar.php';
                                         <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_unpaid'); ?></strong>
                                     </div>
                                     <div class="number dashtext-3"><?php echo $countUnpaid; ?></div>
+                                </div>
+                                <div class="progress progress-template">
+                                    <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-3">
+                            <div class="statistic-block block">
+                                <div class="progress-details d-flex align-items-end justify-content-between">
+                                    <div class="title">
+                                        <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_medical'); ?></strong>
+                                    </div>
+                                    <div class="number dashtext-3"><?php echo $countMedical; ?></div>
                                 </div>
                                 <div class="progress progress-template">
                                     <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>

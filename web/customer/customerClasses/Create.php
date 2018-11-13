@@ -29,17 +29,20 @@ class Create
     /**
      * @param $table
      * @param string $quantityType
+     * @param bool $prefix
      * @return mixed
      */
-    public function createTable($table, $quantityType = 'int')
+    public function createTable($table, $quantityType = 'int', $prefix = false)
     {
         $table  = trim(strtolower($table));
-        $tbl    = Params::PREFIX . $table;
+        if ($prefix) {
+            $table    = Params::PREFIX . $table;
+        }
 
         switch ($quantityType) {
             case 'int':
                 $sql = " 
-            CREATE TABLE IF NOT EXISTS {$tbl} (
+            CREATE TABLE IF NOT EXISTS {$table} (
                 id                    INT AUTO_INCREMENT PRIMARY KEY, 
                 offices_id            INT(11),
                 departments_id        INT(11),
@@ -52,7 +55,7 @@ class Create
                 break;
             case 'float':
                 $sql = " 
-            CREATE TABLE IF NOT EXISTS {$tbl} (
+            CREATE TABLE IF NOT EXISTS {$table} (
                 id                    INT AUTO_INCREMENT PRIMARY KEY, 
                 offices_id            INT(11),
                 departments_id        INT(11),
@@ -65,13 +68,12 @@ class Create
                 break;
         }
 
-        if ($this->_toCreate) {
             try {
                 return $this->_db->execute($sql);
             } catch (PDOException $e) {
                 die($e->getMessage());
             }
-        }
+
     }
 
 

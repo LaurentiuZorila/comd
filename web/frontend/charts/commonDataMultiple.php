@@ -1,7 +1,5 @@
 <?php
 ?>
-
-
 <script>
     var ABSENTEESCHART    = $('#absenteesPieChart');
     var absentees_Pie_Chart = new Chart(ABSENTEESCHART, {
@@ -29,7 +27,6 @@
         }
     });
 </script>
-
 <script>
     var FURLOUGHCHART    = $('#furloughChart');
     var furlough_Pie_Chart = new Chart(FURLOUGHCHART, {
@@ -84,7 +81,6 @@
         }
     });
 </script>
-
 <script>
     var employees_chart    = $('#employees_chart');
     var employeesChart = new Chart(employees_chart, {
@@ -120,6 +116,33 @@
                     data: [<?php echo $chartValues; ?>],
                 }
             ]
+        }
+    });
+</script>
+<script>
+    var MEDICALCHART    = $('#medicalChart');
+    var medical_Pie_Chart = new Chart(MEDICALCHART, {
+        type: 'pie',
+        options: {
+            legend: {
+                display: false
+            }
+        },
+        data: {
+            labels: <?php echo $medicalChartLabel; ?>,
+            datasets: [
+                {
+                    data: [<?php echo $medicalChartValues; ?>],
+                    borderWidth: 0,
+                    backgroundColor: [
+                        '#723ac3',
+                        "#a678eb"
+                    ],
+                    hoverBackgroundColor: [
+                        '#723ac3',
+                        "#a678eb"
+                    ]
+                }]
         }
     });
 </script>

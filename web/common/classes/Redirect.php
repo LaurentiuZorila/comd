@@ -33,11 +33,42 @@ class Redirect {
                     }
                     $header = implode('&', $header);
                 }
-                header('Location: '.$location . '?' . $header . '&r=' . 'adsvbvfjhgjytftsaeacdhyftr35344yrthgn');
+                header('Location: '.$location . '?' . $header);
                 exit();
             }
             header('Location: '.$location);
             exit();
         }
     }
+
+
+    public static function timeTo($time = 0, $location = null, array $setup = []) {
+        if ($location) {
+            // check if header have get options
+            if (count($setup) > 0) {
+                if (count($setup) < 2) {
+                    foreach ($setup as $k => $v) {
+                        $header = sprintf('%s=%s', $k, $v);
+                    }
+                } else {
+                    foreach ($setup as $k => $v) {
+                        $header[] = sprintf('%s=%s', $k, $v);
+                    }
+                    $header = implode('&', $header);
+                }
+                if ($time > 0) {
+                    header('Refresh:'.$time.'; url='.$location . '?' . $header);
+                } else {
+                    header('Location: '.$location . '?' . $header);
+                }
+            }
+            if ($time > 0) {
+                header('Refresh:'.$time.'; url='.$location);
+            } else {
+                header('Location: '.$location);
+            }
+        }
+    }
+
+
 }

@@ -8,7 +8,7 @@ if (empty(Input::get('setup')) && !$customer->isLoggedIn()) {
     Redirect::to('../login.php');
 }
 
-$tablesText     = 'By default common tables are created (e.g. furlough, absentees, unpaid leaves). Insert tables names what you want to create followed by comma (e.g target,quality etc..)';
+$tablesText     = 'By default common tables are created (e.g. furlough, absentees, unpaid leaves, medical leaves). Insert tables names what you want to create followed by comma (e.g target,quality etc..)';
 $condText       = 'For each table inserted you need assign one symbol(>, <). If for first table highest data are best data, you need yo insert symbol \'>\', if lowest data are best data you need to insert symbol \'<\'. Please make attention!';
 $prioritiesText = 'For each table inserted you need assign PRIORITIES (most important table must have assigned 1 value.). For each table assign values for your own priorities. MAKE ATTENTION THIS SETTING IS IMPORTANT TO CALCULATE BEST EMPLOYEES!';
 $dataDisplayText = 'For each table you need to insert how data are displayed followed by comma e.g (if your table display numbers you need to insert: NUMBER, if your table need display percentage you need to insert: PERCENTAGE.';
@@ -60,14 +60,14 @@ if (Input::exists()) {
 
         /** Check if validation is passed and not found errors */
         if ($validation->passed()) {
-            $newTables          = Input::post('tables');
+            $newTables          = Common::dbValues([Input::post('tables') => ['trim', 'strtolower']]);
             $defaultPassword    = Input::post('Password');
             $new_password       = Input::post('new_password');
             $confirm_pass       = Input::post('confirm_password');
             $passwordHash       = password_hash(Input::post('new_password'), PASSWORD_DEFAULT);
             $bestConditions     = Input::post('tables_conditions');
             $tablePriority      = Input::post('tables_priorities');
-            $tableDataDisplay   = strtolower(Input::post('data_display'));
+            $tableDataDisplay   = Common::dbValues([Input::post('data_display') => ['trim', 'strtolower']]);
 
             /** Remove comma if exist at the end of strings */
             $bestConditions     = Common::checkLastCharacter($bestConditions);
@@ -77,13 +77,13 @@ if (Input::exists()) {
             $commonTables       = $newTables . ',' . implode(',', Params::TBL_COMMON);
 
             /** Array with conditions */
-            $conditions = explode(',', trim($bestConditions));
+            $conditions = explode(',', $bestConditions);
             /** Array with priorities */
-            $priorities = explode(',', trim($tablePriority));
+            $priorities = explode(',', $tablePriority);
             /** Array with displayData */
-            $displayData = explode(',', trim($tableDataDisplay));
+            $displayData = explode(',', $tableDataDisplay);
             /** Array with tables to create */
-            $newTables = explode(',', trim($newTables));
+            $newTables = explode(',', $newTables);
 
             /** Json with tables conditions table : conditions */
             $tablesConditions = Common::toJson(Common::assocArray($newTables, $conditions));
@@ -122,13 +122,15 @@ if (Input::exists()) {
             /** Create tables */
             foreach ($tablesToCreate as $table => $type) {
                 if ($type === 'number') {
-                    $create->createTable($table, 'int');
+                    $create->createTable($table, 'int', true);
                 } elseif ($type === 'percentage') {
-                    $create->createTable($table, 'float');
+                    $create->createTable($table, 'float', true);
                 }
-
             }
 
+            foreach (Params::PREFIX_TBL_COMMON as $commonTables) {
+                $create->createTable($commonTables, 'int');
+            }
         }
 
         if (!Errors::countAllErrors())
@@ -173,7 +175,7 @@ if (Input::exists()) {
 <body>
 	<div class="image-container set-full-height" style="background-image: url('assets/img/wizard-profile.jpg')">
 	    <!--   Creative Tim Branding   -->
-	    <a href="http://creative-tim.com">
+	    <a href="#">
 	         <div class="logo-container">
 	            <div class="logo">
 	                <img src="assets/img/default-avatar.png">
@@ -183,12 +185,6 @@ if (Input::exists()) {
 	            </div>
 	        </div>
 	    </a>
-
-		<!--  Made With Material Kit  -->
-		<a href="http://demos.creative-tim.com/material-kit/index.html?ref=material-bootstrap-wizard" class="made-with-mk">
-			<div class="brand">MK</div>
-			<div class="made-with">Made with <strong>Material Kit</strong></div>
-		</a>
 
 	    <!--   Big container   -->
 	    <div class="container">
@@ -206,9 +202,6 @@ if (Input::exists()) {
                                 <?php
                                 foreach (Errors::getErrors() as $allError) {
                                     echo '<p>' . $allError . '</p>';
-                                    }
-                                    foreach ($validation->errors() as $errors) {
-                                        echo '<p>' . $errors . '</p>';
                                     }
                                 ?>
                             </div>
@@ -301,25 +294,25 @@ if (Input::exists()) {
 		                                    <div class="col-sm-3">
 	                                        	<div class="form-group label-floating <?php if (Session::exists('tables')) { echo Session::get('tables'); } ?> " data-toggle="wizard-radio" rel="tooltip" title="<?php echo $tablesText; ?>">
 	                                        		<label class="control-label">Tables to create</label>
-	                                    			<input type="text" class="form-control" name="tables" id="tablesToCreate" value="<?php if (Input::exists()) { echo Input::post('tables'); }; ?>" />
+	                                    			<input type="text" class="form-control" name="tables" id="tablesToCreate" value="<?php if (Input::exists() && Input::existsName('post', 'tables')) { echo Input::post('tables'); }; ?>" />
 	                                        	</div>
 		                                    </div>
                                             <div class="col-sm-3">
                                                 <div class="form-group label-floating <?php if (Session::exists('tables_conditions')) { echo Session::flash('tables_conditions'); } ?>" data-toggle="wizard-radio" rel="tooltip" title="<?php echo $condText; ?>">
                                                     <label class="control-label">Tables conditions</label>
-                                                    <input type="text" class="form-control" name="tables_conditions" id="tables_conditions" value="<?php if (Input::exists()) { echo Input::post('tables_conditions'); }; ?>" />
+                                                    <input type="text" class="form-control" name="tables_conditions" id="tables_conditions" value="<?php if (Input::exists() && Input::existsName('post', 'tables_conditions')) { echo Input::post('tables_conditions'); }; ?>" />
                                                 </div>
                                             </div>
                                             <div class="col-sm-3">
                                                 <div class="form-group label-floating <?php if (Session::exists('tables_priorities')) { echo Session::flash('tables_priorities'); } ?>" data-toggle="wizard-radio" rel="tooltip" title="<?php echo $prioritiesText; ?>">
                                                     <label class="control-label">Priorities tables</label>
-                                                    <input type="text" class="form-control" name="tables_priorities" id="tables_priorities" value="<?php if (Input::exists()) { echo Input::post('tables_priorities'); }; ?>" />
+                                                    <input type="text" class="form-control" name="tables_priorities" id="tables_priorities" value="<?php if (Input::exists() && Input::existsName('post', 'tables_priorities')) { echo Input::post('tables_priorities'); }; ?>" />
                                                 </div>
                                             </div>
                                             <div class="col-sm-3">
                                                 <div class="form-group label-floating <?php if (Session::exists('data_display')) { echo Session::flash('data_display'); } ?>" data-toggle="wizard-radio" rel="tooltip" title="<?php echo $dataDisplayText; ?>">
                                                     <label class="control-label">Data display</label>
-                                                    <input type="text" class="form-control" name="data_display" id="data_display" value="<?php if (Input::exists()) { echo Input::post('data_display'); }; ?>" />
+                                                    <input type="text" class="form-control" name="data_display" id="data_display" value="<?php if (Input::exists() && Input::existsName('post', 'data_display')) { echo Input::post('data_display'); }; ?>" />
                                                 </div>
                                             </div>
                                             <div class="col-sm-2 col-sm-offset-0">
@@ -415,7 +408,7 @@ include 'newPasswords.php';
                             '<td class="text-primary">' + key + '</td>' +
                             '<td class="text-primary">' + value[0] + '</td>' +
                             '<td class="text-primary">' + value[1] + '</td>' +
-                            '<td class="text-primary">' + value[2] +
+                            '<td class="text-primary">' + value[2] + '</td>' +
                             '</tr>'
                         );
                     });

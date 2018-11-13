@@ -2,7 +2,7 @@
 require_once 'core/init.php';
 
 /** All leads */
-$teamLeads = $records->getLeads(['departments_id', $user->departmentId()], ['name', 'id']);
+$teamLeads = $frontProfile->getLeads(['departments_id', $frontUser->departmentId()], ['name', 'id']);
 
 /** Leads id */
 foreach ($teamLeads as $leads) {
@@ -15,8 +15,8 @@ if (Input::existsName('get', 'feedbackOk')) {
     Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
 }
 /** Get not rated leads  */
-if (count($records->getFeedback($user->userId())) > 0) {
-    foreach ($records->getFeedback($user->userId()) as $item) {
+if (count($frontProfile->getFeedback($frontUser->userId())) > 0) {
+    foreach ($frontProfile->getFeedback($frontUser->userId()) as $item) {
         if (in_array($item->user_id, $leadsId)) {
             $noFeedback[] = $item->user_id;
         }
@@ -82,9 +82,9 @@ include 'includes/navbar.php';
                             <div class="contributions text-monospace text-center">
                                 <?php
                                 if (in_array($leads->id, $noFeedback)) {
-                                    echo Translate::t($lang, 'Rating') . ' ' . $records->rating($leads->id) . '/5' . '<br />';
+                                    echo Translate::t($lang, 'Rating') . ' ' . $frontProfile->rating($leads->id) . '/5' . '<br />';
                                     for ($i=1;$i<6;$i++) {
-                                        if ($i<= $records->rating($leads->id)) { ?>
+                                        if ($i<= $frontProfile->rating($leads->id)) { ?>
                                         <a class="text-secondary" href="#"><span class="fa fa-star checked"></span></a>
                                     <?php } else { ?>
                                         <a class="text-secondary" href="#"><span class="fa fa-star"></span></a>
@@ -92,7 +92,7 @@ include 'includes/navbar.php';
                                     }
                                 } else {
                                     for ($i = 1; $i < 6; $i++) { ?>
-                                        <a class="btn-sm btn-outline-primary" href="userfeedback.php?feedback=<?php echo $i; ?>&leadId=<?php echo $leads->id; ?>&userId=<?php echo $user->userId(); ?>"><span class="fa fa-star"></span></a>
+                                        <a class="btn-sm btn-outline-primary" href="userfeedback.php?feedback=<?php echo $i; ?>&leadId=<?php echo $leads->id; ?>&userId=<?php echo $frontUser->userId(); ?>"><span class="fa fa-star"></span></a>
                                     <?php }
                                 }?>
                             </div>

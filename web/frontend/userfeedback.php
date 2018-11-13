@@ -1,9 +1,9 @@
 <?php
 require_once 'core/init.php';
-$records = new FrontendProfile();
-$user    = new FrontendUser();
+$frontProfile = new FrontendProfile();
+$frontUser    = new FrontendUser();
 
-if (!$user->isLoggedIn()) {
+if (!$frontUser->isLoggedIn()) {
     Redirect::to('login.php');
 }
 

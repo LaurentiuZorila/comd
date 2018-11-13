@@ -25,14 +25,14 @@ spl_autoload_register(function($class_name){
 });
 
 require_once './functions/sanitize.php';
-$user    = new FrontendUser();
-$records = new FrontendProfile();
+$frontUser    = new FrontendUser();
+$frontProfile = new FrontendProfile();
 
-if (!$user->isLoggedIn()) {
+if (!$frontUser->isLoggedIn()) {
     Redirect::to('login.php');
 } else {
-    $lang   = $user->language();
-    $langId = $user->language(false);
+    $lang   = $frontUser->language();
+    $langId = $frontUser->language(false);
     Session::put('lang', $lang);
 }
 
@@ -42,7 +42,7 @@ if (!$user->isLoggedIn()) {
 //    $hashCheck = DB::getInstance()->get('users_session', array('hash', '=', $hash));
 //    if ($hashCheck->count()) {
 //        //echo 'Hash matches, log user in';
-//        $user = new User($hashCheck->first()->user_id);
-//        $user->login();
+//        $frontUser = new User($hashCheck->first()->user_id);
+//        $frontUser->login();
 //    }
 //}

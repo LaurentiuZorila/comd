@@ -1,11 +1,11 @@
 <?php
 require_once 'core/init.php';
-$user           = new FrontendUser();
+$frontUser           = new FrontendUser();
 $details        = new FrontendProfile();
 
-$name           = $user->name();
-$officeName     = $details->records(Params::TBL_OFFICE, ['id', '=', $user->officeId()], ['name'], false);
-$departmentName = $details->records(Params::TBL_DEPARTMENT, ['id', '=', $user->departmentId()], ['name'], false);
+$name           = $frontUser->name();
+$officeName     = $details->records(Params::TBL_OFFICE, ['id', '=', $frontUser->officeId()], ['name'], false);
+$departmentName = $details->records(Params::TBL_DEPARTMENT, ['id', '=', $frontUser->departmentId()], ['name'], false);
 
 ?>
 
@@ -26,6 +26,7 @@ $departmentName = $details->records(Params::TBL_DEPARTMENT, ['id', '=', $user->d
     <ul class="list-unstyled">
         <li class="active"><a href="index.php"> <i class="icon-home"></i><?php echo Translate::t($lang, 'Home'); ?></a></li>
         <li><a href="feedback.php"> <i class="fa fa-star-half-full"></i> <?php echo Translate::t($lang, 'feedback'); ?> </a></li>
+        <li><a href="calendar.php"> <i class="fa fa-calendar"></i> <?php echo Translate::t($lang, 'Calendar'); ?> </a></li>
         <li><a href="update_profile.php"> <i class="icon-user"></i><?php echo Translate::t($lang, 'Edit_profile'); ?> </a></li>
         <li><a href="logout.php"> <i class="icon-logout"></i><?php echo Translate::t($lang, 'logout'); ?> </a></li>
     </ul>

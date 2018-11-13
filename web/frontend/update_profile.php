@@ -1,9 +1,9 @@
 <?php
 require_once 'core/init.php';
 
-$name           = $user->name();
-$departmentName = $records->records(Params::TBL_DEPARTMENT, ['id', '=', $user->departmentId()], ['name'], false);
-$officeName     = $records->records(Params::TBL_OFFICE, ['id', '=', $user->officeId()], ['name'], false);
+$name           = $frontUser->name();
+$departmentName = $frontProfile->records(Params::TBL_DEPARTMENT, ['id', '=', $frontUser->departmentId()], ['name'], false);
+$officeName     = $frontProfile->records(Params::TBL_OFFICE, ['id', '=', $frontUser->officeId()], ['name'], false);
 
 if (Input::exists() && Tokens::tokenVerify(Tokens::getInputName())) {
     /** Instantiate validate class */
@@ -21,42 +21,43 @@ if (Input::exists() && Tokens::tokenVerify(Tokens::getInputName())) {
                 'min'       => 2,
                 'max'       => 50
             ],
-            'username'  =>  [
-                'required'  => true,
-                'min'       => 2,
-                'max'       => 50,
-                'unique'    => Params::TBL_EMPLOYEES
-            ],
             'password' =>  [
-                'required'  => true,
-                'min'   => 6,
-                'max'   => 30
+                'matches_db'    => [
+                    'id'    => $frontUser->userId(),
+                    'table' => Params::TBL_EMPLOYEES
+                ]
             ],
-            'repeat_password'   =>  [
-                'matches'   => 'password'
+            'new_password'   =>  [
+                'required'  => true,
+                'min'       => 6,
+                'max'       => 20
             ]
         ]);
 
         /** If validation is passed */
         if ($validation->passed()) {
-            $first_name = Common::valuesToInsert(Input::post('first_name'));
-            $last_name  = Common::valuesToInsert(Input::post('last_name'));
+            $first_name = Common::dbValues([Input::post('first_name') => ['ucfirst']]);
+            $last_name  = Common::dbValues([Input::post('last_name') => ['ucfirst']]);
             $name       = $first_name . ' ' . $last_name;
-            $username   = trim(Input::post('username'));
-            $password   = trim(Input::post('password'));
+            $frontUsername   = trim(Input::post('username'));
+            $password   = trim(Input::post('new_password'));
             $password   = password_hash($password, PASSWORD_DEFAULT);
 
             /** Update employees table */
-            $update = $user->update(Params::TBL_EMPLOYEES, [
+            $update = $frontUser->update(Params::TBL_EMPLOYEES, [
+                'fname'     => $first_name,
+                'lname'     => $last_name,
                 'name'      => $name,
-                'username'  => $username,
                 'password'  => $password
             ], [
-                'id' => $user->userId()
+                'id' => $frontUser->userId()
             ]);
 
-            if ($user->dbSuccess()) {
+            if ($frontUser->dbSuccess()) {
+                Redirect::timeTo(5, '../index.php');
                 Errors::setErrorType('success', Translate::t($lang, 'Profile_success_updated'));
+                Errors::setErrorType('success', Translate::t($lang, 'login_again'));
+                $frontUser->logout(false);
             } else {
                 Errors::setErrorType('success', Translate::t($lang, 'Db_error'));
             }
@@ -130,19 +131,19 @@ include 'includes/navbar.php';
                                     <div class="col-sm-4 col-md-4">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t($lang, 'FN'); ?></label>
-                                            <input type="text" name="first_name" placeholder="<?php echo $user->fName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $first_name; }?>">
+                                            <input type="text" name="first_name" placeholder="<?php echo $frontUser->fName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $first_name; }?>">
                                         </div>
                                     </div>
                                     <div class="col-sm-8 col-md-8">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t($lang, 'LN'); ?></label>
-                                            <input type="text" name="last_name" placeholder="<?php echo $user->lName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>">
+                                            <input type="text" name="last_name" placeholder="<?php echo $frontUser->lName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>">
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-3">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t($lang, 'Username'); ?></label>
-                                            <input type="text" name="username" placeholder="<?php echo $user->userName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>" disabled>
+                                            <input type="text" name="username" placeholder="<?php echo $frontUser->userName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>" disabled>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-4">
@@ -153,8 +154,8 @@ include 'includes/navbar.php';
                                     </div>
                                     <div class="col-lg-6 col-md-4">
                                         <div class="form-group mb-4">
-                                            <label class="form-label"><?php echo Translate::t($lang, 'Pass_again'); ?></label>
-                                            <input type="text" name="repeat_password" placeholder="<?php echo Translate::t($lang, 'Pass_again'); ?>" class="form-control">
+                                            <label class="form-label"><?php echo Translate::t($lang, 'new_pass'); ?></label>
+                                            <input type="text" name="new_password" placeholder="<?php echo Translate::t($lang, 'new_pass'); ?>" class="form-control">
                                         </div>
                                     </div>
                                 </div>

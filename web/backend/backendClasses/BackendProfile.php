@@ -48,7 +48,7 @@ class BackendProfile
     public function sum($table, array $where, $column)
     {
         $sum = $this->_db->sum($table, $where, $column)->first();
-        return $sum->sum;
+        return !empty($sum->sum) ? $sum->sum : 0;
     }
 
 

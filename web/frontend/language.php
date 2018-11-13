@@ -3,11 +3,11 @@ require_once 'core/init.php';
 
 $langId   = Input::get('lang');
 
-$user->update('cmd_employees', [
+$frontUser->update('cmd_employees', [
     'lang'  => $langId
     ],
     [
-        'id' => $user->userId()
+        'id' => $frontUser->userId()
     ]);
 Redirect::to('index.php');
 exit;

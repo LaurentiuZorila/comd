@@ -31,7 +31,7 @@
                             <div class="profile">
                                 <div class="status online"></div>
                             </div>
-                            <div class="content"><strong class="d-block"><?php echo $user->name(); ?></strong><span class="d-block"><?php echo Translate::t($lang, 'navNotification'); ?></span>
+                            <div class="content"><strong class="d-block"><?php echo $frontUser->name(); ?></strong><span class="d-block"><?php echo Translate::t($lang, 'navNotification'); ?></span>
                                 <small class="date d-block"><?php echo date("h:i A"); ?></small>
                             </div>
                         </a>
@@ -65,7 +65,7 @@
                             </div>
                         </div>
                         <div class="row megamenu-buttons text-center">
-                            <div class="col-lg-3 col-md-4"><a href="index.php?officeId=<?php echo $user->officeId(); ?>&userId=<?php echo $user->userId(); ?>&lastData=<?php echo Tokens::getRoute(); ?>" class="d-block megamenu-button-link dashbg-1"><i class="fa fa-bar-chart-o"></i><strong><?php echo Translate::t($lang, 'view_data')?></strong></a></div>
+                            <div class="col-lg-3 col-md-4"><a href="index.php?officeId=<?php echo $frontUser->officeId(); ?>&userId=<?php echo $frontUser->userId(); ?>&lastData=<?php echo Tokens::getRoute(); ?>" class="d-block megamenu-button-link dashbg-1"><i class="fa fa-bar-chart-o"></i><strong><?php echo Translate::t($lang, 'view_data')?></strong></a></div>
                             <div class="col-lg-3 col-md-4"><a href="feedback.php" class="d-block megamenu-button-link dashbg-4"><i class="fa fa-star-half-full"></i><strong><?php echo Translate::t($lang, 'feedback'); ?></strong></a></div>
                             <div class="col-lg-3 col-md-4"><a href="update_profile.php" class="d-block megamenu-button-link dashbg-2"><i class="icon-user"></i><strong><?php echo Translate::t($lang, 'my_profile'); ?></strong></a></div>
                             <div class="col-lg-3 col-md-4"><a href="logout.php" class="d-block megamenu-button-link dashbg-3"><i class="icon-logout"></i><strong><?php echo Translate::t($lang, 'logout'); ?></strong></a></div>

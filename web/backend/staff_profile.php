@@ -223,7 +223,7 @@ include 'includes/navbar.php';
                             </blockquote>
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-3">
+                    <div class="col-lg-12">
                         <div class="statistic-block block pb-1">
                             <div class="progress-details d-flex align-items-end justify-content-between">
                                 <div class="title">
@@ -235,7 +235,7 @@ include 'includes/navbar.php';
                                 <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
                             </div>
                             <div class="mt-2 mb-1">
-                                <button class="btn-sm btn-outline-secondary col-sm-6" type="button" data-toggle="collapse" data-target="4"  aria-expanded="false" aria-controls="filter" id="employeeTable">
+                                <button class="btn-sm btn-outline-secondary col-sm-2" type="button" data-toggle="collapse" data-target="4"  aria-expanded="false" aria-controls="filter" id="employeeTable">
                                     <?php echo Translate::t($lang, 'show'); ?> <i class="fa fa-user-o"></i>
                                 </button>
                             </div>
@@ -427,6 +427,49 @@ include 'includes/navbar.php';
                                             <td><?php echo (int)$dataCommonTables['unpaid']; ?></td>
                                             <td><?php echo $employeesData['avg'];?></td>
                                             <td><?php echo Common::percentage($dataCommonTables['unpaid'], $employeesData['avg']); ?></td>
+                                        </tr>
+                                        <?php
+                                        $x++;
+                                    } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--        Collapse medical -->
+        <section class="no-padding-top collapse allCollapse" id="3">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="block">
+                            <div class="title"><strong><?php echo Translate::t($lang, 'medical'); ?></strong>
+                                <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv""><i class="fa fa-close"></i></button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th><?php echo Translate::t($lang, 'Name'); ?></th>
+                                        <th><?php echo Translate::t($lang, 'Team_medical'); ?></th>
+                                        <th><?php echo Translate::t($lang, 'medical'); ?></th>
+                                        <th><?php echo Translate::t($lang, 'percentage', ['ucfirst' => true]); ?></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php
+                                    $x = 1;
+                                    foreach ($employeesUnpaid as $employeesData) { ?>
+                                        <tr>
+                                            <th scope="row"><?php echo $x; ?></th>
+                                            <td><a href="employees_data.php?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
+                                            <td><?php echo (int)$dataCommonTables['medical']; ?></td>
+                                            <td><?php echo $employeesData['avg'];?></td>
+                                            <td><?php echo Common::percentage($dataCommonTables['medical'], $employeesData['avg']); ?></td>
                                         </tr>
                                         <?php
                                         $x++;

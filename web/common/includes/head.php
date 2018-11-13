@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:300,400,700">
     <!-- theme stylesheet-->
     <link rel="stylesheet" href="./../common/css/style.violet.css" id="theme-stylesheet">
+<link rel="stylesheet" href="./calendar/fullcalendar/fullcalendar.min.css">
     <!-- Favicon-->
     <link rel="shortcut icon" href="./../common/img/favicon.ico">
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>

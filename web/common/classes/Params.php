@@ -16,12 +16,12 @@ class Params
     /**
      * Common tables
      */
-    const TBL_COMMON        = ['furlough', 'absentees', 'unpaid'];
+    const TBL_COMMON        = ['furlough', 'absentees', 'unpaid', 'medical'];
 
     /**
      * Common tables with prefix
      */
-    const PREFIX_TBL_COMMON = ['cmd_furlough', 'cmd_absentees', 'cmd_unpaid'];
+    const PREFIX_TBL_COMMON = ['cmd_furlough', 'cmd_absentees', 'cmd_unpaid', 'cmd_medical'];
 
     /**
      * Tables prefix
@@ -90,6 +90,16 @@ class Params
      * Unpaid table
      */
     const TBL_UNPAID        = 'cmd_unpaid';
+
+
+    /**
+     * Medical leave table
+     */
+    const TBL_MEDICAL       = 'cmd_medical';
+
+
+    const TBL_EVENTS        = 'cmd_events';
+
 
     /**
      * Allowed files extensions

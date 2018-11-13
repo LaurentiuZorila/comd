@@ -112,12 +112,14 @@
                     backgroundColor: [
                         "#864DD9",
                         '#723ac3',
-                        "#9762e6"
+                        "#9762e6",
+                        "#9f58ff"
                     ],
                     hoverBackgroundColor: [
                         "#864DD9",
                         '#723ac3',
-                        "#9762e6"
+                        "#9762e6",
+                        "#a357ff"
                     ]
                 }]
         }
