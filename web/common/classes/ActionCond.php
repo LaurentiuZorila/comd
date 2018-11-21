@@ -5,7 +5,7 @@
 
 class ActionCond
 {
-    private static $_columns = ['id', 'name', 'offices_id', 'departments_id', 'supervisors_id', 'year', 'month', 'user_id', 'employees_average_id', 'quantity'];
+    private static $_columns = ['id', 'name', 'offices_id', 'departments_id', 'supervisors_id', 'year', 'month', 'user_id', 'lead_id', 'employees_average_id', 'quantity'];
 
     /**
      * @param array $array
@@ -37,7 +37,7 @@ class ActionCond
 
             }
             $x=0;
-            // Check what type of array is an transform in multidimensional array if is not
+            // Check what type of array is an array, transform in multidimensional array if is not
             foreach ($conditions as $v) {
                 if (is_array($v)) {
                     continue;
@@ -47,7 +47,7 @@ class ActionCond
             }
         }
 
-        // if value is: $where = ['field', '=', 'value']
+        // if value is: $where = ['field', 'value']
         $x = 0;
         foreach ($array as $item) {
             if (is_string($item)) {
@@ -75,7 +75,7 @@ class ActionCond
      * @param array $conditions
      * @return array
      */
-    public static function where(array $item, array $conditions = [])
+    public static function where($item, $conditions = [])
     {
         return ActionCond::conditions($item, $conditions);
     }

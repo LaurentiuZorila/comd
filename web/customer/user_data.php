@@ -8,6 +8,13 @@ $allTables = explode(',', trim($allTables->tables));
 /** All employees for user */
 $allEmployees = $leadData->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $lead->officesId()], ['id', 'name']);
 
+/** Data display */
+$dataDisplay = $leadData->records(Params::TBL_OFFICE, ActionCond::where(['id', $lead->officesId()]), ['data_visualisation'], false)->data_visualisation;
+$dataDisplay = (array)json_decode($dataDisplay);
+foreach ($dataDisplay as $tableData => $v){
+    $tblDataDysplay[] = $tableData;
+}
+
 
 if (Input::exists()) {
     /** Instantiate validation class */
@@ -28,14 +35,11 @@ if (Input::exists()) {
         $errorNoData    = [];
 
             /** Conditions for action */
-            $where = [
-                ['year', '=', $year],
-                'AND',
-                ['employees_id', '=', $employeesId],
-                'AND',
-                ['month', '=', $month]
-            ];
-
+            $where = ActionCond::where([
+                ['year', $year],
+                ['employees_id', $employeesId],
+                ['month', $month]
+            ]);
             /** array key => values (keys are tables and values are numbers(quantity column)) */
             foreach ($allTables as $table) {
                 $key[]      = $table;
@@ -65,18 +69,16 @@ if (Input::noPost()) {
     $month          = date('n');
 
     /** Conditions for action */
-    $where = [
-        ['year', '=', $year],
-        'AND',
-        ['employees_id', '=', $employeesId],
-        'AND',
-        ['month', '=', $month]
-    ];
+    $where = ActionCond::where([
+        ['year', $year],
+        ['employees_id', $employeesId],
+        ['month', $month]
+    ]);
 
     /** array key => values (keys are tables and values are numbers(quantity column)) */
     foreach ($allTables as $table) {
         $key[]      = $table;
-        $values[]   = $leadData->records(Params::PREFIX . trim($table), $where, ['quantity'], false)->quantity;
+        $values[]   = empty($leadData->records(Params::PREFIX . $table, $where, ['quantity'], false)->quantity) ? 0 : $leadData->records(Params::PREFIX . $table, $where, ['quantity'], false)->quantity;
         $allData    = array_combine($key, $values);
     }
 
@@ -233,8 +235,8 @@ include 'includes/navbar.php';
                                 <div class="stats-2 d-flex">
                                     <div class="stats-2-arrow low"><i class="fa fa-line-chart"></i></div>
                                     <div class="stats-2-content">
-                                        <strong class="d-block dashtext-1"><?php echo $value == '' || $value == null ? 0 : $value; ?></strong>
-                                        <span class="d-block"><? echo strtoupper($key); ?></span>
+                                        <strong class="d-block dashtext-1"><?php echo in_array(strtolower($key), $tblDataDysplay) && $dataDisplay[$key] === 'percentage' ? $value . '%' : $value; ?></strong>
+                                        <span class="d-block"><?php echo strtoupper($key); ?></span>
                                         <div class="progress progress-template progress-small">
                                             <div role="progressbar" style="width: <?php echo $value; ?>%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template progress-bar-small dashbg-2"></div>
                                         </div>

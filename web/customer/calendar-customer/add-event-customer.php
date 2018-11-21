@@ -1,15 +1,40 @@
 <?php
-require_once "db.php";
+include './../core/init-calendar.php';
 
-$title = isset($_POST['title']) ? $_POST['title'] : "";
-$start = isset($_POST['start']) ? $_POST['start'] : "";
-$end = isset($_POST['end']) ? $_POST['end'] : "";
+$title  = Input::get('title');
+$start  = Input::get('start');
+$end    = Input::get('end');
+$customerId = Input::get('customerId');
+$added  = date('Y-m-d H:i:s');
 
-$sqlInsert = "INSERT INTO tbl_events (title,start,end) VALUES ('".$title."','".$start."','".$end ."')";
+// Number of days
+$startDate = new DateTime($start);
+$endDate   = new DateTime($end);
+$totalDays = $startDate->diff($endDate)->days;
 
-$result = mysqli_query($conn, $sqlInsert);
+// Days of month
+$interval = new DateInterval('P1D');
+$daterange = new DatePeriod($startDate, $interval ,$endDate);
 
-if (! $result) {
-    $result = mysqli_error($conn);
+foreach($daterange as $range){
+    $days[] = $range->format("d/m");
 }
+$requestDays = implode(', ', $days);
+
+
+$insertEvent = $frontDb->insert(Params::TBL_EVENTS, [
+    'lead_id'       => $customerId,
+    'title'         => $title,
+    'start'         => $start,
+    'end'           => $end,
+    'days_number'   => $totalDays,
+    'days'          => $requestDays,
+    'status'        => 2,
+    'added'         => $added
+]);
+
+if ($insertEvent) {
+    Session::put('eventAdded', Translate::t($lang, 'Request_success', ['ucfirst' => true]));
+}
+
 ?>

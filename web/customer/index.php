@@ -9,10 +9,18 @@ $countUsers = $leadData->count(Params::TBL_EMPLOYEES, ['offices_id', '=', $lead-
 $sumFurlough   = $leadData->sum(Params::TBL_FURLOUGH, ['offices_id', '=', $lead->officesId()], 'quantity');
 $sumAbsentees  = $leadData->sum(Params::TBL_ABSENTEES, ['offices_id', '=', $lead->officesId()], 'quantity');
 $sumUnpaid     = $leadData->sum(Params::TBL_UNPAID, ['offices_id', '=', $lead->officesId()], 'quantity');
+$sumMedical    = $leadData->sum(Params::TBL_MEDICAL, ['offices_id', '=', $lead->officesId()], 'quantity');
 
 /** tables for user */
 $allTables  = $leadData->records(Params::TBL_OFFICE, ['id', '=', $lead->officesId()], ['tables'], false);
 $allTables  = explode(',', trim($allTables->tables));
+
+/** Data display */
+$dataDisplay = $leadData->records(Params::TBL_OFFICE, ActionCond::where(['id', $lead->officesId()]), ['data_visualisation'], false)->data_visualisation;
+$dataDisplay = (array)json_decode($dataDisplay);
+foreach ($dataDisplay as $tableData => $v){
+    $tblDataDysplay[] = $tableData;
+}
 
 /** Array with tables $k => $v */
 foreach ($allTables as $table) {
@@ -43,13 +51,11 @@ if (Input::exists()) {
 
 
         /** Conditions for action */
-        $where = [
-            ['year', '=', $year],
-            'AND',
-            ['offices_id', '=', $officeId],
-            'AND',
-            ['month', '=', $month]
-        ];
+        $where = ActionCond::where([
+            ['year', $year],
+            ['offices_id', $officeId],
+            ['month', $month]
+        ]);
 
         /** Array with all results for one FTE to use in chart */
         $chartData  = $leadData->records($table, $where, ['quantity', 'employees_id']);
@@ -188,7 +194,7 @@ if (Input::exists()) {
         <section class="no-padding-top no-padding-bottom">
           <div class="container-fluid">
             <div class="row">
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-12 col-sm-12">
                     <div class="statistic-block block">
                       <div class="progress-details d-flex align-items-end justify-content-between">
                         <div class="title">
@@ -237,6 +243,20 @@ if (Input::exists()) {
                                 <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_unpaid'); ?></strong>
                             </div>
                             <div class="number dashtext-3"><?php echo $sumUnpaid > 0 ? $sumUnpaid : 0; ?></div>
+                        </div>
+                        <div class="progress progress-template">
+                            <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-6">
+                    <div class="statistic-block block">
+                        <div class="progress-details d-flex align-items-end justify-content-between">
+                            <div class="title">
+                                <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_medical'); ?></strong>
+                            </div>
+                            <div class="number dashtext-3"><?php echo $sumMedical > 0 ? $sumMedical : 0; ?></div>
                         </div>
                         <div class="progress progress-template">
                             <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
@@ -336,7 +356,7 @@ if (Input::exists()) {
                                 <div class="col-lg-4">
                                     <div class="details d-flex">
                                         <div class="item" data-toggle="tooltip" data-placement="top" title="<?php echo ucfirst($npTable); ?>"><i class="icon-chart"></i>
-                                            <strong><?php echo $value; ?></strong>
+                                            <strong><?php echo in_array(strtolower($key), $tblDataDysplay) && $dataDisplay[$key] === 'percentage' ? $value . '%' : $value; ?></strong>
                                         </div>
                                     </div>
                                 </div>

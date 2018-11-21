@@ -34,7 +34,7 @@
                     label: "<?php echo ucfirst($best->getFirstPriorityTbl(false)); ?>",
                     backgroundColor: [<?php echo $best->getChartColor(true)?>],
                     borderColor: '#723ac3',
-                    borderWidth: 0.1,
+                    borderWidth: 0.3,
                     data: [<?php echo $best->getChartValues(); ?>]
                 }
             ]
@@ -73,7 +73,7 @@
                     label: "<?php echo ucfirst($best->getSecondPriorityTbl(false)); ?>",
                     backgroundColor: [<?php echo $best->getChartColor(false)?>],
                     borderColor: '#EF8C99',
-                    borderWidth: 0.1,
+                    borderWidth: 0.3,
                     data: [<?php echo $best->getChartValues(false); ?>]
                 }
             ]

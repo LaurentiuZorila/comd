@@ -1,18 +1,37 @@
 <?php
 require_once 'core/init.php';
+$allEvents = $frontProfile->records(Params::TBL_EVENTS, ActionCond::where(['user_id', $frontUser->userId()]), ['*'], true);
+
+foreach ($allEvents as $allEvent) {
+    $events[] = ['days' => $allEvent->days, 'status' => $allEvent->status];
+}
+
 ?>
 <!DOCTYPE html>
 <head>
     <?php
     include '../common/includes/head.php';
     ?>
-<script src="./calendar/fullcalendar/lib/jquery.min.js"></script>
-<script src="./calendar/fullcalendar/lib/moment.min.js"></script>
-<script src="./calendar/fullcalendar/fullcalendar.min.js"></script>
+    <script src="./../common/vendor/fullcalendar/lib/jquery.min.js"></script>
+    <script src="./../common/vendor/fullcalendar/lib/moment.min.js"></script>
+    <script src="./../common/vendor/fullcalendar/fullcalendar.min.js"></script>
+    <script src="./../common/vendor/fullcalendar/locale-all.js"></script>
+    <script src="./../common/vendor/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.js"></script>
 <script>
 
 $(document).ready(function () {
+    var initialLocaleCode = '<?php echo $frontUser->language(); ?>';
     var calendar = $('#calendar').fullCalendar({
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaWeek,agendaDay,listMonth'
+        },
+        locale: initialLocaleCode,
+        buttonIcons: true, // show the prev/next text
+        weekNumbers: true,
+        navLinks: true, // can click day/week names to navigate views
+        eventLimit: true,
         editable: true,
         events: './calendar/fetch-event-frontend.php',
         displayEventTime: false,
@@ -25,83 +44,113 @@ $(document).ready(function () {
         },
         selectable: true,
         selectHelper: true,
-        select: function (start, end, allDay) {
-            $('#info_modal').css("display", "block");
-            $('.modal').addClass('show');
-            $('.Close').click(function() {
-                $('#info_modal').removeClass('show');
-                $('#info_modal').css("display", "none");
-            });
+        select: function() {
+            // Display the modal.
+            // You could fill in the start and end fields based on the parameters
+            $('#createEventModal').modal('show');
 
-            $ ( '#add' ).on('click', function () {
-                var title = $( "select[name='eventSelected']" ).val();
-            });
-
-            if (title) {
-                var start = $.fullCalendar.formatDate(start, "Y-MM-DD HH:mm:ss");
-                var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss");
-                $.ajax({
-                    url: "./calendar/add-event-frontend.php",
-                    dataType: 'Json',
-                    data: {
-                        'title': title,
-                        'start': start,
-                        'end': end,
-                        'userId': <?php echo $frontUser->userId(); ?>,
-                        'customerId': <?php echo $frontUser->officeId(); ?>},
-                    success: function (data) {
-                        displayMessage("Added Successfully");
-                    }
-                });
-                calendar.fullCalendar('renderEvent',
-                        {
-                            title: title,
-                            start: start,
-                            end: end,
-                            allDay: allDay
-                        },
-                true
-                        );
-            }
-            calendar.fullCalendar('unselect');
         },
 
         editable: true,
         eventDrop: function (event, delta) {
-                    var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
-                    var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm:ss");
-                    $.ajax({
-                        url: './calendar/edit-event-frontend.php',
-                        data: 'title=' + event.title + '&start=' + start + '&end=' + end + '&id=' + event.id,
-                        type: "POST",
-                        success: function (response) {
-                            displayMessage("Updated Successfully");
-                        }
-                    });
-                },
-        eventClick: function (event) {
-            var deleteMsg = confirm("Do you really want to delete?");
-            if (deleteMsg) {
+            if (event.status !== 2) {
+                var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
+                var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm:ss");
                 $.ajax({
+                    url: './calendar/edit-event-frontend.php',
+                    data: 'title=' + event.title + '&start=' + start + '&end=' + end + '&id=' + event.id,
                     type: "POST",
-                    url: "./calendar/delete-event-frontend.php",
-                    data: "&id=" + event.id,
                     success: function (response) {
-                        if(parseInt(response) > 0) {
-                            $('#calendar').fullCalendar('removeEvents', event.id);
-                            displayMessage("Deleted Successfully");
-                        }
+                        displayMessage("<?php echo Translate::t($lang, 'Request_success', ['ucfirst' => true]); ?>");
                     }
                 });
+            } else {
+                displayErrorMessage("<?php echo Translate::t($lang, 'can_modify_request', ['ucfirst'=>true]); ?>");
+            }
+        },
+        eventClick: function (event) {
+            if (event.status !== 2) {
+                var deleteMsg = confirm("Do you really want to delete?");
+                if (deleteMsg) {
+                    $.ajax({
+                        type: "POST",
+                        url: "./calendar/delete-event-frontend.php",
+                        data: "&id=" + event.id,
+                        success: function (response) {
+                            if(parseInt(response) > 0) {
+                                displayMessage("<?php echo Translate::t($lang, 'Request_success', ['ucfirst'=>true]); ?>");
+                                location.reload();
+                            }
+                        }
+                    });
+                }
+            } else {
+                displayErrorMessage("<?php echo Translate::t($lang, 'can_modify_request', ['ucfirst'=>true]); ?>");
             }
         }
 
     });
+
+    $('#submitButton').on('click', function() {
+        var title       = $('#request').val();
+        var startDate   = $('#startDate').val();
+        var endDate     = $('#endDate').val();
+
+        if (title === '' || startDate === '' || endDate === '') {
+            displayErrorMessage("<?php echo Translate::t($lang, 'all_required', ['ucfirst'=>true]); ?>");
+        }
+
+        if (title && startDate && endDate) {
+            // hide modal
+            $('#createEventModal').modal('hide');
+
+            $.ajax({
+                url: "./calendar/add-event-frontend.php",
+                dataType: 'Json',
+                data: {
+                    'title': title,
+                    'eventStatus': 'Pending',
+                    'start': startDate,
+                    'end': endDate,
+                    'userId': <?php echo $frontUser->userId(); ?>,
+                    'customerId': <?php echo $frontUser->officeId(); ?>},
+                success: function (response) {
+                    if (response.added === 'success') {
+                        displayMessage("<?php echo Translate::t($lang, 'Request_success', ['ucfirst'=>true]); ?>");
+                        setTimeout(function () { window.location.reload(); }, 2000);
+                    } else if (response.added === 'failed') {
+                        displayErrorMessage("<?php echo Translate::t($lang, 'Request_failed', ['ucfirst'=>true]); ?>");
+                    }
+                }
+            });
+            calendar.fullCalendar('renderEvent',
+                {
+                    title: 'Pending',
+                    start: start,
+                    end: end,
+                    allDay: allDay
+                },
+                true
+            );
+        }
+        $('#calendar').fullCalendar('unselect');
+
+        // Clear modal inputs
+        $('#createEventModal').find('input').val('');
+
+        // hide modal
+        $('#createEventModal').modal('hide');
+    });
+
 });
 
 function displayMessage(message) {
-	    $(".response").html("<div class='success'>"+message+"</div>");
-    setInterval(function() { $(".success").fadeOut(); }, 1000);
+    $(".response").html('<section class="eventMessage"><div class="row"><div class="col-lg-12"><div class="alert alert-dismissible fade show badge-success"><p class="text-white mb-0">'+message+'</p></div></div></div></section>');
+    setInterval(function() { $(".eventMessage").fadeOut(); }, 2000);
+}
+function displayErrorMessage(message) {
+    $(".response").html('<section class="eventMessage"><div class="row"><div class="col-lg-12"><div class="alert alert-dismissible fade show badge-danger"><p class="text-white mb-0">'+message+'</p></div></div></div></section>');
+    setInterval(function() { $(".eventMessage").fadeOut(); }, 3000);
 }
 </script>
 </head>
@@ -116,48 +165,101 @@ include 'includes/navbar.php';
     ?>
     <!-- Sidebar Navigation end-->
     <div class="page-content">
-        <div class="page-header">
+        <div class="page-header mb-0">
             <div class="container-fluid">
                 <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Calendar'); ?></h2>
             </div>
         </div>
+        <!-- Breadcrumb-->
+        <div class="container-fluid">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
+                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Calendar'); ?> </li>
+            </ul>
+        </div>
+<!--        CALENDAR-->
         <section>
+            <div class="response"></div>
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-xl-12">
+                    <div class="col-lg-8">
                         <div class="block">
-                            <div class="title"><strong>Calendar</strong></div>
+                            <p><?php echo Translate::t($lang, 'Calendar_info'); ?></p>
                             <div id="calendar" class="fc fc-bootstrap3 fc-ltr">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="block">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <tr role="row">
+                                        <th class="text-primary">Date</th>
+                                        <th class="text-primary">Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php foreach ($events as $event) { ?>
+                                    <tr>
+                                        <td class="text-small"><?php echo $event['days']; ?></td>
+                                        <td><span class="badge badge-<?php echo Params::EVENTS_STATUS_COLORS[$event['status']]; ?>"><?php echo Params::EVENTS_STATUS[$event['status']]; ?></span></td>
+                                    </tr>
+                                    <?php } ?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-    </div>
-    <!-- Modal-->
-    <div id="info_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade text-left" style="display: none;">
-        <div role="document" class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3"><?php echo Translate::t($lang, 'Info'); ?></strong>
-                    <button type="button" data-dismiss="modal" aria-label="Close" class="close Close"><span aria-hidden="true">×</span></button>
-                </div>
-                <div class="modal-body">
-                    <select name="eventSelected">
-                        <option value="ferie"><?php echo Translate::t($lang, 'furlough', ['ucfirst' => true]); ?></option>
-                        <option value="permeso"><?php echo Translate::t($lang, 'unpaid', ['ucfirst' => true]); ?></option>
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" data-dismiss="modal" id="add" class="btn btn-primary add"><?php echo Translate::t($lang, 'Add'); ?></button>
-                    <button type="button" data-dismiss="modal" class="btn btn-secondary Close"><?php echo Translate::t($lang, 'Close'); ?></button>
+<!--        CALENDAR END-->
+<!--        MODAL-->
+        <div id="createEventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade">
+            <div role="document" class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3"><?php echo Translate::t($lang, 'Make_attention'); ?></strong>
+                        <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <select name="request" class="form-control" id="request">
+                            <option value="Furlough"><?php echo Translate::t($lang, 'Furlough'); ?></option>
+                            <option value="Unpaid"><?php echo Translate::t($lang, 'Unpaid'); ?></option>
+                        </select>
+                        <div class="form-group">
+                            <label class="form-control-label">Start date</label>
+                            <input type="text" value="" id="startDate" class="form-control input-datepicker-autoclose">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label">End date</label>
+                            <input type="text" value="" id="endDate" class="form-control input-datepicker-autoclose">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="submitButton">Save</button>
+                    </div>
                 </div>
             </div>
         </div>
+<!--        MODAL END-->
     </div>
-    <!-- Modal End -->
 </div>
+<?php
+include '../common/includes/footer.php';
+?>
+<script src="./../common/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="./../common/js/front.js"></script>
+<script>
+    $(function() {
+        $( "#startDate" ).datepicker({
+            format: 'yyyy/mm/dd',
+        });
+        $( "#endDate" ).datepicker({
+            format: 'yyyy/mm/dd',
+        });
+    });
+</script>
 </body>
-
-
 </html>

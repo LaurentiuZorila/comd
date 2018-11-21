@@ -189,21 +189,19 @@ class CustomerDB
      * @param array $fields
      * @return bool
      */
-    public function insert($table, $fields = array())
+    public function insert($table, $fields = [])
     {
         $keys = array_keys($fields);
-        $values = null;
-        $x = 1;
-
         foreach ($fields as $field) {
-            $values .= '?';
-            if ($x < count($fields)) {
-                $values .= ', ';
-            }
-            $x++;
+            $values[] = '?';
         }
 
-        $sql = sprintf('INSERT INTO %s (`%s`) VALUES (%s)', $table, implode('`,`', $keys), $values);
+        $columns = '`' . implode('`,`', $keys) . '`';
+        $values  = sprintf(' VALUES (%s)', implode(',', $values));
+        $insert  = sprintf('INSERT INTO %s (%s)', $table, $columns);
+
+        $sql = $insert;
+        $sql .= $values;
 
         if (!$this->query($sql, $fields)->error()) {
             return true;

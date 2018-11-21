@@ -9,16 +9,21 @@
     <!-- Bootstrap CSS-->
     <link rel="stylesheet" href="./../common/vendor/bootstrap/css/bootstrap.min.css">
     <!-- Font Awesome CSS-->
+<!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">-->
     <link rel="stylesheet" href="./../common/vendor/font-awesome/css/font-awesome.min.css">
     <!-- Custom Font Icons CSS-->
     <link rel="stylesheet" href="./../common/css/font.css">
     <!-- Google fonts - Muli-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:300,400,700">
     <!-- theme stylesheet-->
-    <link rel="stylesheet" href="./../common/css/style.violet.css" id="theme-stylesheet">
-<link rel="stylesheet" href="./calendar/fullcalendar/fullcalendar.min.css">
+    <link rel="stylesheet" href="./../common/css/style.violet.premium.css" id="theme-stylesheet">
+<link rel="stylesheet" href="./../common/vendor/fullcalendar/fullcalendar.min.css">
     <!-- Favicon-->
     <link rel="shortcut icon" href="./../common/img/favicon.ico">
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+<!--DATE PICKER-->
+<link rel="stylesheet" href="./../common/vendor/bootstrap-datepicker-1.6.4-dist/css/bootstrap-datepicker3.css">
+<script src="./../common/vendor/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.min.js"></script>
+<script src="./../common/vendor/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.js"></script>

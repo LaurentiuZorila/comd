@@ -4408,14 +4408,14 @@ pre code {
     border-color:#34373d
 }
 .nav-tabs .dropdown-menu {
-    margin-top:-1px
+    margin-top:-1px;
 }
 .nav-pills .nav-link {
-    border-radius:.25rem
+    border-radius:.25rem;
 }
 .nav-pills .nav-link.active,.nav-pills .show>.nav-link {
     color:#fff;
-    background-color:#9055A2
+    background-color:#9055A2;
 }
 .card {
     background-color:#2d3035;

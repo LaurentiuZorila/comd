@@ -101,6 +101,9 @@ class Params
     const TBL_EVENTS        = 'cmd_events';
 
 
+    const TBL_NOTIFICATION  = 'cmd_notification';
+
+
     /**
      * Allowed files extensions
      */
@@ -116,11 +119,21 @@ class Params
      */
     const MAX_INPUT         = 50;
 
+
     const DASH              = [
                                 'text' => ['dashtext-1', 'dashtext-2', 'dashtext-3', 'dashtext-4'],
                                 'bg'  => ['dashbg-1', 'dashbg-2', 'dashbg-3', 'dashbg-4', 'dashbg-5']
                                ];
 
     const DATADISPLAY       = ['number', 'percentage'];
+
+
+    const EVENTS_STATUS         = ['1' => 'Accepted', '2' => 'Pending', '3' => 'Denied'];
+
+
+    const EVENTS_STATUS_COLORS  = ['1' => 'success', '2' => 'secondary', '3' => 'danger'];
+
+
+    const EVENTS_COLORS         = ['1' => '#28a745', '2' => '#8a8d93', '3' => '#bb414d'];
 
 }

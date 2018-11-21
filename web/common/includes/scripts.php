@@ -9,11 +9,4 @@
 <script src="./../common/vendor/jquery-validation/jquery.validate.min.js"></script>
 <script src="./../common/js/charts-home.js"></script>
 <script src="./../common/js/front.js"></script>
-<script>
-    // $(document).ready(function(){
-    //     $('ul li').click(function(){
-    //         $('li').removeClass("active");
-    //         $(this).addClass("active");
-    //     });
-    // });
-</script>
+

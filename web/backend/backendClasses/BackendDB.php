@@ -83,7 +83,7 @@ class BackendDB
      * @param array $conditions
      * @return $this
      */
-    public function query($sql, $params = array(), $conditions = array())
+    public function query($sql, $params = [], $conditions = [])
     {
         $this->_error = false;
 
@@ -184,21 +184,20 @@ class BackendDB
      * @param array $fields
      * @return bool
      */
-    public function insert($table, $fields = array())
+    public function insert($table, $fields = [])
     {
         $keys = array_keys($fields);
-        $values = null;
-        $x = 1;
 
         foreach ($fields as $field) {
-            $values .= '?';
-            if ($x < count($fields)) {
-                $values .= ', ';
-            }
-            $x++;
+            $values[] = '?';
         }
 
-        $sql = "INSERT INTO {$table} (`" . implode('`,`', $keys) . "`) VALUES ({$values})";
+        $columns = '`' . implode('`,`', $keys) . '`';
+        $values  = sprintf(' VALUES (%s)', implode(',', $values));
+        $insert  = sprintf('INSERT INTO %s (%s)', $table, $columns);
+
+        $sql = $insert;
+        $sql .= $values;
 
         if (!$this->query($sql, $fields)->error()) {
             return true;

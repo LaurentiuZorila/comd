@@ -4,6 +4,7 @@ require_once 'core/init.php';
 // All tables, employees id
 $allTables   = $leadData->records(Params::TBL_OFFICE, ['id', '=', $lead->officesId()], ['tables'], false);
 $employeesID = $leadData->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $lead->officesId()], ['id']);
+
 $allTables   = explode(',', trim($allTables->tables));
 // Trim values
 $allTables   = array_map('trim', $allTables);
@@ -72,7 +73,7 @@ include 'includes/navbar.php';
         <div class="container-fluid">
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
-                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Data') . ' ' . Common::getMonths($lang)[$month]; ?></li>
+                <li class="breadcrumb-item active"><?php echo empty(Input::existsName('get', 'month')) ? Translate::t($lang, 'Data') . ' ' . Common::getMonths($lang)[$month] : Translate::t($lang, 'Data') . ' ' . Common::getMonths($lang)[Input::get('month')]; ?></li>
             </ul>
         </div>
 
@@ -96,7 +97,7 @@ include 'includes/navbar.php';
                                 </div>
                                 <strong class="text-primary">
                                     <?php
-                                    if (Input::exists('get')) {
+                                    if (Input::existsName('get', 'month')) {
                                     echo Translate::t($lang, 'Data') . ' ' . Translate::t($lang, 'All_employees', ['strtolower' => true]) . ' - ' . Common::numberToMonth(Input::get('month'), $lang) . ' - ' . date('Y');
                                     } else {
                                     echo Translate::t($lang, 'Data') . ' ' . Translate::t($lang, 'All_employees', ['strtolower' => true]) . ' - ' . Common::numberToMonth($month, $lang) . ' - ' . date('Y');
@@ -108,7 +109,7 @@ include 'includes/navbar.php';
                                 <table class="table" id="employeesTable">
                                     <thead>
                                         <tr role="row">
-                                            <th class="text-primary"><?php echo Translate::t($lang, 'Name'); ?></th>
+                                            <th class="text-primary"><?php echo Translate::t($lang, 'Name', ['strtoupper' => true]); ?></th>
                                             <?php foreach ($tables as $table) { ?>
                                             <th class="text-primary"> <?php echo Translate::t($lang, $table, ['strtoupper' => true]); ?> </th>
                                             <?php } ?>
@@ -125,7 +126,9 @@ include 'includes/navbar.php';
                                                 <td class="text-white-50">
                                                     <?php
                                                     if (Input::exists('get')) {
-                                                    echo $leadData->records($k, [['employees_id', '=', $id], 'AND', ['month', '=', Input::get('month')], 'AND', ['year', '=', date('Y')]], ['quantity'], false)->quantity;
+                                                    echo $leadData->records($k, [['employees_id', '=', $id], 'AND', ['month', '=', Input::get('month')], 'AND', ['year', '=', date('Y')]], ['quantity'], false)->quantity ?: 0;
+                                                    } else {
+                                                        echo $leadData->records($k, [['employees_id', '=', $id], 'AND', ['month', '=', date('n')-1], 'AND', ['year', '=', date('Y')]], ['quantity'], false)->quantity ?: 0;
                                                     }
                                                     ?>
                                                 </td>

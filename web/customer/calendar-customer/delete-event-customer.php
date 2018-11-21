@@ -1,11 +1,14 @@
 <?php
-require_once "db.php";
+include './../core/init-calendar.php';
+$id = Input::post('id');
 
-$id = $_POST['id'];
-$sqlDelete = "DELETE from tbl_events WHERE id=".$id;
+if ($id !== 'undefined') {
+    $deleteEvent = $customerDb->delete(Params::TBL_EVENTS, ActionCond::where(['id', $id]));
+    if ($deleteEvent) {
+        echo 1;
+    }
+} else {
+    echo 0;
+}
 
-mysqli_query($conn, $sqlDelete);
-echo mysqli_affected_rows($conn);
-
-mysqli_close($conn);
 ?>
