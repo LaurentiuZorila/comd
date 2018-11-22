@@ -26,6 +26,7 @@ spl_autoload_register(function($class_name){
 
 require_once './functions/sanitize.php';
 $frontUser    = new FrontendUser();
+$frontDb      = FrontendDB::getInstance();
 $frontProfile = new FrontendProfile();
 
 if (!$frontUser->isLoggedIn()) {

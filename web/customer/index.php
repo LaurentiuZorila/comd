@@ -45,7 +45,7 @@ if (Input::exists()) {
         $year       = Input::post('year');
         $month      = Input::post('month');
         $officeId   = $lead->officesId();
-        $npTable    = Translate::t($lang, strtolower(Input::post('table')), ['ucfirst' => true]);
+        $npTable    = Translate::t($lang, strtolower(Input::post('table')), ['strtolower' => true]);
         $table      = Params::PREFIX . trim(Input::post('table'));
         $quantitySum = [];
 
@@ -356,7 +356,7 @@ if (Input::exists()) {
                                 <div class="col-lg-4">
                                     <div class="details d-flex">
                                         <div class="item" data-toggle="tooltip" data-placement="top" title="<?php echo ucfirst($npTable); ?>"><i class="icon-chart"></i>
-                                            <strong><?php echo in_array(strtolower($key), $tblDataDysplay) && $dataDisplay[$key] === 'percentage' ? $value . '%' : $value; ?></strong>
+                                            <strong><?php echo in_array(strtolower($npTable), $tblDataDysplay) && $dataDisplay[$npTable] === 'percentage' ? $value . '%' : $value; ?></strong>
                                         </div>
                                     </div>
                                 </div>

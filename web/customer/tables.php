@@ -2,8 +2,8 @@
 require_once 'core/init.php';
 
 // All tables, employees id
-$allTables   = $leadData->records(Params::TBL_OFFICE, ['id', '=', $lead->officesId()], ['tables'], false);
-$employeesID = $leadData->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $lead->officesId()], ['id']);
+$allTables   = $leadData->records(Params::TBL_OFFICE, ActionCond::where(['id', $lead->officesId()]), ['tables'], false);
+$employeesID = $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['offices_id', $lead->officesId()]), ['id']);
 
 $allTables   = explode(',', trim($allTables->tables));
 // Trim values
@@ -15,18 +15,23 @@ foreach ($employeesID as $ids) {
     $employeesId[] = $ids->id;
 }
 
+/** Data display */
+$dataDisplay = $leadData->records(Params::TBL_OFFICE, ActionCond::where(['id', $lead->officesId()]), ['data_visualisation'], false)->data_visualisation;
+$dataDisplay = (array)json_decode($dataDisplay);
+foreach ($dataDisplay as $tableData => $v){
+    $tblDataDisplay[] = $tableData;
+}
+
 // Conditions for action
 $year   = date('Y');
 $month  = date('n') - 1;
 $prefix = Params::PREFIX;
 
-    $where = [
-        ['year', '=', $year],
-        'AND',
-        ['offices_id', '=', $lead->officesId()],
-        'AND',
-        ['month', '=', $month]
-    ];
+    $where = ActionCond::where([
+        ['year', $year],
+        ['offices_id', $lead->officesId()],
+        ['month', $month]
+    ]);
 
     /** Tables with prefix and without prefixTbl => tbl */
     foreach ($allTables as $value) {
@@ -126,9 +131,17 @@ include 'includes/navbar.php';
                                                 <td class="text-white-50">
                                                     <?php
                                                     if (Input::exists('get')) {
-                                                    echo $leadData->records($k, [['employees_id', '=', $id], 'AND', ['month', '=', Input::get('month')], 'AND', ['year', '=', date('Y')]], ['quantity'], false)->quantity ?: 0;
+                                                        if (in_array(strtolower($v), $tblDataDisplay) && $dataDisplay[strtolower($v)] === 'percentage') {
+                                                            echo $leadData->records($k, ActionCond::where([['employees_id', $id], ['month',  Input::get('month')], ['year', date('Y')]]), ['quantity'], false)->quantity . '%' ?: 0 . '%';
+                                                        } else {
+                                                            echo $leadData->records($k, ActionCond::where([['employees_id', $id], ['month',  Input::get('month')], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
+                                                        }
                                                     } else {
-                                                        echo $leadData->records($k, [['employees_id', '=', $id], 'AND', ['month', '=', date('n')-1], 'AND', ['year', '=', date('Y')]], ['quantity'], false)->quantity ?: 0;
+                                                        if (in_array(strtolower($v), $tblDataDisplay) && $dataDisplay[strtolower($v)] === 'percentage' ) {
+                                                            echo $leadData->records($k, ActionCond::where([['employees_id', $id], ['month', date('n')-1], ['year', date('Y')]]), ['quantity'], false)->quantity . '%' ?: 0 . '%';
+                                                        } else {
+                                                            echo $leadData->records($k, ActionCond::where([['employees_id', $id], ['month', date('n')-1], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
+                                                        }
                                                     }
                                                     ?>
                                                 </td>

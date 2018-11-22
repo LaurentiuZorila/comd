@@ -2,9 +2,13 @@
 require_once 'core/init.php';
 $allEvents = $frontProfile->records(Params::TBL_EVENTS, ActionCond::where(['user_id', $frontUser->userId()]), ['*'], true);
 
-foreach ($allEvents as $allEvent) {
-    $events[] = ['days' => $allEvent->days, 'status' => $allEvent->status];
-}
+if (!empty($allEvents)) {
+    foreach ($allEvents as $allEvent) {
+        $events[] = ['days' => $allEvent->days, 'status' => $allEvent->status];
+        }
+    } else {
+        $events[] = ['days' => '', 'status' => ''];
+    }
 
 ?>
 <!DOCTYPE html>
@@ -69,7 +73,7 @@ $(document).ready(function () {
             }
         },
         eventClick: function (event) {
-            if (event.status !== 2) {
+            if (event.status === 2) {
                 var deleteMsg = confirm("Do you really want to delete?");
                 if (deleteMsg) {
                     $.ajax({
@@ -100,7 +104,18 @@ $(document).ready(function () {
             displayErrorMessage("<?php echo Translate::t($lang, 'all_required', ['ucfirst'=>true]); ?>");
         }
 
-        if (title && startDate && endDate) {
+        var sDate = new Date(startDate);
+        var eDate = new Date(endDate);
+        var ascendingDates;
+
+        // Check if start date si lower as end date
+        if (sDate.getTime() < eDate.getTime()) {
+            var ascendingDates = true;
+        } else {
+            var ascendingDates = false;
+        }
+
+        if (title && startDate && endDate && ascendingDates) {
             // hide modal
             $('#createEventModal').modal('hide');
 
@@ -116,6 +131,7 @@ $(document).ready(function () {
                     'customerId': <?php echo $frontUser->officeId(); ?>},
                 success: function (response) {
                     if (response.added === 'success') {
+                        console.log('aaaa');
                         displayMessage("<?php echo Translate::t($lang, 'Request_success', ['ucfirst'=>true]); ?>");
                         setTimeout(function () { window.location.reload(); }, 2000);
                     } else if (response.added === 'failed') {
@@ -132,6 +148,8 @@ $(document).ready(function () {
                 },
                 true
             );
+        } else {
+            displayErrorMessage("<?php echo Translate::t($lang, 'ascending_dates', ['ucfirst'=>true]); ?>");
         }
         $('#calendar').fullCalendar('unselect');
 

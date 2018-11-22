@@ -1,5 +1,8 @@
 <?php
 
+$notificationCount = $leadData->count(Params::TBL_NOTIFICATION, ActionCond::where([['lead_id', $lead->customerId()], ['response_status', false]]));
+$notificationData = $leadData->records(Params::TBL_NOTIFICATION, ActionCond::where([['lead_id', $lead->customerId()], ['response_status', false]]), ['message', 'user_id']);
+
 ?>
 
 <header class="header">
@@ -25,18 +28,12 @@
             </div>
             <div class="right-menu list-inline no-margin-bottom">
                 <!--                <div class="list-inline-item"><a href="#" class="search-open nav-link"><i class="icon-magnifying-glass-browser"></i></a></div>-->
-                <div class="list-inline-item dropdown"><a id="navbarDropdownMenuLink1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link messages-toggle"><i class="fa fa-envelope"></i><span class="badge dashbg-1">1</span></a>
+                <div class="list-inline-item dropdown"><a id="navbarDropdownMenuLink1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link messages-toggle"><i class="fa fa-envelope"></i><span class="badge dashbg-1"><?php echo $notificationCount; ?></span></a>
                     <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages">
-                        <a href="#" class="dropdown-item message d-flex align-items-center">
-                            <div class="profile">
-                                <div class="status online"></div>
-                            </div>
-                            <div class="content"><strong class="d-block"><?php echo $lead->name(); ?></strong><span class="d-block"><?php echo Translate::t($lang, 'navNotification'); ?></span>
-                                <small class="date d-block"><?php echo date("h:i A"); ?></small>
-                            </div>
-                        </a>
-                        <a href="#" class="dropdown-item text-center message"><strong><?php echo Translate::t($lang, 'navEmplData'); ?><i class="fa fa-angle-right"></i></strong></a>
-                        <a href="#" class="dropdown-item text-center message"><strong><?php echo Translate::t($lang, 'navStaffData'); ?><i class="fa fa-angle-right"></i></strong></a>
+                            <?php foreach ($notificationData as $notification) { ?>
+                                <a href="calendar.php" class="dropdown-item text-center message"><strong><?php echo Translate::t($lang, [$notification->message, 'from'], ['ucfirst'=>true]) . ' ' . $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $notification->user_id]), ['name'], false)->name; ?>    <i class="fa fa-angle-right"></i></strong></a>
+                            <?php } ?>
+
                     </div>
                 </div>
                 <!-- Tasks-->

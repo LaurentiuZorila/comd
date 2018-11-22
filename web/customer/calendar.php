@@ -256,7 +256,7 @@ include 'includes/navbar.php';
                                             <div class="collapse" id="collapseExample<?php echo $allEvent->id; ?>">
                                                 <div class="btn-group btn-group-sm mt-3" role="group" aria-label="Basic example">
                                                     <button type="button" class="btn-sm btn-primary p-1 eventAction" id="accepted" data-accepted="1" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>"><small>Accept</small></button>
-                                                    <button type="button" class="btn-sm btn-outline-danger p-0 ml-2 eventAction" id="declined" data-accepted="3" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>"><small>Decline</small></button>
+                                                    <button type="button" class="btn-sm btn-outline-secondary p-0 ml-2 eventAction" id="declined" data-accepted="3" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>"><small>Decline</small></button>
                                                 </div>
                                             </div>
                                         </td>
@@ -339,13 +339,13 @@ include '../common/includes/footer.php';
                     $.each(data, function(key, value) {
                         if (value === "Success") {
                             displayMessage("<?php echo Translate::t($lang, 'event_updated', ['ucfirst'=>true]); ?>");
+                            setTimeout(function(){
+                                location.reload();
+                            }, 1000);
                         } else {
                             displayMessage("<?php echo Translate::t($lang, 'Db_error', ['ucfirst'=>true]); ?>");
                         }
                     });
-                    setTimeout(function(){
-                        location.reload();
-                    }, 1000);
                 }
             });
         }

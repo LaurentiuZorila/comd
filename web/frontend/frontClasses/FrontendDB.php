@@ -32,6 +32,12 @@ class FrontendDB
 
 
     /**
+     * @var
+     */
+    private $_lastId;
+
+
+    /**
      * @var int
      */
     private $_count = 0;
@@ -104,6 +110,7 @@ class FrontendDB
             if ($this->_query->execute()) {
                 $this->_results         = $this->_query->fetchAll(PDO::FETCH_OBJ);
                 $this->_count           = $this->_query->rowCount();
+                $this->_lastId          = $this->_pdo->lastInsertId();
             } else {
                 $this->_error = true;
             }
@@ -283,6 +290,15 @@ class FrontendDB
     public function first()
     {
         return ($results = $this->results()) && !empty($results[0]) ? $results[0] : null;
+    }
+
+
+    /**
+     * @return int
+     */
+    public function lastId()
+    {
+        return (int)$this->_lastId;
     }
 
 

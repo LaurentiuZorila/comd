@@ -71,6 +71,9 @@ class Common
                 $format = new IntlDateFormatter('it_IT', IntlDateFormatter::NONE,
                     IntlDateFormatter::NONE, NULL, NULL, "MMMM");
                 break;
+            default:
+                $format = new IntlDateFormatter('en_US', IntlDateFormatter::NONE,
+                    IntlDateFormatter::NONE, NULL, NULL, "MMMM");
         }
         return ucfirst(datefmt_format($format, mktime(0, 0, 0, $num, 10)));
     }

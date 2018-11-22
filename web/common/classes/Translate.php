@@ -163,6 +163,11 @@ class Translate
             'new_event'         => 'Un nou event a este in asteptare',
             'event_response_success'    => 'Cererea ta a fost acceptata',
             'event_response_denied'     => 'Cererea ta a fost respinsa',
+            'ascending_dates'   => 'Data de inceput trebuie sa fie mai mica ca data de sfarsit',
+            'from'              => 'de la',
+            'notification_not_found'    => 'Nu ai nici o notificare',
+            'nav_give_calendar' => 'In aceasta sectiune poti vedere zilele tale de concediu sau concediu neplatit, poti cere zile de concediu iar cand vor fi acceptate sau refuzate vei primi o notificare',
+
         ];
     }
 
@@ -318,9 +323,13 @@ class Translate
             'Accepted'          => 'Accepted',
             'confirm_delete'    => 'Do you really want to delete?',
             'Request_failed'    => 'Your request is not added',
-            'new_event'         => 'New event is in pending',
+            'new_event'         => 'New event in pending',
             'event_response_success'    => 'Your event has been accepted',
             'event_response_denied'     => 'Your event has been denied',
+            'ascending_dates'   => 'Start date must be lowest as end date',
+            'from'              => 'from',
+            'notification_not_found'    => 'You don\'t have notification',
+            'nav_give_calendar' => 'In this section you can see you furlough or unpaid days, can request furlough or unpaid form here and wen your request is accepted or denied you will receive a notification ',
         ];
     }
 
@@ -478,6 +487,10 @@ class Translate
             'new_event'         => 'Nuovo evento in attesa',
             'event_response_success'    => 'La tua richiesta è stata accetata',
             'event_response_denied'     => 'La tua richiesta è stata respinta',
+            'ascending_dates'   => 'Data di indizzio deve essere minore come data finale',
+            'from'              => 'da',
+            'notification_not_found'    => 'Non risultano nuotifiche',
+            'nav_give_calendar' => 'Da questa sezione poi vusializzare i tuoi permesi ferie, poi richiedere ferie o permesso e quanto ci sono accetate sarai avisato',
         ];
     }
 
@@ -509,20 +522,40 @@ class Translate
     public static function t($lang, $string, $params = [])
     {
         // If empty params return string from translation
-        if (empty($params)) {
-            return !empty(self::getLang($lang)[$string]) ? self::getLang($lang)[$string] : $string;
-        }
-        // Check params
-        foreach ($params as $k => $v) {
-            if ($k === 'ucfirst' && $v && !empty(self::getLang($lang)[$string])) {
-                return !empty(self::getLang($lang)[$string]) ? ucfirst(self::getLang($lang)[$string]) : $string;
-            } elseif ($k === 'strtoupper' && $v && !empty(self::getLang($lang)[$string])) {
-                return !empty(self::getLang($lang)[$string]) ? strtoupper(self::getLang($lang)[$string]) : $string;
-            } elseif ($k === 'strtolower' && $v && !empty(self::getLang($lang)[$string])) {
-                return !empty(self::getLang($lang)[$string]) ? strtolower(self::getLang($lang)[$string]) : $string;
-            } else {
+        if (is_array($string)) {
+            if (empty($params)) {
+                return !empty(self::getLang($lang)[$string[0]]) ? self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]] : $string[0] . ' ' . $string[1];
+            }
+        } else {
+            if (empty($params)) {
                 return !empty(self::getLang($lang)[$string]) ? self::getLang($lang)[$string] : $string;
             }
+        }
+
+        // Check params
+        foreach ($params as $k => $v) {
+            if (is_array($string)) {
+                if ($k === 'ucfirst' && $v && !empty(self::getLang($lang)[$string[0]])) {
+                    return !empty(self::getLang($lang)[$string[0]]) ? ucfirst(self::getLang($lang)[$string[0]]) . ' ' . self::getLang($lang)[$string[1]] : $string[0] . ' ' . $string[1];
+                } elseif ($k === 'strtoupper' && $v && !empty(self::getLang($lang)[$string[0]])) {
+                    return !empty(self::getLang($lang)[$string[0]]) ? strtoupper(self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]]) : $string[0] . ' ' . $string[1];
+                } elseif ($k === 'strtolower' && $v && !empty(self::getLang($lang)[$string[0]])) {
+                    return !empty(self::getLang($lang)[$string[0]]) ? strtolower(self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]]) : $string[0] . ' ' . $string[1];
+                } else {
+                    return !empty(self::getLang($lang)[$string[0]]) ? self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]] : $string[0] . ' ' . $string[1];
+                }
+            } elseif (!is_array($string)) {
+                if ($k === 'ucfirst' && $v && !empty(self::getLang($lang)[$string])) {
+                    return !empty(self::getLang($lang)[$string]) ? ucfirst(self::getLang($lang)[$string]) : $string;
+                } elseif ($k === 'strtoupper' && $v && !empty(self::getLang($lang)[$string])) {
+                    return !empty(self::getLang($lang)[$string]) ? strtoupper(self::getLang($lang)[$string]) : $string;
+                } elseif ($k === 'strtolower' && $v && !empty(self::getLang($lang)[$string])) {
+                    return !empty(self::getLang($lang)[$string]) ? strtolower(self::getLang($lang)[$string]) : $string;
+                } else {
+                    return !empty(self::getLang($lang)[$string]) ? self::getLang($lang)[$string] : $string;
+                }
+            }
+
         }
     }
 

@@ -272,20 +272,6 @@ include 'includes/navbar.php';
                                 </div>
                             </div>
                         <?php } ?>
-                        <div class="col-lg-3 col-sm-3">
-                            <div class="statistic-block block">
-                                <div class="progress-details d-flex align-items-end justify-content-between">
-                                    <div class="title">
-                                        <div class="icon"><i class="icon-list"></i></div><strong><?php echo Translate::t($lang, 'Unpaid_h'); ?></strong>
-                                    </div>
-                                    <div class="number dashtext-2"><?php echo !empty($frontProfile->unpaidHours($where)->hours) ? $frontProfile->unpaidHours($where)->hours : 0; ?>h</div>
-                                </div>
-                                <div class="progress progress-template">
-                                    <div role="progressbar" style="width: 100%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </section>
