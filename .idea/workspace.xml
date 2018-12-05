@@ -5,34 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="710b7c0a-dd02-4dee-91a7-595e34acec84" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/charts/index_charts.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/charts/index_charts.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/employees_data.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/employees_data.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/staff_profile.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/staff_profile.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/common/classes/Common.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/classes/Common.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/common/classes/Params.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/classes/Params.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/common/classes/Tokens.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/classes/Tokens.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fullcalendarModal.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/web/common/classes/Translate.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/classes/Translate.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/common/css/style.violet.premium.css" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/css/style.violet.premium.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/common/includes/head.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/includes/head.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/add_users.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/add_users.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/calendar-customer/update-event-customer.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/calendar-customer/update-event-customer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/calendar.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/calendar.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/charts/useDataChart.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/charts/useDataChart.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/download.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/download.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/files/2records.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/files/MOCK_DATA.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/includes/navbar.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/includes/navbar.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/tables.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/tables.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/customer/update_database.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/update_database.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/update_users_profile.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/update_users_profile.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/user_data.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/user_data.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/calendar.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/frontend/calendar.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/includes/navbar.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/frontend/includes/navbar.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/frontend/index.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -71,8 +47,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/web/customer/update_database.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-44">
-              <caret line="24" column="108" selection-start-line="24" selection-start-column="108" selection-end-line="24" selection-end-column="108" />
+            <state relative-caret-position="307">
+              <caret line="228" column="28" lean-forward="true" selection-start-line="228" selection-start-column="28" selection-end-line="228" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -80,8 +56,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/web/common/classes/Translate.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1950">
-              <caret line="135" column="182" selection-start-line="135" selection-start-column="182" selection-end-line="135" selection-end-column="182" />
+            <state relative-caret-position="200">
+              <caret line="513" column="44" selection-start-line="513" selection-start-column="44" selection-end-line="513" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -240,13 +216,13 @@
         <option value="$PROJECT_DIR$/web/customer/includes/js/dbUpdate.php" />
         <option value="$PROJECT_DIR$/web/customer/includes/response/responseDbUpdate.php" />
         <option value="$PROJECT_DIR$/web/common/classes/Errors.php" />
-        <option value="$PROJECT_DIR$/web/common/classes/Translate.php" />
         <option value="$PROJECT_DIR$/web/customer/includes/response/responseMonthExists.php" />
         <option value="$PROJECT_DIR$/web/customer/user_data.php" />
         <option value="$PROJECT_DIR$/web/customer/includes/js/monthExists.php" />
         <option value="$PROJECT_DIR$/web/customer/download.php" />
         <option value="$PROJECT_DIR$/web/customer/calendar.php" />
         <option value="$PROJECT_DIR$/web/customer/update_database.php" />
+        <option value="$PROJECT_DIR$/web/common/classes/Translate.php" />
       </list>
     </option>
   </component>
@@ -267,17 +243,6 @@
             <path>
               <item name="comd" type="b2602c69:ProjectViewProjectNode" />
               <item name="comd" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="comd" type="b2602c69:ProjectViewProjectNode" />
-              <item name="comd" type="462c0819:PsiDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="comd" type="b2602c69:ProjectViewProjectNode" />
-              <item name="comd" type="462c0819:PsiDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="customer" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -420,18 +385,18 @@
       <workItem from="1543822533867" duration="949000" />
       <workItem from="1543837781174" duration="1027000" />
       <workItem from="1543907393706" duration="66000" />
-      <workItem from="1543907864181" duration="1690000" />
+      <workItem from="1543907864181" duration="2585000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1389362000" />
+    <option name="totallyTimeSpent" value="1390257000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="821" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49902153" visible="true" weight="0.20600858" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49902153" visible="true" weight="0.20600858" />
       <window_info id="Structure" order="1" sideWeight="0.50097847" side_tool="true" weight="0.20529328" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -444,7 +409,7 @@
       <window_info anchor="bottom" id="Docker" order="7" weight="0.32871014" />
       <window_info anchor="bottom" id="Database Changes" order="8" weight="0.32871014" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.32967034" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" sideWeight="0.49713877" visible="true" weight="0.26611796" />
+      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49713877" visible="true" weight="0.28395063" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5028612" side_tool="true" weight="0.2857143" />
       <window_info anchor="bottom" id="Inspection Results" order="12" weight="0.32871014" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -503,20 +468,6 @@
     </ignored-roots>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/web/customer/core/init-calendar.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="27" column="13" selection-start-line="27" selection-end-line="27" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/frontend/calendar/add-event-frontend.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="88" column="29" selection-start-line="88" selection-start-column="29" selection-end-line="88" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/web/customer/includes/sidebar.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="213">
@@ -811,13 +762,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/common/classes/Translate.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1950">
-          <caret line="135" column="182" selection-start-line="135" selection-start-column="182" selection-end-line="135" selection-end-column="182" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/web/common/classes/Tokens.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="254">
@@ -853,10 +797,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/web/common/classes/Translate.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="513" column="44" selection-start-line="513" selection-start-column="44" selection-end-line="513" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tsconfig.json">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/composer.json">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/web/customer/update_database.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-44">
-          <caret line="24" column="108" selection-start-line="24" selection-start-column="108" selection-end-line="24" selection-end-column="108" />
+        <state relative-caret-position="307">
+          <caret line="228" column="28" lean-forward="true" selection-start-line="228" selection-start-column="28" selection-end-line="228" selection-end-column="28" />
         </state>
       </provider>
     </entry>

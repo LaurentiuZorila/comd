@@ -46,26 +46,29 @@ if (Input::exists() && Tokens::tokenVerify()) {
                     if ($data[0] === 'Id' || $data[1] === 'Name' || $data[2] === 'Quantity') {
                         // Escape first line of file
                         fgetcsv($h);
+
+                        while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
+                            if (is_numeric($data[2])) {
+                                $quantity = !empty($data[2]) ? $data[2] : 0;
+                                $lead->insert($table, [
+                                    'offices_id'            => $lead->officesId(),
+                                    'departments_id'        => $lead->departmentId(),
+                                    'year'                  => $year,
+                                    'month'                 => $month,
+                                    'employees_id'          => $data[0],
+                                    'employees_average_id'  => $data[0] . '_' . $year,
+                                    'insert_type'           => Params::INSERT_TYPE['file'],
+                                    'quantity'              => $quantity,
+                                    'days'                  => $data[3]
+                                ]);
+                            } else {
+                                Errors::setErrorType('danger', Translate::t($lang, 'type_int', ['ucfirtst'=>true]));
+                            }
+                        }
+                    } else {
+                        Errors::setErrorType('danger', Translate::t($lang, 'correct_file', ['ucfirst'=>true]));
                     }
 
-                    while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
-                        if (is_numeric($data[2])) {
-                            $quantity = !empty($data[2]) ? $data[2] : 0;
-                            $lead->insert($table, [
-                                'offices_id'            => $lead->officesId(),
-                                'departments_id'        => $lead->departmentId(),
-                                'year'                  => $year,
-                                'month'                 => $month,
-                                'employees_id'          => $data[0],
-                                'employees_average_id'  => $data[0] . '_' . $year,
-                                'insert_type'           => Params::INSERT_TYPE['file'],
-                                'quantity'              => $quantity,
-                                'days'                  => $data[3]
-                            ]);
-                        } else {
-                            Errors::setErrorType('danger', Translate::t($lang, 'type_int', ['ucfirtst'=>true]));
-                        }
-                    }
                     if ($lead->success() && !Errors::countAllErrors()) {
                         Errors::setErrorType('success', Translate::t($lang, 'Db_success'));
                     } else {
