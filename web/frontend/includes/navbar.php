@@ -30,14 +30,10 @@ $notificationData = $frontProfile->records(Params::TBL_NOTIFICATION, ActionCond:
                 <!--                <div class="list-inline-item"><a href="#" class="search-open nav-link"><i class="icon-magnifying-glass-browser"></i></a></div>-->
                 <div class="list-inline-item dropdown">
                     <a id="navbarDropdownMenuLink1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link messages-toggle">
-                        <i class="fa fa-envelope"></i>
-                        <?php if ($notificationCount > 0) { ?>
-                        <span class="badge dashbg-1"><?php echo $notificationCount; ?></span>
-                        <?php } ?>
+                        <i class="fa fa-envelope"></i><span class="badge dashbg-1"><?php echo $notificationCount > 0 ?: ''; ?></span>
                     </a>
                     <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages">
-                        <?php
-                        if ($notificationCount > 0) {
+                        <?php if ($notificationCount > 0) {
                         foreach ($notificationData as $notification) { ?>
                             <a href="calendar.php" class="dropdown-item message d-flex align-items-center">
                                 <div class="profile">
@@ -51,8 +47,7 @@ $notificationData = $frontProfile->records(Params::TBL_NOTIFICATION, ActionCond:
                             <a href="calendar.php"
                                class="dropdown-item text-center message"><strong><?php echo Translate::t($lang, 'notification_not_found', ['ucfirst' => true]); ?>
                                     <i class="fa fa-angle-right"></i></strong></a>
-                       <?php }
-                        ?>
+                       <?php } ?>
                     </div>
                 </div>
                 <!-- Tasks-->

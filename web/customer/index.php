@@ -214,7 +214,9 @@ if (Input::exists()) {
                         <div class="title">
                           <div class="icon"><i class="icon-info"></i></div><strong><?php echo Translate::t($lang, 'Total_user_absentees'); ?></strong>
                         </div>
-                        <div class="number dashtext-3"><?php echo $sumAbsentees > 0 ? $sumAbsentees : 0; ?></div>
+                        <div class="number dashtext-3">
+                            <h5 class="mb-1"><?php echo $sumAbsentees > 0 ? $sumAbsentees . '<small>' . Translate::t($lang, 'Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t($lang, 'Day', ['strtolower'=>true]) . '</small>'; ?></h5>
+                        </div>
                       </div>
                       <div class="progress progress-template">
                         <div role="progressbar" style="width: 100%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
@@ -228,7 +230,9 @@ if (Input::exists()) {
                         <div class="title">
                           <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_furlough'); ?></strong>
                         </div>
-                        <div class="number dashtext-3"><?php echo $sumFurlough > 0 ? $sumFurlough : 0; ?></div>
+                        <div class="number dashtext-3">
+                            <h5 class="mb-1"><?php echo $sumFurlough > 0 ? $sumFurlough . '<small>' . Translate::t($lang, 'Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t($lang, 'Day', ['strtolower'=>true]) . '</small>'; ?></h5>
+                        </div>
                       </div>
                       <div class="progress progress-template">
                         <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
@@ -242,7 +246,9 @@ if (Input::exists()) {
                             <div class="title">
                                 <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_unpaid'); ?></strong>
                             </div>
-                            <div class="number dashtext-3"><?php echo $sumUnpaid > 0 ? $sumUnpaid : 0; ?></div>
+                            <div class="number dashtext-3">
+                                <h5 class="mb-1"><?php echo $sumUnpaid > 0 ? $sumUnpaid . '<small>' . Translate::t($lang, 'Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t($lang, 'Day', ['strtolower'=>true]) . '</small>'; ?></h5>
+                            </div>
                         </div>
                         <div class="progress progress-template">
                             <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
@@ -256,7 +262,9 @@ if (Input::exists()) {
                             <div class="title">
                                 <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_medical'); ?></strong>
                             </div>
-                            <div class="number dashtext-3"><?php echo $sumMedical > 0 ? $sumMedical : 0; ?></div>
+                            <div class="number dashtext-3">
+                                <h5 class="mb-1"><?php echo $sumMedical > 0 ? $sumMedical . '<small>' . Translate::t($lang, 'Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t($lang, 'Day', ['strtolower'=>true]) . '</small>'; ?></h5>
+                            </div>
                         </div>
                         <div class="progress progress-template">
                             <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>

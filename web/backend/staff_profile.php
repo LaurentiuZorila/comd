@@ -338,8 +338,8 @@ include 'includes/navbar.php';
                                         <tr>
                                             <th scope="row"><?php echo $x; ?></th>
                                             <td><a href="employees_data.php?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
-                                            <td><?php echo (int)$dataCommonTables['furlough']; ?></td>
-                                            <td><?php echo $employeesData['avg'];?></td>
+                                            <td><?php echo (int)$dataCommonTables['furlough'] . ' ' .  Translate::t($lang, 'Days', ['strtolower'=>true]); ?></td>
+                                            <td><?php echo $employeesData['avg'] . ' ' .  Translate::t($lang, 'Days', ['strtolower'=>true]);?></td>
                                             <td><?php echo Common::percentage($dataCommonTables['furlough'], $employeesData['avg']); ?></td>
                                         </tr>
                                         <?php
@@ -381,8 +381,8 @@ include 'includes/navbar.php';
                                         <tr>
                                             <th scope="row"><?php echo $x; ?></th>
                                             <td><a href="employees_data.php?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
-                                            <td><?php echo (int)$dataCommonTables['absentees']; ?></td>
-                                            <td><?php echo $employeesData['avg'];?></td>
+                                            <td><?php echo (int)$dataCommonTables['absentees'] . ' ' .  Translate::t($lang, 'Days', ['strtolower'=>true]); ?></td>
+                                            <td><?php echo $employeesData['avg'] . ' ' .  Translate::t($lang, 'Days', ['strtolower'=>true]);?></td>
                                             <td><?php echo Common::percentage($dataCommonTables['absentees'], $employeesData['avg']); ?></td>
                                         </tr>
                                         <?php
@@ -424,8 +424,8 @@ include 'includes/navbar.php';
                                         <tr>
                                             <th scope="row"><?php echo $x; ?></th>
                                             <td><a href="employees_data.php?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
-                                            <td><?php echo (int)$dataCommonTables['unpaid']; ?></td>
-                                            <td><?php echo $employeesData['avg'];?></td>
+                                            <td><?php echo (int)$dataCommonTables['unpaid'] . ' ' .  Translate::t($lang, 'Days', ['strtolower'=>true]); ?></td>
+                                            <td><?php echo $employeesData['avg'] . ' ' .  Translate::t($lang, 'Days', ['strtolower'=>true]); ?></td>
                                             <td><?php echo Common::percentage($dataCommonTables['unpaid'], $employeesData['avg']); ?></td>
                                         </tr>
                                         <?php
@@ -467,8 +467,8 @@ include 'includes/navbar.php';
                                         <tr>
                                             <th scope="row"><?php echo $x; ?></th>
                                             <td><a href="employees_data.php?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
-                                            <td><?php echo (int)$dataCommonTables['medical']; ?></td>
-                                            <td><?php echo $employeesData['avg'];?></td>
+                                            <td><?php echo (int)$dataCommonTables['medical'] . ' ' .  Translate::t($lang, 'Days', ['strtolower'=>true]); ?></td>
+                                            <td><?php echo $employeesData['avg'] . ' ' . Translate::t($lang, 'Days', ['strtolower'=>true]); ?></td>
                                             <td><?php echo Common::percentage($dataCommonTables['medical'], $employeesData['avg']); ?></td>
                                         </tr>
                                         <?php

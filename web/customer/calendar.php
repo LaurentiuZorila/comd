@@ -62,6 +62,11 @@ if (!Input::existsName('post', 'eventFilter')) {
 <script src="./../common/vendor/fullcalendar/lib/moment.min.js"></script>
 <script src="./../common/vendor/fullcalendar/fullcalendar.min.js"></script>
 <script src="./../common/vendor/fullcalendar/locale-all.js"></script>
+<script src="./../common/vendor/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.js"></script>
+<!--DATE PICKER-->
+<link rel="stylesheet" href="./../common/vendor/bootstrap-datepicker-1.6.4-dist/css/bootstrap-datepicker3.css">
+<script src="./../common/vendor/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.min.js"></script>
+<script src="./../common/vendor/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.js"></script>
 <script>
 
 $(document).ready(function () {
@@ -179,7 +184,7 @@ include 'includes/navbar.php';
                 <div class="row">
                     <div class="col-lg-8">
                         <div class="block">
-                            <p><?php echo Translate::t($lang, 'Calendar_info'); ?></p>
+                            <p><?php echo Translate::t($lang, 'calendar_info_lead'); ?></p>
                             <div id="calendar" class="fc fc-bootstrap3 fc-ltr">
                             </div>
                         </div>
@@ -248,7 +253,6 @@ include 'includes/navbar.php';
                                                     <p class="mb-0"><?php echo $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $allEvent->user_id]), ['name'],false)->name; ?></p>
                                                     <p class="mb-0 mt-0"><?php echo Translate::t($lang, 'event_request', ['ucfirst' => true]) . ' ' . Translate::t($lang, 'furlough', ['strtolower' => true]); ?></p>
                                                 </div>
-
                                             </div>
                                         </td>
                                         <td>
@@ -291,8 +295,8 @@ include 'includes/navbar.php';
                         <label class="form-control-label"><?php echo Translate::t($lang, 'event_request', ['ucfirst'=>true]); ?></label>
                         <select name="request" class="form-control" id="request">
                             <option value=""></option>
-                            <option value="Furlough"><?php echo Translate::t($lang, 'Furlough'); ?></option>
-                            <option value="Unpaid"><?php echo Translate::t($lang, 'Unpaid'); ?></option>
+                            <option value="furlough"><?php echo Translate::t($lang, 'Furlough'); ?></option>
+                            <option value="unpaid"><?php echo Translate::t($lang, 'Unpaid'); ?></option>
                         </select>
                         </div>
                         <div class="form-group">
@@ -356,8 +360,14 @@ include '../common/includes/footer.php';
     });
 
     $(function() {
-        $( "#startDate" ).datepicker();
-        $( "#endDate" ).datepicker();
+        $( "#startDate" ).datepicker({
+            startDate: '-15d',
+            autoclose: true
+        });
+        $( "#endDate" ).datepicker({
+            startDate: '-15d',
+            autoclose: true,
+        });
     });
 
 </script>

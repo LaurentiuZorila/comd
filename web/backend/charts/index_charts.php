@@ -103,7 +103,8 @@
             labels: [
                 "Furlough",
                 "Absentees",
-                "Unpaid"
+                "Unpaid",
+                "Medical"
             ],
             datasets: [
                 {

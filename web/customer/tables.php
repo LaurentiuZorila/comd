@@ -91,10 +91,17 @@ include 'includes/navbar.php';
                                 <div class="col-sm-3">
                                     <div class="btn-group btn-block" id="changeMonth">
                                         <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <?php echo Translate::t($lang, 'Select_month'); ?>
+                                            <?php
+                                            if (Input::existsName('get', 'month')) {
+                                            echo Common::numberToMonth(Input::get('month'), $lang);
+                                            } else {
+                                            echo Translate::t($lang, 'Select_month');
+                                            }
+                                            ?>
                                         </button>
                                         <div class="dropdown-menu btn-block">
-                                            <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
+                                            <?php foreach (Common::getMonths($lang) as $key => $value) {
+                                                ?>
                                                 <a class="dropdown-item changeMonth" href="?month=<?php echo $key; ?>"><?php echo $value; ?></a>
                                             <?php } ?>
                                         </div>
@@ -125,22 +132,34 @@ include 'includes/navbar.php';
                                         foreach ($employeesId as $id) { ?>
                                             <tr role="row" class="odd">
                                                 <td class="">
-                                                    <a href="user_data.php?id=<?php echo $id;?>" class="text-white-50"><?php echo $leadData->records(Params::TBL_EMPLOYEES, ['id', '=', $id], ['name'], false)->name; ?></a>
+                                                    <a href="user_data.php?id=<?php echo $id;?>" class="text-white"><?php echo $leadData->records(Params::TBL_EMPLOYEES, ['id', '=', $id], ['name'], false)->name; ?></a>
                                                 </td>
                                                 <?php foreach ($tables as $k => $v) { ?>
                                                 <td class="text-white-50">
                                                     <?php
                                                     if (Input::exists('get')) {
                                                         if (in_array(strtolower($v), $tblDataDisplay) && $dataDisplay[strtolower($v)] === 'percentage') {
-                                                            echo $leadData->records($k, ActionCond::where([['employees_id', $id], ['month',  Input::get('month')], ['year', date('Y')]]), ['quantity'], false)->quantity . '%' ?: 0 . '%';
-                                                        } else {
                                                             echo $leadData->records($k, ActionCond::where([['employees_id', $id], ['month',  Input::get('month')], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
+                                                            echo '%';
+                                                        } else {
+                                                            if (in_array(strtolower($v), Params::TBL_COMMON)) {
+                                                                echo $leadData->records($k, ActionCond::where([['employees_id', $id], ['month',  Input::get('month')], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
+                                                                echo ' <small>' . Translate::t($lang, 'Days', ['strtolower'=>true]) . '</small>';
+                                                            } else {
+                                                                echo $leadData->records($k, ActionCond::where([['employees_id', $id], ['month',  Input::get('month')], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
+                                                            }
                                                         }
                                                     } else {
                                                         if (in_array(strtolower($v), $tblDataDisplay) && $dataDisplay[strtolower($v)] === 'percentage' ) {
-                                                            echo $leadData->records($k, ActionCond::where([['employees_id', $id], ['month', date('n')-1], ['year', date('Y')]]), ['quantity'], false)->quantity . '%' ?: 0 . '%';
-                                                        } else {
                                                             echo $leadData->records($k, ActionCond::where([['employees_id', $id], ['month', date('n')-1], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
+                                                            echo '%';
+                                                        } else {
+                                                            if (in_array(strtolower($v), Params::TBL_COMMON)) {
+                                                                echo $leadData->records($k, ActionCond::where([['employees_id', $id], ['month', date('n') - 1], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
+                                                                echo ' <small>' . Translate::t($lang, 'Days', ['strtolower'=>true]) . '</small>';
+                                                            } else {
+                                                                echo $leadData->records($k, ActionCond::where([['employees_id', $id], ['month', date('n') - 1], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
+                                                            }
                                                         }
                                                     }
                                                     ?>

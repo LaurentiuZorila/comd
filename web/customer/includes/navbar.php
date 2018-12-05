@@ -28,11 +28,24 @@ $notificationData = $leadData->records(Params::TBL_NOTIFICATION, ActionCond::whe
             </div>
             <div class="right-menu list-inline no-margin-bottom">
                 <!--                <div class="list-inline-item"><a href="#" class="search-open nav-link"><i class="icon-magnifying-glass-browser"></i></a></div>-->
-                <div class="list-inline-item dropdown"><a id="navbarDropdownMenuLink1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link messages-toggle"><i class="fa fa-envelope"></i><span class="badge dashbg-1"><?php echo $notificationCount; ?></span></a>
+                <div class="list-inline-item dropdown"><a id="navbarDropdownMenuLink1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link messages-toggle"><i class="fa fa-envelope"></i><span class="badge dashbg-1"><?php echo $notificationCount > 0 ?: ''; ?></span></a>
                     <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages">
-                            <?php foreach ($notificationData as $notification) { ?>
-                                <a href="calendar.php" class="dropdown-item text-center message"><strong><?php echo Translate::t($lang, [$notification->message, 'from'], ['ucfirst'=>true]) . ' ' . $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $notification->user_id]), ['name'], false)->name; ?>    <i class="fa fa-angle-right"></i></strong></a>
-                            <?php } ?>
+                        <?php if ($notificationCount > 0) {
+                            foreach ($notificationData as $notification) { ?>
+                                <a href="calendar.php" class="dropdown-item message d-flex align-items-center">
+                                    <div class="profile">
+                                        <div class="status online"></div>
+                                    </div>
+                                    <div class="content">
+                                        <strong class="d-block text-primary">
+                                            <?php echo Translate::t($lang, [$notification->message, 'from'], ['ucfirst'=>true]) . ' ' . $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $notification->user_id]), ['name'], false)->name; ?>    <i class="fa fa-angle-right"></i>
+                                        </strong>
+                                    </div>
+                                </a>
+                            <?php }
+                        } else { ?>
+                            <a href="calendar.php" class="dropdown-item text-center message"><strong><?php echo Translate::t($lang, 'notification_not_found', ['ucfirst' => true]); ?></strong></a>
+                        <?php } ?>
 
                     </div>
                 </div>
@@ -68,7 +81,10 @@ $notificationData = $leadData->records(Params::TBL_NOTIFICATION, ActionCond::whe
                                     <li><a href="#"><?php echo Translate::t($lang, 'update_profile_nav', ['ucfirst' => true]); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'logout', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'calendar', ['strtoupper' => true]); ?></strong>
+                                <ul class="list-unstyled mb-3">
+                                    <li><a href="#"><?php echo Translate::t($lang, 'nav_give_calendar', ['ucfirst' => true]); ?></a></li>
+                                </ul>
                             </div>
                         </div>
                         <div class="row megamenu-buttons text-center">
@@ -77,7 +93,7 @@ $notificationData = $leadData->records(Params::TBL_NOTIFICATION, ActionCond::whe
                             <div class="col-lg-2 col-md-4"><a href="update_database.php" class="d-block btn-dark"><i class="icon-three-cells" style="font-size: 20px;"></i></a></div>
                             <div class="col-lg-2 col-md-4"><a href="update_users_profile.php" class="d-block btn-dark"><i class="icon-flow-branch" style="font-size: 20px;"></i></a></div>
                             <div class="col-lg-2 col-md-4"><a href="update_profile.php" class="d-block btn-dark"><i class="icon-settings" style="font-size: 20px;"></i></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="logout.php" class="d-block btn-dark"><i class="icon-logout" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="calendar.php" class="d-block btn-dark"><i class="icon-contract" style="font-size: 20px;"></i></a></div>
                         </div>
                     </div>
                 </div>

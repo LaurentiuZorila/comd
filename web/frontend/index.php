@@ -4,6 +4,16 @@ require_once 'core/init.php';
 $tables = $frontProfile->records(Params::TBL_OFFICE, ['id', '=', $frontUser->officeId()], ['tables'], false);
 $tables = explode(',', $tables->tables);
 
+// Get all common data
+foreach (Params::TBL_COMMON as $commonTables) {
+    $commonData[$commonTables] = $frontProfile->records(Params::PREFIX . $commonTables,
+        ActionCond::where([
+                ['employees_id', $frontUser->userId()],
+                ['year', date('Y')]
+        ]), ['month', 'quantity', 'days'], true);
+
+}
+
 
 if (!Input::get('info')) {
     Session::put('InfoAlert', Translate::t($lang, 'Click_filter_for_data'));
@@ -12,13 +22,9 @@ if (!Input::get('info')) {
 if (!Input::exists()) {
     //Current year
     $year = date('Y');
-    // Current month
-    //date('n') - 1;
-    $month = 1;
-    $where = ActionCond::where([
+    $whereIndexPage = ActionCond::where([
         ['employees_id', $frontUser->userId()],
         ['year', $year],
-        ['month', $month]
     ]);
 }
 
@@ -255,7 +261,7 @@ include 'includes/navbar.php';
             <section class="no-padding-top no-padding-bottom">
                 <div class="container-fluid">
                     <div class="row">
-                        <?php foreach ($frontProfile->commonDetails($where, ['quantity']) as $table => $value) {
+                        <?php foreach ($frontProfile->sumAllCommonData($whereIndexPage, 'quantity') as $table => $value) {
                             $table = $table === Translate::t($lang, 'unpaid') ? Translate::t($lang, 'unpaid_days') : $table;
                             ?>
                             <div class="col-lg-3 col-sm-3">
@@ -264,10 +270,15 @@ include 'includes/navbar.php';
                                         <div class="title">
                                             <div class="icon"><i class="icon-list"></i></div><strong><?php echo Translate::t($lang, $table); ?></strong>
                                         </div>
-                                        <div class="number dashtext-2"><?php echo !empty($value->quantity) ? $value->quantity : 0; ?></div>
+                                        <div class="number dashtext-2"><?php echo !empty($value->total) ? $value->total : 0; ?></div>
                                     </div>
                                     <div class="progress progress-template">
                                         <div role="progressbar" style="width: 100%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <button class="btn-sm btn-outline-secondary col-sm-6 common" type="button" data-toggle="collapse" data-target="<?= $table; ?>" id="">
+                                            <?php echo Translate::t($lang, 'show'); ?>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -275,7 +286,51 @@ include 'includes/navbar.php';
                     </div>
                 </div>
             </section>
+
+<!--            Collapse user common details-->
+        <?php foreach ($commonData as $key => $values) { ?>
+            <section class="no-padding-top collapse allCollapse" id="<?php echo $key; ?>">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="block">
+                                <div class="title"><strong><?php echo Translate::t($lang, $key); ?></strong>
+                                    <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th><?php echo Translate::t($lang, 'Name'); ?></th>
+                                            <th><?php echo Translate::t($lang, 'month'); ?></th>
+                                            <th><?php echo Translate::t($lang, 'quantity'); ?></th>
+                                            <th><?php echo Translate::t($lang, 'days'); ?></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $x = 1;
+                                            foreach ($values as $v) { ?>
+                                            <tr>
+                                                <td><?php echo $x; ?></td>
+                                                <td><?php echo $frontUser->name(); ?></td>
+                                                <td><?php echo Common::numberToMonth($v->month, $lang); ?></td>
+                                                <td><?php echo $v->quantity; ?></td>
+                                                <td><?php echo $v->days; ?></td>
+                                            </tr>
+                                            <?php
+                                            $x++; } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         <?php }
+        }
         if (Input::exists() && !Errors::countAllErrors()) {
             if (is_numeric(Input::post('month'))) { ?>
                 <section class="no-padding-top no-padding-bottom">
@@ -302,7 +357,7 @@ include 'includes/navbar.php';
             <section class="margin-bottom-sm">
                 <div class="container-fluid">
                     <div class="row d-flex align-items-stretch">
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
                             <div class="stats-with-chart-1 block">
                                 <div class="title"><strong class="d-block"><?php echo Translate::t($lang, 'furlough'); ?></strong></div>
                                 <div class="row d-flex align-items-end justify-content-between">
@@ -312,7 +367,7 @@ include 'includes/navbar.php';
                                                 <small><?php echo $day = $userFurlough > 1 ? Translate::t($lang, 'Days') : Translate::t($lang, 'Day'); ?></small>
                                             </strong>
                                             <span class="d-block"><?php echo Common::getMonths($lang)[$month] . ' ' . Input::post('year'); ?></span>
-                                            <small class="d-block"><?php echo Translate::t($lang, 'Total_user_furlough') . ' ' . $totalFurloughs; ?></small>
+                                            <small class="d-block"><?php echo Translate::t($lang, 'Team_furlough') . ' ' . $totalFurloughs; ?></small>
                                         </div>
                                     </div>
                                     <div class="col-7">
@@ -324,7 +379,7 @@ include 'includes/navbar.php';
                             </div>
                         </div>
 <!--                        MEDICAL LEAVE-->
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
                             <div class="stats-with-chart-1 block">
                                 <div class="title"><strong class="d-block"><?php echo Translate::t($lang, 'medical'); ?></strong></div>
                                 <div class="row d-flex align-items-end justify-content-between">
@@ -334,7 +389,7 @@ include 'includes/navbar.php';
                                                 <small><?php echo $day = $userMedical > 1 ? Translate::t($lang, 'Days') : Translate::t($lang, 'Day'); ?></small>
                                             </strong>
                                             <span class="d-block"><?php echo Common::getMonths($lang)[$month] . ' ' . Input::post('year'); ?></span>
-                                            <small class="d-block"><?php echo Translate::t($lang, 'Total_user_furlough') . ' ' . $totalMedical; ?></small>
+                                            <small class="d-block"><?php echo Translate::t($lang, 'Team_medical') . ' ' . $totalMedical; ?></small>
                                         </div>
                                     </div>
                                     <div class="col-7">
@@ -347,13 +402,12 @@ include 'includes/navbar.php';
                         </div>
 
 <!--                        ABSENTEES-->
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
                             <div class="stats-with-chart-1 block">
                                 <div class="title"><strong class="d-block"><?php echo Translate::t($lang, 'absentees');  ?></strong></div>
                                 <div class="row d-flex align-items-end justify-content-between">
                                     <div class="col-5">
-                                        <div class="text"><strong
-                                                    class="d-block dashtext-1"><?php echo $userAbsentees; ?>
+                                        <div class="text"><strong class="d-block dashtext-1"><?php echo $userAbsentees; ?>
                                                 <small><?php echo $day = $userAbsentees > 1 ? Translate::t($lang, 'Days') : Translate::t($lang, 'Day'); ?></small>
                                             </strong>
                                             <span class="d-block"><?php echo Common::getMonths($lang)[$month] . ' ' . Input::post('year'); ?></span>
@@ -369,7 +423,7 @@ include 'includes/navbar.php';
                             </div>
                         </div>
                         <!--UNPAID LEAVE-->
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
                             <div class="stats-with-chart-1 block">
                                 <div class="title"><strong class="d-block"><?php echo Translate::t($lang, 'Total_user_unpaid'); ?></strong></div>
                                 <div class="row d-flex align-items-end justify-content-between">
@@ -445,6 +499,23 @@ if (Input::noPost() && Input::existsName('get', 'lastData') && !Errors::countAll
     $('#Submit').click(function(){
         $('#myModal').modal('show');
     });
+
+    // Click to view common
+    $ ( '.common' ).on('click', function () {
+        $( '.allCollapse:visible' ).hide();
+        var $this = $(this);
+        $( '#' + $this.data("target")).show(function () {
+            $( '#' + $this.data("target")).fadeIn(3000);
+        });
+    });
+
+    // Click close div
+    $ ( '.closeDiv' ).on('click', function () {
+        $( '.allCollapse:visible' ).hide(function () {
+            $(this).fadeOut(3000);
+        });
+    });
+
 </script>
 </body>
 </html>

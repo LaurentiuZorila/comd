@@ -98,9 +98,15 @@ class Params
     const TBL_MEDICAL       = 'cmd_medical';
 
 
+    /**
+     * Events table
+     */
     const TBL_EVENTS        = 'cmd_events';
 
 
+    /**
+     * Notification table
+     */
     const TBL_NOTIFICATION  = 'cmd_notification';
 
 
@@ -125,15 +131,33 @@ class Params
                                 'bg'  => ['dashbg-1', 'dashbg-2', 'dashbg-3', 'dashbg-4', 'dashbg-5']
                                ];
 
+    /**
+     * How to display data
+     */
     const DATADISPLAY       = ['number', 'percentage'];
 
 
+    /**
+     * Event statuses
+     */
     const EVENTS_STATUS         = ['1' => 'Accepted', '2' => 'Pending', '3' => 'Denied'];
 
 
+    /**
+     * Events status color
+     */
     const EVENTS_STATUS_COLORS  = ['1' => 'success', '2' => 'secondary', '3' => 'danger'];
 
 
-    const EVENTS_COLORS         = ['1' => '#28a745', '2' => '#8a8d93', '3' => '#bb414d'];
+    /**
+     * Events color for calendar
+     */
+    const EVENTS_COLORS     = ['1' => '#28a745', '2' => '#8a8d93', '3' => '#bb414d'];
+
+
+    /**
+     * Insert type to DB form file or from calendar
+     */
+    const INSERT_TYPE       = ['file' => 0, 'calendar' => 1];
 
 }

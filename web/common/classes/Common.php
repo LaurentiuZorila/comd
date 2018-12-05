@@ -8,19 +8,12 @@ class Common
 
 
     /**
+     * @param $items
      * @return bool
      */
     public static function checkValues($items)
     {
-        foreach ($items as $k => $v) {
-            if (empty(trim($v))) {
-                unset($items[$k]);
-            }
-        }
-        if (count($items) > 0) {
-            return true;
-        }
-        return false;
+        return array_sum($items) > 0 ? true : false;
     }
 
 
@@ -185,20 +178,19 @@ class Common
 
 
     /**
-     * @param $item
-     * @return array|string
+     * @param $param
+     * @param $data
+     * @param array $conc
+     * @return int|string
      */
-    public static function valuesToInsert($item)
-    {
-        if (is_array($item)) {
-            $data = array_map('trim', $item);
-            $data = array_map('strtolower', $item);
-            return $data;
-        } else {
-            $data = strtolower(trim($item));
-        }
-        return $data;
-    }
+   public static function zeroIf ($param='', $data, $conc = [])
+   {
+       if (empty($conc)) {
+           return $param($data) ?: 0;
+       } else {
+           return $param($data) ? $data . $conc[0] : 0 . $conc[0];
+       }
+   }
 
 
     /**

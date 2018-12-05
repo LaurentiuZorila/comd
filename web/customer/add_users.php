@@ -156,8 +156,10 @@ include 'includes/navbar.php';
                                     </div>
 
                                     <div class="line"></div>
-                                    <div class="col-sm-9 ml-auto">
-                                        <div class="form-group row">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 form-control-label">
+                                        </label>
+                                        <div class="form-group col-sm-9">
                                             <button id="Submit" name="add" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'create'); ?></button>
                                             <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                         </div>

@@ -123,6 +123,7 @@ class Translate
             'Team_furlough'     => 'Concedii echipa',
             'Team_unpaid'       => 'Zile neplatite echipa',
             'Team_absentees'    => 'Absente echipa',
+            'Team_medical'      => 'Medical echipa',
             'view_employees'    => 'Vezi operatori',
             'view_staff'        => 'Vezi staff',
             'view_employees_nav_details'        => 'Din aceasta sectiunde poti vizualiza toti operatorii care apartin departamentului tau',
@@ -132,7 +133,7 @@ class Translate
             'update_profile_nav'    => 'Din acceasta sectiune poti modifica datele tale personale',
             'not_found_leads'   => 'Nu sau gasit team leaderi',
             'only_numbers'      => 'trebuie sa contina doar numere',
-            'data_month_exists' => 'Pentru filterele alese in baza de date sau gasit date existente',
+            'data_month_exists' => 'Pentru filterele alese in baza de date sau gasit date existente. Daca vrei sa faci update cu datele presente in file, bifeaza update si reincearca',
             'update_db_navbar'  => 'Din aceasta sectiune poti incarca datele operatorilor pentru ficare luna si pentru toate tablele',
             'new_pass'          => 'Noua parola',
             'current_pass'      => 'Parola actuala',
@@ -167,7 +168,11 @@ class Translate
             'from'              => 'de la',
             'notification_not_found'    => 'Nu ai nici o notificare',
             'nav_give_calendar' => 'In aceasta sectiune poti vedere zilele tale de concediu sau concediu neplatit, poti cere zile de concediu iar cand vor fi acceptate sau refuzate vei primi o notificare',
-
+            'upload'            => 'Incarca',
+            'type_int'          => 'Datele din coloana QUANTITY din file-ul csv, trebuie sa fie de tip INT (integer/numeric)',
+            'quantity'          => 'Cantitate',
+            'month'             => 'Luna',
+            'days'              => 'Zile',
         ];
     }
 
@@ -204,7 +209,7 @@ class Translate
             'Select_table'      => 'Select table',
             'Offices'           => 'Offices',
             'Total_user_absentees'  => 'Total absentees',
-            'Total_user_furlough'   => 'Total furloughs',
+            'Total_user_furlough'   => 'Total vacation',
             'Total_user_unpaid' => 'Total unpaid',
             'Profile'           => 'Profile',
             'Total_employees'   => 'Total employees',
@@ -243,7 +248,7 @@ class Translate
             'Feedback_given'    => 'Thanks for your feedback',
             'Leads'             => 'Team Leader',
             'Total'             => 'Total',
-            'furlough'          => 'Furlough',
+            'furlough'          => 'Vacation',
             'unpaid'            => 'Unpaid',
             'absentees'         => 'Absentees',
             'employees_data'    => 'Employees data',
@@ -283,9 +288,10 @@ class Translate
             'your_rating'       => 'Your rating',
             'show'              => 'Show',
             'percentage'        => 'percentage',
-            'Team_furlough'     => 'Team furlough',
+            'Team_furlough'     => 'Team vacation',
             'Team_unpaid'       => 'Team unpaid',
             'Team_absentees'    => 'Team absentees',
+            'Team_medical'      => 'Team medical',
             'view_employees'    => 'View employees',
             'view_staff'        => 'View staff',
             'view_employees_nav_details'        => 'Click on icon below to view all employees belong your department',
@@ -295,7 +301,7 @@ class Translate
             'update_profile_nav'    => 'Form here you can update your profile account',
             'not_found_leads'   => 'Not found leads',
             'only_numbers'      => 'must contain only numbers',
-            'data_month_exists' => 'For this filters in DB results data, please check again',
+            'data_month_exists' => 'For this filters in DB results data, please check again your data. If you want to update DB with data from your file, please check update checkbox',
             'update_db_navbar'  => 'From this section you can update data base for your employees for each month and each table',
             'new_pass'          => 'New Password',
             'current_pass'      => 'Current password',
@@ -311,7 +317,7 @@ class Translate
             'medical'           => 'Medical',
             'Total_user_medical'   => 'Total medical',
             'Team_medical'      => 'Team medical leaves',
-            'Calendar_info'     => 'From here you can request furlough days. If this are accepted this days will appear here',
+            'Calendar_info'     => 'From here you can request leave days. If this are accepted this days will appear here',
             'Request_success'   => 'Your request has been successfully added',
             'event_deleted'     => 'Event is successfully deleted',
             'event_updated'     => 'Event is successfully updated',
@@ -329,7 +335,13 @@ class Translate
             'ascending_dates'   => 'Start date must be lowest as end date',
             'from'              => 'from',
             'notification_not_found'    => 'You don\'t have notification',
-            'nav_give_calendar' => 'In this section you can see you furlough or unpaid days, can request furlough or unpaid form here and wen your request is accepted or denied you will receive a notification ',
+            'nav_give_calendar' => 'In this section you can see you vacation or unpaid days. Can request vacation or unpaid days form here and when your request is accepted or denied you will receive a notification',
+            'calendar_info_lead'        => 'Here appear all request from your employees (accepted, denied or pending requests). From here you accept or delete request from you employees.',
+            'upload'            => 'Upload',
+            'type_int'          => 'Data from column QUANTITY from your csv file must have INT (integer/numeric) type',
+            'quantity'          => 'Quantity',
+            'month'             => 'Month',
+            'days'              => 'Days',
         ];
     }
 
@@ -447,6 +459,7 @@ class Translate
             'Team_furlough'     => 'Ferie squadra',
             'Team_unpaid'       => 'Permeso squadra',
             'Team_absentees'    => 'Assenze squadra',
+            'Team_medical'      => 'Malatia squadra',
             'view_employees'    => 'Vedi gli operatori',
             'view_staff'        => 'Vedi i staff',
             'view_employees_nav_details'        => 'Cicca sulla icona in basso per vissaulizzare tutti operatori per tuo dipartimento',
@@ -456,7 +469,7 @@ class Translate
             'update_profile_nav'    => 'Se voi cambiari gli tue dati clicca icona presente in basso',
             'not_found_leads'   => 'Non sono trovati team leader',
             'only_numbers'      => 'deve contenere solo i numeri',
-            'data_month_exists' => 'Per questo filtro in DB risultano già dati presenti, fai una verifica e prova un\'altra volta',
+            'data_month_exists' => 'Per questo filtro in DB risultano già dati presenti, fai una verifica e prova un\'altra volta. Se voi fare update con i dati presenti nel file, clicca sul checkbox aggiorna',
             'update_db_navbar'  => 'Da questa sezione poi aggioarea la DB per tutti operatori per tutte mese e per tutte tabelle',
             'new_pass'          => 'Nuova parola',
             'current_pass'      => 'Parola attuale',
@@ -491,6 +504,12 @@ class Translate
             'from'              => 'da',
             'notification_not_found'    => 'Non risultano nuotifiche',
             'nav_give_calendar' => 'Da questa sezione poi vusializzare i tuoi permesi ferie, poi richiedere ferie o permesso e quanto ci sono accetate sarai avisato',
+            'calendar_info_lead'        => 'Qui sono tutti richieste da operatori (richieste accettate, cancellate o in attesa). Da questa sezione poi accetare o cancellare queste richieste',
+            'upload'            => 'Carica',
+            'type_int'          => 'Dati presenti nella collonna QUANTITY dal file devono essere di tipo INT (numero)',
+            'quantity'          => 'Quantità',
+            'month'             => 'Mese',
+            'days'              => 'Giorni',
         ];
     }
 
@@ -517,7 +536,7 @@ class Translate
      * @param $lang
      * @param $string
      * @param array $params
-     * @return mixed|string
+     * @return array|mixed|string
      */
     public static function t($lang, $string, $params = [])
     {

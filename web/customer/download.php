@@ -16,7 +16,7 @@ foreach ($records as $record) {
 $csv = Writer::createFromFileObject(new SplTempFileObject());
 
 //we insert the CSV header
-$csv->insertOne(['employees_id', 'name', 'quantity']);
+$csv->insertOne(['Id', 'Name', 'Quantity', 'Days']);
 
 // The PDOStatement Object implements the Traversable Interface
 // that's why Writer::insertAll can directly insert

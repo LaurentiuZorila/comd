@@ -238,7 +238,7 @@ include 'includes/navbar.php';
             <section class="no-padding-top no-padding-bottom">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-4 col-sm-3">
+                        <div class="col-md-3 col-sm-3">
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
@@ -251,7 +251,7 @@ include 'includes/navbar.php';
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 col-sm-3">
+                        <div class="col-md-3 col-sm-3">
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
@@ -264,7 +264,7 @@ include 'includes/navbar.php';
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 col-sm-3">
+                        <div class="col-md-3 col-sm-3">
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
@@ -278,7 +278,7 @@ include 'includes/navbar.php';
                             </div>
                         </div>
 
-                        <div class="col-md-4 col-sm-3">
+                        <div class="col-md-3 col-sm-3">
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">

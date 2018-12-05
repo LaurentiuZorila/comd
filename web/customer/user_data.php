@@ -2,11 +2,11 @@
 require_once 'core/init.php';
 
 /** All tables */
-$allTables = $leadData->records(Params::TBL_OFFICE, ['id', '=', $lead->officesId()], ['tables'], false);
+$allTables = $leadData->records(Params::TBL_OFFICE, ActionCond::where(['id', $lead->officesId()]), ['tables'], false);
 $allTables = explode(',', trim($allTables->tables));
 
 /** All employees for user */
-$allEmployees = $leadData->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $lead->officesId()], ['id', 'name']);
+$allEmployees = $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['offices_id', $lead->officesId()]), ['id', 'name']);
 
 /** Data display */
 $dataDisplay = $leadData->records(Params::TBL_OFFICE, ActionCond::where(['id', $lead->officesId()]), ['data_visualisation'], false)->data_visualisation;
@@ -16,7 +16,7 @@ foreach ($dataDisplay as $tableData => $v){
 }
 
 
-if (Input::exists()) {
+if (Input::exists() && Tokens::tokenVerify(Tokens::getInputName())) {
     /** Instantiate validation class */
     $validate = new Validate();
     /** Validate  inputs */
@@ -48,12 +48,21 @@ if (Input::exists()) {
             }
 
             /** All data for customer */
-            $employeesDetails = $leadData->records(Params::TBL_EMPLOYEES, ['id', '=', $employeesId], ['name', 'offices_id'], false);
+            $employeesDetails = $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $employeesId]), ['name', 'offices_id'], false);
 
             $name       = $employeesDetails->name;
-            $officeName = $leadData->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['name'], false)->name;
+            $officeName = $leadData->records(Params::TBL_OFFICE, ActionCond::where(['id', $employeesDetails->offices_id]), ['name'], false)->name;
             $initials   = Common::makeAvatar($name);
 
+
+            // Get all common data
+            foreach (Params::TBL_COMMON as $commonTables) {
+                $commonDataCollapse[$commonTables] = $leadData->records(Params::PREFIX . $commonTables,
+                    ActionCond::where([
+                        ['employees_id', $employeesId],
+                        ['year', date('Y')]
+                    ]), ['month', 'quantity', 'days'], true);
+            }
 
             /** Check if exists values */
             if (!Common::checkValues($allData)) {
@@ -63,7 +72,7 @@ if (Input::exists()) {
 }
 
 /** If get exists and post doesn't exists */
-if (Input::noPost()) {
+if (Input::existsName('get', 'id') && !Input::exists()) {
     $employeesId    = Input::get('id');
     $year           = date('Y');
     $month          = date('n');
@@ -83,23 +92,19 @@ if (Input::noPost()) {
     }
 
     /** All data for customer */
-    $employeesDetails   = $leadData->records(Params::TBL_EMPLOYEES, ['id', '=', $employeesId], ['name', 'offices_id'], false);
-    $officeObj          = $leadData->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['name'], false);
+    $employeesDetails   = $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $employeesId]), ['name', 'offices_id'], false);
+    $officeObj          = $leadData->records(Params::TBL_OFFICE, ActionCond::where(['id', $employeesDetails->offices_id]), ['name'], false);
 
     $name       = $employeesDetails->name;
     $officeName = $officeObj->name;
     $initials   = Common::makeAvatar($name);
 
     /** Check if exists values */
-    if (!Common::checkValues($allData)) {
-        Errors::setErrorType('warning', Translate::t($lang, 'Not_found_data'));
+    if (Common::checkValues($allData) === true) {
+        Errors::setErrorType('info', Translate::t($lang, 'Not_found_data'));
     }
 }
-
-
 ?>
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -139,7 +144,7 @@ include 'includes/navbar.php';
             </ul>
         </div>
         <?php
-        if (Input::exists() && Errors::countAllErrors()) {
+        if (Input::exists() && Errors::countAllErrors() || Input::exists('get') && Errors::countAllErrors()) {
             include './../common/errors/errors.php';
         }
         ?>
@@ -203,9 +208,12 @@ include 'includes/navbar.php';
                 </div>
             </div>
         </section>
-        <?php if (Input::exists('get') || Input::exists()) {
+        <?php if (Input::exists('get') && !Input::exists() || Input::exists()) {
             if (!Errors::countAllErrors()) {
                 $month = Input::post('month');
+                $year  = Input::post('year');
+                $month = !empty($month) ? $month : date('n');
+                $year  = !empty($year) ? $year : date('Y');
                 ?>
         <section>
             <div class="container-fluid">
@@ -213,12 +221,12 @@ include 'includes/navbar.php';
                     <div class="col-lg-12">
                         <div class="card">
                             <blockquote class="blockquote mb-0 card-body">
-                                <h3><?php echo $officeName; ?></h3>
+                                <h3><?php echo $name; ?></h3>
                                 <footer class="blockquote-footer">
-                                    <small class="text-muted"><?php echo $name; ?></small>
+                                    <small class="text-muted"><?php echo $officeName; ?></small>
                                 </footer>
                                 <footer class="blockquote-footer">
-                                    <small class="text-muted"><?php echo Common::numberToMonth($month, $lang) . ' - ' . Input::post('year'); ?></small>
+                                    <small class="text-muted"><?php echo Common::numberToMonth($month, $lang) . ' - ' . $year; ?></small>
                                 </footer>
                             </blockquote>
                         </div>
@@ -233,10 +241,14 @@ include 'includes/navbar.php';
                         <div class="stats-2-block block d-flex">
                             <?php foreach ($allData as $key => $value) { ?>
                                 <div class="stats-2 d-flex">
-                                    <div class="stats-2-arrow low"><i class="fa fa-line-chart"></i></div>
-                                    <div class="stats-2-content">
-                                        <strong class="d-block dashtext-1"><?php echo in_array(strtolower($key), $tblDataDysplay) && $dataDisplay[$key] === 'percentage' ? $value . '%' : $value; ?></strong>
-                                        <span class="d-block"><?php echo strtoupper($key); ?></span>
+                                    <div class="stats-2-arrow low"><i class="fa <?php echo in_array($key, Params::TBL_COMMON) ? 'fa-info-circle' : 'fa-line-chart'; ?>"></i></div>
+                                    <div class="stats-2-content common" id="" data-toggle="collapse" data-target="<?php echo in_array($key, Params::TBL_COMMON) ? $key : ''; ?>" aria-controls="<?php echo in_array($key, Params::TBL_COMMON) ? $key : ''; ?>" <?php echo in_array($key, Params::TBL_COMMON) ? 'style="cursor: pointer;"' : ''; ?> >
+                                        <strong class="d-block dashtext-1">
+                                            <?php
+                                            echo in_array($key, $tblDataDysplay) && $dataDisplay[$key] === 'percentage' ? (!in_array($key, Params::TBL_COMMON) ? $value . '%' : $value) : (in_array($key, Params::TBL_COMMON) ? $value . '<small class="text-small">'  . Translate::t($lang, 'Days', ['strtolower'=>true]) . '</small>' : $value);
+                                            ?>
+                                        </strong>
+                                        <span class="d-block"><?php echo Translate::t($lang, $key, ['strtoupper'=>true]); ?></span>
                                         <div class="progress progress-template progress-small">
                                             <div role="progressbar" style="width: <?php echo $value; ?>%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template progress-bar-small dashbg-2"></div>
                                         </div>
@@ -245,6 +257,47 @@ include 'includes/navbar.php';
                             <?php } ?>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+        <?php foreach ($commonDataCollapse as $table => $fields) { ?>
+            <section class="no-padding-top collapse allCollapse" id="<?php echo $table; ?>">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="block">
+                                <div class="title"><strong class="dashtext-1"><?php echo Translate::t($lang, $table) . ' - ' . $name; ?></strong>
+                                    <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-sm">
+                                        <thead>
+                                        <tr>
+                                            <th><?php echo Translate::t($lang, 'month'); ?></th>
+                                            <th><?php echo Translate::t($lang, 'quantity'); ?></th>
+                                            <th><?php echo Translate::t($lang, 'Days'); ?></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php foreach ($fields as $field) { ?>
+                                        <tr>
+                                            <td><?php echo Common::numberToMonth($field->month, $lang); ?></td>
+                                            <td><?php echo $field->quantity; ?> <small><?php echo $field->quantity > 1 ? Translate::t($lang, 'Days', ['strtolower'=>true]) : Translate::t($lang, 'Day', ['strtolower'=>true]); ?></small></td>
+                                            <td><?php echo $field->days; ?></td>
+                                        </tr>
+                                        <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        <?php } ?>
+        <section class="no-padding-bottom">
+            <div class="container-fluid">
+                <div class="row">
                     <div class="col-lg-12">
                         <div class="drills-chart block">
                             <div style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;" class="chartjs-size-monitor">
@@ -273,13 +326,31 @@ include 'includes/navbar.php';
 <!-- JavaScript files-->
 <?php
 include "./../common/includes/scripts.php";
-if (Input::exists() && !Errors::countAllErrors()) {
+if (Input::exists() && !Errors::countAllErrors() || Input::exists('get') && !Errors::countAllErrors()) {
     include './charts/useDataChart.php';
 }
 ?>
 <script>
     $('#Submit').click(function(){
         $('#myModal').modal('show');
+    });
+
+    // Click to view common
+    $ ( '.common' ).on('click', function () {
+        $( '.allCollapse:visible' ).hide(function () {
+            $(this).fadeOut(3000);
+        });
+        var $this = $(this);
+        $( '#' + $this.data("target")).show(function () {
+            $( '#' + $this.data("target")).fadeIn(3000);
+        });
+    });
+
+    // Click close div
+    $ ( '.closeDiv' ).on('click', function () {
+        $( '.collapse:visible' ).hide(function () {
+            $(this).fadeOut(3000);
+        });
     });
 </script>
 </body>

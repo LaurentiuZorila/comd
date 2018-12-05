@@ -203,7 +203,7 @@ include 'includes/navbar.php';
                     <div class="col-lg-8">
                         <div class="block">
                             <p><?php echo Translate::t($lang, 'Calendar_info'); ?></p>
-                            <div id="calendar" class="fc fc-bootstrap3 fc-ltr">
+                            <div id="calendar" class="fc fc-bootstrap4 fc-ltr">
                             </div>
                         </div>
                     </div>

@@ -13,13 +13,15 @@ $eventData = $customerData->records(Params::TBL_EVENTS, ActionCond::where(['id',
 $where = ActionCond::where([
     ['employees_id', $employeeId],
     ['year', $eventData->year],
-    ['month', $eventData->start_month]
+    ['month', $eventData->start_month],
+    ['insert_type', Params::INSERT_TYPE['calendar']]
 ]);
 
 $whereSecond = ActionCond::where([
     ['employees_id', $employeeId],
     ['year', $eventData->year],
-    ['month', $eventData->end_month]
+    ['month', $eventData->end_month],
+    ['insert_type', Params::INSERT_TYPE['calendar']]
 ]);
 
 $checkFurloughFirstMonth    = $customerDb->get(Params::TBL_FURLOUGH, $where)->count();
@@ -35,6 +37,7 @@ if ($eventStatus == 1 && strtolower($eventData->title) == 'furlough') {
                 'departments_id'        => $customerUser->departmentId(),
                 'employees_id'          => $employeeId,
                 'employees_average_id'  => $employeeId . '_' . $eventData->year,
+                'insert_type'           => Params::INSERT_TYPE['calendar'],
                 'year'                  => $eventData->year,
                 'month'                 => $eventData->start_month,
                 'quantity'              => $eventData->days_number,

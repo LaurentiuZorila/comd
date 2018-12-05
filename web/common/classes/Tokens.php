@@ -49,7 +49,7 @@ class Tokens
         if (Session::exists(self::sessionName())) {
             return Session::get(self::sessionName());
         }
-        return Session::put(self::sessionName(), hash(self::setAlgo(), bin2hex(random_bytes(32))));
+        return Session::put(self::sessionName(), hash(self::setAlgo(), bin2hex(random_bytes(64))));
     }
 
     /**

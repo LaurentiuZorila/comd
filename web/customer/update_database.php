@@ -1,10 +1,7 @@
 <?php
 require_once 'core/init.php';
-require_once '../vendor/league/csv/autoload.php';
-use League\Csv\Reader;
-
-// User data
-$userData = CustomerDB::getInstance()->get('cmd_users', ['id', '=', $lead->customerId()])->first();
+//require_once '../vendor/league/csv/autoload.php';
+//use League\Csv\Reader;
 
 // All tables
 $allTables = $leadData->records(Params::TBL_OFFICE, ['id', '=', $lead->officesId()], ['tables'], false);
@@ -12,28 +9,25 @@ $allTables = explode(',', $allTables->tables);
 array_map('trim', $allTables);
 
 
-if (Input::exists()) {
+if (Input::exists() && Tokens::tokenVerify()) {
     $validate = new Validate();
     $validation = $validate->check($_POST, [
         'year'      => ['required' => true],
         'month'     => ['required' => true],
         'tables'    => ['required' => true]
     ]);
-
     /** Check if validation is passed */
     if ($validation->passed()) {
         $year   = Input::post('year');
         $month  = Input::post('month');
         $table  = Common::dbValues([Input::post('tables') => ['trim']]);
         $table  = Params::PREFIX . $table;
-
-        $months = $leadData->records($table, [['offices_id', '=', $lead->officesId()], 'AND', ['year', '=', $year]], ['month']);
+        $months = $leadData->records($table, ActionCond::where([['offices_id', $lead->officesId()], ['year', $year]]), ['month']);
         foreach ($months as $dbMonth) {
             $allMonths[] = $dbMonth->month;
             // Months from database
             $allMonths = array_unique($allMonths);
         }
-
         /** Check if for selected month exists records */
         if (!in_array($month, $allMonths)) {
             $filename   = $_FILES['fileToUpload']['tmp_name'];
@@ -42,26 +36,37 @@ if (Input::exists()) {
             $extension  = pathinfo($path, PATHINFO_EXTENSION);
             /** Allowed extensions for file */
             $extensions = Params::EXTENSIONS;
-
             // Check for valid extension
             if (in_array($extension, $extensions) && $size > 0) {
                 // Open the file for reading
                 if (($h = fopen("{$filename}", "r")) !== FALSE) {
-                    // Escape first line of file
-                    fgetcsv($h);
                     // Read file
-                    while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
-                        $lead->insert($table, [
-                            'offices_id' => $lead->officesId(),
-                            'departments_id' => $lead->departmentId(),
-                            'year' => $year,
-                            'month' => $month,
-                            'employees_id' => $data[0],
-                            'employees_average_id' => $data[0] . '_' . $year,
-                            'quantity' => $data[2]
-                        ]);
+                    $data[] = fgetcsv($h, 1000, ",");
+
+                    if ($data[0] === 'Id' || $data[1] === 'Name' || $data[2] === 'Quantity') {
+                        // Escape first line of file
+                        fgetcsv($h);
                     }
-                    if ($lead->success()) {
+
+                    while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
+                        if (is_numeric($data[2])) {
+                            $quantity = !empty($data[2]) ? $data[2] : 0;
+                            $lead->insert($table, [
+                                'offices_id'            => $lead->officesId(),
+                                'departments_id'        => $lead->departmentId(),
+                                'year'                  => $year,
+                                'month'                 => $month,
+                                'employees_id'          => $data[0],
+                                'employees_average_id'  => $data[0] . '_' . $year,
+                                'insert_type'           => Params::INSERT_TYPE['file'],
+                                'quantity'              => $quantity,
+                                'days'                  => $data[3]
+                            ]);
+                        } else {
+                            Errors::setErrorType('danger', Translate::t($lang, 'type_int', ['ucfirtst'=>true]));
+                        }
+                    }
+                    if ($lead->success() && !Errors::countAllErrors()) {
                         Errors::setErrorType('success', Translate::t($lang, 'Db_success'));
                     } else {
                         Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
@@ -77,7 +82,6 @@ if (Input::exists()) {
         }
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -86,7 +90,12 @@ if (Input::exists()) {
     <?php
     include '../common/includes/head.php';
     ?>
-    <link rel="stylesheet" href="./../common/css/spiner/style.css">
+<script>
+    function displayMessage(type, message, time) {
+        $(".response").html('<section class="eventMessage"><div class="row"><div class="col-lg-12"><div class="alert alert-dismissible fade show badge-'+type+'"><p class="text-white mb-0">'+message+'</p></div></div></div></section>');
+        setInterval(function() { $(".eventMessage").fadeOut(); }, time);
+    }
+</script>
 </head>
   <body>
   <?php
@@ -132,9 +141,10 @@ if (Input::exists()) {
           }
           ?>
           <section class="no-padding-top no-padding-bottom">
+              <div class="response"></div>
               <div class="col-lg-12">
                   <div class="block">
-                      <form method="post" enctype="multipart/form-data" class="dropzone" id="my-awesome-dropzone">
+                      <form method="post" enctype="multipart/form-data" class="" id="my-awesome-dropzone">
                           <div class="row">
                               <div class="col-sm-12">
                                   <div class="title">
@@ -143,8 +153,8 @@ if (Input::exists()) {
                                   </div>
                               </div>
 
-                              <div class="col-sm-4">
-                                  <select name="year" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} ?>">
+                              <div class="col-sm-4 year">
+                                  <select id="year" name="year" class="form-control mb-1 <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} ?>">
                                       <option value=""><?php echo Translate::t($lang, 'Select_year'); ?></option>
                                       <?php
                                       foreach (Common::getYearsList() as $year) { ?>
@@ -156,8 +166,8 @@ if (Input::exists()) {
                                         <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                   <?php }?>
                               </div>
-                              <div class="col-sm-4">
-                                  <select name="month" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} ?>">
+                              <div class="col-sm-4 month">
+                                  <select id="month" name="month" class="form-control mb-1 <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} ?>">
                                       <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
                                       <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                           <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
@@ -168,8 +178,8 @@ if (Input::exists()) {
                                       <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                   <?php }?>
                               </div>
-                              <div class="col-sm-4">
-                                  <select name="tables" class="form-control mb-3 mb-3 <?php if (Input::exists() && empty(Input::post('tables'))) {echo 'is-invalid';} ?>">
+                              <div class="col-sm-4 tables" style="display: none;">
+                                  <select id="tables" name="tables" class="form-control mb-1 <?php if (Input::exists() && empty(Input::post('tables'))) {echo 'is-invalid';} ?>">
                                       <option value=""><?php echo Translate::t($lang, 'Select_table'); ?></option>
                                       <?php foreach ($allTables as $table) { ?>
                                           <option value="<?php echo $table; ?>"><?php echo strtoupper($table); ?></option>
@@ -180,8 +190,12 @@ if (Input::exists()) {
                                       <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
                                   <?php }?>
                               </div>
-                              <div class="col-sm-12 pb-3">
+                              <div class="col-sm-12 mt-2 mb-3">
                               <input type="file" name="fileToUpload" id="fileToUpload">
+                              </div>
+                              <div class="col-sm-12 pb-3 confirmUpdate" style="display: none;">
+                                  <label>Update</label>
+                                  <input type="checkbox" name="confirmUpdate" value="confirmUpdate" />
                               </div>
                               <div class="col-sm-2">
                                   <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
@@ -218,6 +232,7 @@ if (Input::exists()) {
     <!-- JavaScript files-->
   <?php
   include "./../common/includes/scripts.php";
+  include "./includes/js/monthExists.php";
   ?>
   <script src="./../common/vendor/pulsate/jquery.pulsate.js"></script>
   <script>
