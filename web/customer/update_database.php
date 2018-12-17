@@ -23,11 +23,19 @@ if (Input::exists() && Tokens::tokenVerify()) {
         $table  = Common::dbValues([Input::post('tables') => ['trim']]);
         $table  = Params::PREFIX . $table;
         $months = $leadData->records($table, ActionCond::where([['offices_id', $lead->officesId()], ['year', $year]]), ['month']);
+
         foreach ($months as $dbMonth) {
             $allMonths[] = $dbMonth->month;
             // Months from database
             $allMonths = array_unique($allMonths);
         }
+
+        // First delete present records if update button si checked and then Update form file
+        if (Input::existsName('post', 'confirmUpdate') && in_array($month, $allMonths)) {
+            $db = CustomerDB::getInstance();
+            $db->delete($table, ActionCond::where([['offices_id', $lead->officesId()], ['year', $year]]));
+        }
+
         /** Check if for selected month exists records */
         if (!in_array($month, $allMonths)) {
             $filename   = $_FILES['fileToUpload']['tmp_name'];

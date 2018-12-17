@@ -58,11 +58,11 @@ if (!Input::existsName('post', 'eventFilter')) {
     <?php
     include '../common/includes/head.php';
     ?>
+
 <script src="./../common/vendor/fullcalendar/lib/jquery.min.js"></script>
 <script src="./../common/vendor/fullcalendar/lib/moment.min.js"></script>
 <script src="./../common/vendor/fullcalendar/fullcalendar.min.js"></script>
 <script src="./../common/vendor/fullcalendar/locale-all.js"></script>
-<script src="./../common/vendor/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.js"></script>
 <!--DATE PICKER-->
 <link rel="stylesheet" href="./../common/vendor/bootstrap-datepicker-1.6.4-dist/css/bootstrap-datepicker3.css">
 <script src="./../common/vendor/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.min.js"></script>
@@ -183,10 +183,15 @@ include 'includes/navbar.php';
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-8">
-                        <div class="block">
-                            <p><?php echo Translate::t($lang, 'calendar_info_lead'); ?></p>
-                            <div id="calendar" class="fc fc-bootstrap3 fc-ltr">
+                        <div class="card-header" style="background-color: rgb(45, 48, 53);">
+                            <div class="right-menu list-inline no-margin-bottom">
+                                <div class="list-inline-item logout">
+                                    <a type="button" data-toggle="modal" data-target="#info_calendar" class="btn btn-primary btn-sm float-right" id="info_calendar_pulsante"><i class="fa fa-info-circle"></i></a>
+                                </div>
                             </div>
+                        </div>
+                        <div class="block">
+                            <div id="calendar" class="fc fc-bootstrap3 fc-ltr"></div>
                         </div>
                     </div>
                     <div class="col-lg-4">
@@ -230,6 +235,7 @@ include 'includes/navbar.php';
                                 <table class="table">
                                     <thead>
                                     <tr role="row">
+                                        <th class="text-primary">Name</th>
                                         <th class="text-primary">Date</th>
                                         <th class="text-primary">Status</th>
                                     </tr>
@@ -239,20 +245,28 @@ include 'includes/navbar.php';
                                     if (count($allEvents) > 0) {
                                     foreach ($allEvents as $allEvent) { ?>
                                     <tr>
+                                        <td>
+                                            <?php echo Common::makeAvatar($leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $allEvent->user_id]), ['name'], false)->name); ?>
+                                            <div class="collapse p-0 mb-0 mt-0 text-small" id="collapseExample<?php echo $allEvent->id; ?>">
+                                                <p class="mb-0"><?php echo $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $allEvent->user_id]), ['name'],false)->name; ?></p>
+                                            </div>
+                                        </td>
                                         <td class="text-small">
-                                            <p>
                                                 <?php
                                                 $collapseData = $allEvent->status == 2 ? 'data-target=#collapseExample' . $allEvent->id . ' aria-controls=collapseExample' . $allEvent->id : '';
                                                 ?>
                                                 <a class="" style="cursor: pointer;" type="button" data-toggle="collapse" <?php echo $collapseData; ?> aria-expanded="false">
-                                                    <?php echo $allEvent->days; ?>
+                                                    <?php
+                                                    $all_days = explode(',', $allEvent->days);
+                                                    if (count($all_days) > 1) {
+                                                        echo current($all_days) . ' - ' . end($all_days);
+                                                    } else {
+                                                        echo $all_days[0];
+                                                    }
+                                                    ?>
                                                 </a>
-                                            </p>
-                                            <div class="collapse" id="collapseExample<?php echo $allEvent->id; ?>">
-                                                <div class="p-0 mb-0 mt-0">
-                                                    <p class="mb-0"><?php echo $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $allEvent->user_id]), ['name'],false)->name; ?></p>
-                                                    <p class="mb-0 mt-0"><?php echo Translate::t($lang, 'event_request', ['ucfirst' => true]) . ' ' . Translate::t($lang, 'furlough', ['strtolower' => true]); ?></p>
-                                                </div>
+                                            <div class="collapse p-0 mb-0 mt-0" id="collapseExample<?php echo $allEvent->id; ?>">
+                                                <p class="mb-0 mt-0"><?php echo $allEvent->days_number > 1 ? $allEvent->days_number . ' ' . Translate::t('Days', ['strtolower'=>true]) : $allEvent->days_number . ' ' . Translate::t('Day', ['strtolower'=>true]); ?></p>
                                             </div>
                                         </td>
                                         <td>
@@ -315,6 +329,23 @@ include 'includes/navbar.php';
                 </div>
             </div>
         </div>
+        <!-- Modal-->
+        <div id="info_calendar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade text-left show" style="display: none;">
+            <div role="document" class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-1"><?php echo Translate::t($lang, 'Info'); ?></strong>
+                        <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><?php echo Translate::t($lang, 'calendar_info_lead'); ?></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn-sm btn-danger"><?php echo Translate::t($lang, 'Close'); ?></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal End -->
     </div>
 </div>
 <?php
@@ -322,6 +353,7 @@ include '../common/includes/footer.php';
 ?>
 <script src="./../common/vendor/bootstrap/js/bootstrap.min.js"></script>
 <script src="./../common/js/front.js"></script>
+<script src="./../common/vendor/pulsate/jquery.pulsate.js"></script>
 <script>
 
     $(' .eventAction ').on('click', function () {
@@ -369,6 +401,8 @@ include '../common/includes/footer.php';
             autoclose: true,
         });
     });
+
+    $("#info_calendar_pulsante").pulsate({color:"#633b70;"});
 
 </script>
 </body>

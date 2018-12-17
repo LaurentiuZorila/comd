@@ -133,7 +133,7 @@ class Translate
             'update_profile_nav'    => 'Din acceasta sectiune poti modifica datele tale personale',
             'not_found_leads'   => 'Nu sau gasit team leaderi',
             'only_numbers'      => 'trebuie sa contina doar numere',
-            'data_month_exists' => 'Pentru filterele alese in baza de date sau gasit date existente. Daca vrei sa faci update cu datele presente in file, bifeaza update si reincearca',
+            'data_month_exists' => 'Pentru filterele alese in baza de date sau gasit date deja existente. <br /> Daca vrei sa faci update cu datele presente in file, bifeaza update si reincearca',
             'update_db_navbar'  => 'Din aceasta sectiune poti incarca datele operatorilor pentru ficare luna si pentru toate tablele',
             'new_pass'          => 'Noua parola',
             'current_pass'      => 'Parola actuala',
@@ -173,7 +173,7 @@ class Translate
             'quantity'          => 'Cantitate',
             'month'             => 'Luna',
             'days'              => 'Zile',
-            'not_correct_file'  => 'Fileul nu este corect, te rugam uploadeaza fileul generat de aplicatie, il poti descarca apasand butonul INFO din dreapta',
+            'not_correct_file'  => 'File-ul nu este corect, te rugam uploadeaza file-ul generat de aplicatie, il poti descarca apasand butonul INFO din dreapta',
         ];
     }
 
@@ -302,7 +302,7 @@ class Translate
             'update_profile_nav'    => 'Form here you can update your profile account',
             'not_found_leads'   => 'Not found leads',
             'only_numbers'      => 'must contain only numbers',
-            'data_month_exists' => 'For this filters in DB results data, please check again your data. If you want to update DB with data from your file, please check update checkbox',
+            'data_month_exists' => 'For this filters in DB results data, please check again your data. <br /> If you want to update DB with data from your file, please check update checkbox',
             'update_db_navbar'  => 'From this section you can update data base for your employees for each month and each table',
             'new_pass'          => 'New Password',
             'current_pass'      => 'Current password',
@@ -336,8 +336,8 @@ class Translate
             'ascending_dates'   => 'Start date must be lowest as end date',
             'from'              => 'from',
             'notification_not_found'    => 'You don\'t have notification',
-            'nav_give_calendar' => 'In this section you can see you vacation or unpaid days. Can request vacation or unpaid days form here and when your request is accepted or denied you will receive a notification',
-            'calendar_info_lead'        => 'Here appear all request from your employees (accepted, denied or pending requests). From here you accept or delete request from you employees.',
+            'nav_give_calendar' => 'In this section you can see you vacation or unpaid days. <br /> You can request vacation or unpaid days form here and when your request is accepted or denied you will receive a notification',
+            'calendar_info_lead'        => 'Here appear all request from your employees (accepted, denied or pending requests). <br /> From here you accept or delete request from you employees.',
             'upload'            => 'Upload',
             'type_int'          => 'Data from column QUANTITY from your csv file must have INT (integer/numeric) type',
             'quantity'          => 'Quantity',
@@ -461,7 +461,6 @@ class Translate
             'Team_furlough'     => 'Ferie squadra',
             'Team_unpaid'       => 'Permeso squadra',
             'Team_absentees'    => 'Assenze squadra',
-            'Team_medical'      => 'Malatia squadra',
             'view_employees'    => 'Vedi gli operatori',
             'view_staff'        => 'Vedi i staff',
             'view_employees_nav_details'        => 'Cicca sulla icona in basso per vissaulizzare tutti operatori per tuo dipartimento',
@@ -471,7 +470,7 @@ class Translate
             'update_profile_nav'    => 'Se voi cambiari gli tue dati clicca icona presente in basso',
             'not_found_leads'   => 'Non sono trovati team leader',
             'only_numbers'      => 'deve contenere solo i numeri',
-            'data_month_exists' => 'Per questo filtro in DB risultano già dati presenti, fai una verifica e prova un\'altra volta. Se voi fare update con i dati presenti nel file, clicca sul checkbox aggiorna',
+            'data_month_exists' => 'Per questo filtro in DB risultano già dati presenti, fai una verifica e prova un\'altra volta. <br /> Se voi fare update con i dati presenti nel file, clicca sul checkbox aggiorna',
             'update_db_navbar'  => 'Da questa sezione poi aggiornare la DB per tutti operatori per tutte mese e per tutte tabelle',
             'new_pass'          => 'Nuova parola',
             'current_pass'      => 'Parola attuale',
@@ -522,27 +521,35 @@ class Translate
      */
     public static function getLang($lang)
     {
-        if ($lang === 'ro') {
-            return self::langRO();
-        } elseif ($lang === 'en') {
-            return self::langEN();
-        } elseif ($lang === 'it') {
-            return self::langIT();
-        } elseif (is_null($lang)) {
-            return self::langEN();
-        } else {
-            return self::langEN();
+        switch ($lang) {
+            case 'ro':
+                return self::langRO();
+                break;
+            case 'en':
+                return self::langEN();
+                break;
+            case 'it':
+                return self::langIT();
+                break;
+            default:
+                return self::langEN();
+                break;
         }
     }
 
     /**
-     * @param $lang
+     * @param mixed $lang
      * @param $string
      * @param array $params
      * @return array|mixed|string
      */
-    public static function t($lang, $string, $params = [])
+    public static function t($string, $params = [])
     {
+        if (defined(LANG)) {
+            $lang = LANG;
+        } else {
+            $lang = 'en';
+        }
         // If empty params return string from translation
         if (is_array($string)) {
             if (empty($params)) {

@@ -100,22 +100,25 @@
         type: 'pie',
         options: {
             legend: {
-                display: false
+                display: true
             }
         },
         data: {
-            labels: <?php echo $medicalChartLabel; ?>,
+            labels: [
+                "Medical",
+                "Team medical"
+            ],
             datasets: [
                 {
-                    data: [<?php echo $medicalChartValues; ?>],
+                    data: [<?php echo $userMedicalLeave . ', ' . $totalMedicalLeave; ?>],
                     borderWidth: 0,
                     backgroundColor: [
-                        '#723ac3',
-                        "#a678eb"
+                        '#da4d60',
+                        "#f28695"
                     ],
                     hoverBackgroundColor: [
-                        '#723ac3',
-                        "#a678eb"
+                        '#da4d60',
+                        "#f28695"
                     ]
                 }]
         }

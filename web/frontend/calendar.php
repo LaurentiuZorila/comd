@@ -55,7 +55,7 @@ $(document).ready(function () {
 
         },
 
-        editable: true,
+        editable: false,
         eventDrop: function (event, delta) {
             if (event.status !== 2) {
                 var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
@@ -73,7 +73,7 @@ $(document).ready(function () {
             }
         },
         eventClick: function (event) {
-            if (event.status === 2) {
+            if (event.status == 2) {
                 var deleteMsg = confirm("Do you really want to delete?");
                 if (deleteMsg) {
                     $.ajax({
@@ -164,11 +164,11 @@ $(document).ready(function () {
 
 function displayMessage(message) {
     $(".response").html('<section class="eventMessage"><div class="row"><div class="col-lg-12"><div class="alert alert-dismissible fade show badge-success"><p class="text-white mb-0">'+message+'</p></div></div></div></section>');
-    setInterval(function() { $(".eventMessage").fadeOut(); }, 2000);
+    setInterval(function() { $(".eventMessage").fadeOut(); }, 5000);
 }
 function displayErrorMessage(message) {
     $(".response").html('<section class="eventMessage"><div class="row"><div class="col-lg-12"><div class="alert alert-dismissible fade show badge-danger"><p class="text-white mb-0">'+message+'</p></div></div></div></section>');
-    setInterval(function() { $(".eventMessage").fadeOut(); }, 3000);
+    setInterval(function() { $(".eventMessage").fadeOut(); }, 5000);
 }
 </script>
 </head>
@@ -201,15 +201,24 @@ include 'includes/navbar.php';
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-8">
+                        <div class="card-header" style="background-color: rgb(45, 48, 53);">
+                            <div class="right-menu list-inline no-margin-bottom">
+                                <div class="list-inline-item logout">
+                                    <a type="button" data-toggle="modal" data-target="#info_calendar" class="btn btn-primary btn-sm float-right" id="info_calendar_pulsate"><i class="fa fa-info-circle"></i></a>
+                                </div>
+                            </div>
+                        </div>
                         <div class="block">
-                            <p><?php echo Translate::t($lang, 'Calendar_info'); ?></p>
                             <div id="calendar" class="fc fc-bootstrap4 fc-ltr">
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4">
+                        <div class="card-header" style="background-color: rgb(45, 48, 53);">
+                            <h4 class="text-center"><?php echo Translate::t($lang, 'all', ['ucfirst'=>true]) . ' ' . Translate::t($lang, 'event_request', ['strtolower'=>true]); ?></h4>
+                        </div>
                         <div class="block">
-                            <div class="table-responsive">
+                            <div class="table-responsive" style="height:565px; overflow-y: scroll;">
                                 <table class="table">
                                     <thead>
                                     <tr role="row">
@@ -262,6 +271,23 @@ include 'includes/navbar.php';
             </div>
         </div>
 <!--        MODAL END-->
+        <!-- Modal-->
+        <div id="info_calendar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade text-left show" style="display: none;">
+            <div role="document" class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-1"><?php echo Translate::t($lang, 'Info'); ?></strong>
+                        <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><?php echo Translate::t($lang, 'Calendar_info'); ?></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn-sm btn-danger"><?php echo Translate::t($lang, 'Close'); ?></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal End -->
     </div>
 </div>
 <?php
@@ -269,15 +295,21 @@ include '../common/includes/footer.php';
 ?>
 <script src="./../common/vendor/bootstrap/js/bootstrap.min.js"></script>
 <script src="./../common/js/front.js"></script>
+<script src="./../common/vendor/pulsate/jquery.pulsate.js"></script>
 <script>
     $(function() {
         $( "#startDate" ).datepicker({
             format: 'yyyy/mm/dd',
+            startDate: '-1d',
+            autoclose: true,
         });
         $( "#endDate" ).datepicker({
             format: 'yyyy/mm/dd',
+            startDate: '-1d',
+            autoclose: true,
         });
     });
+    $("#info_calendar_pulsate").pulsate({color:"#633b70;"});
 </script>
 </body>
 </html>

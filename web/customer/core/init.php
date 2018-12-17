@@ -16,7 +16,7 @@ spl_autoload_register(function($class_name){
     //for each directory
     foreach($directorys as $directory)
     {
-        //see if the file exsists
+        //see if the file exist
         if(file_exists($directory.$class_name . '.php'))
         {
             require_once($directory.$class_name . '.php');
@@ -35,6 +35,7 @@ if (!$lead->isLoggedIn()) {
     $lang   = $lead->language();
     $langId = $lead->language(false);
     Session::put('lang', $lang);
+    define("LANG", $lang);
 }
 
 //if (Cookie::exists(Config::get('remember/cookie_name')) && !Session::exists(Config::get('session/session_name'))) {

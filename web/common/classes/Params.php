@@ -160,4 +160,11 @@ class Params
      */
     const INSERT_TYPE       = ['file' => 0, 'calendar' => 1];
 
+
+    const CHART_COLORS_VIOLET   = ['#391d61', '#442275', '#4f2888', '#5b2e9c', '#6634af', '#723ac3',
+                                        '#804dc9', '#8e61cf', '#9c75d5', '#aa88db', '#b89ce1', '#c6b0e7'];
+
+    const CHART_COLORS_RED      = ['#8B323E', '#AE3E4D', '#DA4D60', '#E17180', '#E78D99', '#ECA4AD',
+                                        '#F0B6BD', '#F3C5CA', '#F5D1D5', '#F7DADD', '#F9E1E4', '#FAE7E9'];
+
 }

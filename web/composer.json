@@ -1,6 +1,7 @@
 {
     "require": {
         "league/csv": "^9.0",
-        "lasserafn/php-initial-avatar-generator": "^3.0"
+        "lasserafn/php-initial-avatar-generator": "^3.0",
+        "twbs/bootstrap": "4.1.3"
     }
 }

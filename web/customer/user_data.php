@@ -16,7 +16,7 @@ foreach ($dataDisplay as $tableData => $v){
 }
 
 
-if (Input::exists() && Tokens::tokenVerify(Tokens::getInputName())) {
+if (Input::exists()) {
     /** Instantiate validation class */
     $validate = new Validate();
     /** Validate  inputs */
@@ -352,6 +352,8 @@ if (Input::exists() && !Errors::countAllErrors() || Input::exists('get') && !Err
             $(this).fadeOut(3000);
         });
     });
+
+    $("#info_employees").pulsate({color:"#633b70;"});
 </script>
 </body>
 </html>

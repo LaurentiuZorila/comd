@@ -61,7 +61,7 @@ class Tokens
         if (Session::exists(self::routeSession())) {
             return Session::get(self::routeSession());
         }
-        return Session::put(self::routeSession(), hash('md5', bin2hex(random_bytes(16))));
+        return Session::put(self::routeSession(), hash('md5', bin2hex(random_bytes(32))));
     }
 
 

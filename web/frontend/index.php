@@ -35,7 +35,7 @@ if (Input::noPost() && Input::existsName('get', 'lastData')) {
     $lastDataChartKey   = $lastData->chartData('label', $lang);
 }
 
-if (Input::exists()) {
+if (Input::exists() && Tokens::tokenVerify()) {
     Session::delete('InfoAlert');
     $validate   = new Validate();
     $validation = $validate->check($_POST, [
@@ -83,7 +83,7 @@ if (Input::exists()) {
         $totalFurloughs     = $frontProfile->sumAllCommonData($whereSum, 'quantity')['furlough']->total;
         $totalAbsentees     = $frontProfile->sumAllCommonData($whereSum, 'quantity')['absentees']->total;
         $totalUnpaid        = $frontProfile->sumAllCommonData($whereSum, 'quantity')['unpaid']->total;
-        $userMedicalLeave   = $frontProfile->sumAllCommonData($whereSum, 'quantity')['medical']->total;
+        $totalMedicalLeave  = $frontProfile->sumAllCommonData($whereSum, 'quantity')['medical']->total;
     }
 
         /** If user search data for all months */
@@ -124,15 +124,25 @@ if (Input::exists()) {
             /** Common charts */
             $furloughChartLabel     = Js::key($furloughCommon);
             $furloughChartValues    = Js::values($furloughCommon);
+            $countFurlough          = count($furloughCommon);
 
             $absenteesChartLabel    = Js::key($absenteesCommon);
             $absenteesChartValues   = Js::values($absenteesCommon);
+            $countAbsentees         = count($absenteesCommon);
 
             $unpaidChartLabel       = Js::key($unpaidCommon);
             $unpaidChartValues      = Js::values($unpaidCommon);
+            $countUnpaid            = count($unpaidCommon);
 
             $medicalChartLabel      = Js::key($medicalLeaveCommon);
             $medicalChartValues     = Js::values($medicalLeaveCommon);
+            $countMedical           = count($medicalLeaveCommon);
+
+            /** Get colors for pie charts */
+            $furloughColors     = ' \' ' . implode('\',\'', array_slice(Params::CHART_COLORS_VIOLET, 0, $countFurlough)) .' \' ';
+            $absenteesColors    = ' \' ' . implode('\',\'', array_slice(Params::CHART_COLORS_RED, 0, $countAbsentees)) .' \' ';
+            $unpaidColors       = ' \' ' . implode('\',\'', array_slice(Params::CHART_COLORS_VIOLET, 0, $countUnpaid)) .' \' ';
+            $medicalColors      = ' \' ' . implode('\',\'', array_slice(Params::CHART_COLORS_RED, 0, $countMedical)) .' \' ';
 
             /** Selected table chart */
             if (!empty($dataAllMonths)) {
@@ -204,8 +214,11 @@ include 'includes/navbar.php';
                                         </div>
                                         <div class="col-sm-4">
                                             <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} else { echo 'mb-3';}?>">
-                                                <option value=""><?php echo Translate::t($lang, 'Select_year'); ?></option>
-                                                <?php
+                                                <?php if (Input::existsName('post', 'submitFilters')) { ?>
+                                                    <option value="<?php echo Input::post('year'); ?>"><?php echo Input::post('year'); ?></option>
+                                                <?php } else { ?>
+                                                    <option value=""><?php echo Translate::t($lang, 'Select_year', ['strtoupper'=>true]); ?></option>
+                                                <?php }
                                                 foreach (Common::getYearsList() as $year) { ?>
                                                     <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
                                                 <?php } ?>
@@ -218,8 +231,12 @@ include 'includes/navbar.php';
 
                                         <div class="col-sm-4">
                                             <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                                <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
-                                                <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
+                                                <?php if (Input::existsName('post', 'submitFilters')) { ?>
+                                                    <option value="<?php echo Input::post('month'); ?>"><?php echo Common::getMonths($lang)[Input::post('month')]; ?></option>
+                                                <?php } else { ?>
+                                                    <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
+                                                <?php }
+                                                foreach (Common::getMonths($lang) as $key => $value) { ?>
                                                     <option value="<?php echo $key; ?>"><?php echo strtoupper($value); ?></option>
                                                 <?php } ?>
                                                 <option value="All">ALL</option>
@@ -232,9 +249,13 @@ include 'includes/navbar.php';
 
                                         <div class="col-sm-4">
                                             <select name="table" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                                <option value=""><?php echo Translate::t($lang, 'Select_table'); ?></option>
-                                                <?php foreach ($tables as $table) { ?>
-                                                    <option value="<?php echo trim($table); ?>"><?php echo Translate::t($lang, $table, ['ucfirst' => true]); ?></option>
+                                                <?php if (Input::existsName('post', 'submitFilters')) { ?>
+                                                    <option value="<?php echo Input::post('table'); ?>"><?php echo strtoupper(Input::post('table')); ?></option>
+                                                <?php } else { ?>
+                                                    <option value=""><?php echo Translate::t($lang, 'Select_table'); ?></option>
+                                                <?php }
+                                                foreach ($tables as $table) { ?>
+                                                    <option value="<?php echo trim($table); ?>"><?php echo Translate::t($lang, $table, ['strtoupper' => true]); ?></option>
                                                 <?php } ?>
                                             </select>
                                             <?php
@@ -244,7 +265,7 @@ include 'includes/navbar.php';
                                         </div>
 
                                         <div class="col-sm-2">
-                                            <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
+                                            <button name="submitFilters" id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-primary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
                                             <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                         </div>
                                     </div>
@@ -357,11 +378,11 @@ include 'includes/navbar.php';
             <section class="margin-bottom-sm">
                 <div class="container-fluid">
                     <div class="row d-flex align-items-stretch">
-                        <div class="col-lg-3">
+                        <div class="col-lg-6">
                             <div class="stats-with-chart-1 block">
-                                <div class="title"><strong class="d-block"><?php echo Translate::t($lang, 'furlough'); ?></strong></div>
+                                <div class="title mb-0"><strong class="d-block"><?php echo Translate::t($lang, 'furlough'); ?></strong></div>
                                 <div class="row d-flex align-items-end justify-content-between">
-                                    <div class="col-5">
+                                    <div class="col-5 align-self-center">
                                         <div class="text"><strong
                                                     class="d-block dashtext-3"><?php echo $userFurlough; ?>
                                                 <small><?php echo $day = $userFurlough > 1 ? Translate::t($lang, 'Days') : Translate::t($lang, 'Day'); ?></small>
@@ -372,18 +393,18 @@ include 'includes/navbar.php';
                                     </div>
                                     <div class="col-7">
                                         <div class="bar-chart chart">
-                                            <canvas id="furloughChart" style="display: block; width: 166px; height: 157px;" width="166" height="157" class="chartjs-render-monitor"></canvas>
+                                            <canvas id="furloughChart" style="display: block; width: 70px; height: 60px;" width="70" height="60" class="chartjs-render-monitor"></canvas>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 <!--                        MEDICAL LEAVE-->
-                        <div class="col-lg-3">
+                        <div class="col-lg-6">
                             <div class="stats-with-chart-1 block">
-                                <div class="title"><strong class="d-block"><?php echo Translate::t($lang, 'medical'); ?></strong></div>
+                                <div class="title mb-0"><strong class="d-block"><?php echo Translate::t($lang, 'medical'); ?></strong></div>
                                 <div class="row d-flex align-items-end justify-content-between">
-                                    <div class="col-5">
+                                    <div class="col-5 align-self-center">
                                         <div class="text"><strong
                                                     class="d-block dashtext-3"><?php echo $userMedical; ?>
                                                 <small><?php echo $day = $userMedical > 1 ? Translate::t($lang, 'Days') : Translate::t($lang, 'Day'); ?></small>
@@ -394,19 +415,24 @@ include 'includes/navbar.php';
                                     </div>
                                     <div class="col-7">
                                         <div class="bar-chart chart">
-                                            <canvas id="medicalChart" style="display: block; width: 166px; height: 157px;" width="166" height="157" class="chartjs-render-monitor"></canvas>
+                                            <canvas id="medicalChart" style="display: block; width: 70px; height: 60px;" width="70" height="60" class="chartjs-render-monitor"></canvas>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
+                    </div>
+                </div>
+            </section>
+            <section class="margin-bottom-sm">
+                <div class="container-fluid">
+                    <div class="row d-flex align-items-stretch">
 <!--                        ABSENTEES-->
-                        <div class="col-lg-3">
+                        <div class="col-lg-6">
                             <div class="stats-with-chart-1 block">
-                                <div class="title"><strong class="d-block"><?php echo Translate::t($lang, 'absentees');  ?></strong></div>
+                                <div class="title mb-0"><strong class="d-block"><?php echo Translate::t($lang, 'absentees');  ?></strong></div>
                                 <div class="row d-flex align-items-end justify-content-between">
-                                    <div class="col-5">
+                                    <div class="col-5 align-self-center">
                                         <div class="text"><strong class="d-block dashtext-1"><?php echo $userAbsentees; ?>
                                                 <small><?php echo $day = $userAbsentees > 1 ? Translate::t($lang, 'Days') : Translate::t($lang, 'Day'); ?></small>
                                             </strong>
@@ -416,18 +442,18 @@ include 'includes/navbar.php';
                                     </div>
                                     <div class="col-7">
                                         <div class="bar-chart chart">
-                                            <canvas id="absenteesPieChart" style="display: block; width: 166px; height: 157px;" width="166" height="157" class="chartjs-render-monitor"></canvas>
+                                            <canvas id="absenteesPieChart" style="display: block; width: 70px; height: 60px;" width="70" height="60" class="chartjs-render-monitor"></canvas>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <!--UNPAID LEAVE-->
-                        <div class="col-lg-3">
+                        <div class="col-lg-6">
                             <div class="stats-with-chart-1 block">
-                                <div class="title"><strong class="d-block"><?php echo Translate::t($lang, 'Total_user_unpaid'); ?></strong></div>
+                                <div class="title mb-0"><strong class="d-block"><?php echo Translate::t($lang, 'Total_user_unpaid'); ?></strong></div>
                                 <div class="row d-flex align-items-end justify-content-between">
-                                    <div class="col-5">
+                                    <div class="col-5 align-self-center">
                                         <div class="text"><strong
                                                     class="d-block dashtext-2"><?php echo $userUnpaidDays; ?>
                                                 <small><?php echo $day = $userUnpaidDays > 1 ? Translate::t($lang, 'Days') : Translate::t($lang, 'Day');  ?></small>
@@ -438,7 +464,7 @@ include 'includes/navbar.php';
                                     </div>
                                     <div class="col-7">
                                         <div class="bar-chart chart">
-                                            <canvas id="unpaidChart" style="display: block; width: 166px; height: 157px;" width="166" height="157" class="chartjs-render-monitor"></canvas>
+                                            <canvas id="unpaidChart" style="display: block; width: 70px; height: 60px;" width="70" height="60" class="chartjs-render-monitor"></canvas>
                                         </div>
                                     </div>
                                 </div>

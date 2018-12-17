@@ -131,7 +131,7 @@ if (Input::exists()) {
         <section class="no-padding-top no-padding-bottom">
             <div class="col-lg-12">
             <p>
-                <button class="btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
+                <button class="btn-sm btn-outline-secondary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
                     <?php echo Translate::t($lang, 'Filters'); ?>
                 </button>
             </p>
@@ -158,9 +158,9 @@ if (Input::exists()) {
 
                             <div class="col-sm-4">
                               <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) { echo 'is-invalid'; } else { echo 'mb-3';} ?>">
-                                  <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
+                                  <option value=""><?php echo Translate::t($lang, 'Select_month', ['strtoupper'=>true]); ?></option>
                                   <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
-                                  <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                                  <option value="<?php echo $key; ?>"><?php echo strtoupper($value); ?></option>
                                   <?php } ?>
                               </select>
                               <?php
@@ -173,7 +173,7 @@ if (Input::exists()) {
                                 <select name="table" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
                                     <option value=""><?php echo Translate::t($lang, 'Select_table'); ?></option>
                                     <?php foreach ($tables as $key => $table) { ?>
-                                        <option value="<?php echo $key; ?>"><?php echo Translate::t($lang, $table, ['ucfirst' => true]); ?></option>
+                                        <option value="<?php echo $key; ?>"><?php echo Translate::t($lang, $table, ['strtoupper' => true]); ?></option>
                                     <?php } ?>
                                 </select>
                                 <?php
@@ -183,7 +183,7 @@ if (Input::exists()) {
                             </div>
 
                             <div class="col-sm-2">
-                                <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
+                                <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
                                 <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                             </div>
                     </div>

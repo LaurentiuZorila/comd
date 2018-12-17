@@ -7,7 +7,7 @@ class CustomerProfile
 {
     private $_db;
 
-    const CONFIGURED        = 1;
+    const CONFIGURED = 1;
 
     /**
      * CustomerProfile constructor.

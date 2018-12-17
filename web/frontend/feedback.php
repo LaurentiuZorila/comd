@@ -85,7 +85,7 @@ include 'includes/navbar.php';
                                     echo Translate::t($lang, 'Rating') . ' ' . $frontProfile->rating($leads->id) . '/5' . '<br />';
                                     for ($i=1;$i<6;$i++) {
                                         if ($i<= $frontProfile->rating($leads->id)) { ?>
-                                        <a class="text-secondary" href="#"><span class="fa fa-star checked"></span></a>
+                                        <a class="text-primary" href="#"><span class="fa fa-star checked"></span></a>
                                     <?php } else { ?>
                                         <a class="text-secondary" href="#"><span class="fa fa-star"></span></a>
                                      <?php }

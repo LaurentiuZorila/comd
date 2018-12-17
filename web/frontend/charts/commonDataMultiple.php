@@ -16,12 +16,10 @@
                     data: [<?php echo $absenteesChartValues ?>],
                     borderWidth: 0,
                     backgroundColor: [
-                        '#da4d60',
-                        "#f28695"
+                        <?php echo $absenteesColors; ?>
                     ],
                     hoverBackgroundColor: [
-                        '#da4d60',
-                        "#f28695"
+                        <?php echo $absenteesColors; ?>
                     ]
                 }]
         }
@@ -43,12 +41,10 @@
                     data: [<?php echo $furloughChartValues ?>],
                     borderWidth: 0,
                     backgroundColor: [
-                        '#723ac3',
-                        "#a678eb"
+                        <?php echo $furloughColors; ?>
                     ],
                     hoverBackgroundColor: [
-                        '#723ac3',
-                        "#a678eb"
+                        <?php echo $furloughColors; ?>
                     ]
                 }]
         }
@@ -70,12 +66,10 @@
                     data: [<?php echo $unpaidChartValues; ?>],
                     borderWidth: 0,
                     backgroundColor: [
-                        '#723ac3',
-                        "#a678eb"
+                        <?php echo $unpaidColors; ?>
                     ],
                     hoverBackgroundColor: [
-                        '#723ac3',
-                        "#a678eb"
+                        <?php echo $unpaidColors; ?>
                     ]
                 }]
         }
@@ -135,12 +129,10 @@
                     data: [<?php echo $medicalChartValues; ?>],
                     borderWidth: 0,
                     backgroundColor: [
-                        '#723ac3',
-                        "#a678eb"
+                        <?php echo $medicalColors; ?>
                     ],
                     hoverBackgroundColor: [
-                        '#723ac3',
-                        "#a678eb"
+                        <?php echo $medicalColors; ?>
                     ]
                 }]
         }

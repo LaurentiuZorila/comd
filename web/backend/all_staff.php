@@ -54,26 +54,15 @@ include 'includes/navbar.php';
                                             <p class="card-text mb-3 text-uppercase font-weight-bold text-secondary text-center"><?php echo $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $lead->offices_id], ['name'], false)->name; ?></p>
                                             <p class="card-text mb-0 font-weight-bold text-secondary text-center"><?php echo Translate::t($lang, 'Rating'); ?></p>
                                             <p class="card-text m-b-0 font-weight-bold text-secondary text-center">
-                                                <?php switch ($rating) {
-                                                    case '1':
-                                                        include 'rating/one_star.php';
-                                                        break;
-                                                    case '2':
-                                                        include 'rating/two_star.php';
-                                                        break;
-                                                    case '3':
-                                                        include 'rating/three_star.php';
-                                                        break;
-                                                    case '4':
-                                                        include 'rating/four_star.php';
-                                                        break;
-                                                    case '5':
-                                                        include 'rating/five_star.php';
-                                                        break;
-                                                    default:
-                                                        include 'rating/default.php';
-                                                        break;
-                                                } ?>
+                                                <?php
+                                                for ($i=1;$i<6;$i++) {
+                                                    if ($i <= $rating) { ?>
+                                                        <a class="text-primary" href="#"><span class="fa fa-star checked"></span></a>
+                                                    <?php } else { ?>
+                                                        <a class="text-secondary" href="#"><span class="fa fa-star"></span></a>
+                                                    <?php }
+                                                }
+                                                ?>
                                                 <span class=""><?php echo $rating; ?>/5</span>
                                             </p>
                                         </div>

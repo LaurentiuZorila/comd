@@ -28,18 +28,13 @@ $notificationData = $leadData->records(Params::TBL_NOTIFICATION, ActionCond::whe
             </div>
             <div class="right-menu list-inline no-margin-bottom">
                 <!--                <div class="list-inline-item"><a href="#" class="search-open nav-link"><i class="icon-magnifying-glass-browser"></i></a></div>-->
-                <div class="list-inline-item dropdown"><a id="navbarDropdownMenuLink1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link messages-toggle"><i class="fa fa-envelope"></i><span class="badge dashbg-1"><?php echo $notificationCount > 0 ?: ''; ?></span></a>
+                <div class="list-inline-item dropdown"><a id="navbarDropdownMenuLink1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link messages-toggle"><i class="fa fa-envelope"></i><span class="badge dashbg-1"><?php echo $notificationCount > 0 ? $notificationCount : ''; ?></span></a>
                     <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages">
                         <?php if ($notificationCount > 0) {
                             foreach ($notificationData as $notification) { ?>
                                 <a href="calendar.php" class="dropdown-item message d-flex align-items-center">
-                                    <div class="profile">
-                                        <div class="status online"></div>
-                                    </div>
-                                    <div class="content">
-                                        <strong class="d-block text-primary">
-                                            <?php echo Translate::t($lang, [$notification->message, 'from'], ['ucfirst'=>true]) . ' ' . $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $notification->user_id]), ['name'], false)->name; ?>    <i class="fa fa-angle-right"></i>
-                                        </strong>
+                                    <div class="content text-white-50">
+                                       <i class="fa fa-arrow-right"> </i> <?php echo Translate::t($lang, [$notification->message, 'from'], ['ucfirst'=>true]) . ' ' . $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $notification->user_id]), ['name'], false)->name; ?>
                                     </div>
                                 </a>
                             <?php }
