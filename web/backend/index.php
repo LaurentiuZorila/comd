@@ -76,7 +76,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
             $chartValues    = Js::chartValues($chartData, 'quantity');
             $pieCommonData  = $countFurlough . ', ' . $countAbsentees . ', ' . $countUnpaid . ',' . $countMedical;
         } else {
-            Errors::setErrorType('warning', Translate::t($lang, 'Not_found_data'));
+            Errors::setErrorType('warning', Translate::t('Not_found_data'));
         }
     }
 }
@@ -103,7 +103,7 @@ include 'includes/navbar.php';
     <div class="page-content">
         <div class="page-header">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Dashboard'); ?></h2>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t('Dashboard'); ?></h2>
             </div>
         </div>
         <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
@@ -121,7 +121,7 @@ include 'includes/navbar.php';
             <div class="col-lg-12">
                 <p>
                     <button class="btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
-                        <?php echo Translate::t($lang, 'Filters'); ?>
+                        <?php echo Translate::t('Filters'); ?>
                     </button>
                 </p>
                 <div class="<?php if (Input::exists() && !Errors::countAllErrors()) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
@@ -133,28 +133,28 @@ include 'includes/navbar.php';
                                 </div>
                                 <div class="col-sm-3">
                                     <select name="teams" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                        <option value=""><?php echo Translate::t($lang, 'Select_team'); ?></option>
+                                        <option value=""><?php echo Translate::t('Select_team'); ?></option>
                                         <?php foreach ($offices as $office) { ?>
                                             <option value="<?php echo $office->id; ?>"><?php echo $office->name; ?></option>
                                         <?php } ?>
                                     </select>
                                     <?php
                                     if (Input::exists() && empty(Input::post('table'))) { ?>
-                                        <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                        <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                     <?php }?>
                                 </div>
                                 <div class="col-sm-3">
                                     <select name="table" id="#table" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                        <option value=""><?php echo Translate::t($lang, 'Select_table'); ?></option>
+                                        <option value=""><?php echo Translate::t('Select_table'); ?></option>
                                     </select>
                                     <?php
                                     if (Input::exists() && empty(Input::post('table'))) { ?>
-                                        <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                        <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                     <?php }?>
                                 </div>
                                 <div class="col-sm-3">
                                     <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} else { echo 'mb-3';}?>">
-                                        <option value=""><?php echo Translate::t($lang, 'Select_year'); ?></option>
+                                        <option value=""><?php echo Translate::t('Select_year'); ?></option>
                                         <?php
                                         foreach (Common::getYearsList() as $year) { ?>
                                             <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
@@ -162,23 +162,23 @@ include 'includes/navbar.php';
                                     </select>
                                     <?php
                                     if (Input::exists() && empty(Input::post('year'))) { ?>
-                                        <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                        <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                     <?php }?>
                                 </div>
                                 <div class="col-sm-3">
                                     <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                        <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
+                                        <option value=""><?php echo Translate::t('Select_month'); ?></option>
                                         <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                             <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                         <?php } ?>
                                     </select>
                                     <?php
                                     if (Input::exists() && empty(Input::post('month'))) { ?>
-                                        <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                        <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                     <?php }?>
                                 </div>
                                 <div class="col-sm-2">
-                                    <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
+                                    <button id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
                                     <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                 </div>
                             </div>
@@ -193,7 +193,7 @@ include 'includes/navbar.php';
                         <div class="statistic-block block">
                             <div class="progress-details d-flex align-items-end justify-content-between">
                                 <div class="title">
-                                    <div class="icon"><i class="icon-list"></i></div><strong><?php echo Translate::t($lang, 'Offices'); ?></strong>
+                                    <div class="icon"><i class="icon-list"></i></div><strong><?php echo Translate::t('Offices'); ?></strong>
                                 </div>
                                 <div class="number dashtext-1"><?php echo $countOffices; ?></div>
                             </div>
@@ -207,7 +207,7 @@ include 'includes/navbar.php';
                         <div class="statistic-block block">
                             <div class="progress-details d-flex align-items-end justify-content-between">
                                 <div class="title">
-                                    <div class="icon"><i class="icon-user"></i></div><strong><?php echo Translate::t($lang, 'All_staff'); ?></strong>
+                                    <div class="icon"><i class="icon-user"></i></div><strong><?php echo Translate::t('All_staff'); ?></strong>
                                 </div>
                                 <div class="number dashtext-1"><?php echo $countStaff; ?></div>
                             </div>
@@ -221,7 +221,7 @@ include 'includes/navbar.php';
                         <div class="statistic-block block">
                             <div class="progress-details d-flex align-items-end justify-content-between">
                                 <div class="title">
-                                    <div class="icon"><i class="icon-user-1"></i></div><strong><?php echo Translate::t($lang, 'All_employees'); ?></strong>
+                                    <div class="icon"><i class="icon-user-1"></i></div><strong><?php echo Translate::t('All_employees'); ?></strong>
                                 </div>
                                 <div class="number dashtext-2"><?php echo $countEmployees; ?></div>
                             </div>
@@ -242,7 +242,7 @@ include 'includes/navbar.php';
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
-                                        <div class="icon"><i class="icon-info"></i></div><strong><?php echo Translate::t($lang, 'Total_user_absentees'); ?></strong>
+                                        <div class="icon"><i class="icon-info"></i></div><strong><?php echo Translate::t('Total_user_absentees'); ?></strong>
                                     </div>
                                     <div class="number dashtext-3"><?php echo $countAbsentees; ?></div>
                                 </div>
@@ -255,7 +255,7 @@ include 'includes/navbar.php';
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
-                                        <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_furlough'); ?></strong>
+                                        <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('Total_user_furlough'); ?></strong>
                                     </div>
                                     <div class="number dashtext-3"><?php echo $countFurlough; ?></div>
                                 </div>
@@ -268,7 +268,7 @@ include 'includes/navbar.php';
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
-                                        <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_unpaid'); ?></strong>
+                                        <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('Total_user_unpaid'); ?></strong>
                                     </div>
                                     <div class="number dashtext-3"><?php echo $countUnpaid; ?></div>
                                 </div>
@@ -282,7 +282,7 @@ include 'includes/navbar.php';
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
-                                        <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_medical'); ?></strong>
+                                        <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('Total_user_medical'); ?></strong>
                                     </div>
                                     <div class="number dashtext-3"><?php echo $countMedical; ?></div>
                                 </div>
@@ -301,8 +301,8 @@ include 'includes/navbar.php';
                         <div class="col-lg-8">
                             <div class="bar-chart block chart">
                                 <ul class="nav nav-pills card-header-pills">
-                                    <li class="nav-item"><button class="btn-sm btn-primary mr-1 bar" id="bar" type="button"><?php echo Translate::t($lang, 'Bar'); ?></button></li>
-                                    <li class="nav-item"><button class="btn-sm btn-outline-primary line" id="line" type="button"><?php echo Translate::t($lang, 'Line'); ?></button></li>
+                                    <li class="nav-item"><button class="btn-sm btn-primary mr-1 bar" id="bar" type="button"><?php echo Translate::t('Bar'); ?></button></li>
+                                    <li class="nav-item"><button class="btn-sm btn-outline-primary line" id="line" type="button"><?php echo Translate::t('Line'); ?></button></li>
                                 </ul>
                                 <div class="drills-chart block">
                                     <canvas id="backendIndexBarChart" style="display: block; width: 494px; height: 250px;" width="494" height="250" class="chartjs-render-monitor"></canvas>

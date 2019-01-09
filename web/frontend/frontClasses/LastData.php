@@ -41,9 +41,9 @@ class LastData
     private function where($multiple = true)
     {
         if ($multiple) {
-            return ActionCond::where([['id', $this->_uId], ['year', $this->_year], ['month', $this->_month]]);
+            return AC::where([['id', $this->_uId], ['year', $this->_year], ['month', $this->_month]]);
         } else {
-            return ActionCond::where(['id', $this->_officeId]);
+            return AC::where(['id', $this->_officeId]);
         }
     }
 
@@ -65,7 +65,7 @@ class LastData
     public function getData($lang)
     {
         foreach ($this->getTables() as $tables) {
-            $data[Translate::t($lang, $tables)] = FrontendDB::getInstance()->get(Params::PREFIX . $tables, $this->where(), ['quantity'])->first()->quantity;
+            $data[Translate::t($tables)] = FrontendDB::getInstance()->get(Params::PREFIX . $tables, $this->where(), ['quantity'])->first()->quantity;
         }
         return $data;
     }
@@ -85,7 +85,7 @@ class LastData
                 return Js::values($this->getData($lang));
             }
         } else {
-            Errors::setErrorType('info', Translate::t($lang, 'for', ['ucfirst' => true]) . ' ' . Common::numberToMonth($this->_month, $lang). ' ' . Translate::t($lang, 'not_found'). ' ' . Translate::t($lang, 'try_search_another'));
+            Errors::setErrorType('info', Translate::t('for', ['ucfirst' => true]) . ' ' . Common::numberToMonth($this->_month, $lang). ' ' . Translate::t('not_found'). ' ' . Translate::t('try_search_another'));
         }
 
     }

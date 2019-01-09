@@ -71,9 +71,9 @@ class Js
         if (count($items) > 0) {
             foreach ($items as $key => $value) {
                 if (!empty($params)) {
-                    $keys[] = Translate::t($lang, $key, $params);
+                    $keys[] = Translate::t($key, $params);
                 } else {
-                    $keys[] = Translate::t($lang, $key);
+                    $keys[] = Translate::t($key);
                 }
             }
             return self::toJson($keys);

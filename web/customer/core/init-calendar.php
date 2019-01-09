@@ -28,3 +28,6 @@ spl_autoload_register(function($class_name){
 $customerUser = new CustomerUser();
 $customerData = new CustomerProfile();
 $customerDb   = CustomerDB::getInstance();
+if (!$customerUser->isLoggedIn()) {
+    Redirect::to('../../');
+}

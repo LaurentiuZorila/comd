@@ -1,14 +1,62 @@
 <?php
-include './../core/init-calendar.php';
-$id = Input::post('id');
+require_once './../core/init-calendar.php';
 
-if ($id !== 'undefined') {
-    $deleteEvent = $customerDb->delete(Params::TBL_EVENTS, ActionCond::where(['id', $id]));
-    if ($deleteEvent) {
-        echo 1;
+$id     = Input::get('id');
+$table  = Input::get('table');
+$status = Input::get('status');
+$userId = Input::get('userId');
+$month  = Input::get('month');
+$year   = Input::get('year');
+
+$table  = strtolower($table);
+$table  = Params::PREFIX . $table;
+
+
+// Delete event in TBL Events
+$customerDb->delete(Params::TBL_EVENTS, AC::where(['id', $id]));
+
+// Delete notification in TBL Notification
+$customerDb->delete(Params::TBL_NOTIFICATION, AC::where(['event_id', $id]));
+
+    $where = AC::where([
+        ['employees_id', $userId],
+        ['year', $year],
+        ['month', $month]
+    ]);
+
+    $where1 = AC::where([
+        ['user_id', $userId],
+        ['year', $year],
+        ['month', $month],
+        ['status', 1]
+    ]);
+
+    // All days from event table
+    $allDaysEvent = $customerData->records(Params::TBL_EVENTS, AC::where(['user_id', $userId]), ['days']);
+    foreach ($allDaysEvent as $allDays) {
+        $eventDays[] = $allDays->days;
     }
+
+    // Sum all days from events table
+    $sumDaysEvent = $customerDb->sum(Params::TBL_EVENTS, AC::where(['user_id', $userId]), 'days_number')->first()->sum;
+    $days = implode(',', $eventDays);
+
+
+    // Get record id common table
+    $records  = $customerDb->get($table, $where, ['id'])->first();
+    // Update common table
+    $updateCommonTbl = $customerDb->update($table,
+        [
+            'quantity' => $sumDaysEvent,
+            'days'     => $days
+
+        ], [
+            'id' => $records->id
+        ]);
+
+if ($updateCommonTbl) {
+    echo 1;
 } else {
     echo 0;
 }
-
 ?>

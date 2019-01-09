@@ -14,12 +14,12 @@
                 success: function(data) {
                     $.each(data, function(key, value) {
                         if (value === "Success") {
-                            displayMessage("success", "<?php echo Translate::t($lang, 'event_updated', ['ucfirst'=>true]); ?>");
+                            displayMessage("success", "<?php echo Translate::t('event_updated', ['ucfirst'=>true]); ?>");
                             setTimeout(function(){
                                 location.reload();
                             }, 1000);
                         } else {
-                            displayMessage("danger", "<?php echo Translate::t($lang, 'Db_error', ['ucfirst'=>true]); ?>");
+                            displayMessage("danger", "<?php echo Translate::t('Db_error', ['ucfirst'=>true]); ?>");
                         }
                     });
                 }

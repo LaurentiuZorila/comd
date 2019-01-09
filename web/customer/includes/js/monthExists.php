@@ -19,7 +19,7 @@
             success: function(data) {
                 $.each(data, function(key, value) {
                     if (value === "Failed") {
-                        displayMessage("info", "<?php echo Translate::t($lang, 'data_month_exists', ['ucfirst'=>true]); ?>", 5000);
+                        displayMessage("info", "<?php echo Translate::t('data_month_exists', ['ucfirst'=>true]); ?>", 5000);
                         $(".confirmUpdate").show();
                     }
                 });

@@ -135,7 +135,7 @@ if (Input::exists()) {
 
         if (!Errors::countAllErrors())
         {
-            Session::put('success', Translate::t($lang, 'next_update_db'));
+            Session::put('success', Translate::t('next_update_db'));
             Redirect::to('../update_database.php?config='. Tokens::getRoute());
         }
 }

@@ -24,10 +24,10 @@ $departmentName = $details->records(Params::TBL_DEPARTMENT, ['id', '=', $frontUs
     <!-- Sidebar Navidation Menus-->
     <span class="heading">Main</span>
     <ul class="list-unstyled">
-        <li class="active"><a href="index.php"> <i class="icon-home"></i><?php echo Translate::t($lang, 'Home'); ?></a></li>
-        <li><a href="feedback.php"> <i class="fa fa-star-half-full"></i> <?php echo Translate::t($lang, 'feedback'); ?> </a></li>
-        <li><a href="calendar.php"> <i class="fa fa-calendar"></i> <?php echo Translate::t($lang, 'Calendar'); ?> </a></li>
-        <li><a href="update_profile.php"> <i class="icon-user"></i><?php echo Translate::t($lang, 'Edit_profile'); ?> </a></li>
-        <li><a href="logout.php"> <i class="icon-logout"></i><?php echo Translate::t($lang, 'logout'); ?> </a></li>
+        <li class="active"><a href="index.php"> <i class="icon-home"></i><?php echo Translate::t('Home'); ?></a></li>
+        <li><a href="feedback.php"> <i class="fa fa-star-half-full"></i> <?php echo Translate::t('feedback'); ?> </a></li>
+        <li><a href="calendar.php"> <i class="fa fa-calendar"></i> <?php echo Translate::t('Calendar'); ?> </a></li>
+        <li><a href="update_profile.php"> <i class="icon-user"></i><?php echo Translate::t('Edit_profile'); ?> </a></li>
+        <li><a href="logout.php"> <i class="icon-logout"></i><?php echo Translate::t('logout'); ?> </a></li>
     </ul>
 </nav>

@@ -1,6 +1,6 @@
 <?php
 require_once 'core/init.php';
-$allEvents = $frontProfile->records(Params::TBL_EVENTS, ActionCond::where(['user_id', $frontUser->userId()]), ['*'], true);
+$allEvents = $frontProfile->records(Params::TBL_EVENTS, AC::where(['user_id', $frontUser->userId()]), ['*'], true);
 
 if (!empty($allEvents)) {
     foreach ($allEvents as $allEvent) {
@@ -20,6 +20,9 @@ if (!empty($allEvents)) {
     <script src="./../common/vendor/fullcalendar/lib/moment.min.js"></script>
     <script src="./../common/vendor/fullcalendar/fullcalendar.min.js"></script>
     <script src="./../common/vendor/fullcalendar/locale-all.js"></script>
+    <!--DATE PICKER-->
+    <link rel="stylesheet" href="./../common/vendor/bootstrap-datepicker-1.6.4-dist/css/bootstrap-datepicker3.css">
+    <script src="./../common/vendor/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.min.js"></script>
     <script src="./../common/vendor/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.js"></script>
 <script>
 
@@ -65,11 +68,11 @@ $(document).ready(function () {
                     data: 'title=' + event.title + '&start=' + start + '&end=' + end + '&id=' + event.id,
                     type: "POST",
                     success: function (response) {
-                        displayMessage("<?php echo Translate::t($lang, 'Request_success', ['ucfirst' => true]); ?>");
+                        displayMessage("<?php echo Translate::t('Request_success', ['ucfirst' => true]); ?>");
                     }
                 });
             } else {
-                displayErrorMessage("<?php echo Translate::t($lang, 'can_modify_request', ['ucfirst'=>true]); ?>");
+                displayErrorMessage("<?php echo Translate::t('can_modify_request', ['ucfirst'=>true]); ?>");
             }
         },
         eventClick: function (event) {
@@ -82,14 +85,14 @@ $(document).ready(function () {
                         data: "&id=" + event.id,
                         success: function (response) {
                             if(parseInt(response) > 0) {
-                                displayMessage("<?php echo Translate::t($lang, 'Request_success', ['ucfirst'=>true]); ?>");
+                                displayMessage("<?php echo Translate::t('Request_success', ['ucfirst'=>true]); ?>");
                                 location.reload();
                             }
                         }
                     });
                 }
             } else {
-                displayErrorMessage("<?php echo Translate::t($lang, 'can_modify_request', ['ucfirst'=>true]); ?>");
+                displayErrorMessage("<?php echo Translate::t('can_modify_request', ['ucfirst'=>true]); ?>");
             }
         }
 
@@ -101,7 +104,7 @@ $(document).ready(function () {
         var endDate     = $('#endDate').val();
 
         if (title === '' || startDate === '' || endDate === '') {
-            displayErrorMessage("<?php echo Translate::t($lang, 'all_required', ['ucfirst'=>true]); ?>");
+            displayErrorMessage("<?php echo Translate::t('all_required', ['ucfirst'=>true]); ?>");
         }
 
         var sDate = new Date(startDate);
@@ -109,7 +112,7 @@ $(document).ready(function () {
         var ascendingDates;
 
         // Check if start date si lower as end date
-        if (sDate.getTime() < eDate.getTime()) {
+        if (sDate.getTime() <= eDate.getTime()) {
             var ascendingDates = true;
         } else {
             var ascendingDates = false;
@@ -131,11 +134,10 @@ $(document).ready(function () {
                     'customerId': <?php echo $frontUser->officeId(); ?>},
                 success: function (response) {
                     if (response.added === 'success') {
-                        console.log('aaaa');
-                        displayMessage("<?php echo Translate::t($lang, 'Request_success', ['ucfirst'=>true]); ?>");
+                        displayMessage("<?php echo Translate::t('Request_success', ['ucfirst'=>true]); ?>");
                         setTimeout(function () { window.location.reload(); }, 2000);
                     } else if (response.added === 'failed') {
-                        displayErrorMessage("<?php echo Translate::t($lang, 'Request_failed', ['ucfirst'=>true]); ?>");
+                        displayErrorMessage("<?php echo Translate::t('Request_failed', ['ucfirst'=>true]); ?>");
                     }
                 }
             });
@@ -149,7 +151,7 @@ $(document).ready(function () {
                 true
             );
         } else {
-            displayErrorMessage("<?php echo Translate::t($lang, 'ascending_dates', ['ucfirst'=>true]); ?>");
+            displayErrorMessage("<?php echo Translate::t('ascending_dates', ['ucfirst'=>true]); ?>");
         }
         $('#calendar').fullCalendar('unselect');
 
@@ -185,14 +187,14 @@ include 'includes/navbar.php';
     <div class="page-content">
         <div class="page-header mb-0">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Calendar'); ?></h2>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t('Calendar'); ?></h2>
             </div>
         </div>
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
-                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Calendar'); ?> </li>
+                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t('Home'); ?></a></li>
+                <li class="breadcrumb-item active"><?php echo Translate::t('Calendar'); ?> </li>
             </ul>
         </div>
 <!--        CALENDAR-->
@@ -215,7 +217,7 @@ include 'includes/navbar.php';
                     </div>
                     <div class="col-lg-4">
                         <div class="card-header" style="background-color: rgb(45, 48, 53);">
-                            <h4 class="text-center"><?php echo Translate::t($lang, 'all', ['ucfirst'=>true]) . ' ' . Translate::t($lang, 'event_request', ['strtolower'=>true]); ?></h4>
+                            <h4 class="text-center"><?php echo Translate::t('all', ['ucfirst'=>true]) . ' ' . Translate::t('event_request', ['strtolower'=>true]); ?></h4>
                         </div>
                         <div class="block">
                             <div class="table-responsive" style="height:565px; overflow-y: scroll;">
@@ -246,13 +248,13 @@ include 'includes/navbar.php';
         <div id="createEventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade">
             <div role="document" class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3"><?php echo Translate::t($lang, 'Make_attention'); ?></strong>
+                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3"><?php echo Translate::t('Make_attention'); ?></strong>
                         <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
                     </div>
                     <div class="modal-body">
                         <select name="request" class="form-control" id="request">
-                            <option value="Furlough"><?php echo Translate::t($lang, 'Furlough'); ?></option>
-                            <option value="Unpaid"><?php echo Translate::t($lang, 'Unpaid'); ?></option>
+                            <option value="Furlough"><?php echo Translate::t('Furlough'); ?></option>
+                            <option value="Unpaid"><?php echo Translate::t('Unpaid'); ?></option>
                         </select>
                         <div class="form-group">
                             <label class="form-control-label">Start date</label>
@@ -275,14 +277,14 @@ include 'includes/navbar.php';
         <div id="info_calendar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade text-left show" style="display: none;">
             <div role="document" class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-1"><?php echo Translate::t($lang, 'Info'); ?></strong>
+                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-1"><?php echo Translate::t('Info'); ?></strong>
                         <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
                     </div>
                     <div class="modal-body">
-                        <p><?php echo Translate::t($lang, 'Calendar_info'); ?></p>
+                        <p><?php echo Translate::t('Calendar_info'); ?></p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" data-dismiss="modal" class="btn-sm btn-danger"><?php echo Translate::t($lang, 'Close'); ?></button>
+                        <button type="button" data-dismiss="modal" class="btn-sm btn-danger"><?php echo Translate::t('Close'); ?></button>
                     </div>
                 </div>
             </div>
@@ -300,16 +302,17 @@ include '../common/includes/footer.php';
     $(function() {
         $( "#startDate" ).datepicker({
             format: 'yyyy/mm/dd',
-            startDate: '-1d',
+            startDate: '0d',
             autoclose: true,
         });
         $( "#endDate" ).datepicker({
             format: 'yyyy/mm/dd',
-            startDate: '-1d',
+            startDate: '0d',
             autoclose: true,
         });
     });
     $("#info_calendar_pulsate").pulsate({color:"#633b70;"});
+
 </script>
 </body>
 </html>

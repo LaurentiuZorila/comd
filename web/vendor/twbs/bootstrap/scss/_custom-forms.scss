@@ -266,7 +266,7 @@
     background-color: $custom-file-disabled-bg;
   }
 
-  @each $lang, $value in $custom-file-text {
+  @each $value in $custom-file-text {
     &:lang(#{$lang}) ~ .custom-file-label::after {
       content: $value;
     }

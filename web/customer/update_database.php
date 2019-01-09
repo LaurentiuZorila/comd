@@ -22,7 +22,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
         $month  = Input::post('month');
         $table  = Common::dbValues([Input::post('tables') => ['trim']]);
         $table  = Params::PREFIX . $table;
-        $months = $leadData->records($table, ActionCond::where([['offices_id', $lead->officesId()], ['year', $year]]), ['month']);
+        $months = $leadData->records($table, AC::where([['offices_id', $lead->officesId()], ['year', $year]]), ['month']);
 
         foreach ($months as $dbMonth) {
             $allMonths[] = $dbMonth->month;
@@ -33,7 +33,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
         // First delete present records if update button si checked and then Update form file
         if (Input::existsName('post', 'confirmUpdate') && in_array($month, $allMonths)) {
             $db = CustomerDB::getInstance();
-            $db->delete($table, ActionCond::where([['offices_id', $lead->officesId()], ['year', $year]]));
+            $db->delete($table, AC::where([['offices_id', $lead->officesId()], ['year', $year]]));
         }
 
         /** Check if for selected month exists records */
@@ -70,26 +70,26 @@ if (Input::exists() && Tokens::tokenVerify()) {
                                     'days'                  => $data[3]
                                 ]);
                             } else {
-                                Errors::setErrorType('danger', Translate::t($lang, 'type_int', ['ucfirtst'=>true]));
+                                Errors::setErrorType('danger', Translate::t('type_int', ['ucfirtst'=>true]));
                             }
                         }
                     } else {
-                        Errors::setErrorType('danger', Translate::t($lang, 'correct_file', ['ucfirst'=>true]));
+                        Errors::setErrorType('danger', Translate::t('correct_file', ['ucfirst'=>true]));
                     }
 
                     if ($lead->success() && !Errors::countAllErrors()) {
-                        Errors::setErrorType('success', Translate::t($lang, 'Db_success'));
+                        Errors::setErrorType('success', Translate::t('Db_success'));
                     } else {
-                        Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
+                        Errors::setErrorType('danger', Translate::t('Db_error'));
                     }
                     // Close the file
                     fclose($h);
                 }
             } else {
-                Errors::setErrorType('warning', Translate::t($lang, 'Csv_extension'));
+                Errors::setErrorType('warning', Translate::t('Csv_extension'));
             }
         } else {
-            Errors::setErrorType('info', Translate::t($lang, 'data_month_exists'));
+            Errors::setErrorType('info', Translate::t('data_month_exists'));
         }
     }
 }
@@ -116,28 +116,23 @@ if (Input::exists() && Tokens::tokenVerify()) {
       <!-- Sidebar Navigation-->
         <?php
         include 'includes/sidebar.php';
+        // LOADING PRELOADER MODAL
+        include './../common/includes/preloaders.php';
         ?>
       <!-- Sidebar Navigation end-->
       <div class="page-content">
         <!-- Page Header-->
         <div class="page-header no-margin-bottom">
           <div class="container-fluid">
-            <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Update_db'); ?></h2>
+            <h2 class="h5 no-margin-bottom"><?php echo Translate::t('Update_db'); ?></h2>
           </div>
         </div>
-          <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade show">
-              <div class="loader loader-3">
-                  <div class="dot dot1"></div>
-                  <div class="dot dot2"></div>
-                  <div class="dot dot3"></div>
-              </div>
-          </div>
         <!-- Breadcrumb-->
         <div class="container-fluid">
           <ul class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a>
+            <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t('Home'); ?></a>
             </li>
-            <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Update_db'); ?>
+            <li class="breadcrumb-item active"><?php echo Translate::t('Update_db'); ?>
             </li>
           </ul>
         </div>
@@ -159,14 +154,14 @@ if (Input::exists() && Tokens::tokenVerify()) {
                           <div class="row">
                               <div class="col-sm-12">
                                   <div class="title">
-                                      <strong><?php echo Translate::t($lang, 'Update_db'); ?></strong>
+                                      <strong><?php echo Translate::t('Update_db'); ?></strong>
                                       <button type="button" data-toggle="modal" data-target="#info_modal" class="btn btn-primary btn-sm float-sm-right" id="info_upload"><i class="fa fa-info-circle"></i></button>
                                   </div>
                               </div>
 
                               <div class="col-sm-4 year">
                                   <select id="year" name="year" class="form-control mb-1 <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} ?>">
-                                      <option value=""><?php echo Translate::t($lang, 'Select_year'); ?></option>
+                                      <option value=""><?php echo Translate::t('Select_year'); ?></option>
                                       <?php
                                       foreach (Common::getYearsList() as $year) { ?>
                                           <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
@@ -174,31 +169,31 @@ if (Input::exists() && Tokens::tokenVerify()) {
                                   </select>
                                   <?php
                                     if (Input::exists() && empty(Input::post('year'))) { ?>
-                                        <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                        <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                   <?php }?>
                               </div>
                               <div class="col-sm-4 month">
                                   <select id="month" name="month" class="form-control mb-1 <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} ?>">
-                                      <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
+                                      <option value=""><?php echo Translate::t('Select_month'); ?></option>
                                       <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                           <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                       <?php } ?>
                                   </select>
                                   <?php
                                   if (Input::exists() && empty(Input::post('month'))) { ?>
-                                      <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                      <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                   <?php }?>
                               </div>
                               <div class="col-sm-4 tables" style="display: none;">
                                   <select id="tables" name="tables" class="form-control mb-1 <?php if (Input::exists() && empty(Input::post('tables'))) {echo 'is-invalid';} ?>">
-                                      <option value=""><?php echo Translate::t($lang, 'Select_table'); ?></option>
+                                      <option value=""><?php echo Translate::t('Select_table'); ?></option>
                                       <?php foreach ($allTables as $table) { ?>
                                           <option value="<?php echo $table; ?>"><?php echo strtoupper($table); ?></option>
                                       <?php } ?>
                                   </select>
                                   <?php
                                   if (Input::exists() && empty(Input::post('tables'))) { ?>
-                                      <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                      <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                   <?php }?>
                               </div>
                               <div class="col-sm-12 mt-2 mb-3">
@@ -209,7 +204,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
                                   <input type="checkbox" name="confirmUpdate" value="confirmUpdate" />
                               </div>
                               <div class="col-sm-2">
-                                  <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
+                                  <button id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
                                   <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                               </div>
                           </div>
@@ -221,15 +216,15 @@ if (Input::exists() && Tokens::tokenVerify()) {
           <div id="info_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade text-left show" style="display: none;">
               <div role="document" class="modal-dialog">
                   <div class="modal-content">
-                      <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3"><?php echo Translate::t($lang, 'Make_attention'); ?></strong>
+                      <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3"><?php echo Translate::t('Make_attention'); ?></strong>
                           <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
                       </div>
                       <div class="modal-body">
-                          <p> <?php echo Translate::t($lang, 'Csv_extension'); ?> </p>
-                          <p> <?php echo Translate::t($lang, 'Download_file_from'); ?>: <a href="download.php"><?php echo Translate::t($lang, 'File'); ?></a></p>
+                          <p> <?php echo Translate::t('Csv_extension'); ?> </p>
+                          <p> <?php echo Translate::t('Download_file_from'); ?>: <a href="download.php"><?php echo Translate::t('File'); ?></a></p>
                       </div>
                       <div class="modal-footer">
-                          <button type="button" data-dismiss="modal" class="btn btn-secondary"><?php echo Translate::t($lang, 'Close'); ?></button>
+                          <button type="button" data-dismiss="modal" class="btn btn-secondary"><?php echo Translate::t('Close'); ?></button>
                       </div>
                   </div>
               </div>

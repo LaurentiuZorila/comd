@@ -29,6 +29,7 @@ spl_autoload_register(function($class_name){
 require_once './functions/sanitize.php';
 $lead       = new CustomerUser();
 $leadData   = new CustomerProfile();
+$leadDb     = CustomerDB::getInstance();
 if (!$lead->isLoggedIn()) {
     Redirect::to('login.php');
 } else {

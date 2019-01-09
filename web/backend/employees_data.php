@@ -11,7 +11,7 @@ $offices    = $backendUserProfile->records(Params::TBL_OFFICE, ['departments_id'
 $allUsers   = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['supervisors_id', '=', $user_id]);
 
 /** How to display data */
-$dataDisplay = $backendUserProfile->records(Params::TBL_OFFICE, ActionCond::where(['departments_id', $backendUser->departmentId()]), ['data_visualisation'], false)->data_visualisation;
+$dataDisplay = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['departments_id', $backendUser->departmentId()]), ['data_visualisation'], false)->data_visualisation;
 // table with data display
 $dataDisplay = (array)json_decode($dataDisplay);
 // Only tables
@@ -55,7 +55,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
                 $leadsName[] = $leads->name;
             }
         } else {
-            $leadsName[] = Translate::t($lang, 'not_found_leads', ['ucfirst' => true]);
+            $leadsName[] = Translate::t('not_found_leads', ['ucfirst' => true]);
         }
 
 
@@ -124,7 +124,7 @@ if (Input::existsName('get', 'employees_id') && !Input::exists()) {
             $leadsName[] = $leads->name;
         }
     } else {
-        $leadsName[] = Translate::t($lang, 'not_found_leads', ['ucfirst' => true]);
+        $leadsName[] = Translate::t('not_found_leads', ['ucfirst' => true]);
     }
 
     /** Employees name */
@@ -166,7 +166,7 @@ if (Input::existsName('get', 'employees_id') && !Input::exists()) {
 
     /** Check if exists values for selected options */
     if (!Common::checkValues($allData)) {
-        Errors::setErrorType('info', Translate::t($lang, 'not_found_current_month') . '. ' . Translate::t($lang, 'try_search_another', ['ucfirst' => true]));
+        Errors::setErrorType('info', Translate::t('not_found_current_month') . '. ' . Translate::t('try_search_another', ['ucfirst' => true]));
     }
 
 }
@@ -194,7 +194,7 @@ include 'includes/navbar.php';
         <!-- Page Header-->
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'All_employees'); ?></h2>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t('All_employees'); ?></h2>
             </div>
         </div>
         <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
@@ -207,8 +207,8 @@ include 'includes/navbar.php';
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
-                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Employees_details'); ?></li>
+                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t('Home'); ?></a></li>
+                <li class="breadcrumb-item active"><?php echo Translate::t('Employees_details'); ?></li>
             </ul>
         </div>
         <?php
@@ -220,7 +220,7 @@ include 'includes/navbar.php';
             <div class="col-lg-12">
                 <p>
                     <button class="btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
-                        <?php echo Translate::t($lang, 'Filters'); ?>
+                        <?php echo Translate::t('Filters'); ?>
                     </button>
                 </p>
                 <div class="<?php if (Input::exists() && !Errors::countAllErrors()) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
@@ -228,55 +228,55 @@ include 'includes/navbar.php';
                     <form method="post">
                         <div class="row">
                             <div class="col-sm-12">
-                                <div class="title"><strong><?php echo Translate::t($lang, 'Filters'); ?></strong></div>
+                                <div class="title"><strong><?php echo Translate::t('Filters'); ?></strong></div>
                             </div>
                             <div class="col-sm-6">
                                 <select name="teams" class="form-control <?php if (Input::exists() && empty(Input::post('teams'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                    <option value=""><?php echo Translate::t($lang, 'Select_team'); ?></option>
+                                    <option value=""><?php echo Translate::t('Select_team'); ?></option>
                                     <?php foreach ($offices as $office) { ?>
                                         <option value="<?php echo $office->id; ?>"><?php echo $office->name; ?></option>
                                     <?php } ?>
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('teams'))) { ?>
-                                    <div class="invalid-feedback mb-3"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                    <div class="invalid-feedback mb-3"><?php echo Translate::t('This_field_required'); ?></div>
                                 <?php }?>
                             </div>
                             <div class="col-sm-6">
                                 <select name="employees" id="#employees" class="form-control <?php if (Input::exists() && empty(Input::post('employees'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                    <option value=""><?php echo Translate::t($lang, 'Select_Employees'); ?></option>
+                                    <option value=""><?php echo Translate::t('Select_Employees'); ?></option>
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('employees'))) { ?>
-                                    <div class="invalid-feedback mb-3 "><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                    <div class="invalid-feedback mb-3 "><?php echo Translate::t('This_field_required'); ?></div>
                                 <?php }?>
                             </div>
                             <div class="col-sm-6">
                                 <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                    <option value=""><?php echo Translate::t($lang, 'Select_year'); ?></option>
+                                    <option value=""><?php echo Translate::t('Select_year'); ?></option>
                                     <?php foreach (Common::getYearsList() as $year) { ?>
                                     <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
                                     <?php } ?>
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('year'))) { ?>
-                                    <div class="invalid-feedback mb-3"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                    <div class="invalid-feedback mb-3"><?php echo Translate::t('This_field_required'); ?></div>
                                 <?php }?>
                             </div>
                             <div class="col-sm-6">
                                 <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                    <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
+                                    <option value=""><?php echo Translate::t('Select_month'); ?></option>
                                     <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                         <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                     <?php } ?>
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('month'))) { ?>
-                                    <div class="invalid-feedback mb-3"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                    <div class="invalid-feedback mb-3"><?php echo Translate::t('This_field_required'); ?></div>
                                 <?php }?>
                             </div>
                             <div class="col-sm-2">
-                                <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
+                                <button id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
                                 <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                             </div>
                         </div>
@@ -291,16 +291,16 @@ if (Input::exists() && !Errors::countAllErrors() || Input::existsName('get', 'em
             <div class="col-12 mb-1">
                 <div class="card">
                     <blockquote class="blockquote mb-0 card-body">
-                            <h3><?php echo Translate::t($lang, 'Employees') . ': ' . $employeesName; ?></h3>
+                            <h3><?php echo Translate::t('Employees') . ': ' . $employeesName; ?></h3>
                         <footer class="blockquote-footer">
                             <small class="text-muted"><?php echo $allOfficesData->name; ?></small>
                         </footer>
                         <footer class="blockquote-footer">
-                            <small class="text-muted"><?php echo Translate::t($lang, 'Data') . ' ' . $monthName . ', ' . Input::post('year'); ?></small>
+                            <small class="text-muted"><?php echo Translate::t('Data') . ' ' . $monthName . ', ' . Input::post('year'); ?></small>
                         </footer>
                         <footer class="blockquote-footer">
                             <small class="text-muted">
-                                <?php echo Translate::t($lang, 'Leads'); ?>:
+                                <?php echo Translate::t('Leads'); ?>:
                                 <?php
                                 foreach ($leadsName as $leadName) {
                                     if (count($leadsName) > 1) {
@@ -328,7 +328,7 @@ if (Input::exists() && !Errors::countAllErrors() || Input::existsName('get', 'em
                                     <div class="stats-2-arrow low"><i class="fa fa-line-chart"></i></div>
                                     <div class="stats-2-content">
                                         <strong class="d-block dashtext-1">
-                                        <?php echo in_array($key, $tblDataDysplay) && $dataDisplay[$key] === 'percentage' ? (!in_array($key, Params::TBL_COMMON) ? $value . '%' : $value) : (in_array($key, Params::TBL_COMMON) ? $value . '<small class="text-small">'  . Translate::t($lang, 'Days', ['strtolower'=>true]) . '</small>' : $value); ?>
+                                        <?php echo in_array($key, $tblDataDysplay) && $dataDisplay[$key] === 'percentage' ? (!in_array($key, Params::TBL_COMMON) ? $value . '%' : $value) : (in_array($key, Params::TBL_COMMON) ? $value . '<small class="text-small">'  . Translate::t('Days', ['strtolower'=>true]) . '</small>' : $value); ?>
                                         </strong>
                                         <span class="d-block"><?php echo strtoupper($key); ?></span>
                                         <div class="progress progress-template progress-small">
@@ -353,8 +353,8 @@ if (Input::exists() && !Errors::countAllErrors() || Input::existsName('get', 'em
                 <div class="card text-center">
                     <div class="card-header pt-2">
                         <ul class="nav nav-pills card-header-pills">
-                            <li class="nav-item"><button class="btn-sm btn-primary line" id="line" type="button"><?php echo Translate::t($lang, 'Line');?></button></li>
-                            <li class="nav-item"><button class="btn-sm btn-outline-primary mr-1 bar" id="bar" type="button"><?php echo Translate::t($lang, 'Bar');?></button></li>
+                            <li class="nav-item"><button class="btn-sm btn-primary line" id="line" type="button"><?php echo Translate::t('Line');?></button></li>
+                            <li class="nav-item"><button class="btn-sm btn-outline-primary mr-1 bar" id="bar" type="button"><?php echo Translate::t('Bar');?></button></li>
                         </ul>
                     </div>
                     <div class="pie-chart chart block">

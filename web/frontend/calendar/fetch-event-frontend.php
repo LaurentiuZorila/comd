@@ -1,7 +1,7 @@
 <?php
 require_once './../core/calendar-init.php';
 $userId = $frontUser->userId();
-$results = $frontRecords->records(Params::TBL_EVENTS, ActionCond::where(['user_id', $userId]), ['*'], true);
+$results = $frontRecords->records(Params::TBL_EVENTS, AC::where(['user_id', $userId]), ['*'], true);
 
 foreach ($results as $key => $result) {
     if ($result->status == 1) {
@@ -10,7 +10,7 @@ foreach ($results as $key => $result) {
             'days'      => $result->days,
             'user_id'   => $result->user_id,
             'lead_id'   => $result->lead_id,
-            'title'     => Translate::t($lang, $result->title, ['ucfirst'=>true]) . ' - ' . Translate::t($lang, $result->event_status, ['ucfirst'=>true]),
+            'title'     => Translate::t($result->title, ['ucfirst'=>true]) . ' - ' . Translate::t($result->event_status, ['ucfirst'=>true]),
             'start'     => $result->start,
             'end'       => $result->end,
             'color'     => Params::EVENTS_COLORS[$result->status],
@@ -22,7 +22,7 @@ foreach ($results as $key => $result) {
             'days'      => $result->days,
             'user_id'   => $result->user_id,
             'lead_id'   => $result->lead_id,
-            'title'     => Translate::t($lang, $result->title, ['ucfirst'=>true]) . ' - ' . Translate::t($lang, $result->event_status, ['ucfirst'=>true]),
+            'title'     => Translate::t($result->title, ['ucfirst'=>true]) . ' - ' . Translate::t($result->event_status, ['ucfirst'=>true]),
             'start'     => $result->start,
             'end'       => $result->end,
             'color'     => Params::EVENTS_COLORS[$result->status],
@@ -34,7 +34,7 @@ foreach ($results as $key => $result) {
             'days'      => $result->days,
             'user_id'   => $result->user_id,
             'lead_id'   => $result->lead_id,
-            'title'     => Translate::t($lang, $result->title, ['ucfirst'=>true]) . ' - ' . Translate::t($lang, $result->event_status, ['ucfirst'=>true]),
+            'title'     => Translate::t($result->title, ['ucfirst'=>true]) . ' - ' . Translate::t($result->event_status, ['ucfirst'=>true]),
             'start'     => $result->start,
             'end'       => $result->end,
             'color'     => Params::EVENTS_COLORS[$result->status],

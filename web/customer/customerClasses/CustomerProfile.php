@@ -109,6 +109,4 @@ class CustomerProfile
             return array_combine($dataKeys, $dataValues);
         }
     }
-
-
 }

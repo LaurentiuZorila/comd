@@ -34,7 +34,7 @@ $insertEvent = $frontDb->insert(Params::TBL_EVENTS, [
 ]);
 
 if ($insertEvent) {
-    Session::put('eventAdded', Translate::t($lang, 'Request_success', ['ucfirst' => true]));
+    Session::put('eventAdded', Translate::t('Request_success', ['ucfirst' => true]));
 }
 
 ?>

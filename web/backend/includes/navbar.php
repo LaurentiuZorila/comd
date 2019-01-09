@@ -31,12 +31,12 @@
                             <div class="profile">
                                 <div class="status online"></div>
                             </div>
-                            <div class="content"><strong class="d-block"><?php echo $backendUser->name(); ?></strong><span class="d-block"><?php echo Translate::t($lang, 'navNotification'); ?></span>
+                            <div class="content"><strong class="d-block"><?php echo $backendUser->name(); ?></strong><span class="d-block"><?php echo Translate::t('navNotification'); ?></span>
                                 <small class="date d-block"><?php echo date("h:i A"); ?></small>
                             </div>
                         </a>
-                        <a href="#" class="dropdown-item text-center message"><strong><?php echo Translate::t($lang, 'navEmplData'); ?><i class="fa fa-angle-right"></i></strong></a>
-                        <a href="#" class="dropdown-item text-center message"><strong><?php echo Translate::t($lang, 'navStaffData'); ?><i class="fa fa-angle-right"></i></strong></a>
+                        <a href="#" class="dropdown-item text-center message"><strong><?php echo Translate::t('navEmplData'); ?><i class="fa fa-angle-right"></i></strong></a>
+                        <a href="#" class="dropdown-item text-center message"><strong><?php echo Translate::t('navStaffData'); ?><i class="fa fa-angle-right"></i></strong></a>
                     </div>
                 </div>
                 <!-- Tasks-->
@@ -46,32 +46,32 @@
                 <div class="list-inline-item dropdown menu-large"><a href="#" data-toggle="dropdown" class="nav-link">Mega <i class="fa fa-ellipsis-v"></i></a>
                     <div class="dropdown-menu megamenu">
                         <div class="row">
-                            <div class="col-lg-2 col-md-4"><strong class="text-uppercase"><?php echo Translate::t($lang, 'view_employees', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-4"><strong class="text-uppercase"><?php echo Translate::t('view_employees', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
-                                    <li><a href="#"><?php echo Translate::t($lang, 'view_employees_nav_details'); ?></a></li>
+                                    <li><a href="#"><?php echo Translate::t('view_employees_nav_details'); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-4"><strong class="text-uppercase"><?php echo Translate::t($lang, 'navEmplData', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-4"><strong class="text-uppercase"><?php echo Translate::t('navEmplData', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
-                                    <li><a href="#"><?php echo Translate::t($lang, 'view_employees_nav_data_details'); ?></a></li>
+                                    <li><a href="#"><?php echo Translate::t('view_employees_nav_data_details'); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-4"><strong class="text-uppercase"><?php echo Translate::t($lang, 'view_staff', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-4"><strong class="text-uppercase"><?php echo Translate::t('view_staff', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
-                                    <li><a href="#"><?php echo Translate::t($lang, 'view_staff_nav_details'); ?></a></li>
+                                    <li><a href="#"><?php echo Translate::t('view_staff_nav_details'); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'Update_user_profile', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t('Update_user_profile', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
-                                    <li><a href="#"><?php echo Translate::t($lang, 'move_staff_nav'); ?></a></li>
+                                    <li><a href="#"><?php echo Translate::t('move_staff_nav'); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'my_profile', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t('my_profile', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
-                                    <li><a href="#"><?php echo Translate::t($lang, 'move_staff_nav'); ?></a></li>
+                                    <li><a href="#"><?php echo Translate::t('move_staff_nav'); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'logout', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t('logout', ['strtoupper' => true]); ?></strong>
                             </div>
                         </div>
                         <div class="row megamenu-buttons text-center">
@@ -90,32 +90,32 @@
                     <?php
                     if ($lang === 'en') { ?>
                     <a id="languages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link language dropdown-toggle">
-                        <img src="./../common/img/flag/_england.png" alt="English"><span class="d-none d-sm-inline-block"><?php echo Translate::t($lang, 'english'); ?></span>
+                        <img src="./../common/img/flag/_england.png" alt="English"><span class="d-none d-sm-inline-block"><?php echo Translate::t('english'); ?></span>
                     </a>
                     <?php } elseif ($lang === 'ro') {  ?>
                     <a id="languages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link language dropdown-toggle">
-                        <img src="/../common/img/flag/RO.png" alt="English"><span class="d-none d-sm-inline-block"><?php echo Translate::t($lang, 'romanian'); ?></span>
+                        <img src="/../common/img/flag/RO.png" alt="English"><span class="d-none d-sm-inline-block"><?php echo Translate::t('romanian'); ?></span>
                     </a>
                     <?php } elseif ($lang === 'it') { ?>
                     <a id="languages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link language dropdown-toggle">
-                        <img src="/../common/img/flag/IT.png" alt="English"><span class="d-none d-sm-inline-block"><?php echo Translate::t($lang, 'italian'); ?></span>
+                        <img src="/../common/img/flag/IT.png" alt="English"><span class="d-none d-sm-inline-block"><?php echo Translate::t('italian'); ?></span>
                     </a>
                     <?php } ?>
                     <div aria-labelledby="languages" class="dropdown-menu">
                         <a rel="nofollow" href="language.php?lang=2" class="dropdown-item">
-                            <img src="/../common/img/flag/IT.png" alt="English" class="mr-2"><span><?php echo Translate::t($lang, 'italian'); ?><small> (not present)</small></span>
+                            <img src="/../common/img/flag/IT.png" alt="English" class="mr-2"><span><?php echo Translate::t('italian'); ?><small> (not present)</small></span>
                         </a>
                         <a rel="nofollow" href="language.php?lang=3" class="dropdown-item">
-                            <img src="/../common/img/flag/RO.png" alt="English" class="mr-2"><span><?php echo Translate::t($lang, 'romanian'); ?><small> (not present)</small></span>
+                            <img src="/../common/img/flag/RO.png" alt="English" class="mr-2"><span><?php echo Translate::t('romanian'); ?><small> (not present)</small></span>
                         </a>
                         <a rel="nofollow" href="language.php?lang=1" class="dropdown-item">
-                            <img src="/../common/img/flag/_england.png" alt="English" class="mr-2"><span><?php echo Translate::t($lang, 'english'); ?><small></small></span>
+                            <img src="/../common/img/flag/_england.png" alt="English" class="mr-2"><span><?php echo Translate::t('english'); ?><small></small></span>
                         </a>
                     </div>
                 </div>
                 <!-- Log out               -->
                 <div class="list-inline-item logout">
-                    <a id="logout" href="logout.php" class="nav-link"><?php echo Translate::t($lang, 'logout'); ?> <i class="icon-logout"></i></a>
+                    <a id="logout" href="logout.php" class="nav-link"><?php echo Translate::t('logout'); ?> <i class="icon-logout"></i></a>
                 </div>
             </div>
         </div>

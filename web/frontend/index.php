@@ -7,7 +7,7 @@ $tables = explode(',', $tables->tables);
 // Get all common data
 foreach (Params::TBL_COMMON as $commonTables) {
     $commonData[$commonTables] = $frontProfile->records(Params::PREFIX . $commonTables,
-        ActionCond::where([
+        AC::where([
                 ['employees_id', $frontUser->userId()],
                 ['year', date('Y')]
         ]), ['month', 'quantity', 'days'], true);
@@ -16,13 +16,13 @@ foreach (Params::TBL_COMMON as $commonTables) {
 
 
 if (!Input::get('info')) {
-    Session::put('InfoAlert', Translate::t($lang, 'Click_filter_for_data'));
+    Session::put('InfoAlert', Translate::t('Click_filter_for_data'));
 }
 
 if (!Input::exists()) {
     //Current year
     $year = date('Y');
-    $whereIndexPage = ActionCond::where([
+    $whereIndexPage = AC::where([
         ['employees_id', $frontUser->userId()],
         ['year', $year],
     ]);
@@ -53,14 +53,14 @@ if (Input::exists() && Tokens::tokenVerify()) {
 
     if (is_numeric($month)) {
         // Conditions for action
-        $where = ActionCond::where([
+        $where = AC::where([
             ['employees_id', $frontUser->userId()],
             ['year', $year],
             ['month', $month]
         ]);
 
         // Conditions for COUNT action (total)
-        $whereSum = ActionCond::where([
+        $whereSum = AC::where([
             ['offices_id', $frontUser->officeId()],
             ['year', $year],
             ['month', $month]
@@ -69,7 +69,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
         /**  One record if is selected one month form form */
         $data = $frontProfile->records($prefixTbl, $where, ['quantity'])->quantity;
         if ($data == '') {
-            Errors::setErrorType('info', Translate::t($lang, 'Not_found_data'));
+            Errors::setErrorType('info', Translate::t('Not_found_data'));
             $data = 0;
         }
 
@@ -89,13 +89,13 @@ if (Input::exists() && Tokens::tokenVerify()) {
         /** If user search data for all months */
         if (!is_numeric($month)) {
             // Conditions for action
-            $where = ActionCond::where([
+            $where = AC::where([
                 ['employees_id', $frontUser->userId()],
                 ['year', $year]
             ]);
 
             // Conditions for COUNT action (total)
-            $sumCommonDataAll = ActionCond::where([
+            $sumCommonDataAll = AC::where([
                 ['offices_id', $frontUser->officeId()],
                 ['year', $year]
             ]);
@@ -149,7 +149,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
                 $chartLabels = Js::key($dataAllMonths);
                 $chartValues = Js::values($dataAllMonths);
             } else {
-                Errors::setErrorType('info', Translate::t($lang, 'Not_found_data'));
+                Errors::setErrorType('info', Translate::t('Not_found_data'));
             }
         }
     }
@@ -178,7 +178,7 @@ include 'includes/navbar.php';
     <div class="page-content">
         <div class="page-header">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Dashboard'); ?></h2>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t('Dashboard'); ?></h2>
             </div>
         </div>
         <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
@@ -202,7 +202,7 @@ include 'includes/navbar.php';
                     <div class="col-lg-12">
                         <p>
                             <button class="btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                                <?php echo Translate::t($lang, 'Filters'); ?>
+                                <?php echo Translate::t('Filters'); ?>
                             </button>
                         </p>
                         <div class="<?php if (Input::exists() && !Errors::countAllErrors()) { echo "collapse";} else { echo "collapse show"; } ?>" id="collapseExample">
@@ -210,14 +210,14 @@ include 'includes/navbar.php';
                                 <form method="post">
                                     <div class="row">
                                         <div class="col-sm-12">
-                                            <div class="title"><strong><?php echo Translate::t($lang, 'Filters'); ?></strong></div>
+                                            <div class="title"><strong><?php echo Translate::t('Filters'); ?></strong></div>
                                         </div>
                                         <div class="col-sm-4">
                                             <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} else { echo 'mb-3';}?>">
                                                 <?php if (Input::existsName('post', 'submitFilters')) { ?>
                                                     <option value="<?php echo Input::post('year'); ?>"><?php echo Input::post('year'); ?></option>
                                                 <?php } else { ?>
-                                                    <option value=""><?php echo Translate::t($lang, 'Select_year', ['strtoupper'=>true]); ?></option>
+                                                    <option value=""><?php echo Translate::t('Select_year', ['ucfirst'=>true]); ?></option>
                                                 <?php }
                                                 foreach (Common::getYearsList() as $year) { ?>
                                                     <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
@@ -225,7 +225,7 @@ include 'includes/navbar.php';
                                             </select>
                                             <?php
                                             if (Input::exists() && empty(Input::post('year'))) { ?>
-                                                <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                             <?php }?>
                                         </div>
 
@@ -234,7 +234,7 @@ include 'includes/navbar.php';
                                                 <?php if (Input::existsName('post', 'submitFilters')) { ?>
                                                     <option value="<?php echo Input::post('month'); ?>"><?php echo Common::getMonths($lang)[Input::post('month')]; ?></option>
                                                 <?php } else { ?>
-                                                    <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
+                                                    <option value=""><?php echo Translate::t('Select_month', ['ucfirst'=>true]); ?></option>
                                                 <?php }
                                                 foreach (Common::getMonths($lang) as $key => $value) { ?>
                                                     <option value="<?php echo $key; ?>"><?php echo strtoupper($value); ?></option>
@@ -243,7 +243,7 @@ include 'includes/navbar.php';
                                             </select>
                                             <?php
                                             if (Input::exists() && empty(Input::post('month'))) { ?>
-                                                <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                             <?php }?>
                                         </div>
 
@@ -252,20 +252,20 @@ include 'includes/navbar.php';
                                                 <?php if (Input::existsName('post', 'submitFilters')) { ?>
                                                     <option value="<?php echo Input::post('table'); ?>"><?php echo strtoupper(Input::post('table')); ?></option>
                                                 <?php } else { ?>
-                                                    <option value=""><?php echo Translate::t($lang, 'Select_table'); ?></option>
+                                                    <option value=""><?php echo Translate::t('Select_table', ['ucfirst'=>true]); ?></option>
                                                 <?php }
                                                 foreach ($tables as $table) { ?>
-                                                    <option value="<?php echo trim($table); ?>"><?php echo Translate::t($lang, $table, ['strtoupper' => true]); ?></option>
+                                                    <option value="<?php echo trim($table); ?>"><?php echo Translate::t($table, ['strtoupper' => true]); ?></option>
                                                 <?php } ?>
                                             </select>
                                             <?php
                                             if (Input::exists() && empty(Input::post('table'))) { ?>
-                                                <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                             <?php }?>
                                         </div>
 
                                         <div class="col-sm-2">
-                                            <button name="submitFilters" id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-primary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
+                                            <button name="submitFilters" id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn btn-outline-primary" type="submit"><?php echo Translate::t('Submit'); ?></button>
                                             <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                         </div>
                                     </div>
@@ -283,13 +283,13 @@ include 'includes/navbar.php';
                 <div class="container-fluid">
                     <div class="row">
                         <?php foreach ($frontProfile->sumAllCommonData($whereIndexPage, 'quantity') as $table => $value) {
-                            $table = $table === Translate::t($lang, 'unpaid') ? Translate::t($lang, 'unpaid_days') : $table;
+                            $table = $table === Translate::t('unpaid') ? Translate::t('unpaid_days') : $table;
                             ?>
                             <div class="col-lg-3 col-sm-3">
                                 <div class="statistic-block block">
                                     <div class="progress-details d-flex align-items-end justify-content-between">
                                         <div class="title">
-                                            <div class="icon"><i class="icon-list"></i></div><strong><?php echo Translate::t($lang, $table); ?></strong>
+                                            <div class="icon"><i class="icon-list"></i></div><strong><?php echo Translate::t($table); ?></strong>
                                         </div>
                                         <div class="number dashtext-2"><?php echo !empty($value->total) ? $value->total : 0; ?></div>
                                     </div>
@@ -298,7 +298,7 @@ include 'includes/navbar.php';
                                     </div>
                                     <div class="mt-2">
                                         <button class="btn-sm btn-outline-secondary col-sm-6 common" type="button" data-toggle="collapse" data-target="<?= $table; ?>" id="">
-                                            <?php echo Translate::t($lang, 'show'); ?>
+                                            <?php echo Translate::t('show'); ?>
                                         </button>
                                     </div>
                                 </div>
@@ -315,7 +315,7 @@ include 'includes/navbar.php';
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="block">
-                                <div class="title"><strong><?php echo Translate::t($lang, $key); ?></strong>
+                                <div class="title"><strong><?php echo Translate::t($key); ?></strong>
                                     <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
                                 </div>
                                 <div class="table-responsive">
@@ -323,10 +323,10 @@ include 'includes/navbar.php';
                                         <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th><?php echo Translate::t($lang, 'Name'); ?></th>
-                                            <th><?php echo Translate::t($lang, 'month'); ?></th>
-                                            <th><?php echo Translate::t($lang, 'quantity'); ?></th>
-                                            <th><?php echo Translate::t($lang, 'days'); ?></th>
+                                            <th><?php echo Translate::t('Name'); ?></th>
+                                            <th><?php echo Translate::t('month'); ?></th>
+                                            <th><?php echo Translate::t('quantity'); ?></th>
+                                            <th><?php echo Translate::t('days'); ?></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -362,7 +362,7 @@ include 'includes/navbar.php';
                                     <div class="progress-details d-flex align-items-end justify-content-between">
                                         <div class="title">
                                             <div class="icon"><i class="icon-info"></i></div>
-                                            <strong><?php echo Translate::t($lang, Input::post('table'), ['strtoupper' => true]) . ' - ' . Common::numberToMonth($month, $lang) . ' - ' . Input::post('year'); ?></strong>
+                                            <strong><?php echo Translate::t(Input::post('table'), ['strtoupper' => true]) . ' - ' . Common::numberToMonth($month, $lang) . ' - ' . Input::post('year'); ?></strong>
                                         </div>
                                         <div class="number dashtext-1"><?php echo $data; ?></div>
                                     </div>
@@ -380,15 +380,15 @@ include 'includes/navbar.php';
                     <div class="row d-flex align-items-stretch">
                         <div class="col-lg-6">
                             <div class="stats-with-chart-1 block">
-                                <div class="title mb-0"><strong class="d-block"><?php echo Translate::t($lang, 'furlough'); ?></strong></div>
+                                <div class="title mb-0"><strong class="d-block"><?php echo Translate::t('furlough'); ?></strong></div>
                                 <div class="row d-flex align-items-end justify-content-between">
                                     <div class="col-5 align-self-center">
                                         <div class="text"><strong
                                                     class="d-block dashtext-3"><?php echo $userFurlough; ?>
-                                                <small><?php echo $day = $userFurlough > 1 ? Translate::t($lang, 'Days') : Translate::t($lang, 'Day'); ?></small>
+                                                <small><?php echo $day = $userFurlough > 1 ? Translate::t('Days') : Translate::t('Day'); ?></small>
                                             </strong>
                                             <span class="d-block"><?php echo Common::getMonths($lang)[$month] . ' ' . Input::post('year'); ?></span>
-                                            <small class="d-block"><?php echo Translate::t($lang, 'Team_furlough') . ' ' . $totalFurloughs; ?></small>
+                                            <small class="d-block"><?php echo Translate::t('Team_furlough') . ' ' . $totalFurloughs; ?></small>
                                         </div>
                                     </div>
                                     <div class="col-7">
@@ -402,15 +402,15 @@ include 'includes/navbar.php';
 <!--                        MEDICAL LEAVE-->
                         <div class="col-lg-6">
                             <div class="stats-with-chart-1 block">
-                                <div class="title mb-0"><strong class="d-block"><?php echo Translate::t($lang, 'medical'); ?></strong></div>
+                                <div class="title mb-0"><strong class="d-block"><?php echo Translate::t('medical'); ?></strong></div>
                                 <div class="row d-flex align-items-end justify-content-between">
                                     <div class="col-5 align-self-center">
                                         <div class="text"><strong
                                                     class="d-block dashtext-3"><?php echo $userMedical; ?>
-                                                <small><?php echo $day = $userMedical > 1 ? Translate::t($lang, 'Days') : Translate::t($lang, 'Day'); ?></small>
+                                                <small><?php echo $day = $userMedical > 1 ? Translate::t('Days') : Translate::t('Day'); ?></small>
                                             </strong>
                                             <span class="d-block"><?php echo Common::getMonths($lang)[$month] . ' ' . Input::post('year'); ?></span>
-                                            <small class="d-block"><?php echo Translate::t($lang, 'Team_medical') . ' ' . $totalMedical; ?></small>
+                                            <small class="d-block"><?php echo Translate::t('Team_medical') . ' ' . $totalMedical; ?></small>
                                         </div>
                                     </div>
                                     <div class="col-7">
@@ -430,14 +430,14 @@ include 'includes/navbar.php';
 <!--                        ABSENTEES-->
                         <div class="col-lg-6">
                             <div class="stats-with-chart-1 block">
-                                <div class="title mb-0"><strong class="d-block"><?php echo Translate::t($lang, 'absentees');  ?></strong></div>
+                                <div class="title mb-0"><strong class="d-block"><?php echo Translate::t('absentees');  ?></strong></div>
                                 <div class="row d-flex align-items-end justify-content-between">
                                     <div class="col-5 align-self-center">
                                         <div class="text"><strong class="d-block dashtext-1"><?php echo $userAbsentees; ?>
-                                                <small><?php echo $day = $userAbsentees > 1 ? Translate::t($lang, 'Days') : Translate::t($lang, 'Day'); ?></small>
+                                                <small><?php echo $day = $userAbsentees > 1 ? Translate::t('Days') : Translate::t('Day'); ?></small>
                                             </strong>
                                             <span class="d-block"><?php echo Common::getMonths($lang)[$month] . ' ' . Input::post('year'); ?></span>
-                                            <small class="d-block"><?php echo Translate::t($lang, 'Team_absentees') . ': ' . $totalAbsentees; ?></small>
+                                            <small class="d-block"><?php echo Translate::t('Team_absentees') . ': ' . $totalAbsentees; ?></small>
                                         </div>
                                     </div>
                                     <div class="col-7">
@@ -451,15 +451,15 @@ include 'includes/navbar.php';
                         <!--UNPAID LEAVE-->
                         <div class="col-lg-6">
                             <div class="stats-with-chart-1 block">
-                                <div class="title mb-0"><strong class="d-block"><?php echo Translate::t($lang, 'Total_user_unpaid'); ?></strong></div>
+                                <div class="title mb-0"><strong class="d-block"><?php echo Translate::t('Total_user_unpaid'); ?></strong></div>
                                 <div class="row d-flex align-items-end justify-content-between">
                                     <div class="col-5 align-self-center">
                                         <div class="text"><strong
                                                     class="d-block dashtext-2"><?php echo $userUnpaidDays; ?>
-                                                <small><?php echo $day = $userUnpaidDays > 1 ? Translate::t($lang, 'Days') : Translate::t($lang, 'Day');  ?></small>
+                                                <small><?php echo $day = $userUnpaidDays > 1 ? Translate::t('Days') : Translate::t('Day');  ?></small>
                                             </strong>
                                             <span class="d-block"><?php echo Common::getMonths($lang)[$month] . ' ' . Input::post('year'); ?></span>
-                                            <small class="d-block"><?php echo Translate::t($lang, 'Team_absentees') . ': ' . $totalUnpaid; ?></small>
+                                            <small class="d-block"><?php echo Translate::t('Team_absentees') . ': ' . $totalUnpaid; ?></small>
                                         </div>
                                     </div>
                                     <div class="col-7">

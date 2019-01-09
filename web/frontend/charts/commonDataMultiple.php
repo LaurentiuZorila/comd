@@ -102,7 +102,7 @@
             labels: <?php echo $chartLabels; ?>,
             datasets: [
                 {
-                    label: "<?php if (Input::exists()) { echo Translate::t($lang, Input::post('table'), ['ucfirst' => true]); } ?>",
+                    label: "<?php if (Input::exists()) { echo Translate::t(Input::post('table'), ['ucfirst' => true]); } ?>",
                     backgroundColor: "#864DD9",
                     hoverBackgroundColor: "#864DD9",
                     borderColor: "#864DD9",

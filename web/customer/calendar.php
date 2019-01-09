@@ -1,64 +1,13 @@
 <?php
 require_once 'core/init.php';
-
-$allEmployees = $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['offices_id', $lead->officesId()]), ['name', 'id']);
-
-if (Input::existsName('post', 'eventFilter')) {
-   $eventMonth  = Input::post('event_month');
-   $eventStatus = Input::post('event_status');
-
-   if (!empty($eventMonth) && !empty($eventStatus)) {
-       if ($eventStatus != 'all') {
-           $where = ActionCond::where([
-               ['lead_id', $lead->customerId()],
-               ['status', $eventStatus],
-               ['start_month', $eventMonth],
-               ['lead_id', $lead->customerId()],
-               ['status', $eventStatus],
-               ['end_month', $eventMonth]
-           ], ['AND', 'AND', 'OR', 'AND', 'AND']);
-       } elseif ($eventStatus == 'all') {
-           $where = ActionCond::where([
-               ['lead_id', $lead->customerId()],
-               ['start_month', $eventMonth],
-               ['lead_id', $lead->customerId()],
-               ['end_month', $eventMonth]
-           ], ['AND', 'OR', 'AND']);
-       } else {
-           $where = ActionCond::where([
-               ['lead_id', $lead->customerId()],
-               ['start_month', $eventMonth],
-               ['lead_id', $lead->customerId()],
-               ['end_month', $eventMonth]
-           ], ['AND', 'OR', 'AND']);
-       }
-   } else {
-       if ($eventStatus !== 'all') {
-           $where = ActionCond::where([
-               ['lead_id', $lead->customerId()],
-               ['status', $eventStatus],
-           ]);
-       } elseif ($eventStatus == 'all') {
-           $where = ActionCond::where([
-               'lead_id', $lead->customerId()
-           ]);
-        }
-   }
-
-    $allEvents = $leadData->records(Params::TBL_EVENTS, $where, ['*'], true);
-}
-
-if (!Input::existsName('post', 'eventFilter')) {
-    $allEvents = $leadData->records(Params::TBL_EVENTS, ActionCond::where(['lead_id', $lead->customerId()]), ['*'], true);
-}
-
+$allEmployees = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['offices_id', $lead->officesId()]), ['name', 'id']);
 ?>
 <!DOCTYPE html>
 <head>
     <?php
     include '../common/includes/head.php';
     ?>
-
+<link rel="stylesheet" href="./../common/css/spiner/style.css">
 <script src="./../common/vendor/fullcalendar/lib/jquery.min.js"></script>
 <script src="./../common/vendor/fullcalendar/lib/moment.min.js"></script>
 <script src="./../common/vendor/fullcalendar/fullcalendar.min.js"></script>
@@ -102,22 +51,26 @@ $(document).ready(function () {
         },
 
         eventClick: function (event) {
+            var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD");
+            var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD");
             var deleteMsg = confirm("Do you really want to delete?");
             if (deleteMsg) {
                 $.ajax({
-                    type: "POST",
+                    type: "GET",
                     url: "./calendar-customer/delete-event-customer.php",
-                    data: "&id=" + event.id,
+                    data: '&id=' + event.id + '&userId=' + event.userId + '&table=' + event.table + '&status=' + event.status + '&month=' + event.month + '&year=' + event.year,
                     success: function (response) {
                         if(parseInt(response) > 0) {
-                            $('#calendar').fullCalendar('removeEvents', event.id);
+                            $('#myModal').modal('show');
+                            setTimeout(function () { window.location.reload(); }, 2000);
+                            displayMessage("success", "<?php echo Translate::t('event_deleted', ['ucfirst'=>true]); ?>");
+                        } else {
+                            displayMessage("danger", "<?php echo Translate::t('Db_error', ['ucfirst'=>true]); ?>");
                         }
-                        displayMessage("<?php echo Translate::t($lang, 'event_deleted', ['ucfirst'=>true]); ?>");
                     }
                 });
             }
         },
-
         editable: true,
         eventDrop: function (event, delta) {
                     var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
@@ -135,9 +88,14 @@ $(document).ready(function () {
 });
 
 
-function displayMessage(message) {
-    $(".response").html('<section class="eventMessage"><div class="row"><div class="col-lg-12"><div class="alert alert-dismissible fade show badge-success"><p class="text-white mb-0">'+message+'</p></div></div></div></section>');
-    setInterval(function() { $(".eventMessage").fadeOut(); }, 2000);
+function displayMessage(type, message) {
+    if(type === "success") {
+        $(".response").html('<section class="eventMessage"><div class="row"><div class="col-lg-12"><div class="alert alert-dismissible fade show badge-success"><p class="text-white mb-0">'+message+'</p></div></div></div></section>');
+        setInterval(function() { $(".eventMessage").fadeOut(); }, 5000);
+    } else if (type === "danger") {
+        $(".response").html('<section class="eventMessage"><div class="row"><div class="col-lg-12"><div class="alert alert-dismissible fade show badge-danger"><p class="text-white mb-0">'+message+'</p></div></div></div></section>');
+        setInterval(function() { $(".eventMessage").fadeOut(); }, 5000);
+    }
 }
 </script>
 </head>
@@ -149,28 +107,21 @@ include 'includes/navbar.php';
     <!-- Sidebar Navigation-->
     <?php
     include 'includes/sidebar.php';
+    // LOADING PRELOADER MODAL
+    include './../common/includes/preloaders.php';
     ?>
-<!--    LOADING MODAL-->
-    <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
-        <div class="loader loader-3">
-            <div class="dot dot1"></div>
-            <div class="dot dot2"></div>
-            <div class="dot dot3"></div>
-        </div>
-    </div>
-
     <!-- Sidebar Navigation end-->
     <div class="page-content">
         <div class="page-header mb-0">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Calendar'); ?></h2>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t('Calendar'); ?></h2>
             </div>
         </div>
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
-                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Calendar'); ?> </li>
+                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t('Home'); ?></a></li>
+                <li class="breadcrumb-item active"><?php echo Translate::t('Calendar'); ?> </li>
             </ul>
         </div>
         <?php
@@ -186,7 +137,7 @@ include 'includes/navbar.php';
                         <div class="card-header" style="background-color: rgb(45, 48, 53);">
                             <div class="right-menu list-inline no-margin-bottom">
                                 <div class="list-inline-item logout">
-                                    <a type="button" data-toggle="modal" data-target="#info_calendar" class="btn btn-primary btn-sm float-right" id="info_calendar_pulsante"><i class="fa fa-info-circle"></i></a>
+                                    <a type="button" data-toggle="modal" data-target="#info_calendar" class="btn btn-primary btn-sm float-right" id="info_calendar_pulsate"><i class="fa fa-info-circle"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -196,28 +147,32 @@ include 'includes/navbar.php';
                     </div>
                     <div class="col-lg-4">
                         <div class="card-header" style="background-color: rgb(45, 48, 53);">
-                            <h4 class="text-center"><?php echo Translate::t($lang, 'all', ['ucfirst'=>true]) . ' ' . Translate::t($lang, 'event_request', ['strtolower'=>true]); ?></h4>
+                            <h4 class="text-center"><?php echo Translate::t('all', ['ucfirst'=>true]) . ' ' . Translate::t('event_request', ['strtolower'=>true]); ?></h4>
                         </div>
                         <div class="block">
                             <p>
                                 <button class="btn-sm btn-outline-secondary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
-                                    <?php echo Translate::t($lang, 'Filters'); ?>
+                                    <?php echo Translate::t('Filters'); ?>
                                 </button>
                             </p>
-                            <form method="post" id="filter" class="collapse mb-1">
+                            <form method="post" id="filter" class="collapse mb-1" action="calendar-customer/tableStatus.php">
                                 <div class="row">
                                     <div class="col-sm-5">
-                                        <select name="event_status">
-                                            <option><?php echo Translate::t($lang, 'Status'); ?></option>
+                                        <?php
+                                        $status = Input::get('status');
+                                        $status = empty($status) ? 'all' : $status;
+                                        ?>
+                                        <select name="event_status" id="event_status">
+                                            <option><?php echo Translate::t('Status'); ?></option>
                                             <?php foreach (Params::EVENTS_STATUS as $key => $value) { ?>
-                                                <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                                                <option value="<?php echo $key; ?>" <?php echo $key == $status ? 'selected' : ''; ?>><?php echo $value; ?></option>
                                             <? } ?>
-                                            <option value="all"><?php echo Translate::t($lang, 'all', ['ucfirst' => true]); ?></option>
+                                            <option value="all" <?php echo $status == 'all' ? 'selected' : ''; ?>><?php echo Translate::t('all', ['ucfirst' => true]); ?></option>
                                         </select>
                                     </div>
                                     <div class="col-sm-5">
-                                        <select name="event_month">
-                                            <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
+                                        <select name="event_month" id="event_month">
+                                            <option value=""><?php echo Translate::t('Select_month'); ?></option>
                                             <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                                 <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                             <? } ?>
@@ -226,12 +181,12 @@ include 'includes/navbar.php';
                                 </div>
                                 <div class="row mt-1">
                                     <div class="col-sm-3">
-                                        <button name="eventFilter" id="eventFilter" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
+                                        <button name="eventFilter" id="eventFilter" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
                                         <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                     </div>
                                 </div>
                             </form>
-                            <div class="table-responsive" style="height:499px; overflow-y: scroll;">
+                            <div class="table-responsive" style="height:519px; overflow-y: scroll;" id="filter-response">
                                 <table class="table">
                                     <thead>
                                     <tr role="row">
@@ -246,35 +201,32 @@ include 'includes/navbar.php';
                                     foreach ($allEvents as $allEvent) { ?>
                                     <tr>
                                         <td>
-                                            <?php echo Common::makeAvatar($leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $allEvent->user_id]), ['name'], false)->name); ?>
-                                            <div class="collapse p-0 mb-0 mt-0 text-small" id="collapseExample<?php echo $allEvent->id; ?>">
-                                                <p class="mb-0"><?php echo $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $allEvent->user_id]), ['name'],false)->name; ?></p>
-                                            </div>
+                                            <a data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+                                                <?php echo Common::makeAvatar($leadData->records(Params::TBL_EMPLOYEES, AC::where(['id', $allEvent->user_id]), ['name'], false)->name); ?>
+                                            </a>
+
                                         </td>
                                         <td class="text-small">
+                                            <?php
+                                            $collapseData = $allEvent->status == 2 ? 'data-target=#collapseExample' . $allEvent->id . ' aria-controls=collapseExample' . $allEvent->id : '';
+                                            ?>
+                                            <a class="" style="cursor: pointer;" type="button" data-toggle="collapse" <?php echo $collapseData; ?> aria-expanded="false">
                                                 <?php
-                                                $collapseData = $allEvent->status == 2 ? 'data-target=#collapseExample' . $allEvent->id . ' aria-controls=collapseExample' . $allEvent->id : '';
+                                                $all_days = explode(',', $allEvent->days);
+                                                if (count($all_days) > 1) {
+                                                    echo current($all_days) . ' - ' . end($all_days);
+                                                } else {
+                                                    echo $all_days[0];
+                                                }
                                                 ?>
-                                                <a class="" style="cursor: pointer;" type="button" data-toggle="collapse" <?php echo $collapseData; ?> aria-expanded="false">
-                                                    <?php
-                                                    $all_days = explode(',', $allEvent->days);
-                                                    if (count($all_days) > 1) {
-                                                        echo current($all_days) . ' - ' . end($all_days);
-                                                    } else {
-                                                        echo $all_days[0];
-                                                    }
-                                                    ?>
-                                                </a>
-                                            <div class="collapse p-0 mb-0 mt-0" id="collapseExample<?php echo $allEvent->id; ?>">
-                                                <p class="mb-0 mt-0"><?php echo $allEvent->days_number > 1 ? $allEvent->days_number . ' ' . Translate::t('Days', ['strtolower'=>true]) : $allEvent->days_number . ' ' . Translate::t('Day', ['strtolower'=>true]); ?></p>
-                                            </div>
+                                            </a>
                                         </td>
                                         <td>
                                             <span class="badge badge-<?php echo Params::EVENTS_STATUS_COLORS[$allEvent->status]; ?>"><?php echo Params::EVENTS_STATUS[$allEvent->status]; ?></span>
                                             <div class="collapse" id="collapseExample<?php echo $allEvent->id; ?>">
                                                 <div class="btn-group btn-group-sm mt-3" role="group" aria-label="Basic example">
-                                                    <button type="button" class="btn-sm btn-primary p-1 eventAction" id="accepted" data-accepted="1" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>"><small>Accept</small></button>
-                                                    <button type="button" class="btn-sm btn-outline-secondary p-0 ml-2 eventAction" id="declined" data-accepted="3" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>"><small>Decline</small></button>
+                                                    <a type="" class="btn-sm btn-primary p-1 eventAction" style="cursor: pointer;" id="accepted" data-accepted="1" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>" data-title="<?php echo $allEvent->title; ?>" data-month="<?php echo $allEvent->month; ?>" data-year="<?php echo $allEvent->year; ?>"><small>Accept</small></a>
+                                                    <a type="" class="btn-sm btn-danger p-1 ml-2 eventAction" style="cursor: pointer;" id="declined" data-accepted="3" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>" data-title="<?php echo $allEvent->title; ?>"><small>Decline</small></a>
                                                 </div>
                                             </div>
                                         </td>
@@ -292,12 +244,12 @@ include 'includes/navbar.php';
         <div id="createEventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade">
             <div role="document" class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3"><?php echo Translate::t($lang, 'Make_attention'); ?></strong>
+                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3"><?php echo Translate::t('Make_attention'); ?></strong>
                         <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                        <label class="form-control-label"><?php echo Translate::t($lang, 'Select_Employees', ['ucfirst'=>true]); ?></label>
+                        <label class="form-control-label"><?php echo Translate::t('Select_Employees', ['ucfirst'=>true]); ?></label>
                         <select name="employees" class="form-control" id="request">
                             <option value=""></option>
                             <?php foreach ($allEmployees as $employees) { ?>
@@ -306,11 +258,11 @@ include 'includes/navbar.php';
                         </select>
                         </div>
                         <div class="form-group">
-                        <label class="form-control-label"><?php echo Translate::t($lang, 'event_request', ['ucfirst'=>true]); ?></label>
+                        <label class="form-control-label"><?php echo Translate::t('event_request', ['ucfirst'=>true]); ?></label>
                         <select name="request" class="form-control" id="request">
                             <option value=""></option>
-                            <option value="furlough"><?php echo Translate::t($lang, 'Furlough'); ?></option>
-                            <option value="unpaid"><?php echo Translate::t($lang, 'Unpaid'); ?></option>
+                            <option value="furlough"><?php echo Translate::t('Furlough'); ?></option>
+                            <option value="unpaid"><?php echo Translate::t('Unpaid'); ?></option>
                         </select>
                         </div>
                         <div class="form-group">
@@ -333,14 +285,14 @@ include 'includes/navbar.php';
         <div id="info_calendar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade text-left show" style="display: none;">
             <div role="document" class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-1"><?php echo Translate::t($lang, 'Info'); ?></strong>
+                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-1"><?php echo Translate::t('Info'); ?></strong>
                         <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
                     </div>
                     <div class="modal-body">
-                        <p><?php echo Translate::t($lang, 'calendar_info_lead'); ?></p>
+                        <p><?php echo Translate::t('calendar_info_lead'); ?></p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" data-dismiss="modal" class="btn-sm btn-danger"><?php echo Translate::t($lang, 'Close'); ?></button>
+                        <button type="button" data-dismiss="modal" class="btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Tooltip on top"><?php echo Translate::t('Close'); ?></button>
                     </div>
                 </div>
             </div>
@@ -355,12 +307,14 @@ include '../common/includes/footer.php';
 <script src="./../common/js/front.js"></script>
 <script src="./../common/vendor/pulsate/jquery.pulsate.js"></script>
 <script>
-
-    $(' .eventAction ').on('click', function () {
-        var $this = $(this);
-        var employeeId = $this.data("employee");
-        var eventId    = $this.data("eventid");
+    $(document).on('click', '.eventAction', function () {
+        var $this       = $(this);
+        var employeeId  = $this.data("employee");
+        var eventId     = $this.data("eventid");
         var statusEvent = $this.data("accepted");
+        var titleEvent  = $this.data("title");
+        var month       = $this.data("month");
+        var year        = $this.data("year");
 
         if (employeeId && eventId) {
             $.ajax({
@@ -369,26 +323,24 @@ include '../common/includes/footer.php';
                 data: {
                     'eventId': eventId,
                     'employeeId': employeeId,
-                    'statusEvent': statusEvent
+                    'statusEvent': statusEvent,
+                    'title': titleEvent,
+                    'month': month,
+                    'year': year
                 },
-                success: function(data) {
-                    $.each(data, function(key, value) {
-                        if (value === "Success") {
-                            displayMessage("<?php echo Translate::t($lang, 'event_updated', ['ucfirst'=>true]); ?>");
-                            setTimeout(function(){
-                                location.reload();
-                            }, 1000);
+                success: function (response) {
+                    if(parseInt(response) > 0) {
+                        $('#myModal').modal('show');
+                        setTimeout(function () {
+                            window.location.reload();
+                            }, 2000);
+                        displayMessage("success", "<?php echo Translate::t('event_updated', ['ucfirst'=>true]); ?>");
                         } else {
-                            displayMessage("<?php echo Translate::t($lang, 'Db_error', ['ucfirst'=>true]); ?>");
+                            displayMessage("danger", "<?php echo Translate::t('Db_error', ['ucfirst'=>true]); ?>");
                         }
-                    });
-                }
+                    }
             });
         }
-    });
-
-    $('#eventFilter').click(function(){
-        $('#myModal').modal('show');
     });
 
     $(function() {
@@ -402,8 +354,15 @@ include '../common/includes/footer.php';
         });
     });
 
-    $("#info_calendar_pulsante").pulsate({color:"#633b70;"});
+    $("#info_calendar_pulsate").pulsate({color:"#633b70;"});
 
+    $('#filter').on('submit', function () {
+       var $this = $(this);
+       $.post($this.attr('action'), $this.serialize(), function (html) {
+           $('#filter-response').html(html);
+       }, 'html');
+       return false;
+    }).trigger('submit');
 </script>
 </body>
 </html>

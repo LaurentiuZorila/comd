@@ -6,17 +6,22 @@ $best   = new Best($lead->officesId());
 $countUsers = $leadData->count(Params::TBL_EMPLOYEES, ['offices_id', '=', $lead->officesId()]);
 
 /** Data for common tables */
-$sumFurlough   = $leadData->sum(Params::TBL_FURLOUGH, ['offices_id', '=', $lead->officesId()], 'quantity');
-$sumAbsentees  = $leadData->sum(Params::TBL_ABSENTEES, ['offices_id', '=', $lead->officesId()], 'quantity');
-$sumUnpaid     = $leadData->sum(Params::TBL_UNPAID, ['offices_id', '=', $lead->officesId()], 'quantity');
-$sumMedical    = $leadData->sum(Params::TBL_MEDICAL, ['offices_id', '=', $lead->officesId()], 'quantity');
+$where = AC::where([
+        ['offices_id', $lead->officesId()],
+        ['year', date('Y')]
+]);
+
+$sumFurlough   = $leadData->sum(Params::TBL_FURLOUGH, $where, 'quantity');
+$sumAbsentees  = $leadData->sum(Params::TBL_ABSENTEES, $where, 'quantity');
+$sumUnpaid     = $leadData->sum(Params::TBL_UNPAID, $where, 'quantity');
+$sumMedical    = $leadData->sum(Params::TBL_MEDICAL, $where, 'quantity');
 
 /** tables for user */
-$allTables  = $leadData->records(Params::TBL_OFFICE, ['id', '=', $lead->officesId()], ['tables'], false);
+$allTables  = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $lead->officesId()]), ['tables'], false);
 $allTables  = explode(',', trim($allTables->tables));
 
 /** Data display */
-$dataDisplay = $leadData->records(Params::TBL_OFFICE, ActionCond::where(['id', $lead->officesId()]), ['data_visualisation'], false)->data_visualisation;
+$dataDisplay = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $lead->officesId()]), ['data_visualisation'], false)->data_visualisation;
 $dataDisplay = (array)json_decode($dataDisplay);
 foreach ($dataDisplay as $tableData => $v){
     $tblDataDysplay[] = $tableData;
@@ -45,13 +50,13 @@ if (Input::exists()) {
         $year       = Input::post('year');
         $month      = Input::post('month');
         $officeId   = $lead->officesId();
-        $npTable    = Translate::t($lang, strtolower(Input::post('table')), ['strtolower' => true]);
+        $npTable    = Translate::t(strtolower(Input::post('table')), ['strtolower' => true]);
         $table      = Params::PREFIX . trim(Input::post('table'));
         $quantitySum = [];
 
 
         /** Conditions for action */
-        $where = ActionCond::where([
+        $where = AC::where([
             ['year', $year],
             ['offices_id', $officeId],
             ['month', $month]
@@ -62,7 +67,7 @@ if (Input::exists()) {
 
         /** Chart names */
         foreach ($chartData as $chartNames) {
-            $names[] = $leadData->records(Params::TBL_EMPLOYEES, ['id', '=', $chartNames->employees_id], ['name'], false)->name;
+            $names[] = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['id', $chartNames->employees_id]), ['name'], false)->name;
         }
 
         /** Quantity data */
@@ -84,7 +89,7 @@ if (Input::exists()) {
             $chartNames = Js::toJson($names);
             $chartValues = Js::chartValues($chartData, 'quantity');
         } else {
-            Errors::setErrorType('warning', Translate::t($lang, 'Not_found_data'));
+            Errors::setErrorType('warning', Translate::t('Not_found_data'));
         }
     }
 }
@@ -108,21 +113,16 @@ if (Input::exists()) {
       <!-- Sidebar Navigation-->
         <?php
         include 'includes/sidebar.php';
+        // LOADING PRELOADER MODAL
+        include './../common/includes/preloaders.php';
         ?>
       <!-- Sidebar Navigation end-->
       <div class="page-content">
         <div class="page-header">
           <div class="container-fluid">
-            <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Dashboard'); ?></h2>
+            <h2 class="h5 no-margin-bottom"><?php echo Translate::t('Dashboard'); ?></h2>
           </div>
         </div>
-          <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
-              <div class="loader loader-3">
-                  <div class="dot dot1"></div>
-                  <div class="dot dot2"></div>
-                  <div class="dot dot3"></div>
-              </div>
-          </div>
           <?php
           if (Input::exists() && Errors::countAllErrors()) {
               include './../common/errors/errors.php';
@@ -132,7 +132,7 @@ if (Input::exists()) {
             <div class="col-lg-12">
             <p>
                 <button class="btn-sm btn-outline-secondary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
-                    <?php echo Translate::t($lang, 'Filters'); ?>
+                    <?php echo Translate::t('Filters'); ?>
                 </button>
             </p>
             <div class="<?php if (Input::exists() && !Errors::countAllErrors()) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
@@ -140,11 +140,11 @@ if (Input::exists()) {
                   <form method="post">
                     <div class="row">
                         <div class="col-sm-12">
-                            <div class="title"><strong><?php echo Translate::t($lang, 'Filters'); ?></strong></div>
+                            <div class="title"><strong><?php echo Translate::t('Filters'); ?></strong></div>
                         </div>
                             <div class="col-sm-4">
                                 <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} else { echo 'mb-3';}?>">
-                                    <option value=""><?php echo Translate::t($lang, 'Select_year'); ?></option>
+                                    <option value=""><?php echo Translate::t('Select_year', ['strtoupper'=>true]); ?></option>
                                     <?php
                                     foreach (Common::getYearsList() as $year) { ?>
                                         <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
@@ -152,38 +152,38 @@ if (Input::exists()) {
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('year'))) { ?>
-                                    <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                    <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                 <?php }?>
                             </div>
 
                             <div class="col-sm-4">
                               <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) { echo 'is-invalid'; } else { echo 'mb-3';} ?>">
-                                  <option value=""><?php echo Translate::t($lang, 'Select_month', ['strtoupper'=>true]); ?></option>
+                                  <option value=""><?php echo Translate::t('Select_month', ['strtoupper'=>true]); ?></option>
                                   <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                   <option value="<?php echo $key; ?>"><?php echo strtoupper($value); ?></option>
                                   <?php } ?>
                               </select>
                               <?php
                               if (Input::exists() && empty(Input::post('month'))) { ?>
-                                  <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                  <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                               <?php }?>
                             </div>
 
                             <div class="col-sm-4">
                                 <select name="table" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                    <option value=""><?php echo Translate::t($lang, 'Select_table'); ?></option>
+                                    <option value=""><?php echo Translate::t('Select_table', ['strtoupper'=>true]); ?></option>
                                     <?php foreach ($tables as $key => $table) { ?>
-                                        <option value="<?php echo $key; ?>"><?php echo Translate::t($lang, $table, ['strtoupper' => true]); ?></option>
+                                        <option value="<?php echo $key; ?>"><?php echo Translate::t($table, ['strtoupper' => true]); ?></option>
                                     <?php } ?>
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('table'))) { ?>
-                                    <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                    <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                 <?php }?>
                             </div>
 
                             <div class="col-sm-2">
-                                <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
+                                <button id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
                                 <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                             </div>
                     </div>
@@ -198,7 +198,7 @@ if (Input::exists()) {
                     <div class="statistic-block block">
                       <div class="progress-details d-flex align-items-end justify-content-between">
                         <div class="title">
-                          <div class="icon"><i class="icon-user-1"></i></div><strong><?php echo Translate::t($lang, 'All_employees'); ?></strong>
+                          <div class="icon"><i class="icon-user-1"></i></div><strong><?php echo Translate::t('All_employees'); ?></strong>
                         </div>
                         <div class="number dashtext-1"><?php echo $countUsers; ?></div>
                       </div>
@@ -212,10 +212,10 @@ if (Input::exists()) {
                     <div class="statistic-block block">
                       <div class="progress-details d-flex align-items-end justify-content-between">
                         <div class="title">
-                          <div class="icon"><i class="icon-info"></i></div><strong><?php echo Translate::t($lang, 'Total_user_absentees'); ?></strong>
+                          <div class="icon"><i class="icon-info"></i></div><strong><?php echo Translate::t('Total_user_absentees'); ?></strong>
                         </div>
                         <div class="number dashtext-3">
-                            <h5 class="mb-1"><?php echo $sumAbsentees > 0 ? $sumAbsentees . '<small>' . Translate::t($lang, 'Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t($lang, 'Day', ['strtolower'=>true]) . '</small>'; ?></h5>
+                            <h5 class="mb-1"><?php echo $sumAbsentees > 0 ? $sumAbsentees . '<small>' . Translate::t('Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t('Day', ['strtolower'=>true]) . '</small>'; ?></h5>
                         </div>
                       </div>
                       <div class="progress progress-template">
@@ -228,10 +228,10 @@ if (Input::exists()) {
                     <div class="statistic-block block">
                       <div class="progress-details d-flex align-items-end justify-content-between">
                         <div class="title">
-                          <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_furlough'); ?></strong>
+                          <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('Total_user_furlough'); ?></strong>
                         </div>
                         <div class="number dashtext-3">
-                            <h5 class="mb-1"><?php echo $sumFurlough > 0 ? $sumFurlough . '<small>' . Translate::t($lang, 'Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t($lang, 'Day', ['strtolower'=>true]) . '</small>'; ?></h5>
+                            <h5 class="mb-1"><?php echo $sumFurlough > 0 ? $sumFurlough . '<small>' . Translate::t('Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t('Day', ['strtolower'=>true]) . '</small>'; ?></h5>
                         </div>
                       </div>
                       <div class="progress progress-template">
@@ -244,10 +244,10 @@ if (Input::exists()) {
                     <div class="statistic-block block">
                         <div class="progress-details d-flex align-items-end justify-content-between">
                             <div class="title">
-                                <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_unpaid'); ?></strong>
+                                <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('Total_user_unpaid'); ?></strong>
                             </div>
                             <div class="number dashtext-3">
-                                <h5 class="mb-1"><?php echo $sumUnpaid > 0 ? $sumUnpaid . '<small>' . Translate::t($lang, 'Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t($lang, 'Day', ['strtolower'=>true]) . '</small>'; ?></h5>
+                                <h5 class="mb-1"><?php echo $sumUnpaid > 0 ? $sumUnpaid . '<small>' . Translate::t('Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t('Day', ['strtolower'=>true]) . '</small>'; ?></h5>
                             </div>
                         </div>
                         <div class="progress progress-template">
@@ -260,10 +260,10 @@ if (Input::exists()) {
                     <div class="statistic-block block">
                         <div class="progress-details d-flex align-items-end justify-content-between">
                             <div class="title">
-                                <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t($lang, 'Total_user_medical'); ?></strong>
+                                <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('Total_user_medical'); ?></strong>
                             </div>
                             <div class="number dashtext-3">
-                                <h5 class="mb-1"><?php echo $sumMedical > 0 ? $sumMedical . '<small>' . Translate::t($lang, 'Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t($lang, 'Day', ['strtolower'=>true]) . '</small>'; ?></h5>
+                                <h5 class="mb-1"><?php echo $sumMedical > 0 ? $sumMedical . '<small>' . Translate::t('Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t('Day', ['strtolower'=>true]) . '</small>'; ?></h5>
                             </div>
                         </div>
                         <div class="progress progress-template">
@@ -288,8 +288,8 @@ if (Input::exists()) {
 <!--                                          <li class="nav-item"><button class="btn btn-outline-primary line" id="line" type="button">Line</button></li>-->
 <!--                                      </ul>-->
                                       <div class="btn-group btn-group-sm float-sm-right" role="group" aria-label="Charts type">
-                                          <button class="btn-sm btn-primary bar" id="bar" type="button"><?php echo Translate::t($lang, 'Bar'); ?></button>
-                                          <button class="btn-sm btn-outline-primary line" id="line" type="button"><?php echo Translate::t($lang, 'Line'); ?></button>
+                                          <button class="btn-sm btn-primary bar" id="bar" type="button"><?php echo Translate::t('Bar'); ?></button>
+                                          <button class="btn-sm btn-outline-primary line" id="line" type="button"><?php echo Translate::t('Line'); ?></button>
                                       </div>
                                       <div class="drills-chart block">
                                           <canvas id="target_customer_chart_bar" height="150" style="display: block;"></canvas>
@@ -311,7 +311,7 @@ if (Input::exists()) {
                   <div class="avatar"><img src="./../common/img/user.png" alt="..." class="img-fluid">
                     <div class="order dashbg-2">1st</div>
                   </div><a href="#" class="user-title mb-0 dashtext-4"><h3 class="h5"><?php echo $best->getBestEmployeesName(); ?></h3></a>
-                  <div class="contributions mb-2 dashtext-4"><?php echo Translate::t($lang, 'Best_operator'); ?></div>
+                  <div class="contributions mb-2 dashtext-4"><?php echo Translate::t('Best_operator'); ?></div>
                       <?php
                       foreach ($best->getCommonData() as $key => $commonData) { ?>
                           <p class="text-white-50 mb-0"><small><?php echo strtoupper($key) . ' - ' . $commonData; ?></small></p>
@@ -320,7 +320,7 @@ if (Input::exists()) {
               </div>
                 <div class="col-lg-5">
                     <div class="stats-with-chart-1 block" style="height: 91%;">
-                        <div class="title"> <strong class="d-block"><?php echo Translate::t($lang, $best->getFirstPriorityTbl(), ['ucfirst' => true]) . ' ' . Translate::t($lang, 'Average', ['strtolower' => true]); ?></strong></div>
+                        <div class="title"> <strong class="d-block"><?php echo Translate::t($best->getFirstPriorityTbl(), ['ucfirst' => true]) . ' ' . Translate::t('Average', ['strtolower' => true]); ?></strong></div>
                         <div class="row d-flex align-items-end justify-content-between">
                             <div class="col-12">
                                 <div class="bar-chart chart">
@@ -332,7 +332,7 @@ if (Input::exists()) {
                 </div>
                 <div class="col-lg-5">
                     <div class="stats-with-chart-1 block" style="height: 91%;">
-                        <div class="title"> <strong class="d-block"><?php echo Translate::t($lang, $best->getSecondPriorityTbl(), ['ucfirst' => true]) . ' ' . Translate::t($lang, 'Average', ['strtolower' => true]);  ?></strong></div>
+                        <div class="title"> <strong class="d-block"><?php echo Translate::t($best->getSecondPriorityTbl(), ['ucfirst' => true]) . ' ' . Translate::t('Average', ['strtolower' => true]);  ?></strong></div>
                         <div class="row d-flex align-items-end justify-content-between">
                             <div class="col-12">
                                 <div class="bar-chart chart">

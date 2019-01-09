@@ -26,14 +26,14 @@ include 'includes/navbar.php';
         <!-- Page Header-->
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Tables'); ?></h2>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t('Tables'); ?></h2>
             </div>
         </div>
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
-                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'All_employees'); ?></li>
+                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t('Home'); ?></a></li>
+                <li class="breadcrumb-item active"><?php echo Translate::t('All_employees'); ?></li>
             </ul>
         </div>
         <section class="no-padding-top">
@@ -41,16 +41,16 @@ include 'includes/navbar.php';
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="block">
-                            <div class="title"><strong><?php echo Translate::t($lang, 'All_employees'); ?></strong></div>
+                            <div class="title"><strong><?php echo Translate::t('All_employees'); ?></strong></div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover">
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th><?php echo Translate::t($lang, 'Name'); ?></th>
-                                        <th><?php echo Translate::t($lang, 'Team'); ?></th>
-                                        <th><?php echo Translate::t($lang, 'Depart'); ?></th>
-                                        <th><?php echo Translate::t($lang, 'Action'); ?></th>
+                                        <th><?php echo Translate::t('Name'); ?></th>
+                                        <th><?php echo Translate::t('Team'); ?></th>
+                                        <th><?php echo Translate::t('Depart'); ?></th>
+                                        <th><?php echo Translate::t('Action'); ?></th>
                                     </tr>
                                     </thead>
                                     <tbody>

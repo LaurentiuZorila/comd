@@ -7,6 +7,25 @@ class Tokens
 {
     private static $_inputName = 'Token';
 
+    private static $_submit = 'Submit';
+
+
+    /**
+     * @return string
+     */
+    private static function setInputName()
+    {
+        return self::$_submit . uniqid();
+    }
+
+    /**
+     * Input Name
+     */
+    public static function inputName()
+    {
+        return self::setInputName();
+    }
+
     /**
      * @return mixed|null
      */

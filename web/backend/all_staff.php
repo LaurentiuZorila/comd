@@ -28,14 +28,14 @@ include 'includes/navbar.php';
             <!-- Page Header-->
             <div class="page-header no-margin-bottom">
                 <div class="container-fluid">
-                    <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'All_staff'); ?></h2>
+                    <h2 class="h5 no-margin-bottom"><?php echo Translate::t('All_staff'); ?></h2>
                 </div>
             </div>
             <!-- Breadcrumb-->
             <div class="container-fluid">
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
-                    <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'All_staff'); ?></li>
+                    <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t('Home'); ?></a></li>
+                    <li class="breadcrumb-item active"><?php echo Translate::t('All_staff'); ?></li>
                 </ul>
             </div>
             <section>
@@ -52,7 +52,7 @@ include 'includes/navbar.php';
                                             <h3 class="card-text mb-0 text-center dashtext-2" style="color: #9055A2;"><?php echo $lead->name; ?></h3>
                                             <p class="card-text mb-0 text-uppercase font-weight-bold text-secondary text-center"><?php echo $backendUserProfile->records(Params::TBL_DEPARTMENT, ['id', '=', $lead->departments_id], ['name'], false)->name; ?></p>
                                             <p class="card-text mb-3 text-uppercase font-weight-bold text-secondary text-center"><?php echo $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $lead->offices_id], ['name'], false)->name; ?></p>
-                                            <p class="card-text mb-0 font-weight-bold text-secondary text-center"><?php echo Translate::t($lang, 'Rating'); ?></p>
+                                            <p class="card-text mb-0 font-weight-bold text-secondary text-center"><?php echo Translate::t('Rating'); ?></p>
                                             <p class="card-text m-b-0 font-weight-bold text-secondary text-center">
                                                 <?php
                                                 for ($i=1;$i<6;$i++) {

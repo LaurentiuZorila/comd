@@ -25,7 +25,7 @@ $officesId = Input::get('officeId');
 $month     = Input::get('month');
 $year      = Input::get('year');
 $table     = Input::get('tables');
-$months    = $leadData->records(Params::PREFIX . $table, ActionCond::where([['offices_id', $officesId], ['year', $year]]), ['month']);
+$months    = $leadData->records(Params::PREFIX . $table, AC::where([['offices_id', $officesId], ['year', $year]]), ['month']);
 foreach ($months as $dbMonth) {
     $allMonths[] = $dbMonth->month;
     // Months from database

@@ -55,9 +55,9 @@ if (Input::exists() && Tokens::tokenVerify(Tokens::getInputName())) {
             ]);
 
             if ($lead->success()) {
-                Errors::setErrorType('success', Translate::t($lang, 'Profile_success_updated'));
+                Errors::setErrorType('success', Translate::t('Profile_success_updated'));
             } else {
-                Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
+                Errors::setErrorType('danger', Translate::t('Db_error'));
             }
         }
 }
@@ -79,26 +79,21 @@ include 'includes/navbar.php';
     <!-- Sidebar Navigation-->
     <?php
     include 'includes/sidebar.php';
+    // LOADING PRELOADER MODAL
+    include './../common/includes/preloaders.php';
     ?>
     <div class="page-content" style="padding-bottom: 70px;">
         <!-- Page Header-->
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Profile'); ?></h2>
-            </div>
-        </div>
-        <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
-            <div class="loader loader-3">
-                <div class="dot dot1"></div>
-                <div class="dot dot2"></div>
-                <div class="dot dot3"></div>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t('Profile'); ?></h2>
             </div>
         </div>
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
-                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Edit_profile'); ?> </li>
+                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t('Home'); ?></a></li>
+                <li class="breadcrumb-item active"><?php echo Translate::t('Edit_profile'); ?> </li>
             </ul>
         </div>
         <?php
@@ -133,44 +128,44 @@ include 'includes/navbar.php';
                     <div class="col-lg-8">
                         <form class="card" method="post">
                             <div class="card-header">
-                                <h5 class="card-title"><?php echo Translate::t($lang, 'Edit_profile'); ?></h5>
+                                <h5 class="card-title"><?php echo Translate::t('Edit_profile'); ?></h5>
                             </div>
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-4 col-md-4">
                                         <div class="form-group mb-4">
-                                            <label class="form-label"><?php echo Translate::t($lang, 'FN'); ?></label>
+                                            <label class="form-label"><?php echo Translate::t('FN'); ?></label>
                                             <input type="text" name="first_name" placeholder="<?php echo $lead->fName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $first_name; }?>">
                                         </div>
                                     </div>
                                     <div class="col-sm-8 col-md-8">
                                         <div class="form-group mb-4">
-                                            <label class="form-label"><?php echo Translate::t($lang, 'LN'); ?></label>
+                                            <label class="form-label"><?php echo Translate::t('LN'); ?></label>
                                             <input type="text" name="last_name" placeholder="<?php echo $lead->lName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>">
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-3">
                                         <div class="form-group mb-4">
-                                            <label class="form-label"><?php echo Translate::t($lang, 'Username'); ?></label>
+                                            <label class="form-label"><?php echo Translate::t('Username'); ?></label>
                                             <input type="text" name="username" placeholder="<?php echo $lead->uName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>" disabled>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-4">
                                         <div class="form-group mb-4">
-                                            <label class="form-label"><?php echo Translate::t($lang, 'current_pass'); ?></label>
-                                            <input type="text" name="password" placeholder="<?php echo Translate::t($lang, 'current_pass'); ?>" class="form-control">
+                                            <label class="form-label"><?php echo Translate::t('current_pass'); ?></label>
+                                            <input type="text" name="password" placeholder="<?php echo Translate::t('current_pass'); ?>" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-4">
                                         <div class="form-group mb-4">
-                                            <label class="form-label"><?php echo Translate::t($lang, 'new_pass'); ?></label>
-                                            <input type="text" name="new_password" placeholder="<?php echo Translate::t($lang, 'new_pass'); ?>" class="form-control">
+                                            <label class="form-label"><?php echo Translate::t('new_pass'); ?></label>
+                                            <input type="text" name="new_password" placeholder="<?php echo Translate::t('new_pass'); ?>" class="form-control">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-footer text-right">
-                                <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
+                                <button id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
                                 <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                             </div>
                         </form>

@@ -82,7 +82,7 @@ class FrontendProfile
      */
     public function getLeads($where, $columns)
     {
-       $item = ActionCond::where($where);
+       $item = AC::where($where);
        return $this->records($this->_leadsTbl[0], $item, $columns, true);
     }
 

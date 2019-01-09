@@ -68,7 +68,7 @@ class Validate
                 }
 
                 if ($rule === 'required' && empty($value)) {
-                    Errors::setErrorType('danger', Translate::t($this->_lang, 'all_required', ['ucfirst' => true]));
+                    Errors::setErrorType('danger', Translate::t('all_required', ['ucfirst' => true]));
                 } else if (!empty($value)) {
                     switch ($rule) {
                         case 'min':

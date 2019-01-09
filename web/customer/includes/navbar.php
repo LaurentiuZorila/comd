@@ -1,7 +1,7 @@
 <?php
 
-$notificationCount = $leadData->count(Params::TBL_NOTIFICATION, ActionCond::where([['lead_id', $lead->customerId()], ['response_status', false]]));
-$notificationData = $leadData->records(Params::TBL_NOTIFICATION, ActionCond::where([['lead_id', $lead->customerId()], ['response_status', false]]), ['message', 'user_id']);
+$notificationCount = $leadData->count(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->customerId()], ['response_status', false]]));
+$notificationData = $leadData->records(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->customerId()], ['response_status', false]]), ['message', 'user_id', 'date']);
 
 ?>
 
@@ -32,16 +32,19 @@ $notificationData = $leadData->records(Params::TBL_NOTIFICATION, ActionCond::whe
                     <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages">
                         <?php if ($notificationCount > 0) {
                             foreach ($notificationData as $notification) { ?>
-                                <a href="calendar.php" class="dropdown-item message d-flex align-items-center">
-                                    <div class="content text-white-50">
-                                       <i class="fa fa-arrow-right"> </i> <?php echo Translate::t($lang, [$notification->message, 'from'], ['ucfirst'=>true]) . ' ' . $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $notification->user_id]), ['name'], false)->name; ?>
+                                <a href="calendar.php?status=2" class="dropdown-item message d-flex align-items-center">
+                                    <div class="profile"><img src="./../common/img/user.png" alt="..." class="img-fluid">
+                                        <div class="status online"></div>
+                                    </div>
+                                    <div class="content">
+                                        <span class="d-block"><?php echo Translate::t([$notification->message, 'from'], ['ucfirst'=>true]) . ' ' . $leadData->records(Params::TBL_EMPLOYEES, AC::where(['id', $notification->user_id]), ['name'], false)->name; ?></span>
+                                        <small class="date d-block"><?php echo $notification->date; ?></small>
                                     </div>
                                 </a>
                             <?php }
                         } else { ?>
-                            <a href="calendar.php" class="dropdown-item text-center message"><strong><?php echo Translate::t($lang, 'notification_not_found', ['ucfirst' => true]); ?></strong></a>
+                            <a href="calendar.php" class="dropdown-item text-center message"><strong><?php echo Translate::t('notification_not_found', ['ucfirst' => true]); ?></strong></a>
                         <?php } ?>
-
                     </div>
                 </div>
                 <!-- Tasks-->
@@ -51,34 +54,34 @@ $notificationData = $leadData->records(Params::TBL_NOTIFICATION, ActionCond::whe
                 <div class="list-inline-item dropdown menu-large"><a href="#" data-toggle="dropdown" class="nav-link">Mega <i class="fa fa-ellipsis-v"></i></a>
                     <div class="dropdown-menu megamenu">
                         <div class="row">
-                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'All_employees', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t('All_employees', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
-                                    <li><a href="#"><?php echo Translate::t($lang, 'view_employees_nav_details', ['ucfirst' => true]); ?></a></li>
+                                    <li><a href="#"><?php echo Translate::t('view_employees_nav_details', ['ucfirst' => true]); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'employees_data', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t('employees_data', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
-                                    <li><a href="#"><?php echo Translate::t($lang, 'view_employees_nav_data_details', ['ucfirst' => true]); ?></a></li>
+                                    <li><a href="#"><?php echo Translate::t('view_employees_nav_data_details', ['ucfirst' => true]); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'update_data', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t('update_data', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
-                                    <li><a href="#"><?php echo Translate::t($lang, 'update_db_navbar', ['ucfirst' => true]); ?></a></li>
+                                    <li><a href="#"><?php echo Translate::t('update_db_navbar', ['ucfirst' => true]); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'Update_user_profile', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t('Update_user_profile', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
-                                    <li><a href="#"><?php echo Translate::t($lang, 'move_staff_nav', ['ucfirst' => true]); ?></a></li>
+                                    <li><a href="#"><?php echo Translate::t('move_staff_nav', ['ucfirst' => true]); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'my_profile', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t('my_profile', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
-                                    <li><a href="#"><?php echo Translate::t($lang, 'update_profile_nav', ['ucfirst' => true]); ?></a></li>
+                                    <li><a href="#"><?php echo Translate::t('update_profile_nav', ['ucfirst' => true]); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t($lang, 'calendar', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t('calendar', ['strtoupper' => true]); ?></strong>
                                 <ul class="list-unstyled mb-3">
-                                    <li><a href="#"><?php echo Translate::t($lang, 'nav_give_calendar', ['ucfirst' => true]); ?></a></li>
+                                    <li><a href="#"><?php echo Translate::t('nav_give_calendar', ['ucfirst' => true]); ?></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -98,32 +101,32 @@ $notificationData = $leadData->records(Params::TBL_NOTIFICATION, ActionCond::whe
                     <?php
                     if ($lang === 'en') { ?>
                         <a id="languages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link language dropdown-toggle">
-                            <img src="./../common/img/flag/_england.png" alt="English"><span class="d-none d-sm-inline-block"><?php echo Translate::t($lang, 'english'); ?></span>
+                            <img src="./../common/img/flag/_england.png" alt="English"><span class="d-none d-sm-inline-block"><?php echo Translate::t('english'); ?></span>
                         </a>
                     <?php } elseif ($lang === 'ro') {  ?>
                         <a id="languages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link language dropdown-toggle">
-                            <img src="/../common/img/flag/RO.png" alt="English"><span class="d-none d-sm-inline-block"><?php echo Translate::t($lang, 'romanian'); ?></span>
+                            <img src="/../common/img/flag/RO.png" alt="English"><span class="d-none d-sm-inline-block"><?php echo Translate::t('romanian'); ?></span>
                         </a>
                     <?php } elseif ($lang === 'it') { ?>
                         <a id="languages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link language dropdown-toggle">
-                            <img src="/../common/img/flag/IT.png" alt="English"><span class="d-none d-sm-inline-block"><?php echo Translate::t($lang, 'italian'); ?></span>
+                            <img src="/../common/img/flag/IT.png" alt="English"><span class="d-none d-sm-inline-block"><?php echo Translate::t('italian'); ?></span>
                         </a>
                     <?php } ?>
                     <div aria-labelledby="languages" class="dropdown-menu">
                         <a rel="nofollow" href="language.php?lang=2" class="dropdown-item">
-                            <img src="/../common/img/flag/IT.png" alt="English" class="mr-2"><span><?php echo Translate::t($lang, 'italian'); ?><small> (not present)</small></span>
+                            <img src="/../common/img/flag/IT.png" alt="English" class="mr-2"><span><?php echo Translate::t('italian'); ?><small> (not present)</small></span>
                         </a>
                         <a rel="nofollow" href="language.php?lang=3" class="dropdown-item">
-                            <img src="/../common/img/flag/RO.png" alt="English" class="mr-2"><span><?php echo Translate::t($lang, 'romanian'); ?><small> (not present)</small></span>
+                            <img src="/../common/img/flag/RO.png" alt="English" class="mr-2"><span><?php echo Translate::t('romanian'); ?><small> (not present)</small></span>
                         </a>
                         <a rel="nofollow" href="language.php?lang=1" class="dropdown-item">
-                            <img src="/../common/img/flag/_england.png" alt="English" class="mr-2"><span><?php echo Translate::t($lang, 'english'); ?><small></small></span>
+                            <img src="/../common/img/flag/_england.png" alt="English" class="mr-2"><span><?php echo Translate::t('english'); ?><small></small></span>
                         </a>
                     </div>
                 </div>
                 <!-- Log out               -->
                 <div class="list-inline-item logout">
-                    <a id="logout" href="logout.php" class="nav-link"><?php echo Translate::t($lang, 'logout'); ?> <i class="icon-logout"></i></a>
+                    <a id="logout" href="logout.php" class="nav-link"><?php echo Translate::t('logout'); ?> <i class="icon-logout"></i></a>
                 </div>
             </div>
         </div>

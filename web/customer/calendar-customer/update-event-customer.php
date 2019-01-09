@@ -4,74 +4,17 @@ include './../core/init-calendar.php';
 $eventId     = Input::get('eventId');
 $employeeId  = Input::get('employeeId');
 $eventStatus = Input::get('statusEvent');
-$updated     = date('Y-m-d h:i:s');
+$table       = Input::get('title');
+$month       = Input::get('month');
+$year        = Input::get('year');
 
-// Get title off event
-$eventData = $customerData->records(Params::TBL_EVENTS, ActionCond::where(['id', $eventId]), ['*'], false);
 
-// Check if for month request are exist in furlough table data. If exist update not insert new
-$where = ActionCond::where([
-    ['employees_id', $employeeId],
-    ['year', $eventData->year],
-    ['month', $eventData->start_month],
-    ['insert_type', Params::INSERT_TYPE['calendar']]
-]);
-
-$whereSecond = ActionCond::where([
-    ['employees_id', $employeeId],
-    ['year', $eventData->year],
-    ['month', $eventData->end_month],
-    ['insert_type', Params::INSERT_TYPE['calendar']]
-]);
-
-$checkFurloughFirstMonth    = $customerDb->get(Params::TBL_FURLOUGH, $where)->count();
-$checkFurloughSecondMonth   = $customerDb->get(Params::TBL_FURLOUGH, $whereSecond)->count();
-
-// Update furlough table
-if ($eventStatus == 1 && strtolower($eventData->title) == 'furlough') {
-    // Check if we need to insert for one month or for two
-    if ($eventData->start_month == $eventData->end_month) {
-        if ($checkFurloughFirstMonth < 1) {
-            $customerDb->insert(Params::TBL_FURLOUGH, [
-                'offices_id'            => $customerUser->officesId(),
-                'departments_id'        => $customerUser->departmentId(),
-                'employees_id'          => $employeeId,
-                'employees_average_id'  => $employeeId . '_' . $eventData->year,
-                'insert_type'           => Params::INSERT_TYPE['calendar'],
-                'year'                  => $eventData->year,
-                'month'                 => $eventData->start_month,
-                'quantity'              => $eventData->days_number,
-                'days'                  => $eventData->days,
-            ]);
-        } elseif ($checkFurloughFirstMonth > 0) {
-            // If records are present for this month and year, get quantity and sum with new one
-            $furloughFromDb = $customerData->records(Params::TBL_FURLOUGH, ActionCond::where([
-                ['offices_id', $customerUser->officesId()],
-                ['month', $eventData->start_month],
-                ['year', $eventData->year]
-            ]), ['quantity', 'days', 'id'], false);
-
-            // Sum quantity from Db with new ones
-            $quantity = $furloughFromDb->quantity + $eventData->days_number;
-            // Concatenate present days with new one
-            $days     = empty($furloughFromDb->days) ? $eventData->days : $furloughFromDb->days . ', ' . $eventData->days;
-
-            $customerDb->update(Params::TBL_FURLOUGH, [
-                'quantity'              => $quantity,
-                'days'                  => $days,
-            ], [
-                'id'    => $furloughFromDb->id
-            ]);
-        }
-
-    }
-}
 
 // Update tbl events
 $update = $customerDb->update(Params::TBL_EVENTS, [
     'event_status'  => Params::EVENTS_STATUS[$eventStatus],
     'status'        => $eventStatus,
-    'updated'       => $updated
+    'updated'       => date("Y-m-d H:i:s")
 ], [
     'id'    => $eventId
 ]);
@@ -85,21 +28,80 @@ switch ($eventStatus) {
         break;
 }
 
+
+if ($update && $eventStatus) {
+    $eventData = $customerData->records(Params::TBL_EVENTS, AC::where(['id', $eventId]), ['*'], false);
+
+    /** Table where need to make changes */
+    $table = Params::PREFIX . strtolower($table);
+    $where = AC::where([
+        ['employees_id', $employeeId],
+        ['year', $year],
+        ['month', $month]
+    ]);
+
+// Check if exist records in common table if don't exist add new row
+    $countRecords = $customerDb->get($table, $where)->count();
+
+    if ($countRecords > 0) {
+
+        $where1 = AC::where([
+            ['user_id', $employeeId],
+            ['year', $year],
+            ['month', $month],
+            ['status', 1]
+        ]);
+        // All days from event table
+        $allDaysEvent = $customerDb->get(Params::TBL_EVENTS, $where1, ['days'])->results();
+        foreach ($allDaysEvent as $allDays) {
+            $eventDays[] = $allDays->days;
+        }
+        // Sum all days from events table
+        $sumDaysEvent = $customerDb->sum(Params::TBL_EVENTS, $where1, 'days_number')->first()->sum;
+        $days = implode(',', $eventDays);
+        $daysNumber = $sumDaysEvent;
+        // Get record id common table
+        $records  = $customerDb->get($table, $where, ['id'])->first();
+        // Update common table
+        $updateCommonTbl = $customerDb->update($table,
+            [
+                'quantity' => $daysNumber,
+                'days'     => $days
+
+            ], [
+                'id' => $records->id
+            ]);
+
+    } else {
+        // If not result records add new row with data
+        $insert = $customerDb->insert($table, [
+            'offices_id'            => $customerUser->officesId(),
+            'departments_id'        => $customerUser->departmentId(),
+            'employees_id'          => $employeeId,
+            'employees_average_id'  => $employeeId . '_' . $eventData->year,
+            'insert_type'           => Params::INSERT_TYPE['calendar'],
+            'event_id'              => $eventId,
+            'year'                  => $eventData->year,
+            'month'                 => $eventData->month,
+            'quantity'              => $eventData->days_number,
+            'days'                  => $eventData->days,
+        ]);
+    }
+}
+
 // Update table notification
 $notificationEvent = $customerDb->update(Params::TBL_NOTIFICATION, [
     'status'    => $eventStatus,
     'response'  => $notificationResponse,
-    'response_status'   => true
+    'response_status'   => true,
+    'date'      => date("Y-m-d H:i:s")
 ], [
     'event_id'  => $eventId
 ]);
 
 
-
 if ($update) {
-    $response['response'] = 'Success';
+    echo 1;
 } else {
-    $response['response'] = 'Failed';
+    echo 0;
 }
-
-echo json_encode($response);

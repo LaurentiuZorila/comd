@@ -10,9 +10,9 @@ foreach ($teamLeads as $leads) {
 }
 
 if (Input::existsName('get', 'feedbackOk')) {
-    Errors::setErrorType('success', Translate::t($lang, 'thk_feedback'));
+    Errors::setErrorType('success', Translate::t('thk_feedback'));
 } elseif (Input::existsName('get', 'feedbackKo')) {
-    Errors::setErrorType('danger', Translate::t($lang, 'Db_error'));
+    Errors::setErrorType('danger', Translate::t('Db_error'));
 }
 /** Get not rated leads  */
 if (count($frontProfile->getFeedback($frontUser->userId())) > 0) {
@@ -48,7 +48,7 @@ include 'includes/navbar.php';
     <div class="page-content">
         <div class="page-header">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'feedback'); ?></h2>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t('feedback'); ?></h2>
             </div>
         </div>
             <?php
@@ -71,9 +71,9 @@ include 'includes/navbar.php';
                             <div class="contributions">
                                 <?php
                                 if (in_array($leads->id, $noFeedback)) {
-                                        echo Translate::t($lang, 'Feedback_given');
+                                        echo Translate::t('Feedback_given');
                                         } else {
-                                           echo Translate::t($lang, 'give_feedback');
+                                           echo Translate::t('give_feedback');
                                         }
                                 ?>
                             </div>
@@ -82,7 +82,7 @@ include 'includes/navbar.php';
                             <div class="contributions text-monospace text-center">
                                 <?php
                                 if (in_array($leads->id, $noFeedback)) {
-                                    echo Translate::t($lang, 'Rating') . ' ' . $frontProfile->rating($leads->id) . '/5' . '<br />';
+                                    echo Translate::t('Rating') . ' ' . $frontProfile->rating($leads->id) . '/5' . '<br />';
                                     for ($i=1;$i<6;$i++) {
                                         if ($i<= $frontProfile->rating($leads->id)) { ?>
                                         <a class="text-primary" href="#"><span class="fa fa-star checked"></span></a>
@@ -101,7 +101,7 @@ include 'includes/navbar.php';
                         if (in_array($leads->id, $noFeedback)) { ?>
                         <div class="col-lg-3 text-center">
                             <div class="contributions text-monospace">
-                                <span><?php echo Translate::t($lang, 'Given_stars') . ' ' . $givenFeedbacks[$leads->id]; ?></span><span class="fa fa-star ml-1 text-danger rating-face" ></span>
+                                <span><?php echo Translate::t('Given_stars') . ' ' . $givenFeedbacks[$leads->id]; ?></span><span class="fa fa-star ml-1 text-danger rating-face" ></span>
                             </div>
                         </div>
                         <?php } ?>

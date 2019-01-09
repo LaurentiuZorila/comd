@@ -2,14 +2,14 @@
 require_once 'core/init.php';
 
 /** All tables */
-$allTables = $leadData->records(Params::TBL_OFFICE, ActionCond::where(['id', $lead->officesId()]), ['tables'], false);
+$allTables = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $lead->officesId()]), ['tables'], false);
 $allTables = explode(',', trim($allTables->tables));
 
 /** All employees for user */
-$allEmployees = $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['offices_id', $lead->officesId()]), ['id', 'name']);
+$allEmployees = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['offices_id', $lead->officesId()]), ['id', 'name']);
 
 /** Data display */
-$dataDisplay = $leadData->records(Params::TBL_OFFICE, ActionCond::where(['id', $lead->officesId()]), ['data_visualisation'], false)->data_visualisation;
+$dataDisplay = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $lead->officesId()]), ['data_visualisation'], false)->data_visualisation;
 $dataDisplay = (array)json_decode($dataDisplay);
 foreach ($dataDisplay as $tableData => $v){
     $tblDataDysplay[] = $tableData;
@@ -32,10 +32,9 @@ if (Input::exists()) {
         $employeesId    = Input::post('employees');
         $year           = Input::post('year');
         $month          = Input::post('month');
-        $errorNoData    = [];
 
             /** Conditions for action */
-            $where = ActionCond::where([
+            $where = AC::where([
                 ['year', $year],
                 ['employees_id', $employeesId],
                 ['month', $month]
@@ -48,25 +47,25 @@ if (Input::exists()) {
             }
 
             /** All data for customer */
-            $employeesDetails = $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $employeesId]), ['name', 'offices_id'], false);
+            $employeesDetails = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['id', $employeesId]), ['name', 'offices_id'], false);
 
             $name       = $employeesDetails->name;
-            $officeName = $leadData->records(Params::TBL_OFFICE, ActionCond::where(['id', $employeesDetails->offices_id]), ['name'], false)->name;
+            $officeName = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $employeesDetails->offices_id]), ['name'], false)->name;
             $initials   = Common::makeAvatar($name);
 
 
             // Get all common data
             foreach (Params::TBL_COMMON as $commonTables) {
                 $commonDataCollapse[$commonTables] = $leadData->records(Params::PREFIX . $commonTables,
-                    ActionCond::where([
+                    AC::where([
                         ['employees_id', $employeesId],
-                        ['year', date('Y')]
-                    ]), ['month', 'quantity', 'days'], true);
+                        ['year', $year]
+                    ]), ['year', 'month', 'quantity', 'days', 'employees_id'], true);
             }
 
             /** Check if exists values */
             if (!Common::checkValues($allData)) {
-                Errors::setErrorType('warning', Translate::t($lang, 'Not_found_data'));
+                Errors::setErrorType('warning', Translate::t('Not_found_data'));
             }
         }
 }
@@ -78,7 +77,7 @@ if (Input::existsName('get', 'id') && !Input::exists()) {
     $month          = date('n');
 
     /** Conditions for action */
-    $where = ActionCond::where([
+    $where = AC::where([
         ['year', $year],
         ['employees_id', $employeesId],
         ['month', $month]
@@ -92,8 +91,8 @@ if (Input::existsName('get', 'id') && !Input::exists()) {
     }
 
     /** All data for customer */
-    $employeesDetails   = $leadData->records(Params::TBL_EMPLOYEES, ActionCond::where(['id', $employeesId]), ['name', 'offices_id'], false);
-    $officeObj          = $leadData->records(Params::TBL_OFFICE, ActionCond::where(['id', $employeesDetails->offices_id]), ['name'], false);
+    $employeesDetails   = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['id', $employeesId]), ['name', 'offices_id'], false);
+    $officeObj          = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $employeesDetails->offices_id]), ['name'], false);
 
     $name       = $employeesDetails->name;
     $officeName = $officeObj->name;
@@ -101,7 +100,7 @@ if (Input::existsName('get', 'id') && !Input::exists()) {
 
     /** Check if exists values */
     if (Common::checkValues($allData) === true) {
-        Errors::setErrorType('info', Translate::t($lang, 'Not_found_data'));
+        Errors::setErrorType('info', Translate::t('Not_found_data'));
     }
 }
 ?>
@@ -121,26 +120,21 @@ include 'includes/navbar.php';
     <!-- Sidebar Navigation-->
     <?php
     include 'includes/sidebar.php';
+    // LOADING PRELOADER MODAL
+    include './../common/includes/preloaders.php';
     ?>
     <div class="page-content" style="padding-bottom: 70px;">
         <!-- Page Header-->
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom"><?php echo Translate::t($lang, 'Employees'); ?></h2>
-            </div>
-        </div>
-        <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
-            <div class="loader loader-3">
-                <div class="dot dot1"></div>
-                <div class="dot dot2"></div>
-                <div class="dot dot3"></div>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t('Employees'); ?></h2>
             </div>
         </div>
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t($lang, 'Home'); ?></a></li>
-                <li class="breadcrumb-item active"><?php echo Translate::t($lang, 'Employees_details'); ?></li>
+                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t('Home'); ?></a></li>
+                <li class="breadcrumb-item active"><?php echo Translate::t('Employees_details'); ?></li>
             </ul>
         </div>
         <?php
@@ -152,7 +146,7 @@ include 'includes/navbar.php';
             <div class="col-lg-12">
                 <p>
                     <button class="btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
-                        <?php echo Translate::t($lang, 'Filters'); ?>
+                        <?php echo Translate::t('Filters'); ?>
                     </button>
                 </p>
                 <div class="<?php if (Input::exists() && !Errors::countAllErrors()) { echo "collapse";} else { echo "collapse show"; } ?>" id="filter">
@@ -160,11 +154,11 @@ include 'includes/navbar.php';
                     <form method="post">
                         <div class="row">
                             <div class="col-sm-12">
-                                <div class="title"><strong><?php echo Translate::t($lang, 'Filters'); ?></strong></div>
+                                <div class="title"><strong><?php echo Translate::t('Filters'); ?></strong></div>
                             </div>
                             <div class="col-sm-4">
                                 <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} ?>">
-                                    <option value=""><?php echo Translate::t($lang, 'Select_year'); ?></option>
+                                    <option value=""><?php echo Translate::t('Select_year'); ?></option>
                                     <?php
                                     foreach (Common::getYearsList() as $year) { ?>
                                         <option><?php echo $year; ?></option>
@@ -172,35 +166,35 @@ include 'includes/navbar.php';
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('year'))) { ?>
-                                    <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                    <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                 <?php }?>
                             </div>
                             <div class="col-sm-4">
                                 <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} ?>">
-                                    <option value=""><?php echo Translate::t($lang, 'Select_month'); ?></option>
+                                    <option value=""><?php echo Translate::t('Select_month'); ?></option>
                                     <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                         <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                     <?php } ?>
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('month'))) { ?>
-                                    <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                    <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                 <?php }?>
                             </div>
                             <div class="col-sm-4">
                                 <select name="employees" class="form-control <?php if (Input::exists() && empty(Input::post('employees'))) {echo 'is-invalid';} ?>">
-                                    <option value=""><?php echo Translate::t($lang, 'Select_Employees'); ?></option>
+                                    <option value=""><?php echo Translate::t('Select_Employees'); ?></option>
                                     <?php foreach ($allEmployees as $employees) { ?>
                                         <option value="<?php echo $employees->id; ?>"><?php echo $employees->name; ?></option>
                                     <?php } ?>
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('employees'))) { ?>
-                                    <div class="invalid-feedback"><?php echo Translate::t($lang, 'This_field_required'); ?></div>
+                                    <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                 <?php }?>
                             </div>
                             <div class="col-sm-2 mt-2">
-                                <button id="Submit" value="<?php echo Translate::t($lang, 'Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t($lang, 'Submit'); ?></button>
+                                <button id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
                                 <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                             </div>
                         </div>
@@ -245,10 +239,10 @@ include 'includes/navbar.php';
                                     <div class="stats-2-content common" id="" data-toggle="collapse" data-target="<?php echo in_array($key, Params::TBL_COMMON) ? $key : ''; ?>" aria-controls="<?php echo in_array($key, Params::TBL_COMMON) ? $key : ''; ?>" <?php echo in_array($key, Params::TBL_COMMON) ? 'style="cursor: pointer;"' : ''; ?> >
                                         <strong class="d-block dashtext-1">
                                             <?php
-                                            echo in_array($key, $tblDataDysplay) && $dataDisplay[$key] === 'percentage' ? (!in_array($key, Params::TBL_COMMON) ? $value . '%' : $value) : (in_array($key, Params::TBL_COMMON) ? $value . '<small class="text-small">'  . Translate::t($lang, 'Days', ['strtolower'=>true]) . '</small>' : $value);
+                                            echo in_array($key, $tblDataDysplay) && $dataDisplay[$key] === 'percentage' ? (!in_array($key, Params::TBL_COMMON) ? $value . '%' : $value) : (in_array($key, Params::TBL_COMMON) ? $value . '<small class="text-small">'  . Translate::t('Days', ['strtolower'=>true]) . '</small>' : $value);
                                             ?>
                                         </strong>
-                                        <span class="d-block"><?php echo Translate::t($lang, $key, ['strtoupper'=>true]); ?></span>
+                                        <span class="d-block"><?php echo Translate::t($key, ['strtoupper'=>true]); ?></span>
                                         <div class="progress progress-template progress-small">
                                             <div role="progressbar" style="width: <?php echo $value; ?>%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template progress-bar-small dashbg-2"></div>
                                         </div>
@@ -266,24 +260,32 @@ include 'includes/navbar.php';
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="block">
-                                <div class="title"><strong class="dashtext-1"><?php echo Translate::t($lang, $table) . ' - ' . $name; ?></strong>
+                                <div class="title"><strong class="dashtext-1"><?php echo Translate::t($table) . ' - ' . $name; ?></strong>
                                     <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
                                 </div>
                                 <div class="table-responsive">
                                     <table class="table table-striped table-sm">
                                         <thead>
                                         <tr>
-                                            <th><?php echo Translate::t($lang, 'month'); ?></th>
-                                            <th><?php echo Translate::t($lang, 'quantity'); ?></th>
-                                            <th><?php echo Translate::t($lang, 'Days'); ?></th>
+                                            <th><?php echo Translate::t('Year', ['ucfirst'=>true]); ?></th>
+                                            <th><?php echo Translate::t('month',['ucfirst'=>true]); ?></th>
+                                            <th><?php echo Translate::t('quantity',['ucfirst'=>true]); ?></th>
+                                            <th><?php echo Translate::t('Days',['ucfirst'=>true]); ?></th>
+                                            <?php if ($table === 'furlough') { ?>
+                                            <th><?php echo Translate::t('actions',['ucfirst'=>true]); ?></th>
+                                            <?php } ?>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <?php foreach ($fields as $field) { ?>
                                         <tr>
+                                            <td><?php echo $field->year; ?></td>
                                             <td><?php echo Common::numberToMonth($field->month, $lang); ?></td>
-                                            <td><?php echo $field->quantity; ?> <small><?php echo $field->quantity > 1 ? Translate::t($lang, 'Days', ['strtolower'=>true]) : Translate::t($lang, 'Day', ['strtolower'=>true]); ?></small></td>
+                                            <td><?php echo $field->quantity; ?> <small><?php echo $field->quantity > 1 ? Translate::t('Days', ['strtolower'=>true]) : Translate::t('Day', ['strtolower'=>true]); ?></small></td>
                                             <td><?php echo $field->days; ?></td>
+                                            <?php if ($table === 'furlough') { ?>
+                                            <td><a href="print.php?id=<?php echo $field->employees_id;?>&days=<?php echo $field->days;?>" target="_blank"><i class="fa fa-print" style="cursor: pointer;"></i></a></td>
+                                            <?php } ?>
                                         </tr>
                                         <?php } ?>
                                         </tbody>
@@ -352,8 +354,6 @@ if (Input::exists() && !Errors::countAllErrors() || Input::exists('get') && !Err
             $(this).fadeOut(3000);
         });
     });
-
-    $("#info_employees").pulsate({color:"#633b70;"});
 </script>
 </body>
 </html>
