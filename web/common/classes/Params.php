@@ -156,6 +156,17 @@ class Params
 
 
     /**
+     * Events title colors for calendar
+     */
+    const EVENTS_TITLE_COLORS = [
+        'Furlough' => ['1' => '#864dd9', '2' => '#8a8d93', '3' => '#bb414d'],
+            'Absentees' => ['1' => '#bb414d', '2' => '#bb414d', '3' => '#bb414d'],
+                'Unpaid' => ['1' => '#117a8b', '2' => '#8a8d93'],
+                    'Medical' => ['1' => '#cf53f9', '2' => '#8a8d93'],
+    ];
+
+
+    /**
      * Insert type to DB form file or from calendar
      */
     const INSERT_TYPE       = ['file' => 0, 'calendar' => 1];

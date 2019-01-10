@@ -7,17 +7,7 @@ $eventStatus = Input::get('statusEvent');
 $table       = Input::get('title');
 $month       = Input::get('month');
 $year        = Input::get('year');
-
-
-
-// Update tbl events
-$update = $customerDb->update(Params::TBL_EVENTS, [
-    'event_status'  => Params::EVENTS_STATUS[$eventStatus],
-    'status'        => $eventStatus,
-    'updated'       => date("Y-m-d H:i:s")
-], [
-    'id'    => $eventId
-]);
+$title       = ucfirst(Input::get('title'));
 
 switch ($eventStatus) {
     case '1':
@@ -28,8 +18,35 @@ switch ($eventStatus) {
         break;
 }
 
+// Update tbl events
+try {
+    $customerDb->getPdo()->beginTransaction();
+    $update = $customerDb->update(Params::TBL_EVENTS, [
+        'event_status'  => Params::EVENTS_STATUS[$eventStatus],
+        'status'        => $eventStatus,
+        'updated'       => date("Y-m-d H:i:s")
+    ], [
+        'id'    => $eventId
+    ]);
 
-if ($update && $eventStatus) {
+    // Update table notification
+    $notificationEvent = $customerDb->update(Params::TBL_NOTIFICATION, [
+        'status'    => $eventStatus,
+        'response'  => $notificationResponse,
+        'response_status'   => true,
+        'date'      => date("Y-m-d H:i:s")
+    ], [
+        'event_id'  => $eventId
+    ]);
+
+    $customerDb->getPdo()->commit();
+
+} catch (Exception $e) {
+    $customerDb->getPdo()->rollBack();
+    echo "Error: " . $e->getMessage();
+}
+
+if ($update) {
     $eventData = $customerData->records(Params::TBL_EVENTS, AC::where(['id', $eventId]), ['*'], false);
 
     /** Table where need to make changes */
@@ -44,9 +61,9 @@ if ($update && $eventStatus) {
     $countRecords = $customerDb->get($table, $where)->count();
 
     if ($countRecords > 0) {
-
         $where1 = AC::where([
             ['user_id', $employeeId],
+            ['title', $title],
             ['year', $year],
             ['month', $month],
             ['status', 1]
@@ -63,7 +80,7 @@ if ($update && $eventStatus) {
         // Get record id common table
         $records  = $customerDb->get($table, $where, ['id'])->first();
         // Update common table
-        $updateCommonTbl = $customerDb->update($table,
+        $data = $customerDb->update($table,
             [
                 'quantity' => $daysNumber,
                 'days'     => $days
@@ -74,12 +91,11 @@ if ($update && $eventStatus) {
 
     } else {
         // If not result records add new row with data
-        $insert = $customerDb->insert($table, [
+        $data = $customerDb->insert($table, [
             'offices_id'            => $customerUser->officesId(),
             'departments_id'        => $customerUser->departmentId(),
             'employees_id'          => $employeeId,
             'employees_average_id'  => $employeeId . '_' . $eventData->year,
-            'insert_type'           => Params::INSERT_TYPE['calendar'],
             'event_id'              => $eventId,
             'year'                  => $eventData->year,
             'month'                 => $eventData->month,
@@ -89,18 +105,8 @@ if ($update && $eventStatus) {
     }
 }
 
-// Update table notification
-$notificationEvent = $customerDb->update(Params::TBL_NOTIFICATION, [
-    'status'    => $eventStatus,
-    'response'  => $notificationResponse,
-    'response_status'   => true,
-    'date'      => date("Y-m-d H:i:s")
-], [
-    'event_id'  => $eventId
-]);
 
-
-if ($update) {
+if ($data) {
     echo 1;
 } else {
     echo 0;

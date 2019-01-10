@@ -17,7 +17,7 @@ $totalDays      = $startDate->diff($endDateOneMore)->days;
 
 // End date to insert in Db for fetching fullcalenar.js
 $endDateStop    = $endDateOneMore->format('Y-m-d');
-
+$newStart       = $startDate->format('Y-m-d');
 
 // Days of month
 $interval   = new DateInterval('P1D');
@@ -85,7 +85,6 @@ if (count($uniqMonths) > 1) {
     $endDaySecondMonth  = $endDaySecondMonth->modify( '+1 day' );
     $endDayFirstMonth   = $endDayFirstMonth->format('Y-m-d');
     $endDaySecondMonth  = $endDaySecondMonth->format('Y-m-d');
-}
 
 // if count months are > 1 then count how days are in first month
 $countDaysFirstMonth    = count($uniqMonths) > 1 ? count($daysFirstMonth) : $totalDays;
@@ -96,8 +95,6 @@ $days_first_month       = count($uniqMonths) > 1 ? implode(',', $daysFirstMonth)
 // if count months are > 1 then get days from second month
 $days_second_month      = count($uniqMonths) > 1 ? implode(',', $daysSecondMonth) : '' ;
 
-
-if (count($uniqMonths) > 1) {
     // Insert event in TBL
     $insertEvent = $frontDb->insert(Params::TBL_EVENTS, [
         'user_id'       => $userId,
@@ -134,9 +131,9 @@ if (count($uniqMonths) > 1) {
         'lead_id'       => $customerId,
         'title'         => $title,
         'event_status'  => $eventStatus,
-        'start'         => $start,
+        'start'         => $newStart,
         'end'           => $endDateStop,
-        'days_number'   => $countDaysFirstMonth,
+        'days_number'   => $totalDays,
         'days'          => $requestDays,
         'month'         => $startMonth,
         'year'          => $start_year,
@@ -145,15 +142,16 @@ if (count($uniqMonths) > 1) {
     ]);
 }
 
-
 // Insert notification in TBL
 $insertNotification = $frontDb->insert(Params::TBL_NOTIFICATION, [
-    'event_id'  => $frontDb->lastId(),
-    'user_id'   => $userId,
-    'lead_id'   => $customerId,
-    'status'    => 2,
-    'message'   => 'new_event',
-    'date'      => $added
+    'event_id'      => $frontDb->lastId(),
+    'user_id'       => $userId,
+    'lead_id'       => $customerId,
+    'status'        => 2,
+    'view'          => 0,
+    'employee_view' => 0,
+    'message'       => 'new_event',
+    'date'          => $added
 ]);
 
 

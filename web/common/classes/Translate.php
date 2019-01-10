@@ -178,6 +178,8 @@ class Translate
             'year'              => 'Anul',
             'actions'           => 'Actiune',
             'print'             => 'Printeaza',
+            'new_event_added'   => 'Un event a fost adaugat',
+            'mark_as_read'      => 'Marcheaza totul ca citit',
         ];
     }
 
@@ -352,6 +354,8 @@ class Translate
             'year'              => 'Year',
             'actions'           => 'Actions',
             'print'             => 'Print',
+            'new_event_added'   => 'New event added',
+            'mark_as_read'      => 'Mark all as read',
         ];
     }
 
@@ -524,6 +528,8 @@ class Translate
             'year'              => 'Anno',
             'actions'           => 'Azione',
             'print'             => 'Stampa',
+            'new_event_added'   => 'Nuovo evento inserito',
+            'mark_as_read'      => 'Segna tutto come letto',
         ];
     }
 

@@ -5,9 +5,10 @@
  * Date: 2018-12-19
  * Time: 11:35
  */
-include './../core/init-calendar.php';
-$lead       = new CustomerUser();
-$leadData   = new CustomerProfile();
+include './../core/calendar-init.php';
+$frontUser    = new FrontendUser();
+$frontRecords = new FrontendProfile();
+
 
 $eventMonth  = Input::post('event_month');
 $eventStatus = Input::post('event_status');
@@ -15,35 +16,34 @@ $eventStatus = Input::post('event_status');
 if (!empty($eventMonth) && !empty($eventStatus)) {
     if ($eventStatus != 'all') {
         $where = AC::where([
-            ['lead_id', $lead->customerId()],
+            ['user_id', $frontUser->userId()],
             ['status', $eventStatus],
-            ['month', $eventMonth]
+            ['month', $eventMonth],
         ]);
     } elseif ($eventStatus == 'all') {
         $where = AC::where([
-            ['lead_id', $lead->customerId()],
-            ['month', $eventMonth]
+            ['user_id', $frontUser->userId()],
+            ['month', $eventMonth],
         ]);
     } else {
         $where = AC::where([
-            ['lead_id', $lead->customerId()],
-            ['month', $eventMonth]
+            ['user_id', $frontUser->userId()],
+            ['start_month', $eventMonth],
         ]);
     }
 } else {
     if ($eventStatus !== 'all') {
         $where = AC::where([
-            ['lead_id', $lead->customerId()],
+            ['user_id', $frontUser->userId()],
             ['status', $eventStatus],
         ]);
     } elseif ($eventStatus == 'all') {
         $where = AC::where([
-            'lead_id', $lead->customerId()
+            'user_id', $frontUser->userId(),
         ]);
     }
 }
-
-$allEvents = $leadData->records(Params::TBL_EVENTS, $where, ['*'], true);
+$allEvents = $frontRecords->records(Params::TBL_EVENTS, $where, ['*'], true);
 ?>
 
 <table class="table">
@@ -84,12 +84,6 @@ $allEvents = $leadData->records(Params::TBL_EVENTS, $where, ['*'], true);
                 </td>
                 <td>
                     <span class="badge badge-<?php echo Params::EVENTS_STATUS_COLORS[$allEvent->status]; ?>"><?php echo Params::EVENTS_STATUS[$allEvent->status]; ?></span>
-                    <div class="collapse" id="collapseExample<?php echo $allEvent->id; ?>">
-                        <div class="btn-group btn-group-sm mt-3" role="group" aria-label="Basic example">
-                            <a type="" class="btn-sm btn-primary p-1 eventAction" style="cursor: pointer;" id="accepted" data-accepted="1" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>" data-title="<?php echo $allEvent->title; ?>" data-month="<?php echo $allEvent->month; ?>" data-year="<?php echo $allEvent->year; ?>"><small>Accept</small></a>
-                            <a type="" class="btn-sm btn-danger p-1 ml-2 eventAction" style="cursor: pointer;" id="declined" data-accepted="3" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>" data-title="<?php echo $allEvent->title; ?>"><small>Decline</small></a>
-                        </div>
-                    </div>
                 </td>
             </tr>
         <?php }

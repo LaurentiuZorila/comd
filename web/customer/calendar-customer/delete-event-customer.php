@@ -7,6 +7,7 @@ $status = Input::get('status');
 $userId = Input::get('userId');
 $month  = Input::get('month');
 $year   = Input::get('year');
+$title  = ucfirst(Input::get('table'));
 
 $table  = strtolower($table);
 $table  = Params::PREFIX . $table;
@@ -26,19 +27,18 @@ $customerDb->delete(Params::TBL_NOTIFICATION, AC::where(['event_id', $id]));
 
     $where1 = AC::where([
         ['user_id', $userId],
-        ['year', $year],
-        ['month', $month],
+        ['title', $title],
         ['status', 1]
     ]);
 
     // All days from event table
-    $allDaysEvent = $customerData->records(Params::TBL_EVENTS, AC::where(['user_id', $userId]), ['days']);
+    $allDaysEvent = $customerData->records(Params::TBL_EVENTS, $where1, ['days']);
     foreach ($allDaysEvent as $allDays) {
         $eventDays[] = $allDays->days;
     }
 
     // Sum all days from events table
-    $sumDaysEvent = $customerDb->sum(Params::TBL_EVENTS, AC::where(['user_id', $userId]), 'days_number')->first()->sum;
+    $sumDaysEvent = $customerDb->sum(Params::TBL_EVENTS, $where1, 'days_number')->first()->sum;
     $days = implode(',', $eventDays);
 
 

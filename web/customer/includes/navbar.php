@@ -1,8 +1,25 @@
 <?php
 
-$notificationCount = $leadData->count(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->customerId()], ['response_status', false]]));
-$notificationData = $leadData->records(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->customerId()], ['response_status', false]]), ['message', 'user_id', 'date']);
-
+$notificationCount = $leadData->count(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->customerId()], ['response_status', false], ['view', 0]]));
+$notificationData = $leadData->records(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->customerId()], ['response_status', false], ['view', 0]]), ['message', 'user_id', 'date', 'id']);
+if (Input::existsName('get', 'notificationId')) {
+    $id = Input::get('notificationId');
+    if ($id == 0) {
+        $leadDb->update(Params::TBL_NOTIFICATION,
+            [
+                'view' => 1
+            ], [
+                'lead_id'   => $lead->customerId()
+            ]);
+    } else {
+        $leadDb->update(Params::TBL_NOTIFICATION,
+            [
+                'view' => 1
+            ], [
+                'id'   => $id
+            ]);
+    }
+}
 ?>
 
 <header class="header">
@@ -32,7 +49,7 @@ $notificationData = $leadData->records(Params::TBL_NOTIFICATION, AC::where([['le
                     <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages">
                         <?php if ($notificationCount > 0) {
                             foreach ($notificationData as $notification) { ?>
-                                <a href="calendar.php?status=2" class="dropdown-item message d-flex align-items-center">
+                                <a href="calendar.php?status=2&notificationId=<?php echo $notification->id; ?>" class="dropdown-item message d-flex align-items-center">
                                     <div class="profile"><img src="./../common/img/user.png" alt="..." class="img-fluid">
                                         <div class="status online"></div>
                                     </div>
@@ -41,7 +58,9 @@ $notificationData = $leadData->records(Params::TBL_NOTIFICATION, AC::where([['le
                                         <small class="date d-block"><?php echo $notification->date; ?></small>
                                     </div>
                                 </a>
-                            <?php }
+                            <?php } ?>
+                            <a href="?notificationId=<?php echo 0; ?>" class="dropdown-item text-center message"> <strong><?php echo Translate::t('mark_as_read', ['ucfirst'=>true]);?> <i class="fa fa-flag-checkered dashtext-1"></i></strong></a>
+                            <?php
                         } else { ?>
                             <a href="calendar.php" class="dropdown-item text-center message"><strong><?php echo Translate::t('notification_not_found', ['ucfirst' => true]); ?></strong></a>
                         <?php } ?>

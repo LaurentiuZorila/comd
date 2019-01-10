@@ -36,6 +36,11 @@ class CustomerDB
      */
     private $_count = 0;
 
+    /**
+     * @var
+     */
+    private $_lastId;
+
 
     /**
      * CustomerDB constructor.
@@ -105,6 +110,7 @@ class CustomerDB
             if ($this->_query->execute()) {
                 $this->_results         = $this->_query->fetchAll(PDO::FETCH_OBJ);
                 $this->_count           = $this->_query->rowCount();
+                $this->_lastId          = $this->_pdo->lastInsertId();
             } else {
                 $this->_error = true;
             }
@@ -252,6 +258,13 @@ class CustomerDB
         return $this->action(sprintf('SELECT AVG(%s) as average ', $column), $table, $where);
     }
 
+    /**
+     * @return int
+     */
+    public function lastId()
+    {
+        return (int)$this->_lastId;
+    }
 
     /**
      * @param $table

@@ -1,8 +1,25 @@
 <?php
 
-$notificationCount = $frontDb->get(Params::TBL_NOTIFICATION, AC::where([['user_id', $frontUser->userId()], ['response_status', true]]))->count();
-$notificationData = $frontProfile->records(Params::TBL_NOTIFICATION, AC::where([['user_id', $frontUser->userId()], ['response_status', true]]), ['response', 'status', 'event_id'], true);
-
+$notificationCount = $frontDb->get(Params::TBL_NOTIFICATION, AC::where([['user_id', $frontUser->userId()], ['response_status', true], ['employee_view', false]]))->count();
+$notificationData = $frontProfile->records(Params::TBL_NOTIFICATION, AC::where([['user_id', $frontUser->userId()], ['response_status', true], ['employee_view', false]]), ['response', 'status', 'event_id', 'id'], true);
+if (Input::existsName('get', 'notificationId')) {
+    $id = Input::get('notificationId');
+    if ($id == 0) {
+        $frontUser->update(Params::TBL_NOTIFICATION,
+            [
+                    'employee_view' => 1
+            ], [
+                    'user_id'   => $frontUser->userId()
+            ]);
+    } else {
+        $frontUser->update(Params::TBL_NOTIFICATION,
+            [
+                'employee_view' => 1
+            ], [
+                'id'   => $id
+            ]);
+    }
+}
 ?>
 
 <header class="header">
@@ -32,7 +49,7 @@ $notificationData = $frontProfile->records(Params::TBL_NOTIFICATION, AC::where([
                     <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages">
                         <?php if ($notificationCount > 0) {
                         foreach ($notificationData as $notification) { ?>
-                            <a href="calendar.php?status=2" class="dropdown-item message d-flex align-items-center">
+                            <a href="calendar.php?status=2&notificationId=<?php echo $notification->id; ?>" class="dropdown-item message d-flex align-items-center">
                                 <div class="profile"><img src="./../common/img/user.png" alt="..." class="img-fluid">
                                     <div class="status online"></div>
                                 </div>
@@ -41,8 +58,9 @@ $notificationData = $frontProfile->records(Params::TBL_NOTIFICATION, AC::where([
                                     <small class="date d-block"><?php echo Translate::t($frontProfile->records(Params::TBL_EVENTS, AC::where(['id', $notification->event_id]),['title'], false)->title, ['ucfirst'=>true]) . ' - ' . $frontProfile->records(Params::TBL_EVENTS, AC::where(['id', $notification->event_id]),['days'], false)->days; ?></small>
                                 </div>
                             </a>
-                        <?php }
-                        } else { ?>
+                        <?php } ?>
+                            <a href="?notificationId=<?php echo 0; ?>" class="dropdown-item text-center message"> <strong><?php echo Translate::t('mark_as_read', ['ucfirst'=>true]);?> <i class="fa fa-flag-checkered"></i></strong></a>
+                        <?php } else { ?>
                             <a href="calendar.php" class="dropdown-item text-center message"><strong><?php echo Translate::t('notification_not_found', ['ucfirst' => true]); ?></strong></a>
                         <?php } ?>
                     </div>

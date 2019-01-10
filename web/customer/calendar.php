@@ -1,12 +1,30 @@
 <?php
 require_once 'core/init.php';
 $allEmployees = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['offices_id', $lead->officesId()]), ['name', 'id']);
+if (Input::existsName('get', 'notificationId')) {
+    $id = Input::get('notificationId');
+    if ($id == 0) {
+        $leadDb->update(Params::TBL_NOTIFICATION,
+            [
+                'view' => 1
+            ], [
+                'lead_id'   => $lead->customerId()
+            ]);
+    } else {
+        $leadDb->update(Params::TBL_NOTIFICATION,
+            [
+                'view' => 1
+            ], [
+                'id'   => $id
+            ]);
+    }
+}
 ?>
 <!DOCTYPE html>
 <head>
-    <?php
-    include '../common/includes/head.php';
-    ?>
+<?php
+include '../common/includes/head.php';
+?>
 <link rel="stylesheet" href="./../common/css/spiner/style.css">
 <script src="./../common/vendor/fullcalendar/lib/jquery.min.js"></script>
 <script src="./../common/vendor/fullcalendar/lib/moment.min.js"></script>
@@ -151,9 +169,9 @@ include 'includes/navbar.php';
                         </div>
                         <div class="block">
                             <p>
-                                <button class="btn-sm btn-outline-secondary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
-                                    <?php echo Translate::t('Filters'); ?>
-                                </button>
+                                <a class="btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
+                                    <i class="fa fa-angle-down"></i>
+                                </a>
                             </p>
                             <form method="post" id="filter" class="collapse mb-1" action="calendar-customer/tableStatus.php">
                                 <div class="row">
@@ -190,47 +208,49 @@ include 'includes/navbar.php';
                                 <table class="table">
                                     <thead>
                                     <tr role="row">
-                                        <th class="text-primary">Name</th>
-                                        <th class="text-primary">Date</th>
-                                        <th class="text-primary">Status</th>
+                                        <th class="text-primary"><?php echo Translate::t('Request', ['ucfirst'=>true]); ?></th>
+                                        <th class="text-primary"><?php echo Translate::t('Date', ['ucfirst'=>true]); ?></th>
+                                        <th class="text-primary"><?php echo Translate::t('Status', ['ucfirst'=>true]); ?></th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <?php
                                     if (count($allEvents) > 0) {
                                     foreach ($allEvents as $allEvent) { ?>
-                                    <tr>
-                                        <td>
-                                            <a data-toggle="tooltip" data-placement="top" title="Tooltip on top">
-                                                <?php echo Common::makeAvatar($leadData->records(Params::TBL_EMPLOYEES, AC::where(['id', $allEvent->user_id]), ['name'], false)->name); ?>
-                                            </a>
-
-                                        </td>
-                                        <td class="text-small">
-                                            <?php
-                                            $collapseData = $allEvent->status == 2 ? 'data-target=#collapseExample' . $allEvent->id . ' aria-controls=collapseExample' . $allEvent->id : '';
-                                            ?>
-                                            <a class="" style="cursor: pointer;" type="button" data-toggle="collapse" <?php echo $collapseData; ?> aria-expanded="false">
+                                        <tr>
+                                            <td>
                                                 <?php
-                                                $all_days = explode(',', $allEvent->days);
-                                                if (count($all_days) > 1) {
-                                                    echo current($all_days) . ' - ' . end($all_days);
-                                                } else {
-                                                    echo $all_days[0];
-                                                }
+                                                $collapseData = $allEvent->status == 2 ? 'data-target=#collapseExample' . $allEvent->id . ' aria-controls=collapseExample' . $allEvent->id : '';
                                                 ?>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-<?php echo Params::EVENTS_STATUS_COLORS[$allEvent->status]; ?>"><?php echo Params::EVENTS_STATUS[$allEvent->status]; ?></span>
-                                            <div class="collapse" id="collapseExample<?php echo $allEvent->id; ?>">
-                                                <div class="btn-group btn-group-sm mt-3" role="group" aria-label="Basic example">
-                                                    <a type="" class="btn-sm btn-primary p-1 eventAction" style="cursor: pointer;" id="accepted" data-accepted="1" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>" data-title="<?php echo $allEvent->title; ?>" data-month="<?php echo $allEvent->month; ?>" data-year="<?php echo $allEvent->year; ?>"><small>Accept</small></a>
-                                                    <a type="" class="btn-sm btn-danger p-1 ml-2 eventAction" style="cursor: pointer;" id="declined" data-accepted="3" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>" data-title="<?php echo $allEvent->title; ?>"><small>Decline</small></a>
+                                                <a class="" style="cursor: pointer;" type="button" data-toggle="collapse" <?php echo $collapseData; ?> aria-expanded="false">
+                                                    <?php echo Translate::t(strtolower($allEvent->title), ['ucfirst'=>true]); ?>
+                                                </a>
+                                            </td>
+                                            <td class="text-small">
+                                                <?php
+                                                $collapseData = $allEvent->status == 2 ? 'data-target=#collapseExample' . $allEvent->id . ' aria-controls=collapseExample' . $allEvent->id : '';
+                                                ?>
+                                                <a class="" style="cursor: pointer;" type="button" data-toggle="collapse" <?php echo $collapseData; ?> aria-expanded="false">
+                                                    <?php
+                                                    $all_days = explode(',', $allEvent->days);
+                                                    if (count($all_days) > 1) {
+                                                        echo current($all_days) . ' - ' . end($all_days);
+                                                    } else {
+                                                        echo $all_days[0];
+                                                    }
+                                                    ?>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-<?php echo Params::EVENTS_STATUS_COLORS[$allEvent->status]; ?>"><?php echo Params::EVENTS_STATUS[$allEvent->status]; ?></span>
+                                                <div class="collapse" id="collapseExample<?php echo $allEvent->id; ?>">
+                                                    <div class="btn-group btn-group-sm mt-3" role="group" aria-label="Basic example">
+                                                        <a type="" class="btn-sm btn-primary p-1 eventAction" style="cursor: pointer;" id="accepted" data-accepted="1" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>" data-title="<?php echo $allEvent->title; ?>" data-month="<?php echo $allEvent->month; ?>" data-year="<?php echo $allEvent->year; ?>"><small>Accept</small></a>
+                                                        <a type="" class="btn-sm btn-danger p-1 ml-2 eventAction" style="cursor: pointer;" id="declined" data-accepted="3" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>" data-title="<?php echo $allEvent->title; ?>"><small>Decline</small></a>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                     <?php }
                                     } ?>
                                     </tbody>
@@ -250,7 +270,7 @@ include 'includes/navbar.php';
                     <div class="modal-body">
                         <div class="form-group">
                         <label class="form-control-label"><?php echo Translate::t('Select_Employees', ['ucfirst'=>true]); ?></label>
-                        <select name="employees" class="form-control" id="request">
+                        <select name="employees" class="form-control" id="employees">
                             <option value=""></option>
                             <?php foreach ($allEmployees as $employees) { ?>
                                 <option value="<?php echo $employees->id; ?>"><?php echo $employees->name; ?></option>
@@ -261,8 +281,9 @@ include 'includes/navbar.php';
                         <label class="form-control-label"><?php echo Translate::t('event_request', ['ucfirst'=>true]); ?></label>
                         <select name="request" class="form-control" id="request">
                             <option value=""></option>
-                            <option value="furlough"><?php echo Translate::t('Furlough'); ?></option>
-                            <option value="unpaid"><?php echo Translate::t('Unpaid'); ?></option>
+                            <?php foreach (Params::TBL_COMMON as $item) { ?>
+                                <option value="<?php echo $item; ?>"><?php echo Translate::t($item, ['strtoupper'=>true]); ?></option>
+                            <?php } ?>
                         </select>
                         </div>
                         <div class="form-group">
@@ -340,6 +361,54 @@ include '../common/includes/footer.php';
                         }
                     }
             });
+        }
+    });
+
+    $(document).on('click', '#submitButton', function () {
+        var employeeId  = $('#employees').val();
+        var statusEvent = 1;
+        var titleEvent  = $('#request').val();
+        var startDate   = $('#startDate').val();
+        var endDate     = $('#endDate').val();
+
+        if (titleEvent === '' || startDate === '' || endDate === '' || employeeId === '') {
+            $('#createEventModal').modal('hide');
+            displayMessage("danger","<?php echo Translate::t('all_required', ['ucfirst'=>true]); ?>");
+        } else {
+            var sDate = new Date(startDate);
+            var eDate = new Date(endDate);
+
+            // Check if start date si lower as end date
+            if (sDate.getTime() <= eDate.getTime()) {
+                // Hide modal
+                $('#createEventModal').modal('hide');
+                $.ajax({
+                    url: "./calendar-customer/add-event-customer.php",
+                    dataType: 'Json',
+                    data: {
+                        'employeeId': employeeId,
+                        'statusEvent': statusEvent,
+                        'title': titleEvent,
+                        'start': startDate,
+                        'end': endDate,
+                        'userId': <?php echo $lead->customerId(); ?>,
+                    },
+                    success: function (response) {
+                        if(parseInt(response) > 0) {
+                            $('#myModal').modal('show');
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 2000);
+                            displayMessage("success", "<?php echo Translate::t('event_updated', ['ucfirst'=>true]); ?>");
+                        } else {
+                            displayMessage("danger", "<?php echo Translate::t('Db_error', ['ucfirst'=>true]); ?>");
+                        }
+                    }
+                });
+            } else {
+                $('#createEventModal').modal('hide');
+                displayMessage("danger", "<?php echo Translate::t('ascending_dates', ['ucfirst'=>true]); ?>");
+            }
         }
     });
 
