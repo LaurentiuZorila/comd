@@ -415,7 +415,7 @@ include '../common/includes/footer.php';
     $(function() {
         $( "#startDate" ).datepicker({
             startDate: '-15d',
-            autoclose: true
+            autoclose: true,
         });
         $( "#endDate" ).datepicker({
             startDate: '-15d',

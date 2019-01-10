@@ -49,9 +49,9 @@ $allEvents = $leadData->records(Params::TBL_EVENTS, $where, ['*'], true);
 <table class="table">
     <thead>
     <tr role="row">
-        <th class="text-primary"><?php echo Translate::t('Request', ['ucfirst'=>true]); ?></th>
-        <th class="text-primary"><?php echo Translate::t('Date', ['ucfirst'=>true]); ?></th>
-        <th class="text-primary"><?php echo Translate::t('Status', ['ucfirst'=>true]); ?></th>
+        <th class="text-white"><?php echo Translate::t('Request', ['ucfirst'=>true]); ?></th>
+        <th class="text-white"><?php echo Translate::t('Date', ['ucfirst'=>true]); ?></th>
+        <th class="text-white"><?php echo Translate::t('Status', ['ucfirst'=>true]); ?></th>
     </tr>
     </thead>
     <tbody>
@@ -83,7 +83,7 @@ $allEvents = $leadData->records(Params::TBL_EVENTS, $where, ['*'], true);
                     </a>
                 </td>
                 <td>
-                    <span class="badge badge-<?php echo Params::EVENTS_STATUS_COLORS[$allEvent->status]; ?>"><?php echo Params::EVENTS_STATUS[$allEvent->status]; ?></span>
+                    <span class="badge" style="background-color: <?php echo $allEvent->status == 1 ? Params::EVENTS_TITLE_COLORS[$allEvent->title][1] : '#868e96'; ?>"><?php echo Params::EVENTS_STATUS[$allEvent->status]; ?></span>
                     <div class="collapse" id="collapseExample<?php echo $allEvent->id; ?>">
                         <div class="btn-group btn-group-sm mt-3" role="group" aria-label="Basic example">
                             <a type="" class="btn-sm btn-primary p-1 eventAction" style="cursor: pointer;" id="accepted" data-accepted="1" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>" data-title="<?php echo $allEvent->title; ?>" data-month="<?php echo $allEvent->month; ?>" data-year="<?php echo $allEvent->year; ?>"><small>Accept</small></a>

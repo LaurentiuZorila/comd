@@ -9,6 +9,7 @@ $month  = Input::get('month');
 $year   = Input::get('year');
 $title  = ucfirst(Input::get('table'));
 
+// Common table
 $table  = strtolower($table);
 $table  = Params::PREFIX . $table;
 
@@ -31,32 +32,40 @@ $customerDb->delete(Params::TBL_NOTIFICATION, AC::where(['event_id', $id]));
         ['status', 1]
     ]);
 
-    // All days from event table
-    $allDaysEvent = $customerData->records(Params::TBL_EVENTS, $where1, ['days']);
-    foreach ($allDaysEvent as $allDays) {
-        $eventDays[] = $allDays->days;
+    // Count rows in event table
+    $count = $customerDb->get(Params::TBL_EVENTS, $where1)->count();
+
+    if ($count > 0) {
+        // All days from event table
+        $allDaysEvent = $customerData->records(Params::TBL_EVENTS, $where1, ['days']);
+        foreach ($allDaysEvent as $allDays) {
+            $eventDays[] = $allDays->days;
+        }
+
+        // Sum all days from events table
+        $sumDaysEvent = $customerDb->sum(Params::TBL_EVENTS, $where1, 'days_number')->first()->sum;
+        $days = implode(',', $eventDays);
+
+        // Get record id common table
+        $records  = $customerDb->get($table, $where, ['id'])->first();
+
+        // Update common table
+        $action = $customerDb->update($table,
+            [
+                'quantity' => $sumDaysEvent,
+                'days'     => $days
+
+            ], [
+                'id' => $records->id
+            ]);
+
+    } else {
+        $action = $customerDb->delete($table, AC::where(['id', $records->id]));
     }
 
-    // Sum all days from events table
-    $sumDaysEvent = $customerDb->sum(Params::TBL_EVENTS, $where1, 'days_number')->first()->sum;
-    $days = implode(',', $eventDays);
-
-
-    // Get record id common table
-    $records  = $customerDb->get($table, $where, ['id'])->first();
-    // Update common table
-    $updateCommonTbl = $customerDb->update($table,
-        [
-            'quantity' => $sumDaysEvent,
-            'days'     => $days
-
-        ], [
-            'id' => $records->id
-        ]);
-
-if ($updateCommonTbl) {
-    echo 1;
-} else {
+if (!$action) {
     echo 0;
+} else {
+    echo 1;
 }
 ?>
