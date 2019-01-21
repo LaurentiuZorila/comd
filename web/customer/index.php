@@ -1,15 +1,26 @@
 <?php
 require_once 'core/init.php';
 $best   = new Best($lead->officesId());
-
+print_r($best->priorityTbls());
+exit;
 /** Count all employees */
 $countUsers = $leadData->count(Params::TBL_EMPLOYEES, ['offices_id', '=', $lead->officesId()]);
 
-/** Data for common tables */
-$where = AC::where([
+
+// If input don't exist sum data for current year else sum for selected year
+if (!Input::existsName('post', Tokens::getInputName())) {
+    /** Data for common tables */
+    $where = AC::where([
         ['offices_id', $lead->officesId()],
         ['year', date('Y')]
-]);
+    ]);
+} elseif (Input::existsName('post', Tokens::getInputName())) {
+    /** Data for common tables */
+    $where = AC::where([
+        ['offices_id', $lead->officesId()],
+        ['year', Input::post('year')]
+    ]);
+}
 
 $sumFurlough   = $leadData->sum(Params::TBL_FURLOUGH, $where, 'quantity');
 $sumAbsentees  = $leadData->sum(Params::TBL_ABSENTEES, $where, 'quantity');
@@ -31,7 +42,6 @@ foreach ($dataDisplay as $tableData => $v){
 foreach ($allTables as $table) {
     $tables[trim($table)] = trim($table);
 }
-
 
 
 /** If form is submitted */
@@ -64,7 +74,7 @@ if (Input::exists()) {
 
         /** Array with all results for one FTE to use in chart */
         $chartData  = $leadData->records($table, $where, ['quantity', 'employees_id']);
-
+        
         /** Chart names */
         foreach ($chartData as $chartNames) {
             $names[] = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['id', $chartNames->employees_id]), ['name'], false)->name;
@@ -89,7 +99,7 @@ if (Input::exists()) {
             $chartNames = Js::toJson($names);
             $chartValues = Js::chartValues($chartData, 'quantity');
         } else {
-            Errors::setErrorType('warning', Translate::t('Not_found_data'));
+            Errors::setErrorType('info', Translate::t('Not_found_data'));
         }
     }
 }
@@ -304,7 +314,7 @@ if (Input::exists()) {
 
         <section class="no-padding-bottom">
           <div class="container-fluid">
-              <!--              FOR BEST OPERATOR-->
+              <!--     ********************           FOR BEST OPERATOR ********************    -->
             <div class="row">
               <div class="col-lg-2">
                 <div class="user-block block text-center">

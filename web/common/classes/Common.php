@@ -178,22 +178,6 @@ class Common
 
 
     /**
-     * @param $param
-     * @param $data
-     * @param array $conc
-     * @return int|string
-     */
-   public static function zeroIf ($param='', $data, $conc = [])
-   {
-       if (empty($conc)) {
-           return $param($data) ?: 0;
-       } else {
-           return $param($data) ? $data . $conc[0] : 0 . $conc[0];
-       }
-   }
-
-
-    /**
      * @param array $params
      * @return mixed
      */
@@ -223,7 +207,7 @@ class Common
      */
     public static function percentage($total, $divisor, $sign = true)
     {
-        $percentage =  $divisor / $total * 100;
+        $percentage = $total > 0 ? $divisor / $total * 100 : 0;
         return ($sign) ? self::number($percentage) . '%' : self::number($percentage);
     }
 

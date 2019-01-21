@@ -4,22 +4,40 @@ $leadId         = Input::get('lead_id');
 $officeId       = Input::get('office_id');
 
 /** Lead data */
-$lead       = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['id', '=', $leadId], ['name', 'id', 'offices_id', 'supervisors_id'], false);
+$lead       = $backendUserProfile->records(Params::TBL_TEAM_LEAD, AC::where(['id', $leadId]), ['name', 'id', 'offices_id', 'supervisors_id'], false);
 /** Lead name */
 $leadName   = $lead->name;
 /** All tables */
-$allTables  = $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $lead->offices_id], ['tables'], false)->tables;
+$allTables  = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['id', $lead->offices_id]), ['tables'], false)->tables;
 $allTables  = explode(',', $allTables);
 
 
-if (Input::exists('get')) {
+/** Sum common data if get exist and if submit button is clicked */
+if (Input::existsName('get', 'lead_id') && Input::existsName('get', 'office_id') && !Input::existsName('post', Tokens::getInputName())) {
+    $year = date('Y');
+    foreach (Params::PREFIX_TBL_COMMON as $table) {
+        $commonData[] = $backendUserProfile->sum($table, AC::where([['offices_id', $officeId], ['year',$year]]), 'quantity');
+    }
+    /** Array with tables and sum of quantity for each table */
+    $dataCommonTables = array_combine(Params::TBL_COMMON, $commonData);
+} elseif (Input::existsName('post', Tokens::getInputName())) {
+    $year = Input::post('year');
+    foreach (Params::PREFIX_TBL_COMMON as $table) {
+        $commonData[] = $backendUserProfile->sum($table, AC::where([['offices_id', $officeId], ['year',$year]]), 'quantity');
+    }
+    /** Array with tables and sum of quantity for each table */
+    $dataCommonTables = array_combine(Params::TBL_COMMON, $commonData);
+}
+
+
+if (Input::existsName('get', 'lead_id') && Input::existsName('get', 'office_id')) {
     $leadId             = Input::get('lead_id');
     $officeId           = Input::get('office_id');
     $language           = Input::get('lang');
     $year               = date('Y');
 
     /** All employees for one lead */
-    $allEmployees = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $officeId], ['offices_id', 'departments_id', 'name', 'id']);
+    $allEmployees = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['offices_id', $officeId]), ['offices_id', 'departments_id', 'name', 'id']);
 
     foreach ($allEmployees as $employees) {
         // Array with employees id
@@ -47,17 +65,9 @@ if (Input::exists('get')) {
 
     /** Icons for tables */
     $icon               = ['icon-line-chart', 'icon-dashboard', 'icon-chart'];
-
-    foreach (Params::PREFIX_TBL_COMMON as $table) {
-        $commonData[] = $backendUserProfile->sum($table, AC::where(['offices_id', $officeId]), 'quantity');
-    }
-
-    /** Array with tables and sum of quantity for each table */
-    $dataCommonTables = array_combine(Params::TBL_COMMON, $commonData);
-
 }
 
-if (Input::exists() && Tokens::tokenVerify()) {
+if (Input::existsName('post', Tokens::getInputName()) && Tokens::tokenVerify()) {
     /** Instantiate validate class */
     $validate = new Validate();
 
@@ -77,13 +87,11 @@ if (Input::exists() && Tokens::tokenVerify()) {
         $tableForChart  = Translate::t(strtolower(Input::post('table')), ['ucfirst' => true]);
 
         /** Conditions for action */
-        $where = [
-            ['year', '=', $year],
-            'AND',
-            ['offices_id', '=', $officeId],
-            'AND',
-            ['month', '=', $month]
-        ];
+        $where = AC::where([
+            ['year', $year],
+            ['offices_id', $officeId],
+            ['month', $month]
+        ]);
 
         /** Array with all results for one FTE */
         $chartData      = $backendUserProfile->records($table, $where, ['quantity', 'employees_id']);
@@ -172,7 +180,7 @@ include 'includes/navbar.php';
                                             <select name="table" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
                                                 <option value=""><?php echo Translate::t('Select_table'); ?></option>
                                                 <?php foreach ($allTables as $table) { ?>
-                                                    <option value="<?php echo escape(trim($table)); ?>"><?php echo strtoupper($table); ?></option>
+                                                    <option value="<?php echo escape(trim($table)); ?>"><?php echo Translate::t($table, ['ucfirst'=>true]); ?></option>
                                                 <?php } ?>
                                             </select>
                                             <?php

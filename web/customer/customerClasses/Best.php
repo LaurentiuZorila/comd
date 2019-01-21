@@ -37,8 +37,12 @@ class Best
     public function __construct($officeId)
     {
         $this->_data      = new CustomerProfile();
-        $this->_year      = date('Y');
         $this->_officeId  = $officeId;
+        if (Input::exists('post')) {
+            $this->_year      = Input::post('year');
+        } else {
+            $this->_year      = date('Y');
+        }
     }
 
 
@@ -88,15 +92,16 @@ class Best
 
     /**
      * @return array
+     * @return array with priority tables
      */
     public function priorityTbls()
     {
         $tbls = Common::toArray($this->_data->records(Params::TBL_OFFICE, ['id', '=', $this->_officeId], ['tables_priorities'], false)->tables_priorities);
         foreach ($tbls as $k => $value) {
-            if ($k < 3) {
-                $table[$k] = $value;
-            }
+            $table[$k] = $value;
         }
+        ksort($table);
+        array_values($table);
         return array_map('trim', $table);
     }
 
@@ -201,7 +206,7 @@ class Best
     {
         foreach ($this->getAllEmployees() as $k => $v) {
             // Conditions for action
-            $where = ['employees_average_id', '=', $k . '_' . date('Y')];
+            $where = ['employees_average_id', '=', $k . '_' . $this->_year];
             $array[$v. '_' . $k] = $this->_data->average($table, $where, self::COLUMN);
         }
         return $array;

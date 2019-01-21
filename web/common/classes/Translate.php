@@ -180,6 +180,8 @@ class Translate
             'print'             => 'Printeaza',
             'new_event_added'   => 'Un event a fost adaugat',
             'mark_as_read'      => 'Marcheaza totul ca citit',
+            'one_month_event'   => 'Introdu in calendar cate un event pentru fiecare luna in parte!',
+            'event_added'       => 'Eventul a fost introdus cu succes',
         ];
     }
 
@@ -356,6 +358,8 @@ class Translate
             'print'             => 'Print',
             'new_event_added'   => 'New event added',
             'mark_as_read'      => 'Mark all as read',
+            'one_month_event'   => 'Insert event in calendar for each month separately!',
+            'event_added'       => 'Event has been successfully added',
         ];
     }
 
@@ -530,6 +534,8 @@ class Translate
             'print'             => 'Stampa',
             'new_event_added'   => 'Nuovo evento inserito',
             'mark_as_read'      => 'Segna tutto come letto',
+            'one_month_event'   => 'Inserisci richesta in calendario per ogni mese separatamente!',
+            'event_added'       => 'Richiesta è stata inserita con successo',
         ];
     }
 
@@ -563,12 +569,11 @@ class Translate
      */
     public static function t($string, $params = [])
     {
-        if (defined(LANG)) {
-            $lang = LANG;
+        if (Session::exists('lang')) {
+            $lang = Session::get('lang');
         } else {
             $lang = 'en';
         }
-
         // If empty params return string from translation
         if (is_array($string)) {
             if (empty($params)) {
@@ -581,29 +586,56 @@ class Translate
         }
 
         // Check params
-        foreach ($params as $k => $v) {
+        foreach ($params as $k) {
             if (is_array($string)) {
-                if ($k === 'ucfirst' && $v && !empty(self::getLang($lang)[$string[0]])) {
+//                switch ($k) {
+//                    case 'ucfirst':
+//                        return !empty(self::getLang($lang)[$string[0]]) ? ucfirst(self::getLang($lang)[$string[0]]) . ' ' . self::getLang($lang)[$string[1]] : $string[0] . ' ' . $string[1];
+//                        break;
+//                    case 'strtoupper':
+//                        return !empty(self::getLang($lang)[$string[0]]) ? strtoupper(self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]]) : $string[0] . ' ' . $string[1];
+//                        break;
+//                    case 'strtolower':
+//                        return !empty(self::getLang($lang)[$string[0]]) ? strtolower(self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]]) : $string[0] . ' ' . $string[1];
+//                        break;
+//                    default:
+//                        return !empty(self::getLang($lang)[$string[0]]) ? self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]] : $string[0] . ' ' . $string[1];
+//                        break;
+//                }
+                if ($k === 'ucfirst' && !empty(self::getLang($lang)[$string[0]])) {
                     return !empty(self::getLang($lang)[$string[0]]) ? ucfirst(self::getLang($lang)[$string[0]]) . ' ' . self::getLang($lang)[$string[1]] : $string[0] . ' ' . $string[1];
-                } elseif ($k === 'strtoupper' && $v && !empty(self::getLang($lang)[$string[0]])) {
+                } elseif ($k === 'strtoupper' && !empty(self::getLang($lang)[$string[0]])) {
                     return !empty(self::getLang($lang)[$string[0]]) ? strtoupper(self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]]) : $string[0] . ' ' . $string[1];
-                } elseif ($k === 'strtolower' && $v && !empty(self::getLang($lang)[$string[0]])) {
+                } elseif ($k === 'strtolower' && !empty(self::getLang($lang)[$string[0]])) {
                     return !empty(self::getLang($lang)[$string[0]]) ? strtolower(self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]]) : $string[0] . ' ' . $string[1];
                 } else {
                     return !empty(self::getLang($lang)[$string[0]]) ? self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]] : $string[0] . ' ' . $string[1];
                 }
             } elseif (!is_array($string)) {
-                if ($k === 'ucfirst' && $v && !empty(self::getLang($lang)[$string])) {
+//                switch ($k) {
+//                    case 'ucfirst':
+//                        return !empty(self::getLang($lang)[$string]) ? ucfirst(self::getLang($lang)[$string]) : $string;
+//                        break;
+//                    case 'strtoupper':
+//                        return !empty(self::getLang($lang)[$string]) ? strtoupper(self::getLang($lang)[$string]) : $string;
+//                        break;
+//                    case 'strtolower':
+//                        return !empty(self::getLang($lang)[$string]) ? strtolower(self::getLang($lang)[$string]) : $string;
+//                        break;
+//                    default:
+//                        return !empty(self::getLang($lang)[$string]) ? self::getLang($lang)[$string] : $string;
+//                        break;
+//                }
+                if ($k === 'ucfirst' && !empty(self::getLang($lang)[$string])) {
                     return !empty(self::getLang($lang)[$string]) ? ucfirst(self::getLang($lang)[$string]) : $string;
-                } elseif ($k === 'strtoupper' && $v && !empty(self::getLang($lang)[$string])) {
+                } elseif ($k === 'strtoupper' && !empty(self::getLang($lang)[$string])) {
                     return !empty(self::getLang($lang)[$string]) ? strtoupper(self::getLang($lang)[$string]) : $string;
-                } elseif ($k === 'strtolower' && $v && !empty(self::getLang($lang)[$string])) {
+                } elseif ($k === 'strtolower' && !empty(self::getLang($lang)[$string])) {
                     return !empty(self::getLang($lang)[$string]) ? strtolower(self::getLang($lang)[$string]) : $string;
                 } else {
                     return !empty(self::getLang($lang)[$string]) ? self::getLang($lang)[$string] : $string;
                 }
             }
-
         }
     }
 

@@ -48,9 +48,11 @@ class Create
                 departments_id        INT(11),
                 employees_id          INT(11),
                 employees_average_id  VARCHAR(255),
+                event_id              INT(11),
                 year                  YEAR(4),
                 month                 TINYINT(2),
-                quantity              INT(11)
+                quantity              INT(11),
+                days                  VARCHAR(100)
             )";
                 break;
             case 'float':
@@ -61,9 +63,11 @@ class Create
                 departments_id        INT(11),
                 employees_id          INT(11),
                 employees_average_id  VARCHAR(255),
+                event_id              INT(11),
                 year                  YEAR(4),
                 month                 TINYINT(2),
-                quantity              FLOAT(5)
+                quantity              FLOAT(5),
+                days                  VARCHAR(100)
             )";
                 break;
         }
@@ -73,7 +77,6 @@ class Create
             } catch (PDOException $e) {
                 die($e->getMessage());
             }
-
     }
 
 

@@ -335,7 +335,7 @@ if (Input::exists() && !Errors::countAllErrors() || Input::existsName('get', 'em
                                             <?php
                                             if ($value < 0) {
                                                 $positiveValue = -$value; ?>
-                                            <div role="progressbar" style="width: <?php echo $positiveValue; ?>%;"aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template progress-bar-small dashbg-5"></div>
+                                            <div role="progressbar" style="width: <?php echo $positiveValue; ?>%;"aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template progress-bar-small dashbg-2"></div>
                                             <?php } else { ?>
                                             <div role="progressbar" style="width: <?php echo $value; ?>%;"aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template progress-bar-small dashbg-2"></div>
                                             <?php }

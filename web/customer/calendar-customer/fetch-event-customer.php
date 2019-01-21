@@ -6,13 +6,13 @@ $results = $customerData->records(Params::TBL_EVENTS, AC::where(['lead_id', $lea
 foreach ($results as $key => $result) {
     switch ($result->status) {
         case 1:
-            $title = Translate::t($result->title, ['ucfirst'=>true]);
+            $title = Translate::t($result->title, ['ucfirst']);
             break;
         case 2:
-            $title = Translate::t($result->title, ['ucfirst'=>true]) . ' - ' . Translate::t($result->event_status, ['ucfirst'=>true]);
+            $title = Translate::t($result->title, ['ucfirst']) . ' - ' . Translate::t($result->event_status, ['ucfirst']);
             break;
         default:
-            $title = Translate::t($result->title, ['ucfirst'=>true]);
+            $title = Translate::t($result->title, ['ucfirst']);
     }
         $event[] = [
             'id'        => $result->id,

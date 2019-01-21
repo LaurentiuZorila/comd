@@ -20,20 +20,25 @@ $customerDb->delete(Params::TBL_EVENTS, AC::where(['id', $id]));
 // Delete notification in TBL Notification
 $customerDb->delete(Params::TBL_NOTIFICATION, AC::where(['event_id', $id]));
 
+    // Cond common table
     $where = AC::where([
         ['employees_id', $userId],
         ['year', $year],
         ['month', $month]
     ]);
-
+    // Cond event table
     $where1 = AC::where([
         ['user_id', $userId],
         ['title', $title],
-        ['status', 1]
+        ['status', 1],
+        ['month', $month],
+        ['year', $year]
     ]);
 
     // Count rows in event table
     $count = $customerDb->get(Params::TBL_EVENTS, $where1)->count();
+    // Get record id common table
+    $records  = $customerDb->get($table, $where, ['id'])->first();
 
     if ($count > 0) {
         // All days from event table
@@ -46,9 +51,6 @@ $customerDb->delete(Params::TBL_NOTIFICATION, AC::where(['event_id', $id]));
         $sumDaysEvent = $customerDb->sum(Params::TBL_EVENTS, $where1, 'days_number')->first()->sum;
         $days = implode(',', $eventDays);
 
-        // Get record id common table
-        $records  = $customerDb->get($table, $where, ['id'])->first();
-
         // Update common table
         $action = $customerDb->update($table,
             [
@@ -58,7 +60,6 @@ $customerDb->delete(Params::TBL_NOTIFICATION, AC::where(['event_id', $id]));
             ], [
                 'id' => $records->id
             ]);
-
     } else {
         $action = $customerDb->delete($table, AC::where(['id', $records->id]));
     }

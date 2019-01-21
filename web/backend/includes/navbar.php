@@ -46,32 +46,32 @@
                 <div class="list-inline-item dropdown menu-large"><a href="#" data-toggle="dropdown" class="nav-link">Mega <i class="fa fa-ellipsis-v"></i></a>
                     <div class="dropdown-menu megamenu">
                         <div class="row">
-                            <div class="col-lg-2 col-md-4"><strong class="text-uppercase"><?php echo Translate::t('view_employees', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-4"><strong class="text-uppercase"><?php echo Translate::t('view_employees', ['strtoupper']); ?></strong>
                                 <ul class="list-unstyled mb-3">
                                     <li><a href="#"><?php echo Translate::t('view_employees_nav_details'); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-4"><strong class="text-uppercase"><?php echo Translate::t('navEmplData', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-4"><strong class="text-uppercase"><?php echo Translate::t('navEmplData', ['strtoupper']); ?></strong>
                                 <ul class="list-unstyled mb-3">
                                     <li><a href="#"><?php echo Translate::t('view_employees_nav_data_details'); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-4"><strong class="text-uppercase"><?php echo Translate::t('view_staff', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-4"><strong class="text-uppercase"><?php echo Translate::t('view_staff', ['strtoupper']); ?></strong>
                                 <ul class="list-unstyled mb-3">
                                     <li><a href="#"><?php echo Translate::t('view_staff_nav_details'); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t('Update_user_profile', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t('Update_user_profile', ['strtoupper']); ?></strong>
                                 <ul class="list-unstyled mb-3">
                                     <li><a href="#"><?php echo Translate::t('move_staff_nav'); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t('my_profile', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t('my_profile', ['strtoupper']); ?></strong>
                                 <ul class="list-unstyled mb-3">
                                     <li><a href="#"><?php echo Translate::t('move_staff_nav'); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t('logout', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-2 col-md-6"><strong class="text-uppercase"><?php echo Translate::t('logout', ['strtoupper']); ?></strong>
                             </div>
                         </div>
                         <div class="row megamenu-buttons text-center">

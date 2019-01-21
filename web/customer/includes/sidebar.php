@@ -17,7 +17,7 @@ $rating = $leadData->rating($lead->customerId());
                 <?php
                 for ($i=1;$i<6;$i++) {
                     if ($i <= $rating) { ?>
-                        <a class="text-secondary" href="#"><span class="fa fa-star checked"></span></a>
+                        <a class="text-primary" href="#"><span class="fa fa-star checked"></span></a>
                     <?php } else { ?>
                         <a class="text-secondary" href="#"><span class="fa fa-star"></span></a>
                     <?php }

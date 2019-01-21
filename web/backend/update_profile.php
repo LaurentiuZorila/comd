@@ -115,8 +115,8 @@ include 'includes/navbar.php';
                             <div style="background-image: url(./../common/img/wallp.jpg);" class="card-header"></div>
                             <div class="card-body text-center"><img src="./../common/img/user.png" class="card-profile-img">
                                 <h4 class="mb-3 text-gray-light"><?php echo $name; ?></h4>
-                                <h5 class="mb-1"><?php echo Translate::t('Depart', ['ucfirst' => true]) . ': ' . $departmentName->name; ?> </h5>
-                                <h5 class="mb-1"><?php echo Translate::t('Offices', ['ucfirst' => true]);?> : </h5>
+                                <h5 class="mb-1"><?php echo Translate::t('Depart', ['ucfirst']) . ': ' . $departmentName->name; ?> </h5>
+                                <h5 class="mb-1"><?php echo Translate::t('Offices', ['ucfirst']);?> : </h5>
                                 <?php foreach ($offices as $office) { ?>
                                 <p class="mb-0 text-muted"><?php echo $office->name; ?></p>
                                 <?php } ?>

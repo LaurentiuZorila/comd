@@ -69,77 +69,79 @@ try {
     ]);
 
     if (count($uniqMonths) > 1) {
-        foreach ($monthsAndDays as $key => $value) {
-            foreach ($value as $k => $v) {
-                if ($k == $uniqMonths[0]) {
-                    $daysFirstMonth[] = $v;
-                } elseif ($k == $uniqMonths[1]) {
-                    $daysSecondMonth[] = $v;
-                }
-            }
-        }
-        foreach ($monthsAndDaysDb as $key => $value) {
-            foreach ($value as $k => $v) {
-                if ($k == $uniqMonths[0]) {
-                    $firstMonthDays[] = $v;
-                } elseif ($k == $uniqMonths[1]) {
-                    $secondMonthDays[] = $v;
-                }
-            }
-        }
-        $startDayFirstMonth     = $firstMonthDays[0];
-        $endDayFirstMonth       = end($firstMonthDays);
-        $startDaySecondMonth    = $secondMonthDays[0];
-        $endDaySecondMonth      = end($secondMonthDays);
-
-        $endDayFirstMonth   = new DateTime($endDayFirstMonth);
-        $endDaySecondMonth  = new DateTime($endDaySecondMonth);
-
-        $endDayFirstMonth   = $endDayFirstMonth->modify( '+1 day' );
-        $endDaySecondMonth  = $endDaySecondMonth->modify( '+1 day' );
-        $endDayFirstMonth   = $endDayFirstMonth->format('Y-m-d');
-        $endDaySecondMonth  = $endDaySecondMonth->format('Y-m-d');
-
-        // if count months are > 1 then count how days are in first month
-        $countDaysFirstMonth    = count($uniqMonths) > 1 ? count($daysFirstMonth) : $totalDays;
-        // if count months are > 1 then count how days are in second month
-        $countDaysSecondMonth   = count($uniqMonths) > 1 ? count($daysSecondMonth) : 0;
-        // if count months are > 1 then get days from first month
-        $days_first_month       = count($uniqMonths) > 1 ? implode(',', $daysFirstMonth) : implode(', ', $days);
-        // if count months are > 1 then get days from second month
-        $days_second_month      = count($uniqMonths) > 1 ? implode(',', $daysSecondMonth) : '' ;
-
-        // Insert event in TBL
-        $insertEvent = $customerDb->insert(Params::TBL_EVENTS, [
-            'user_id'       => $employeeId,
-            'lead_id'       => $userId,
-            'title'         => ucfirst($title),
-            'event_status'  => Params::EVENTS_STATUS[$eventStatus],
-            'start'         => $startDayFirstMonth,
-            'end'           => $endDayFirstMonth,
-            'days_number'   => $countDaysFirstMonth,
-            'days'          => implode(',', $daysFirstMonth),
-            'month'         => $startMonth,
-            'year'          => $start_year,
-            'status'        => $eventStatus,
-            'added'         => date('Y-m-d H:i:s'),
-            'updated'       => date('Y-m-d H:i:s')
-        ]);
-        $insertSecondEvent = $customerDb->insert(Params::TBL_EVENTS, [
-            'user_id'       => $employeeId,
-            'lead_id'       => $userId,
-            'title'         => ucfirst($title),
-            'event_status'  => Params::EVENTS_STATUS[$eventStatus],
-            'start'         => $startDaySecondMonth,
-            'end'           => $endDaySecondMonth,
-            'days_number'   => $countDaysSecondMonth,
-            'days'          => implode(',', $daysSecondMonth),
-            'month'         => $endMonth,
-            'year'          => $end_year,
-            'status'        => $eventStatus,
-            'added'         => date('Y-m-d H:i:s'),
-            'updated'       => date('Y-m-d H:i:s')
-        ]);
+        echo 2;
+        exit;
+//        foreach ($monthsAndDays as $key => $value) {
+//            foreach ($value as $k => $v) {
+//                if ($k == $uniqMonths[0]) {
+//                    $daysFirstMonth[] = $v;
+//                } elseif ($k == $uniqMonths[1]) {
+//                    $daysSecondMonth[] = $v;
+//                }
+//            }
+//        }
+//        foreach ($monthsAndDaysDb as $key => $value) {
+//            foreach ($value as $k => $v) {
+//                if ($k == $uniqMonths[0]) {
+//                    $firstMonthDays[] = $v;
+//                } elseif ($k == $uniqMonths[1]) {
+//                    $secondMonthDays[] = $v;
+//                }
+//            }
+//        }
+//        $startDayFirstMonth     = $firstMonthDays[0];
+//        $endDayFirstMonth       = end($firstMonthDays);
+//        $startDaySecondMonth    = $secondMonthDays[0];
+//        $endDaySecondMonth      = end($secondMonthDays);
+//
+//        $endDayFirstMonth   = new DateTime($endDayFirstMonth);
+//        $endDaySecondMonth  = new DateTime($endDaySecondMonth);
+//
+//        $endDayFirstMonth   = $endDayFirstMonth->modify( '+1 day' );
+//        $endDaySecondMonth  = $endDaySecondMonth->modify( '+1 day' );
+//        $endDayFirstMonth   = $endDayFirstMonth->format('Y-m-d');
+//        $endDaySecondMonth  = $endDaySecondMonth->format('Y-m-d');
+//
+//        // if count months are > 1 then count how days are in first month
+//        $countDaysFirstMonth    = count($uniqMonths) > 1 ? count($daysFirstMonth) : $totalDays;
+//        // if count months are > 1 then count how days are in second month
+//        $countDaysSecondMonth   = count($uniqMonths) > 1 ? count($daysSecondMonth) : 0;
+//        // if count months are > 1 then get days from first month
+//        $days_first_month       = count($uniqMonths) > 1 ? implode(',', $daysFirstMonth) : implode(', ', $days);
+//        // if count months are > 1 then get days from second month
+//        $days_second_month      = count($uniqMonths) > 1 ? implode(',', $daysSecondMonth) : '' ;
+//
+//        // Insert event in TBL
+//        $insertEvent = $customerDb->insert(Params::TBL_EVENTS, [
+//            'user_id'       => $employeeId,
+//            'lead_id'       => $userId,
+//            'title'         => ucfirst($title),
+//            'event_status'  => Params::EVENTS_STATUS[$eventStatus],
+//            'start'         => $startDayFirstMonth,
+//            'end'           => $endDayFirstMonth,
+//            'days_number'   => $countDaysFirstMonth,
+//            'days'          => implode(',', $daysFirstMonth),
+//            'month'         => $startMonth,
+//            'year'          => $start_year,
+//            'status'        => $eventStatus,
+//            'added'         => date('Y-m-d H:i:s'),
+//            'updated'       => date('Y-m-d H:i:s')
+//        ]);
+//        $insertSecondEvent = $customerDb->insert(Params::TBL_EVENTS, [
+//            'user_id'       => $employeeId,
+//            'lead_id'       => $userId,
+//            'title'         => ucfirst($title),
+//            'event_status'  => Params::EVENTS_STATUS[$eventStatus],
+//            'start'         => $startDaySecondMonth,
+//            'end'           => $endDaySecondMonth,
+//            'days_number'   => $countDaysSecondMonth,
+//            'days'          => implode(',', $daysSecondMonth),
+//            'month'         => $endMonth,
+//            'year'          => $end_year,
+//            'status'        => $eventStatus,
+//            'added'         => date('Y-m-d H:i:s'),
+//            'updated'       => date('Y-m-d H:i:s')
+//        ]);
     } else {
         // Insert event in TBL
         $insertEvent = $customerDb->insert(Params::TBL_EVENTS, [
@@ -165,12 +167,13 @@ try {
 }
 
 if ($insertEvent) {
-
     // Insert data in common tables
     $eventData = $customerData->records(Params::TBL_EVENTS, AC::where(['id', $customerDb->lastId()]), ['*'], false);
 
     /** Table where need to make changes */
     $table = Params::PREFIX . strtolower($title);
+
+    // Cond common table
     $where = AC::where([
         ['employees_id', $employeeId],
         ['year', $start_year],
@@ -180,6 +183,7 @@ if ($insertEvent) {
 // Check if exist records in common table if don't exist add new row
     $countRecords = $customerDb->get($table, $where)->count();
 
+    // If records exist in common table proceed with update else insert new row
     if ($countRecords > 0) {
         $where1 = AC::where([
             ['user_id', $employeeId],
@@ -201,6 +205,7 @@ if ($insertEvent) {
         $daysNumber = $sumDaysEvent;
         // Get record id common table
         $records  = $customerDb->get($table, $where, ['id'])->first();
+
         // Update common table
         $data = $customerDb->update($table,
             [
@@ -210,27 +215,68 @@ if ($insertEvent) {
             ], [
                 'id' => $records->id
             ]);
+        if (!$data) {
+            echo 0;
+        } else {
+            echo 1;
+        }
 
     } else {
-        // If not result records add new row with data
-        $data = $customerDb->insert($table, [
-            'offices_id'            => $customerUser->officesId(),
-            'departments_id'        => $customerUser->departmentId(),
-            'employees_id'          => $employeeId,
-            'employees_average_id'  => $employeeId . '_' . $eventData->year,
-            'event_id'              => $eventData->id,
-            'year'                  => $eventData->year,
-            'month'                 => $eventData->month,
-            'quantity'              => $eventData->days_number,
-            'days'                  => $eventData->days,
-        ]);
+        if (count($uniqMonths) > 1) {
+            echo 2;
+            exit;
+//            try {
+//                $customerDb->getPdo()->beginTransaction();
+//                // Insert first record
+//                $customerDb->insert($table, [
+//                    'offices_id'            => $customerUser->officesId(),
+//                    'departments_id'        => $customerUser->departmentId(),
+//                    'employees_id'          => $employeeId,
+//                    'employees_average_id'  => $employeeId . '_' . $eventData->year,
+//                    'year'                  => $start_year,
+//                    'month'                 => $startMonth,
+//                    'quantity'              => $countDaysFirstMonth,
+//                    'days'                  => implode(',', $daysFirstMonth),
+//                ]);
+//                // Insert second record
+//                $customerDb->insert($table, [
+//                    'offices_id'            => $customerUser->officesId(),
+//                    'departments_id'        => $customerUser->departmentId(),
+//                    'employees_id'          => $employeeId,
+//                    'employees_average_id'  => $employeeId . '_' . $eventData->year,
+//                    'year'                  => $end_year,
+//                    'month'                 => $endMonth,
+//                    'quantity'              => $countDaysSecondMonth,
+//                    'days'                  => implode(',', $daysSecondMonth),
+//                ]);
+//                $customerDb->getPdo()->commit();
+//                echo 1;
+//            } catch (Exception $e) {
+//                $customerDb->getPdo()->rollBack();
+//                echo 0;
+//            }
+
+        } else {
+            // If not result records add new row with data
+            $data = $customerDb->insert($table, [
+                'offices_id'            => $customerUser->officesId(),
+                'departments_id'        => $customerUser->departmentId(),
+                'employees_id'          => $employeeId,
+                'employees_average_id'  => $employeeId . '_' . $eventData->year,
+                'event_id'              => $eventData->id,
+                'year'                  => $eventData->year,
+                'month'                 => $eventData->month,
+                'quantity'              => $eventData->days_number,
+                'days'                  => $eventData->days,
+            ]);
+            if (!$data) {
+                echo 0;
+                exit;
+            } else {
+                echo 1;
+                exit;
+            }
+        }
     }
 }
-
-if ($data) {
-    echo 1;
-} else {
-    echo 0;
-}
-
 ?>

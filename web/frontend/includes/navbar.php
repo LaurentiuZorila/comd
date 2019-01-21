@@ -1,5 +1,4 @@
 <?php
-
 $notificationCount = $frontDb->get(Params::TBL_NOTIFICATION, AC::where([['user_id', $frontUser->userId()], ['response_status', true], ['employee_view', false]]))->count();
 $notificationData = $frontProfile->records(Params::TBL_NOTIFICATION, AC::where([['user_id', $frontUser->userId()], ['response_status', true], ['employee_view', false]]), ['response', 'status', 'event_id', 'id'], true);
 if (Input::existsName('get', 'notificationId')) {
@@ -46,7 +45,11 @@ if (Input::existsName('get', 'notificationId')) {
             <div class="right-menu list-inline no-margin-bottom">
                 <!--                <div class="list-inline-item"><a href="#" class="search-open nav-link"><i class="icon-magnifying-glass-browser"></i></a></div>-->
                 <div class="list-inline-item dropdown"><a id="navbarDropdownMenuLink1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link messages-toggle"><i class="fa fa-envelope"></i><span class="badge dashbg-1"><?php echo $notificationCount > 0 ? $notificationCount : ''; ?></span></a>
-                    <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages">
+                    <?php if ($notificationCount > 4) { ?>
+                    <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages" style="height:419px; overflow-y: scroll;">
+                        <?php } else { ?>
+                        <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages">
+                            <?php } ?>
                         <?php if ($notificationCount > 0) {
                         foreach ($notificationData as $notification) { ?>
                             <a href="calendar.php?status=2&notificationId=<?php echo $notification->id; ?>" class="dropdown-item message d-flex align-items-center">
@@ -54,14 +57,14 @@ if (Input::existsName('get', 'notificationId')) {
                                     <div class="status online"></div>
                                 </div>
                                 <div class="content">
-                                    <span class="d-block"><?php echo Translate::t($notification->response, ['ucfirst'=>true]);?></span>
-                                    <small class="date d-block"><?php echo Translate::t($frontProfile->records(Params::TBL_EVENTS, AC::where(['id', $notification->event_id]),['title'], false)->title, ['ucfirst'=>true]) . ' - ' . $frontProfile->records(Params::TBL_EVENTS, AC::where(['id', $notification->event_id]),['days'], false)->days; ?></small>
+                                    <span class="d-block"><?php echo Translate::t($notification->response, ['ucfirst']);?></span>
+                                    <small class="date d-block"><?php echo Translate::t($frontProfile->records(Params::TBL_EVENTS, AC::where(['id', $notification->event_id]),['title'], false)->title, ['ucfirst']) . ' - ' . $frontProfile->records(Params::TBL_EVENTS, AC::where(['id', $notification->event_id]),['days'], false)->days; ?></small>
                                 </div>
                             </a>
                         <?php } ?>
-                            <a href="?notificationId=<?php echo 0; ?>" class="dropdown-item text-center message"> <strong><?php echo Translate::t('mark_as_read', ['ucfirst'=>true]);?> <i class="fa fa-flag-checkered"></i></strong></a>
+                            <a href="?notificationId=<?php echo 0; ?>" class="dropdown-item text-center message"> <strong><?php echo Translate::t('mark_as_read', ['ucfirst']);?> <i class="fa fa-flag-checkered"></i></strong></a>
                         <?php } else { ?>
-                            <a href="calendar.php" class="dropdown-item text-center message"><strong><?php echo Translate::t('notification_not_found', ['ucfirst' => true]); ?></strong></a>
+                            <a href="calendar.php" class="dropdown-item text-center message"><strong><?php echo Translate::t('notification_not_found', ['ucfirst']); ?></strong></a>
                         <?php } ?>
                     </div>
                 </div>
@@ -72,17 +75,17 @@ if (Input::existsName('get', 'notificationId')) {
                 <div class="list-inline-item dropdown menu-large"><a href="#" data-toggle="dropdown" class="nav-link">Mega <i class="fa fa-ellipsis-v"></i></a>
                     <div class="dropdown-menu megamenu">
                         <div class="row">
-                            <div class="col-lg-3 col-md-4"><strong class="text-uppercase"><?php echo Translate::t('last_month_data_title', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-3 col-md-4"><strong class="text-uppercase"><?php echo Translate::t('last_month_data_title', ['strtoupper']); ?></strong>
                                 <ul class="list-unstyled mb-3">
                                     <li><a href="#"><?php echo Translate::t('last_month_data_content'); ?></a></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-3 col-md-4"><strong class="text-uppercase"><?php echo Translate::t('give_feedback', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-3 col-md-4"><strong class="text-uppercase"><?php echo Translate::t('give_feedback', ['strtoupper']); ?></strong>
                                 <ul class="list-unstyled mb-3">
                                     <li><?php echo Translate::t('nav_give_feedback'); ?></li>
                                 </ul>
                             </div>
-                            <div class="col-lg-3 col-md-4"><strong class="text-uppercase"><?php echo Translate::t('my_profile', ['strtoupper' => true]); ?></strong>
+                            <div class="col-lg-3 col-md-4"><strong class="text-uppercase"><?php echo Translate::t('my_profile', ['strtoupper']); ?></strong>
                                 <ul class="list-unstyled mb-3">
                                     <li><?php echo Translate::t('nav_update_profile'); ?></li>
                                 </ul>
@@ -97,7 +100,7 @@ if (Input::existsName('get', 'notificationId')) {
                             <div class="col-lg-3 col-md-4"><a href="index.php?officeId=<?php echo $frontUser->officeId(); ?>&userId=<?php echo $frontUser->userId(); ?>&lastData=<?php echo Tokens::getRoute(); ?>" class="d-block megamenu-button-link dashbg-1"><i class="fa fa-bar-chart-o"></i><strong><?php echo Translate::t('view_data')?></strong></a></div>
                             <div class="col-lg-3 col-md-4"><a href="feedback.php" class="d-block megamenu-button-link dashbg-4"><i class="fa fa-star-half-full"></i><strong><?php echo Translate::t('feedback'); ?></strong></a></div>
                             <div class="col-lg-3 col-md-4"><a href="update_profile.php" class="d-block megamenu-button-link dashbg-2"><i class="icon-user"></i><strong><?php echo Translate::t('my_profile'); ?></strong></a></div>
-                            <div class="col-lg-3 col-md-4"><a href="calendar.php" class="d-block megamenu-button-link dashbg-3"><i class="fa fa-calendar"></i><strong><?php echo Translate::t('calendar', ['ucfirst'=>true]); ?></strong></a></div>
+                            <div class="col-lg-3 col-md-4"><a href="calendar.php" class="d-block megamenu-button-link dashbg-3"><i class="fa fa-calendar"></i><strong><?php echo Translate::t('calendar', ['ucfirst']); ?></strong></a></div>
                         </div>
                     </div>
                 </div>

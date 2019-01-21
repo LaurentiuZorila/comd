@@ -65,7 +65,7 @@ if (Input::exists()) {
 
             /** Check if exists values */
             if (!Common::checkValues($allData)) {
-                Errors::setErrorType('warning', Translate::t('Not_found_data'));
+                Errors::setErrorType('info', Translate::t('Not_found_data'));
             }
         }
 }
@@ -89,7 +89,6 @@ if (Input::existsName('get', 'id') && !Input::exists()) {
         $values[]   = empty($leadData->records(Params::PREFIX . $table, $where, ['quantity'], false)->quantity) ? 0 : $leadData->records(Params::PREFIX . $table, $where, ['quantity'], false)->quantity;
         $allData    = array_combine($key, $values);
     }
-
     /** All data for customer */
     $employeesDetails   = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['id', $employeesId]), ['name', 'offices_id'], false);
     $officeObj          = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $employeesDetails->offices_id]), ['name'], false);
@@ -98,8 +97,17 @@ if (Input::existsName('get', 'id') && !Input::exists()) {
     $officeName = $officeObj->name;
     $initials   = Common::makeAvatar($name);
 
+    // Get all common data
+    foreach (Params::TBL_COMMON as $commonTables) {
+        $commonDataCollapse[$commonTables] = $leadData->records(Params::PREFIX . $commonTables,
+            AC::where([
+                ['employees_id', $employeesId],
+                ['year', $year]
+            ]), ['year', 'month', 'quantity', 'days', 'employees_id'], true);
+    }
+
     /** Check if exists values */
-    if (Common::checkValues($allData) === true) {
+    if (!Common::checkValues($allData)) {
         Errors::setErrorType('info', Translate::t('Not_found_data'));
     }
 }
@@ -339,9 +347,7 @@ if (Input::exists() && !Errors::countAllErrors() || Input::exists('get') && !Err
 
     // Click to view common
     $ ( '.common' ).on('click', function () {
-        $( '.allCollapse:visible' ).hide(function () {
-            $(this).fadeOut(3000);
-        });
+        $( '.allCollapse:visible' ).hide();
         var $this = $(this);
         $( '#' + $this.data("target")).show(function () {
             $( '#' + $this.data("target")).fadeIn(3000);
@@ -350,7 +356,7 @@ if (Input::exists() && !Errors::countAllErrors() || Input::exists('get') && !Err
 
     // Click close div
     $ ( '.closeDiv' ).on('click', function () {
-        $( '.collapse:visible' ).hide(function () {
+        $( '.allCollapse:visible' ).hide(function () {
             $(this).fadeOut(3000);
         });
     });

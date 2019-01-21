@@ -1,6 +1,5 @@
 <?php
 require_once 'core/init.php';
-
 /** All offices (id, name) */
 $offices        = $backendUserProfile->records(Params::TBL_OFFICE, ['departments_id', '=', $backendUser->departmentId()], ['id', 'name']);
 
@@ -12,9 +11,7 @@ $countStaff     = $backendUserProfile->count(Params::TBL_TEAM_LEAD, ['supervisor
 $countOffices   = $backendUserProfile->count(Params::TBL_OFFICE, ['departments_id', '=', $backendUser->departmentId()]);
 
 /** Condition for action */
-$where = [
-    'departments_id', '=', $backendUser->userId()
-];
+$where = AC::where(['departments_id', $backendUser->userId()]);
 
 /** Total data for common tables */
 $furlough   = $backendUserProfile->records(Params::TBL_FURLOUGH, $where, ['quantity']);
@@ -44,13 +41,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
         $table          = Params::PREFIX.$table;
 
         /** Conditions for action */
-        $where = [
-            ['year', '=', $year],
-            'AND',
-            ['offices_id', '=', $officeId],
-            'AND',
-            ['month', '=', $month]
-        ];
+        $where = AC::where([['year', $year], ['offices_id', '=', $officeId], ['month', '=', $month]]);
 
         /** Array with all results for one FTE */
         $chartData      = $backendUserProfile->records($table, $where, ['quantity', 'employees_id']);

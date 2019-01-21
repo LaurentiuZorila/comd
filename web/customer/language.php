@@ -9,6 +9,9 @@ $lead->update('cmd_users', [
     [
         'id' => $lead->customerId()
     ]);
+$lang   = $lead->language();
+$langId = $lead->language(false);
+Session::put('lang', $lang);
 Redirect::to('index.php');
 exit;
 ?>

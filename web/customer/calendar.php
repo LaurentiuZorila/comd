@@ -107,13 +107,8 @@ $(document).ready(function () {
 
 
 function displayMessage(type, message) {
-    if(type === "success") {
-        $(".response").html('<section class="eventMessage"><div class="row"><div class="col-lg-12"><div class="alert alert-dismissible fade show badge-success"><p class="text-white mb-0">'+message+'</p></div></div></div></section>');
-        setInterval(function() { $(".eventMessage").fadeOut(); }, 5000);
-    } else if (type === "danger") {
-        $(".response").html('<section class="eventMessage"><div class="row"><div class="col-lg-12"><div class="alert alert-dismissible fade show badge-danger"><p class="text-white mb-0">'+message+'</p></div></div></div></section>');
-        setInterval(function() { $(".eventMessage").fadeOut(); }, 5000);
-    }
+    $(".response").html('<section class="eventMessage"><div class="row"><div class="col-lg-12"><div class="alert alert-dismissible fade show badge-'+type+'"><p class="text-white mb-0">'+message+'</p></div></div></div></section>');
+    setInterval(function() { $(".eventMessage").fadeOut(); }, 5000);
 }
 </script>
 </head>
@@ -371,6 +366,7 @@ include '../common/includes/footer.php';
         var startDate   = $('#startDate').val();
         var endDate     = $('#endDate').val();
 
+
         if (titleEvent === '' || startDate === '' || endDate === '' || employeeId === '') {
             $('#createEventModal').modal('hide');
             displayMessage("danger","<?php echo Translate::t('all_required', ['ucfirst'=>true]); ?>");
@@ -394,12 +390,14 @@ include '../common/includes/footer.php';
                         'userId': <?php echo $lead->customerId(); ?>,
                     },
                     success: function (response) {
-                        if(parseInt(response) > 0) {
+                        if(parseInt(response) === 1) {
                             $('#myModal').modal('show');
                             setTimeout(function () {
                                 window.location.reload();
                             }, 2000);
-                            displayMessage("success", "<?php echo Translate::t('event_updated', ['ucfirst'=>true]); ?>");
+                            displayMessage("success", "<?php echo Translate::t('event_added', ['ucfirst'=>true]); ?>");
+                        } else if (parseInt(response) === 2) {
+                            displayMessage("info", "<?php echo Translate::t('one_month_event', ['ucfirst'=>true]); ?>");
                         } else {
                             displayMessage("danger", "<?php echo Translate::t('Db_error', ['ucfirst'=>true]); ?>");
                         }

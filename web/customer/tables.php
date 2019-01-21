@@ -24,7 +24,7 @@ foreach ($dataDisplay as $tableData => $v){
 
 // Conditions for action
 $year   = date('Y');
-$month  = date('n') - 1;
+$month  = date('n');
 $prefix = Params::PREFIX;
 
     $where = AC::where([
@@ -146,14 +146,14 @@ include 'includes/navbar.php';
                                                         }
                                                     } else {
                                                         if (in_array(strtolower($v), $tblDataDisplay) && $dataDisplay[strtolower($v)] === 'percentage' ) {
-                                                            echo $leadData->records($k, AC::where([['employees_id', $id], ['month', date('n')-1], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
+                                                            echo $leadData->records($k, AC::where([['employees_id', $id], ['month', date('n')], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
                                                             echo '%';
                                                         } else {
                                                             if (in_array(strtolower($v), Params::TBL_COMMON)) {
-                                                                echo $leadData->records($k, AC::where([['employees_id', $id], ['month', date('n') - 1], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
+                                                                echo $leadData->records($k, AC::where([['employees_id', $id], ['month', date('n')], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
                                                                 echo ' <small>' . Translate::t('Days', ['strtolower'=>true]) . '</small>';
                                                             } else {
-                                                                echo $leadData->records($k, AC::where([['employees_id', $id], ['month', date('n') - 1], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
+                                                                echo $leadData->records($k, AC::where([['employees_id', $id], ['month', date('n')], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
                                                             }
                                                         }
                                                     }

@@ -161,7 +161,7 @@ class Params
     const EVENTS_TITLE_COLORS = [
         'Furlough' => ['1' => '#864dd9', '2' => '#8a8d93', '3' => '#bb414d'],
             'Absentees' => ['1' => '#bb414d', '2' => '#bb414d', '3' => '#bb414d'],
-                'Unpaid' => ['1' => '#117a8b', '2' => '#8a8d93'],
+                'Unpaid' => ['1' => '#e58080', '2' => '#8a8d93'],
                     'Medical' => ['1' => '#cf53f9', '2' => '#8a8d93'],
     ];
 

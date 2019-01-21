@@ -36,7 +36,6 @@ if (!$lead->isLoggedIn()) {
     $lang   = $lead->language();
     $langId = $lead->language(false);
     Session::put('lang', $lang);
-    define("LANG", $lang);
 }
 
 //if (Cookie::exists(Config::get('remember/cookie_name')) && !Session::exists(Config::get('session/session_name'))) {
