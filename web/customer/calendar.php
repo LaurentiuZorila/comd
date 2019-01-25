@@ -67,27 +67,18 @@ $(document).ready(function () {
             $('#createEventModal').modal('show');
 
         },
-
-        eventClick: function (event) {
-            var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD");
-            var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD");
-            var deleteMsg = confirm("Do you really want to delete?");
-            if (deleteMsg) {
-                $.ajax({
-                    type: "GET",
-                    url: "./calendar-customer/delete-event-customer.php",
-                    data: '&id=' + event.id + '&userId=' + event.userId + '&table=' + event.table + '&status=' + event.status + '&month=' + event.month + '&year=' + event.year,
-                    success: function (response) {
-                        if(parseInt(response) > 0) {
-                            $('#myModal').modal('show');
-                            setTimeout(function () { window.location.reload(); }, 2000);
-                            displayMessage("success", "<?php echo Translate::t('event_deleted', ['ucfirst'=>true]); ?>");
-                        } else {
-                            displayMessage("danger", "<?php echo Translate::t('Db_error', ['ucfirst'=>true]); ?>");
-                        }
-                    }
-                });
-            }
+        eventClick:  function(event, jsEvent, view) {
+            $("#startTime").html(moment(event.start).format('DD-MM-Y'));
+            $("#endTime").html(moment(event.end).format('DD-MM-Y'));
+            $("#title").html(event.title + ' - ' + event.userName);
+            $("#totalDays").html(event.totalDays);
+            $('#eventId').val(event.id);
+            $('#userId').val(event.userId);
+            $('#table').val(event.table);
+            $('#status').val(event.status);
+            $('#month').val(event.month);
+            $('#year').val(event.year);
+            $('#deleteEventModal').modal('show');
         },
         editable: true,
         eventDrop: function (event, delta) {
@@ -256,10 +247,11 @@ include 'includes/navbar.php';
                 </div>
             </div>
         </section>
+<!--        ********** CREATE EVENT MODAL ************ -->
         <div id="createEventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade">
             <div role="document" class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3"><?php echo Translate::t('Make_attention'); ?></strong>
+                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3"><?php echo Translate::t('insert_event'); ?></strong>
                         <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
                     </div>
                     <div class="modal-body">
@@ -297,7 +289,37 @@ include 'includes/navbar.php';
                 </div>
             </div>
         </div>
-        <!-- Modal-->
+<!--        *********    CREATE EVENT MODAL END ********* -->
+
+        <!--        *********    DELETE EVENT MODAL START ********* -->
+        <div id="deleteEventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade">
+            <div role="document" class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3"><?php echo Translate::t('delete_event_modal'); ?></strong>
+                        <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+                    </div>
+                    <div class="modal-body text-white-50" id="modalBody">
+                        <h4 id="title"></h4>
+                        Start: <span id="startTime"></span><br>
+                        End: <span id="endTime"></span><br><br>
+                        Total days: <span id="totalDays"></span><br><br>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-sm btn-outline-secondary" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                        <button type="submit" class="btn-sm btn-primary deleteEvent" id="deleteEvent">Delete</button>
+                        <input type="hidden" id="eventId" value="" />
+                        <input type="hidden" id="userId" value="" />
+                        <input type="hidden" id="table" value="" />
+                        <input type="hidden" id="status" value="" />
+                        <input type="hidden" id="month" value="" />
+                        <input type="hidden" id="year" value="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--        *********    DELETE EVENT MODAL END ********* -->
+
+        <!-- *********    INFO Modal START  ********* -->
         <div id="info_calendar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade text-left show" style="display: none;">
             <div role="document" class="modal-dialog">
                 <div class="modal-content">
@@ -322,114 +344,8 @@ include '../common/includes/footer.php';
 <script src="./../common/vendor/bootstrap/js/bootstrap.min.js"></script>
 <script src="./../common/js/front.js"></script>
 <script src="./../common/vendor/pulsate/jquery.pulsate.js"></script>
-<script>
-    $(document).on('click', '.eventAction', function () {
-        var $this       = $(this);
-        var employeeId  = $this.data("employee");
-        var eventId     = $this.data("eventid");
-        var statusEvent = $this.data("accepted");
-        var titleEvent  = $this.data("title");
-        var month       = $this.data("month");
-        var year        = $this.data("year");
-
-        if (employeeId && eventId) {
-            $.ajax({
-                url: "./calendar-customer/update-event-customer.php",
-                dataType: 'Json',
-                data: {
-                    'eventId': eventId,
-                    'employeeId': employeeId,
-                    'statusEvent': statusEvent,
-                    'title': titleEvent,
-                    'month': month,
-                    'year': year
-                },
-                success: function (response) {
-                    if(parseInt(response) > 0) {
-                        $('#myModal').modal('show');
-                        setTimeout(function () {
-                            window.location.reload();
-                            }, 2000);
-                        displayMessage("success", "<?php echo Translate::t('event_updated', ['ucfirst'=>true]); ?>");
-                        } else {
-                            displayMessage("danger", "<?php echo Translate::t('Db_error', ['ucfirst'=>true]); ?>");
-                        }
-                    }
-            });
-        }
-    });
-
-    $(document).on('click', '#submitButton', function () {
-        var employeeId  = $('#employees').val();
-        var statusEvent = 1;
-        var titleEvent  = $('#request').val();
-        var startDate   = $('#startDate').val();
-        var endDate     = $('#endDate').val();
-
-
-        if (titleEvent === '' || startDate === '' || endDate === '' || employeeId === '') {
-            $('#createEventModal').modal('hide');
-            displayMessage("danger","<?php echo Translate::t('all_required', ['ucfirst'=>true]); ?>");
-        } else {
-            var sDate = new Date(startDate);
-            var eDate = new Date(endDate);
-
-            // Check if start date si lower as end date
-            if (sDate.getTime() <= eDate.getTime()) {
-                // Hide modal
-                $('#createEventModal').modal('hide');
-                $.ajax({
-                    url: "./calendar-customer/add-event-customer.php",
-                    dataType: 'Json',
-                    data: {
-                        'employeeId': employeeId,
-                        'statusEvent': statusEvent,
-                        'title': titleEvent,
-                        'start': startDate,
-                        'end': endDate,
-                        'userId': <?php echo $lead->customerId(); ?>,
-                    },
-                    success: function (response) {
-                        if(parseInt(response) === 1) {
-                            $('#myModal').modal('show');
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 2000);
-                            displayMessage("success", "<?php echo Translate::t('event_added', ['ucfirst'=>true]); ?>");
-                        } else if (parseInt(response) === 2) {
-                            displayMessage("info", "<?php echo Translate::t('one_month_event', ['ucfirst'=>true]); ?>");
-                        } else {
-                            displayMessage("danger", "<?php echo Translate::t('Db_error', ['ucfirst'=>true]); ?>");
-                        }
-                    }
-                });
-            } else {
-                $('#createEventModal').modal('hide');
-                displayMessage("danger", "<?php echo Translate::t('ascending_dates', ['ucfirst'=>true]); ?>");
-            }
-        }
-    });
-
-    $(function() {
-        $( "#startDate" ).datepicker({
-            startDate: '-15d',
-            autoclose: true,
-        });
-        $( "#endDate" ).datepicker({
-            startDate: '-15d',
-            autoclose: true,
-        });
-    });
-
-    $("#info_calendar_pulsate").pulsate({color:"#633b70;"});
-
-    $('#filter').on('submit', function () {
-       var $this = $(this);
-       $.post($this.attr('action'), $this.serialize(), function (html) {
-           $('#filter-response').html(html);
-       }, 'html');
-       return false;
-    }).trigger('submit');
-</script>
+<?php
+require 'includes/calendar/modals_events.php';
+?>
 </body>
 </html>

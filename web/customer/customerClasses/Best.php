@@ -107,7 +107,7 @@ class Best
 
 
     /**
-     * @return array
+     * @return array with conditions lower or great e.g '<' '>'
      */
     public function getCondTbl()
     {
@@ -126,9 +126,10 @@ class Best
     public function getFirstPriorityTbl($prefix = false)
     {
         if ($prefix) {
-            return Params::PREFIX . $this->priorityTbls()[1];
+            $table = array_shift(array_slice($this->priorityTbls(),0,1));
+            return Params::PREFIX . $table;
         }
-        return $this->priorityTbls()[1];
+        return array_shift(array_slice($this->priorityTbls(),0,1));
     }
 
 
@@ -139,9 +140,10 @@ class Best
     public function getSecondPriorityTbl($prefix = false)
     {
         if ($prefix) {
-            return Params::PREFIX . $this->priorityTbls()[2];
+            $table = array_shift(array_slice($this->priorityTbls(),1,2));
+            return Params::PREFIX . $table;
         }
-        return $this->priorityTbls()[2];
+        return array_shift(array_slice($this->priorityTbls(),1,2));
     }
 
 

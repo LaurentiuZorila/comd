@@ -38,7 +38,7 @@ if (Input::exists() && Tokens::tokenVerify(Tokens::getInputName())) {
 
         /** If validation is passed */
         if ($validation->passed()) {
-            $first_name = Common::dbValues([Input::post('first_name'), ['trim', 'ucfirst']]);
+            $first_name = Common::dbValues([Input::post('first_name') => ['trim', 'ucfirst']]);
             $last_name  = Common::dbValues([Input::post('last_name') => ['trim', 'ucfirst']]);
             $name       = $first_name . ' ' . $last_name;
             $username   = Common::dbValues([Input::post('username') => ['trim']]);

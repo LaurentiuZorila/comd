@@ -19,15 +19,16 @@ foreach ($results as $key => $result) {
             'days'      => $result->days,
             'userId'    => $result->user_id,
             'lead_id'   => $result->lead_id,
-            'title'     => $title,
+            'title'     => Translate::t(strtolower($title), ['ucfirst']),
             'table'     => $result->title,
             'start'     => $result->start,
             'end'       => $result->end,
             'color'     => Params::EVENTS_TITLE_COLORS[$result->title][$result->status],
             'status'    => $result->status,
-            'description' => 'description for Repeating Event',
+            'userName'  => $customerData->records(Params::TBL_EMPLOYEES,AC::where(['id', $result->user_id]),['name'], false)->name,
             'month'     => $result->month,
-            'year'      => $result->year
+            'year'      => $result->year,
+            'totalDays' => $result->days_number,
         ];
 }
 

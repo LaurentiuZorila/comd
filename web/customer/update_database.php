@@ -1,5 +1,6 @@
 <?php
 require_once 'core/init.php';
+
 //require_once '../vendor/league/csv/autoload.php';
 //use League\Csv\Reader;
 
@@ -9,7 +10,7 @@ $allTables = explode(',', $allTables->tables);
 array_map('trim', $allTables);
 
 
-if (Input::exists() && Tokens::tokenVerify()) {
+if (Input::existsName('post', Tokens::getInputName())) {
     $validate = new Validate();
     $validation = $validate->check($_POST, [
         'year'      => ['required' => true],
@@ -23,41 +24,55 @@ if (Input::exists() && Tokens::tokenVerify()) {
         $table  = Common::dbValues([Input::post('tables') => ['trim']]);
         $table  = Params::PREFIX . $table;
         $months = $leadData->records($table, AC::where([['offices_id', $lead->officesId()], ['year', $year]]), ['month']);
+        $title  = ucfirst(Input::post('tables'));
 
-        foreach ($months as $dbMonth) {
-            $allMonths[] = $dbMonth->month;
-            // Months from database
-            $allMonths = array_unique($allMonths);
+        if (count($months) > 0) {
+            foreach ($months as $dbMonth) {
+                $allMonths[] = $dbMonth->month;
+                // Months from database
+                $allMonths = array_unique($allMonths);
+            }
+        } else {
+            $allMonths = [];
         }
 
         // First delete present records if update button si checked and then Update form file
-        if (Input::existsName('post', 'confirmUpdate') && in_array($month, $allMonths)) {
-            $db = CustomerDB::getInstance();
-            $db->delete($table, AC::where([['offices_id', $lead->officesId()], ['year', $year]]));
+        if (in_array($month, $allMonths)) {
+            // Delete conditions
+            $whereCommon = AC::where([['offices_id', $lead->officesId()], ['month',$month], ['year', $year]]);
+            $whereEvent  = AC::where([['lead_id', $lead->officesId()], ['month',$month], ['year', $year]]);
+
+            $deleteCommonData       = CustomerDB::getInstance()->delete($table, $whereCommon);
+            $deleteEventData        = CustomerDB::getInstance()->delete(Params::TBL_EVENTS, $whereEvent);
+
+            if (!$deleteCommonData && !$deleteEventData) {
+                Errors::setErrorType('danger', Translate::t('Db_error'));
+            }
         }
 
-        /** Check if for selected month exists records */
-        if (!in_array($month, $allMonths)) {
-            $filename   = $_FILES['fileToUpload']['tmp_name'];
-            $path       = $_FILES['fileToUpload']['name'];
-            $size       = $_FILES['fileToUpload']['size'];
-            $extension  = pathinfo($path, PATHINFO_EXTENSION);
-            /** Allowed extensions for file */
-            $extensions = Params::EXTENSIONS;
-            // Check for valid extension
-            if (in_array($extension, $extensions) && $size > 0) {
-                // Open the file for reading
-                if (($h = fopen("{$filename}", "r")) !== FALSE) {
-                    // Read file
-                    $data[] = fgetcsv($h, 1000, ",");
+        $filename   = $_FILES['fileToUpload']['tmp_name'];
+        $path       = $_FILES['fileToUpload']['name'];
+        $size       = $_FILES['fileToUpload']['size'];
+        $extension  = pathinfo($path, PATHINFO_EXTENSION);
+        /** Allowed extensions for file */
+        $extensions = Params::EXTENSIONS;
+        // Check for valid extension
+        if (in_array($extension, $extensions) && $size > 0) {
+            // Open the file for reading
+            if (($h = fopen("{$filename}", "r")) !== FALSE) {
+                // Read file
+                $data = fgetcsv($h, 1000, ",");
+                if ($data[0] === 'Id' || $data[1] === 'Name' || $data[2] === 'Quantity'|| $data[3] === 'Days') {
+                    while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
+                        if (is_numeric($data[2]) && Dates::checkDays($data[3])) {
+                            $quantity = !empty($data[2]) ? $data[2] : 0;
+                            $startDate = Dates::startDate(Dates::makeDateForDb($data[3], $month), $year);
+                            $endDate   = Dates::endDate(Dates::makeDateForDb($data[3], $month), $year);
 
-                    if ($data[0] === 'Id' || $data[1] === 'Name' || $data[2] === 'Quantity') {
-                        // Escape first line of file
-                        fgetcsv($h);
-
-                        while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
-                            if (is_numeric($data[2])) {
-                                $quantity = !empty($data[2]) ? $data[2] : 0;
+                            // Start inserting into DB
+                            try {
+                                $leadDb->getPdo()->beginTransaction();
+                                // Insert data in common table
                                 $lead->insert($table, [
                                     'offices_id'            => $lead->officesId(),
                                     'departments_id'        => $lead->departmentId(),
@@ -67,29 +82,58 @@ if (Input::exists() && Tokens::tokenVerify()) {
                                     'employees_average_id'  => $data[0] . '_' . $year,
                                     'insert_type'           => Params::INSERT_TYPE['file'],
                                     'quantity'              => $quantity,
-                                    'days'                  => $data[3]
+                                    'days'                  => Dates::makeDateForDb($data[3], $month)
                                 ]);
-                            } else {
-                                Errors::setErrorType('danger', Translate::t('type_int', ['ucfirtst'=>true]));
+                                // Insert data in events table
+                                $lead->insert(Params::TBL_EVENTS, [
+                                        'user_id'   => $data[0],
+                                        'lead_id'   => $lead->customerId(),
+                                        'title'     => $title,
+                                        'Event_status'  => 'Accepted',
+                                        'start'     => $startDate,
+                                        'end'       => $endDate,
+                                        'days_number'   => $quantity,
+                                        'days'      => Dates::makeDateForDb($data[3], $month),
+                                        'month'     => $month,
+                                        'year'      => $year,
+                                        'status'    => 1,
+                                        'added'     => date('Y-m-d H:m:s'),
+                                        'updated'   => date('Y-m-d H:m:s')
+                                    ]);
+                                $lead->insert(Params::TBL_NOTIFICATION, [
+                                        'user_id'   => $data[0],
+                                        'lead_id'   => $lead->customerId(),
+                                        'status'    => 1,
+                                        'view'      => 1,
+                                        'employee_view'     => 0,
+                                        'response'          => 'navNotification',
+                                        'response_status'   => 1,
+                                        'date'              => date('Y-m-d H:m:s')
+                                ]);
+                                $leadDb->getPdo()->commit();
+                            } catch (PDOException $e) {
+                                $leadDb->getPdo()->rollBack();
+                                echo $e->getMessage();
+                                Errors::setErrorType('danger', $e->getMessage());
                             }
+                        } else {
+                            Errors::setErrorType('danger', Translate::t('type_int', ['ucfirtst'=>true]));
                         }
-                    } else {
-                        Errors::setErrorType('danger', Translate::t('correct_file', ['ucfirst'=>true]));
                     }
-
-                    if ($lead->success() && !Errors::countAllErrors()) {
-                        Errors::setErrorType('success', Translate::t('Db_success'));
-                    } else {
-                        Errors::setErrorType('danger', Translate::t('Db_error'));
-                    }
-                    // Close the file
-                    fclose($h);
+                } else {
+                    Errors::setErrorType('danger', Translate::t('not_correct_file', ['ucfirst'=>true]));
                 }
-            } else {
-                Errors::setErrorType('warning', Translate::t('Csv_extension'));
+
+                if ($lead->success() && !Errors::countAllErrors()) {
+                    Errors::setErrorType('success', Translate::t('Db_success'));
+                } else {
+                    Errors::setErrorType('danger', Translate::t('Db_error'));
+                }
+                // Close the file
+                fclose($h);
             }
         } else {
-            Errors::setErrorType('info', Translate::t('data_month_exists'));
+            Errors::setErrorType('warning', Translate::t('Csv_extension'));
         }
     }
 }
@@ -101,6 +145,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
     <?php
     include '../common/includes/head.php';
     ?>
+    <link rel="stylesheet" href="./../common/css/spiner/style.css">
 <script>
     function displayMessage(type, message, time) {
         $(".response").html('<section class="eventMessage"><div class="row"><div class="col-lg-12"><div class="alert alert-dismissible fade show badge-'+type+'"><p class="text-white mb-0">'+message+'</p></div></div></div></section>');
@@ -220,8 +265,53 @@ if (Input::exists() && Tokens::tokenVerify()) {
                           <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
                       </div>
                       <div class="modal-body">
-                          <p> <?php echo Translate::t('Csv_extension'); ?> </p>
-                          <p> <?php echo Translate::t('Download_file_from'); ?>: <a href="download.php"><?php echo Translate::t('File'); ?></a></p>
+                          <p> <?php echo Translate::t('Csv_extension', ['ucfirst']); ?> </p>
+                          <p> <?php echo Translate::t('Download_file_from', ['ucfirst']); ?>: <a href="download.php"><?php echo Translate::t('File'); ?></a></p>
+                          <hr />
+                          <p> <?php echo Translate::t('completed_csv_file', ['ucfirst']); ?></p>
+                          <p class="text-danger"><?php echo Translate::t('not_remove_id', ['ucfirst']); ?></p>
+                          <div class="table-responsive" style="border-color: white;">
+                              <table class="table" id="">
+                                  <thead>
+                                  <tr role="row">
+                                      <th class="text-white-50"><?php echo Translate::t('ID', ['ucfirst']);?></th>
+                                      <th class="text-white-50"><?php echo Translate::t('Name', ['ucfirst']);?></th>
+                                      <th class="text-white-50"><?php echo Translate::t('quantity', ['ucfirst']);?></th>
+                                      <th class="text-white-50"><?php echo Translate::t('days', ['ucfirst']);?></th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                      <tr>
+                                          <td class="">
+                                              <?php echo 1;?>
+                                          </td>
+                                          <td class="text-white-50">
+                                              <?php echo 'Stan Papusa';?>
+                                          </td>
+                                          <td class="text-white-50">
+                                              <?php echo '3';?>
+                                          </td>
+                                          <td class="text-white-50">
+                                              <?php echo '22,23,24';?>
+                                          </td>
+                                      </tr>
+                                      <tr>
+                                          <td class="">
+                                              <?php echo 2;?>
+                                          </td>
+                                          <td class="text-white-50">
+                                              <?php echo 'Meleaca Costel';?>
+                                          </td>
+                                          <td class="text-white-50">
+                                              <?php echo '5';?>
+                                          </td>
+                                          <td class="text-white-50">
+                                              <?php echo '1,2,3,4,5';?>
+                                          </td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                          </div>
                       </div>
                       <div class="modal-footer">
                           <button type="button" data-dismiss="modal" class="btn btn-secondary"><?php echo Translate::t('Close'); ?></button>
@@ -242,7 +332,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
   ?>
   <script src="./../common/vendor/pulsate/jquery.pulsate.js"></script>
   <script>
-      $('#myModal').click(function(){
+      $('#Submit').click(function(){
           $('#myModal').modal('show');
       });
       $("#info_upload").pulsate({color:"#633b70;"});

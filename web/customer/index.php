@@ -1,8 +1,7 @@
 <?php
 require_once 'core/init.php';
 $best   = new Best($lead->officesId());
-print_r($best->priorityTbls());
-exit;
+
 /** Count all employees */
 $countUsers = $leadData->count(Params::TBL_EMPLOYEES, ['offices_id', '=', $lead->officesId()]);
 

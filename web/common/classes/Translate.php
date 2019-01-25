@@ -133,7 +133,7 @@ class Translate
             'update_profile_nav'    => 'Din acceasta sectiune poti modifica datele tale personale',
             'not_found_leads'   => 'Nu sau gasit team leaderi',
             'only_numbers'      => 'trebuie sa contina doar numere',
-            'data_month_exists' => 'Pentru filterele alese in baza de date sau gasit date deja existente. <br /> Daca vrei sa faci update cu datele presente in file, bifeaza update si reincearca',
+            'data_month_exists' => 'Pentru filterele alese in baza de date sau gasit date deja existente. <br /> Datele prezente pentru luna selectata vor fi sterse si inlocuite cu cele din fisierul tau',
             'update_db_navbar'  => 'Din aceasta sectiune poti incarca datele operatorilor pentru ficare luna si pentru toate tablele',
             'new_pass'          => 'Noua parola',
             'current_pass'      => 'Parola actuala',
@@ -182,6 +182,10 @@ class Translate
             'mark_as_read'      => 'Marcheaza totul ca citit',
             'one_month_event'   => 'Introdu in calendar cate un event pentru fiecare luna in parte!',
             'event_added'       => 'Eventul a fost introdus cu succes',
+            'completed_csv_file'    => 'File-ul trebuie completat ca in exemplul afisat mai jos',
+            'not_remove_id'     => 'Id-ul din file nu trebuie modificat.',
+            'insert_event'      => 'Insereaza un event',
+            'delete_event_modal' => 'Sterge eventul'
         ];
     }
 
@@ -213,7 +217,7 @@ class Translate
             'Data'              => 'Data',
             'Bar'               => 'Bar',
             'Line'              => 'Line',
-            'Not_found_data'    => 'No data found. Please select other values and try again.',
+            'Not_found_data'    => 'No data found. Please select other values and try again',
             'Dashboard'         => 'Dashboard',
             'Select_table'      => 'Select table',
             'Offices'           => 'Offices',
@@ -222,7 +226,7 @@ class Translate
             'Total_user_unpaid' => 'Total unpaid',
             'Profile'           => 'Profile',
             'Total_employees'   => 'Total employees',
-            'Db_success'        => 'Your data base are successfully updated.',
+            'Db_success'        => 'Your data base has been successfully updated',
             'Db_error'          => 'Something is going wrong, please try again',
             'Csv_extension'     => 'Your file must have .CVS extension',
             'Update_user_profile' => 'Move users',
@@ -237,7 +241,7 @@ class Translate
             'Update_db'         => 'Update DB',
             'Make_attention'    => 'Attention',
             'Close'             => 'Close',
-            'File_no_header'    => 'For best results, complete an upload DB with down example file.',
+            'File_no_header'    => 'For best results, complete an upload DB with down example file',
             'Download_file_from'    => 'Download file from here',
             'File'              => 'File',
             'Update_employees_profile' => 'Update employees',
@@ -247,7 +251,7 @@ class Translate
             'Unpaid_h'          => 'Unpaird hours',
             'Days'              => 'Days',
             'Day'               => 'Day',
-            'Profile_success_updated' => 'Your profile is successfully updated',
+            'Profile_success_updated' => 'Your profile has been successfully updated',
             'Edit_profile'      => 'Edit profile',
             'FN'                => 'First name',
             'LN'                => 'Last name',
@@ -310,7 +314,7 @@ class Translate
             'update_profile_nav'    => 'Form here you can update your profile account',
             'not_found_leads'   => 'Not found leads',
             'only_numbers'      => 'must contain only numbers',
-            'data_month_exists' => 'For this filters in DB results data, please check again your data. <br /> If you want to update DB with data from your file, please check update checkbox',
+            'data_month_exists' => 'For this filters in DB results data, please check again your data. <br /> Existing data from database for your filter will be deleted and replaced with data from your new file',
             'update_db_navbar'  => 'From this section you can update data base for your employees for each month and each table',
             'new_pass'          => 'New Password',
             'current_pass'      => 'Current password',
@@ -360,6 +364,11 @@ class Translate
             'mark_as_read'      => 'Mark all as read',
             'one_month_event'   => 'Insert event in calendar for each month separately!',
             'event_added'       => 'Event has been successfully added',
+            'ID'                => 'id',
+            'completed_csv_file'    => 'File must be completed like example displayed below.',
+            'not_remove_id'     => 'Don\'t modify id from downloaded file.',
+            'insert_event'      => 'Insert event',
+            'delete_event_modal' => 'Delete event'
         ];
     }
 
@@ -486,7 +495,7 @@ class Translate
             'update_profile_nav'    => 'Se voi cambiari gli tue dati clicca icona presente in basso',
             'not_found_leads'   => 'Non sono trovati team leader',
             'only_numbers'      => 'deve contenere solo i numeri',
-            'data_month_exists' => 'Per questo filtro in DB risultano già dati presenti, fai una verifica e prova un\'altra volta. <br /> Se voi fare update con i dati presenti nel file, clicca sul checkbox aggiorna',
+            'data_month_exists' => 'Per questo filtro in DB risultano già dati presenti, fai una verifica e prova un\'altra volta. <br /> Dati presenti in db per il messe selezionato verrano cancellate e sostituie con i dati dal file',
             'update_db_navbar'  => 'Da questa sezione poi aggiornare la DB per tutti operatori per tutte mese e per tutte tabelle',
             'new_pass'          => 'Nuova parola',
             'current_pass'      => 'Parola attuale',
@@ -536,6 +545,10 @@ class Translate
             'mark_as_read'      => 'Segna tutto come letto',
             'one_month_event'   => 'Inserisci richesta in calendario per ogni mese separatamente!',
             'event_added'       => 'Richiesta è stata inserita con successo',
+            'completed_csv_file'    => 'File deve essere compilato come il essempio presente in basso',
+            'not_remove_id'     => 'L\'id presente in file non deve essere modificato',
+            'insert_event'      => 'Inserisci evento',
+            'delete_event_modal' => 'Cancella l\'evento',
         ];
     }
 
@@ -588,52 +601,34 @@ class Translate
         // Check params
         foreach ($params as $k) {
             if (is_array($string)) {
-//                switch ($k) {
-//                    case 'ucfirst':
-//                        return !empty(self::getLang($lang)[$string[0]]) ? ucfirst(self::getLang($lang)[$string[0]]) . ' ' . self::getLang($lang)[$string[1]] : $string[0] . ' ' . $string[1];
-//                        break;
-//                    case 'strtoupper':
-//                        return !empty(self::getLang($lang)[$string[0]]) ? strtoupper(self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]]) : $string[0] . ' ' . $string[1];
-//                        break;
-//                    case 'strtolower':
-//                        return !empty(self::getLang($lang)[$string[0]]) ? strtolower(self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]]) : $string[0] . ' ' . $string[1];
-//                        break;
-//                    default:
-//                        return !empty(self::getLang($lang)[$string[0]]) ? self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]] : $string[0] . ' ' . $string[1];
-//                        break;
-//                }
-                if ($k === 'ucfirst' && !empty(self::getLang($lang)[$string[0]])) {
-                    return !empty(self::getLang($lang)[$string[0]]) ? ucfirst(self::getLang($lang)[$string[0]]) . ' ' . self::getLang($lang)[$string[1]] : $string[0] . ' ' . $string[1];
-                } elseif ($k === 'strtoupper' && !empty(self::getLang($lang)[$string[0]])) {
-                    return !empty(self::getLang($lang)[$string[0]]) ? strtoupper(self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]]) : $string[0] . ' ' . $string[1];
-                } elseif ($k === 'strtolower' && !empty(self::getLang($lang)[$string[0]])) {
-                    return !empty(self::getLang($lang)[$string[0]]) ? strtolower(self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]]) : $string[0] . ' ' . $string[1];
-                } else {
-                    return !empty(self::getLang($lang)[$string[0]]) ? self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]] : $string[0] . ' ' . $string[1];
+                switch ($k) {
+                    case 'ucfirst':
+                        return !empty(self::getLang($lang)[$string[0]]) ? ucfirst(self::getLang($lang)[$string[0]]) . ' ' . self::getLang($lang)[$string[1]] : $string[0] . ' ' . $string[1];
+                        break;
+                    case 'strtoupper':
+                        return !empty(self::getLang($lang)[$string[0]]) ? strtoupper(self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]]) : $string[0] . ' ' . $string[1];
+                        break;
+                    case 'strtolower':
+                        return !empty(self::getLang($lang)[$string[0]]) ? strtolower(self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]]) : $string[0] . ' ' . $string[1];
+                        break;
+                    default:
+                        return !empty(self::getLang($lang)[$string[0]]) ? self::getLang($lang)[$string[0]] . ' ' . self::getLang($lang)[$string[1]] : $string[0] . ' ' . $string[1];
+                        break;
                 }
             } elseif (!is_array($string)) {
-//                switch ($k) {
-//                    case 'ucfirst':
-//                        return !empty(self::getLang($lang)[$string]) ? ucfirst(self::getLang($lang)[$string]) : $string;
-//                        break;
-//                    case 'strtoupper':
-//                        return !empty(self::getLang($lang)[$string]) ? strtoupper(self::getLang($lang)[$string]) : $string;
-//                        break;
-//                    case 'strtolower':
-//                        return !empty(self::getLang($lang)[$string]) ? strtolower(self::getLang($lang)[$string]) : $string;
-//                        break;
-//                    default:
-//                        return !empty(self::getLang($lang)[$string]) ? self::getLang($lang)[$string] : $string;
-//                        break;
-//                }
-                if ($k === 'ucfirst' && !empty(self::getLang($lang)[$string])) {
-                    return !empty(self::getLang($lang)[$string]) ? ucfirst(self::getLang($lang)[$string]) : $string;
-                } elseif ($k === 'strtoupper' && !empty(self::getLang($lang)[$string])) {
-                    return !empty(self::getLang($lang)[$string]) ? strtoupper(self::getLang($lang)[$string]) : $string;
-                } elseif ($k === 'strtolower' && !empty(self::getLang($lang)[$string])) {
-                    return !empty(self::getLang($lang)[$string]) ? strtolower(self::getLang($lang)[$string]) : $string;
-                } else {
-                    return !empty(self::getLang($lang)[$string]) ? self::getLang($lang)[$string] : $string;
+                switch ($k) {
+                    case 'ucfirst':
+                        return !empty(self::getLang($lang)[$string]) ? ucfirst(self::getLang($lang)[$string]) : $string;
+                        break;
+                    case 'strtoupper':
+                        return !empty(self::getLang($lang)[$string]) ? strtoupper(self::getLang($lang)[$string]) : $string;
+                        break;
+                    case 'strtolower':
+                        return !empty(self::getLang($lang)[$string]) ? strtolower(self::getLang($lang)[$string]) : $string;
+                        break;
+                    default:
+                        return !empty(self::getLang($lang)[$string]) ? self::getLang($lang)[$string] : $string;
+                        break;
                 }
             }
         }
