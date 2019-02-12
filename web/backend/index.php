@@ -41,10 +41,10 @@ if (Input::exists() && Tokens::tokenVerify()) {
         $table          = Params::PREFIX.$table;
 
         /** Conditions for action */
-        $where = AC::where([['year', $year], ['offices_id', '=', $officeId], ['month', '=', $month]]);
+        $where = AC::where([['year', $year], ['offices_id', $officeId], ['month', $month]]);
 
         /** Array with all results for one FTE */
-        $chartData      = $backendUserProfile->records($table, $where, ['quantity', 'employees_id']);
+        $chartData      = $backendUserProfile->records($table, $where, ['employees_id', 'quantity']);
 
         /** Total furlough , absentees, unpaid for selected user */
         $countFurlough  = $backendUserProfile->sum(Params::TBL_FURLOUGH, $where, 'quantity');
@@ -80,6 +80,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
     <?php
     include '../common/includes/head.php';
     ?>
+    <script src="./../common/vendor/chart.js/Chart.min.js"></script>
 </head>
 <body>
 <?php
@@ -296,8 +297,8 @@ include 'includes/navbar.php';
                                     <li class="nav-item"><button class="btn-sm btn-outline-primary line" id="line" type="button"><?php echo Translate::t('Line'); ?></button></li>
                                 </ul>
                                 <div class="drills-chart block">
-                                    <canvas id="backendIndexBarChart" style="display: block; width: 494px; height: 250px;" width="494" height="250" class="chartjs-render-monitor"></canvas>
-                                    <canvas id="backendIndexLineChart" style="display: none; width: 494px; height: 247px;" width="494" height="247" class="chartjs-render-monitor"></canvas>
+                                    <canvas id="backendIndexBarChart" style="display: block; width: 494px; height: 250px;" width="494" height="250"></canvas>
+                                    <canvas id="backendIndexLineChart" style="display: none; width: 494px; height: 247px;" width="494" height="247"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -318,10 +319,7 @@ include 'includes/navbar.php';
         <!--        ********************       CHARTS   END      ********************   -->
     </div>
 </div>
-<!-- JavaScript files-->
 <?php
-include "./../common/includes/scripts.php";
-
 if (Input::exists() && !Errors::countAllErrors()) {
     include 'charts/index_charts.php';
 }

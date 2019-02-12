@@ -6,13 +6,13 @@ $results = $frontRecords->records(Params::TBL_EVENTS, AC::where(['user_id', $use
 foreach ($results as $key => $result) {
     switch ($result->status) {
         case 1:
-            $title = Translate::t($result->title, ['ucfirst'=>true]);
+            $title = Translate::t(strtolower($result->title), ['ucfirst'=>true]);
             break;
         case 2:
-            $title = Translate::t($result->title, ['ucfirst'=>true]) . ' - ' . Translate::t($result->event_status, ['ucfirst'=>true]);
+            $title = Translate::t(strtolower($result->title), ['ucfirst'=>true]) . ' - ' . Translate::t($result->event_status, ['ucfirst'=>true]);
             break;
         default:
-            $title = Translate::t($result->title, ['ucfirst'=>true]);
+            $title = Translate::t(strtolower($result->title), ['ucfirst'=>true]);
     }
     $event[] = [
         'id'        => $result->id,

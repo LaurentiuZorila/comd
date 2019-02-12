@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Configuration
+ * Class Config
  */
 class Config
 {
-    public static function get($path = null)
+    public static function get($path = null, $tokken = false)
     {
         if (!$path) {
             return null;
@@ -19,7 +19,7 @@ class Config
                 $config = $config[$bit];
             }
         }
-        return $config;
+        return $tokken ? $config . '?r=' . Tokens::getRoute() : $config;
     }
 
     public static function all()

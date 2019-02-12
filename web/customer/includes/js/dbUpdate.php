@@ -14,7 +14,7 @@
                 success: function(data) {
                     $.each(data, function(key, value) {
                         if (value === "Success") {
-                            displayMessage("success", "<?php echo Translate::t('event_updated', ['ucfirst'=>true]); ?>");
+                            displayMessage("success", "<?php echo Translate::t('event_updated', ['ucfirst'=>true]); ?>", 1000);
                             setTimeout(function(){
                                 location.reload();
                             }, 1000);

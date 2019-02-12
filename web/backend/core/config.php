@@ -22,5 +22,22 @@ return [
         'lang_id'               => 'langId',
         'session_fname'         => 'first_name',
         'session_lname'         => 'last_name',
+    ],
+    'route' => [
+        'addUser'   => 'addusers.php',
+        'calendar'  => 'calendar.php',
+        'home'      => 'index.php',
+        'lang'      => 'language.php',
+        'login'     => 'login.php',
+        'logout'    => 'logout.php',
+        'messages'  => 'messages.php',
+        'allStaff'  => 'allstaff.php',
+        'employees' => 'employees.php',
+        'emplData'  => 'employeesdata.php',
+        'export'    => 'export.php',
+        'register'  => 'register.php',
+        'staffProfile'  => 'staffprofile.php',
+        'updateProfile' => 'updateprofile.php',
+        'updateStaffProfile'    => 'updatestaffprofile.php',
     ]
 ];

@@ -6,20 +6,20 @@ $results = $customerData->records(Params::TBL_EVENTS, AC::where(['lead_id', $lea
 foreach ($results as $key => $result) {
     switch ($result->status) {
         case 1:
-            $title = Translate::t($result->title, ['ucfirst']);
+            $title = Translate::t(strtolower($result->title), ['ucfirst']);
             break;
         case 2:
-            $title = Translate::t($result->title, ['ucfirst']) . ' - ' . Translate::t($result->event_status, ['ucfirst']);
+            $title = Translate::t(strtolower($result->title), ['ucfirst']) . ' - ' . Translate::t($result->event_status, ['ucfirst']);
             break;
         default:
-            $title = Translate::t($result->title, ['ucfirst']);
+            $title = Translate::t(strtolower($result->title), ['ucfirst']);
     }
         $event[] = [
             'id'        => $result->id,
             'days'      => $result->days,
             'userId'    => $result->user_id,
             'lead_id'   => $result->lead_id,
-            'title'     => Translate::t(strtolower($title), ['ucfirst']),
+            'title'     => $title . ' - ' . $customerData->records(Params::TBL_EMPLOYEES,AC::where(['id', $result->user_id]),['name'], false)->name,
             'table'     => $result->title,
             'start'     => $result->start,
             'end'       => $result->end,

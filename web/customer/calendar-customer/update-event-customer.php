@@ -74,6 +74,7 @@ if ($eventStatus == 3) {
 
         /** Table where need to make changes */
         $table = Params::PREFIX . strtolower($table);
+        // Action condition
         $where = AC::where([
             ['employees_id', $employeeId],
             ['year', $year],
@@ -84,6 +85,7 @@ if ($eventStatus == 3) {
         $countRecords = $customerDb->get($table, $where)->count();
 
         if ($countRecords > 0) {
+            // Action condition
             $where1 = AC::where([
                 ['user_id', $employeeId],
                 ['title', $title],

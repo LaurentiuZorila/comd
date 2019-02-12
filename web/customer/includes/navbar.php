@@ -37,7 +37,7 @@ if (Input::existsName('get', 'notificationId')) {
         <!--        </div>-->
         <div class="container-fluid d-flex align-items-center justify-content-between">
             <div class="navbar-header">
-                <!-- Navbar Header--><a href="index.php" class="navbar-brand">
+                <!-- Navbar Header--><a href="<?php echo Config::get('route/home'); ?>" class="navbar-brand">
                     <div class="brand-text brand-big visible text-uppercase"><strong class="text-primary">Cmd</strong><strong>Dashbord</strong></div>
                     <div class="brand-text brand-sm"><strong class="text-primary">D</strong><strong>A</strong></div></a>
                 <!-- Sidebar Toggle Btn-->
@@ -53,7 +53,7 @@ if (Input::existsName('get', 'notificationId')) {
                              <?php } ?>
                         <?php if ($notificationCount > 0) {
                             foreach ($notificationData as $notification) { ?>
-                                <a href="calendar.php?status=2&notificationId=<?php echo $notification->id; ?>" class="dropdown-item message d-flex align-items-center">
+                                <a href="<?php echo Config::get('route/calendar'); ?>?status=2&notificationId=<?php echo $notification->id; ?>" class="dropdown-item message d-flex align-items-center">
                                     <div class="profile"><img src="./../common/img/user.png" alt="..." class="img-fluid">
                                         <div class="status online"></div>
                                     </div>
@@ -66,7 +66,7 @@ if (Input::existsName('get', 'notificationId')) {
                             <a href="?notificationId=<?php echo 0; ?>" class="dropdown-item text-center message"> <strong><?php echo Translate::t('mark_as_read', ['ucfirst']);?> <i class="fa fa-flag-checkered dashtext-1"></i></strong></a>
                             <?php
                         } else { ?>
-                            <a href="calendar.php" class="dropdown-item text-center message"><strong><?php echo Translate::t('notification_not_found', ['ucfirst']); ?></strong></a>
+                            <a href="<?php echo Config::get('route/calendar'); ?>" class="dropdown-item text-center message"><strong><?php echo Translate::t('notification_not_found', ['ucfirst']); ?></strong></a>
                         <?php } ?>
                     </div>
                 </div>
@@ -109,12 +109,12 @@ if (Input::existsName('get', 'notificationId')) {
                             </div>
                         </div>
                         <div class="row megamenu-buttons text-center">
-                            <div class="col-lg-2 col-md-4"><a href="tables.php" class="d-block btn-dark"><i class="icon-user" style="font-size: 20px;"></i></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="user_data.php" class="d-block btn-dark"><i class="icon-chart" style="font-size: 20px;"></i></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="update_database.php" class="d-block btn-dark"><i class="icon-three-cells" style="font-size: 20px;"></i></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="update_users_profile.php" class="d-block btn-dark"><i class="icon-flow-branch" style="font-size: 20px;"></i></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="update_profile.php" class="d-block btn-dark"><i class="icon-settings" style="font-size: 20px;"></i></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="calendar.php" class="d-block btn-dark"><i class="icon-contract" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="<?php echo Config::get('route/allUsers'); ?>" class="d-block megamenu-button-link dashbg-1"><i class="icon-user-1" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="<?php echo Config::get('route/uData'); ?>" class="d-block megamenu-button-link dashbg-4"><i class="icon-chart" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="<?php echo Config::get('route/updateDb'); ?>" class="d-block megamenu-button-link dashbg-2"><i class="icon-three-cells" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="<?php echo Config::get('route/updateUProf'); ?>" class="d-block megamenu-button-link dashbg-3"><i class="icon-flow-branch" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="<?php echo Config::get('route/updateMyProfile'); ?>" class="d-block megamenu-button-link dashbg-1"><i class="icon-settings" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="<?php echo Config::get('route/calendar'); ?>" class="d-block megamenu-button-link dashbg-4"><i class="icon-contract" style="font-size: 20px;"></i></a></div>
                         </div>
                     </div>
                 </div>
@@ -149,7 +149,7 @@ if (Input::existsName('get', 'notificationId')) {
                 </div>
                 <!-- Log out               -->
                 <div class="list-inline-item logout">
-                    <a id="logout" href="logout.php" class="nav-link"><?php echo Translate::t('logout'); ?> <i class="icon-logout"></i></a>
+                    <a id="logout" href="<?php echo Config::get('route/logout'); ?>" class="nav-link"><?php echo Translate::t('logout'); ?> <i class="icon-logout"></i></a>
                 </div>
             </div>
         </div>

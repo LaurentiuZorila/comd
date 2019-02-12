@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="all,follow">
     <!-- Bootstrap CSS-->
-    <link rel="stylesheet" href="./../common/vendor/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="./../common/vendor/bootstrap-4.1.3-dist/css/bootstrap.css">
     <!-- Font Awesome CSS-->
 <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">-->
     <link rel="stylesheet" href="./../common/vendor/font-awesome/css/font-awesome.min.css">
@@ -20,12 +20,14 @@
     <link rel="stylesheet" href="./../common/vendor/fullcalendar/fullcalendar.min.css">
     <!-- Favicon-->
     <link rel="shortcut icon" href="./../common/img/favicon.ico">
-    <script src="./../common/vendor/popper.js/umd/popper.js"></script>
-    <script src="./../common/vendor/jquery/jquery.js"></script>
 
-    <!-- Tweaks for older IEs--><!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+    <script src="./../common/vendor/jquery/jquery.min.js"></script>
+    <script src="./../common/vendor/popper.js/umd/popper.min.js"></script>
+    <script src="./../common/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="./../common/vendor/jquery.cookie/jquery.cookie.js"></script>
+    <script src="./../common/vendor/jquery-validation/jquery.validate.min.js"></script>
+    <script src="./../common/js/front.js"></script>
+
 
 
 

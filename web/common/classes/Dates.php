@@ -11,8 +11,6 @@ trait Dates
     public static function startDate($days, $year) {
         $days = explode(',', $days);
         if (count($days) > 1) {
-    //            $start_date = array_splice($days,0,1);
-    //            $start_date = $start_date[0] . '/' . $year;
             $start_date = current($days) . '/' . $year;
             $start_date = str_replace('/','-',$start_date);
             $startDate  = new DateTime($start_date);
@@ -33,7 +31,8 @@ trait Dates
      * @return string
      * @throws Exception
      */
-    public static function endDate($days, $year) {
+    public static function endDate($days, $year)
+    {
         $days = explode(',', $days);
         if (count($days) > 1) {
             $end_date       = end($days) . '/' . $year;
@@ -57,7 +56,8 @@ trait Dates
      * @param $month
      * @return string
      */
-    public static function makeDateForDb($string, $month) {
+    public static function makeDateForDb($string, $month)
+    {
         $month = $month < 10 && strlen($month) === 1 ? 0 . $month : $month;
         if (count(explode(',', $string)) > 1) {
             $items = explode(',', $string);
@@ -74,10 +74,21 @@ trait Dates
 
 
     /**
+     * @param $days
+     * @return int
+     */
+    public static function countDays($days)
+    {
+        return count(explode(',', $days));
+    }
+
+
+    /**
      * @param $string
      * @return bool
      */
-    public static function checkDays($string) {
+    public static function checkDays($string)
+    {
         if (strpos($string, ',') > 0) {
             $strings = explode(',', $string);
             foreach ($strings as $item) {

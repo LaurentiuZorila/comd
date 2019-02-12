@@ -164,6 +164,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
 include '../common/includes/head.php';
 ?>
 <link rel="stylesheet" href="./../common/css/spiner/style.css">
+    <script src="./../common/vendor/chart.js/Chart.min.js"></script>
 </head>
 <body>
 <?php
@@ -502,10 +503,7 @@ include 'includes/navbar.php';
         ?>
     </div>
 </div>
-<!-- JavaScript files-->
 <?php
-include "./../common/includes/scripts.php";
-
 if (Input::exists() && is_numeric(Input::post('month')) && !Errors::countAllErrors()) {
     include 'charts/commonDataSingle.php';
 }

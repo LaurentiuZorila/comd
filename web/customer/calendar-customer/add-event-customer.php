@@ -63,6 +63,7 @@ try {
         'user_id'         => $employeeId,
         'lead_id'         => $userId,
         'status'          => 1,
+        'common'          => 1,
         'response'        => 'new_event_added',
         'response_status' => 1,
         'date'            => date('Y-m-d H:i:s')

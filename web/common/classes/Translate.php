@@ -82,7 +82,7 @@ class Translate
             'Total'             => 'Total',
             'furlough'          => 'Concediu',
             'unpaid'            => 'Zile neplatite',
-            'absentees'         => 'Absente',
+            'absentees'         => 'Absent',
             'employees_data'    => 'Datele operatorilor',
             'update_data'       => 'Actualizeaza DB',
             'my_profile'        => 'Profilul meu',
@@ -133,7 +133,7 @@ class Translate
             'update_profile_nav'    => 'Din acceasta sectiune poti modifica datele tale personale',
             'not_found_leads'   => 'Nu sau gasit team leaderi',
             'only_numbers'      => 'trebuie sa contina doar numere',
-            'data_month_exists' => 'Pentru filterele alese in baza de date sau gasit date deja existente. <br /> Datele prezente pentru luna selectata vor fi sterse si inlocuite cu cele din fisierul tau',
+            'data_month_exists' => 'Pentru filterele alese in baza de date sau gasit date deja existente. <br /> Datele prezente vor fi sterse si inlocuite cu cele din fisierul tau',
             'update_db_navbar'  => 'Din aceasta sectiune poti incarca datele operatorilor pentru ficare luna si pentru toate tablele',
             'new_pass'          => 'Noua parola',
             'current_pass'      => 'Parola actuala',
@@ -185,7 +185,11 @@ class Translate
             'completed_csv_file'    => 'File-ul trebuie completat ca in exemplul afisat mai jos',
             'not_remove_id'     => 'Id-ul din file nu trebuie modificat.',
             'insert_event'      => 'Insereaza un event',
-            'delete_event_modal' => 'Sterge eventul'
+            'delete_event_modal' => 'Sterge eventul',
+            'file_incomplete'   => 'File-ul este incomplet',
+            'empty_cells'       => 'File-ul nu trebuie sa contina celule goale sau celule cu valoarea 0',
+            'columns_not_equal' => 'Zilele presente in file nu sunt egale cu cantitatea',
+            'file_required'     => 'File-ul csv este obligatoriu'
         ];
     }
 
@@ -314,7 +318,7 @@ class Translate
             'update_profile_nav'    => 'Form here you can update your profile account',
             'not_found_leads'   => 'Not found leads',
             'only_numbers'      => 'must contain only numbers',
-            'data_month_exists' => 'For this filters in DB results data, please check again your data. <br /> Existing data from database for your filter will be deleted and replaced with data from your new file',
+            'data_month_exists' => 'For this filters in DB results data, please check again your data. <br /> Existing data from database will be deleted and replaced with data from new file',
             'update_db_navbar'  => 'From this section you can update data base for your employees for each month and each table',
             'new_pass'          => 'New Password',
             'current_pass'      => 'Current password',
@@ -368,7 +372,11 @@ class Translate
             'completed_csv_file'    => 'File must be completed like example displayed below.',
             'not_remove_id'     => 'Don\'t modify id from downloaded file.',
             'insert_event'      => 'Insert event',
-            'delete_event_modal' => 'Delete event'
+            'delete_event_modal' => 'Delete event',
+            'file_incomplete'   => 'File is incomplete',
+            'empty_cells'       => 'File must not contain empty cells or cells with 0 values',
+            'columns_not_equal' => 'Days inserted in file are not equal with number quantity',
+            'file_required'     => 'Csv file is required'
         ];
     }
 
@@ -445,7 +453,7 @@ class Translate
             'Total'             => 'Totale',
             'furlough'          => 'Ferie',
             'unpaid'            => 'Permeso',
-            'absentees'         => 'Assenze',
+            'absentees'         => 'Assente',
             'employees_data'    => 'Dati operatori',
             'update_data'       => 'Aggiorna DB',
             'my_profile'        => 'Mio profilo',
@@ -495,7 +503,7 @@ class Translate
             'update_profile_nav'    => 'Se voi cambiari gli tue dati clicca icona presente in basso',
             'not_found_leads'   => 'Non sono trovati team leader',
             'only_numbers'      => 'deve contenere solo i numeri',
-            'data_month_exists' => 'Per questo filtro in DB risultano già dati presenti, fai una verifica e prova un\'altra volta. <br /> Dati presenti in db per il messe selezionato verrano cancellate e sostituie con i dati dal file',
+            'data_month_exists' => 'Per questo filtro in DB risultano già dati presenti, fai una verifica e prova un\'altra volta. <br /> Dati presenti in db verrano cancellate e sostituie con i dati dal file',
             'update_db_navbar'  => 'Da questa sezione poi aggiornare la DB per tutti operatori per tutte mese e per tutte tabelle',
             'new_pass'          => 'Nuova parola',
             'current_pass'      => 'Parola attuale',
@@ -549,6 +557,10 @@ class Translate
             'not_remove_id'     => 'L\'id presente in file non deve essere modificato',
             'insert_event'      => 'Inserisci evento',
             'delete_event_modal' => 'Cancella l\'evento',
+            'file_incomplete'   => 'File risulta incompleto',
+            'empty_cells'       => 'File non deve contenere celule vuote o celle con valore 0',
+            'columns_not_equal' => 'Giorni presenti non risultano i stesi con valore della quantità',
+            'file_required'     => 'Csv file è obligatorio'
         ];
     }
 

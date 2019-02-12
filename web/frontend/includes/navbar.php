@@ -1,6 +1,6 @@
 <?php
 $notificationCount = $frontDb->get(Params::TBL_NOTIFICATION, AC::where([['user_id', $frontUser->userId()], ['response_status', true], ['employee_view', false]]))->count();
-$notificationData = $frontProfile->records(Params::TBL_NOTIFICATION, AC::where([['user_id', $frontUser->userId()], ['response_status', true], ['employee_view', false]]), ['response', 'status', 'event_id', 'id'], true);
+$notificationData = $frontProfile->records(Params::TBL_NOTIFICATION, AC::where([['user_id', $frontUser->userId()], ['response_status', true], ['employee_view', false]]), ['response', 'status', 'event_id', 'id', 'common'], true);
 if (Input::existsName('get', 'notificationId')) {
     $id = Input::get('notificationId');
     if ($id == 0) {
@@ -51,20 +51,24 @@ if (Input::existsName('get', 'notificationId')) {
                         <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages">
                             <?php } ?>
                         <?php if ($notificationCount > 0) {
-                        foreach ($notificationData as $notification) { ?>
-                            <a href="calendar.php?status=2&notificationId=<?php echo $notification->id; ?>" class="dropdown-item message d-flex align-items-center">
+                        foreach ($notificationData as $notification) {
+                            $url = $notification->common === 1 ? Config::get('route/calendar').'?status=2&notificationId='. $notification->id : Config::get('route/home') .'?officeId='. $frontUser->officeId() . '&userId=' . $frontUser->userId() . '&lastData=' . Tokens::getRoute();
+                            ?>
+                            <a href="<?php echo $url; ?>" class="dropdown-item message d-flex align-items-center">
                                 <div class="profile"><img src="./../common/img/user.png" alt="..." class="img-fluid">
                                     <div class="status online"></div>
                                 </div>
                                 <div class="content">
                                     <span class="d-block"><?php echo Translate::t($notification->response, ['ucfirst']);?></span>
-                                    <small class="date d-block"><?php echo Translate::t($frontProfile->records(Params::TBL_EVENTS, AC::where(['id', $notification->event_id]),['title'], false)->title, ['ucfirst']) . ' - ' . $frontProfile->records(Params::TBL_EVENTS, AC::where(['id', $notification->event_id]),['days'], false)->days; ?></small>
+                                    <?php if ($notification->event_id > 0) { ?>
+                                        <small class="date d-block"><?php echo Translate::t($frontProfile->records(Params::TBL_EVENTS, AC::where(['id', $notification->event_id]),['title'], false)->title, ['ucfirst']) . ' - ' . $frontProfile->records(Params::TBL_EVENTS, AC::where(['id', $notification->event_id]),['days'], false)->days; ?></small>
+                                    <?php } ?>
                                 </div>
                             </a>
                         <?php } ?>
                             <a href="?notificationId=<?php echo 0; ?>" class="dropdown-item text-center message"> <strong><?php echo Translate::t('mark_as_read', ['ucfirst']);?> <i class="fa fa-flag-checkered"></i></strong></a>
                         <?php } else { ?>
-                            <a href="calendar.php" class="dropdown-item text-center message"><strong><?php echo Translate::t('notification_not_found', ['ucfirst']); ?></strong></a>
+                            <a href="<?php echo Config::get('route/calendar'); ?>" class="dropdown-item text-center message"><strong><?php echo Translate::t('notification_not_found', ['ucfirst']); ?></strong></a>
                         <?php } ?>
                     </div>
                 </div>
@@ -97,10 +101,10 @@ if (Input::existsName('get', 'notificationId')) {
                             </div>
                         </div>
                         <div class="row megamenu-buttons text-center">
-                            <div class="col-lg-3 col-md-4"><a href="index.php?officeId=<?php echo $frontUser->officeId(); ?>&userId=<?php echo $frontUser->userId(); ?>&lastData=<?php echo Tokens::getRoute(); ?>" class="d-block megamenu-button-link dashbg-1"><i class="fa fa-bar-chart-o"></i><strong><?php echo Translate::t('view_data')?></strong></a></div>
-                            <div class="col-lg-3 col-md-4"><a href="feedback.php" class="d-block megamenu-button-link dashbg-4"><i class="fa fa-star-half-full"></i><strong><?php echo Translate::t('feedback'); ?></strong></a></div>
-                            <div class="col-lg-3 col-md-4"><a href="update_profile.php" class="d-block megamenu-button-link dashbg-2"><i class="icon-user"></i><strong><?php echo Translate::t('my_profile'); ?></strong></a></div>
-                            <div class="col-lg-3 col-md-4"><a href="calendar.php" class="d-block megamenu-button-link dashbg-3"><i class="fa fa-calendar"></i><strong><?php echo Translate::t('calendar', ['ucfirst']); ?></strong></a></div>
+                            <div class="col-lg-3 col-md-4"><a href="<?php echo Config::get('route/home'); ?>?officeId=<?php echo $frontUser->officeId(); ?>&userId=<?php echo $frontUser->userId(); ?>&lastData=<?php echo Tokens::getRoute(); ?>" class="d-block megamenu-button-link dashbg-1"><i class="fa fa-bar-chart-o"></i><strong><?php echo Translate::t('view_data')?></strong></a></div>
+                            <div class="col-lg-3 col-md-4"><a href="<?php echo Config::get('route/feedback'); ?>" class="d-block megamenu-button-link dashbg-4"><i class="fa fa-star-half-full"></i><strong><?php echo Translate::t('feedback'); ?></strong></a></div>
+                            <div class="col-lg-3 col-md-4"><a href="<?php echo Config::get('route/updateProfile'); ?>" class="d-block megamenu-button-link dashbg-2"><i class="icon-user"></i><strong><?php echo Translate::t('my_profile'); ?></strong></a></div>
+                            <div class="col-lg-3 col-md-4"><a href="<?php echo Config::get('route/calendar'); ?>" class="d-block megamenu-button-link dashbg-3"><i class="fa fa-calendar"></i><strong><?php echo Translate::t('calendar', ['ucfirst']); ?></strong></a></div>
                         </div>
                     </div>
                 </div>
@@ -139,7 +143,7 @@ if (Input::existsName('get', 'notificationId')) {
                 </div>
                 <!-- Log out               -->
                 <div class="list-inline-item logout">
-                    <a id="logout" href="logout.php" class="nav-link"><?php echo Translate::t('logout'); ?> <i class="icon-logout"></i></a>
+                    <a id="logout" href="<?php echo Config::get('route/logout'); ?>" class="nav-link"><?php echo Translate::t('logout'); ?> <i class="icon-logout"></i></a>
                 </div>
             </div>
         </div>

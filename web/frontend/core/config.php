@@ -24,5 +24,16 @@ return [
         'session_user'          => 'user_id',
         'session_supervisor'    => 'supervisor_id',
         'token_name'            => 'token'
+    ],
+    'route' => [
+        'calendar'  => 'calendar.php',
+        'home'      => 'index.php',
+        'lang'      => 'language.php',
+        'login'     => 'login.php',
+        'logout'    => 'logout.php',
+        'messages'  => 'messages.php',
+        'updateProfile' => 'updateprofile.php',
+        'staffFeedback' => 'stafffeedback.php',
+        'feedback'  => 'feedback.php'
     ]
 ];

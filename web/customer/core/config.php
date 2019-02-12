@@ -23,12 +23,32 @@ return [
         'token'                 => '',
         'token_hash'            => '',
         'token_id'              => 'token_id',
-        'login_token'           => 'login_token'
+        'login_token'           => 'login_token',
     ],
     'token'     => [
         'token'                 => 'token',
         'token_hash'            => 'token_hash',
         'submit_token'          => 'submitToken',
         'filer_submit_token'    => 'filterSubmitToken'
+    ],
+    'route' => [
+        'addUser'   => 'adduser.php',
+        'calendar'  => 'calendar.php',
+        'home'      => 'index.php',
+        'lang'      => 'language.php',
+        'login'     => 'login.php',
+        'logout'    => 'logout.php',
+        'messages'  => 'messages.php',
+        'print'     => 'print.php',
+        'allUsers'  => 'allusers.php',
+        'updateDb'  => 'updatedb.php',
+        'updateMyProfile' => 'updateprofile.php',
+        'updateUProf'     => 'updateuserprofile.php',
+        'uData'     => 'userdata.php',
+    ],
+    'files' => [
+        'file_name'             => 'csvFileName',
+        'file_dir'              => __DIR__ . '/filesToUpload/',
+        'complete_dirFile'      => 'completeDirToFile',
     ]
 ];

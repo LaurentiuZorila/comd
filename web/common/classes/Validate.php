@@ -129,6 +129,17 @@ class Validate
                                 Errors::setErrorType('danger', Translate::t($this->_lang, 'Csv_extension'));
                             }
                             break;
+                        case 'fileError':
+                            $path = $_FILES["fileToUpload"]["error"];
+                            if ($path > $rule_value) {
+                                Errors::setErrorType('danger', $_FILES["fileToUpload"]["error"]);
+                            }
+                            break;
+                        case 'fileRequired':
+                            if ($rule_value && !is_uploaded_file($_FILES['fileToUpload']['tmp_name'])) {
+                                Errors::setErrorType('danger', Translate::t('file_required'));
+                            }
+                            break;
                         case 'equals':
                             $check    = Common::checkLastCharacter($value);
                             $matched  = Common::checkLastCharacter($source[$rule_value]);
@@ -188,7 +199,7 @@ class Validate
             }
         }
 
-        if (empty(Errors::countAllErrors())) {
+        if (!Errors::countAllErrors()) {
             $this->_passed = true;
         }
 

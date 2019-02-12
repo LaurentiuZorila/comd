@@ -150,6 +150,7 @@ $insertNotification = $frontDb->insert(Params::TBL_NOTIFICATION, [
     'status'        => 2,
     'view'          => 0,
     'employee_view' => 0,
+    'common'        => 1,
     'message'       => 'new_event',
     'date'          => $added
 ]);

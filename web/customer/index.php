@@ -112,6 +112,7 @@ if (Input::exists()) {
     include '../common/includes/head.php';
     ?>
     <link rel="stylesheet" href="./../common/css/spiner/style.css">
+    <script src="./../common/vendor/chart.js/Chart.min.js"></script>
 </head>
   <body>
   <?php

@@ -17,7 +17,7 @@
         <!--        </div>-->
         <div class="container-fluid d-flex align-items-center justify-content-between">
             <div class="navbar-header">
-                <!-- Navbar Header--><a href="index.php" class="navbar-brand">
+                <!-- Navbar Header--><a href="<?php echo Config::get('route/home', true); ?>" class="navbar-brand">
                     <div class="brand-text brand-big visible text-uppercase"><strong class="text-primary">Cmd</strong><strong>Dashbord</strong></div>
                     <div class="brand-text brand-sm"><strong class="text-primary">D</strong><strong>A</strong></div></a>
                 <!-- Sidebar Toggle Btn-->
@@ -75,12 +75,12 @@
                             </div>
                         </div>
                         <div class="row megamenu-buttons text-center">
-                            <div class="col-lg-2 col-md-4"><a href="employees.php" class="d-block btn-dark"><i class="icon-list" style="font-size: 20px;"></i></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="employees_data.php" class="d-block btn-dark"><i class="icon-chart" style="font-size: 20px;"></i></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="all_staff.php" class="d-block btn-dark"><i class="icon-user-1" style="font-size: 20px;"></i></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="update_users_profile.php" class="d-block btn-dark"><i class="icon-new-file" style="font-size: 20px;"></i></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="update_profile.php" class="d-block btn-dark"><i class="icon-settings" style="font-size: 20px;"></i></a></div>
-                            <div class="col-lg-2 col-md-4"><a href="logout.php" class="d-block btn-dark"><i class="icon-logout" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="<?php echo Config::get('route/employees', true); ?>" class="d-block megamenu-button-link dashbg-1"><i class="icon-list" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="<?php echo Config::get('route/emplData', true); ?>" class="d-block megamenu-button-link dashbg-4"><i class="icon-chart" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="<?php echo Config::get('route/allStaff', true); ?>" class="d-block megamenu-button-link dashbg-2"><i class="icon-user-1" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="<?php echo Config::get('route/updateStaffProfile', true); ?>" class="d-block megamenu-button-link dashbg-3"><i class="icon-new-file" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="<?php echo Config::get('route/updateProfile', true); ?>" class="d-block megamenu-button-link dashbg-1"><i class="icon-settings" style="font-size: 20px;"></i></a></div>
+                            <div class="col-lg-2 col-md-4"><a href="<?php echo Config::get('route/logout'); ?>" class="d-block megamenu-button-link dashbg-4"><i class="icon-logout" style="font-size: 20px;"></i></a></div>
                         </div>
                     </div>
                 </div>
@@ -115,7 +115,7 @@
                 </div>
                 <!-- Log out               -->
                 <div class="list-inline-item logout">
-                    <a id="logout" href="logout.php" class="nav-link"><?php echo Translate::t('logout'); ?> <i class="icon-logout"></i></a>
+                    <a id="logout" href="<?php echo Config::get('route/logout'); ?>" class="nav-link"><?php echo Translate::t('logout'); ?> <i class="icon-logout"></i></a>
                 </div>
             </div>
         </div>

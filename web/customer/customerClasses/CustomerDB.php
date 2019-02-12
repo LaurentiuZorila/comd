@@ -169,7 +169,6 @@ class CustomerDB
      * @param $table
      * @param $where
      * @param array $columns
-     * @param bool $multiple
      * @return bool|CustomerDB
      */
     public function get($table, $where, array $columns = ['*'])

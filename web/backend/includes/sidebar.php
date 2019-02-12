@@ -15,20 +15,20 @@ require_once 'core/init.php';
     </div>
     <!-- Sidebar Navidation Menus-->
     <ul class="list-unstyled">
-        <li class="active"><a href="index.php?r=<?php echo Tokens::getRoute(); ?>" > <i class="icon-home"></i><?php echo Translate::t('Home'); ?> </a></li>
-        <li><a href="employees.php?r=<?php echo Tokens::getRoute(); ?>" > <i class="icon-grid"></i><?php echo Translate::t('All_employees'); ?></a></li>
-        <li><a href="employees_data.php?r=<?php echo Tokens::getRoute(); ?>"> <i class="icon-list"></i><?php echo Translate::t('employees_data'); ?></a></li>
-        <li><a href="all_staff.php?r=<?php echo Tokens::getRoute(); ?>"> <i class="icon-user-1"></i><?php echo Translate::t('All_staff'); ?></a></li>
+        <li class="active"><a href="<?php echo Config::get('route/home', true); ?>" > <i class="icon-home"></i><?php echo Translate::t('Home'); ?> </a></li>
+        <li><a href="<?php echo Config::get('route/employees', true); ?>" > <i class="icon-grid"></i><?php echo Translate::t('All_employees'); ?></a></li>
+        <li><a href="<?php echo Config::get('route/emplData', true); ?>"> <i class="icon-list"></i><?php echo Translate::t('employees_data'); ?></a></li>
+        <li><a href="<?php echo Config::get('route/allStaff', true); ?>"> <i class="icon-user-1"></i><?php echo Translate::t('All_staff'); ?></a></li>
         <li><a href="#update" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i><?php echo Translate::t('update_data'); ?></a>
             <ul id="update" class="collapse list-unstyled ">
-                <li><a href="update_users_profile.php?r=<?php echo Tokens::getRoute(); ?>"> <i class="icon-user"></i><?php echo Translate::t('Update_user_profile'); ?></a></li>
-                <li><a href="add_users.php?r=<?php echo Tokens::getRoute(); ?>"> <i class="fa fa-user-plus"></i><?php echo Translate::t('add_user'); ?></a></li>
+                <li><a href="<?php echo Config::get('route/updateStaffProfile', true); ?>"> <i class="icon-user"></i><?php echo Translate::t('Update_user_profile'); ?></a></li>
+                <li><a href="<?php echo Config::get('route/addUser', true); ?>"> <i class="fa fa-user-plus"></i><?php echo Translate::t('add_user'); ?></a></li>
             </ul>
         </li>
         <li><a href="#profile" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i><?php echo Translate::t('Profile'); ?></a>
             <ul id="profile" class="collapse list-unstyled ">
-                <li><a href="update_profile.php?r=<?php echo Tokens::getRoute(); ?>"><i class="icon-settings"></i><?php echo Translate::t('my_profile'); ?></a></li>
-                <li><a href="logout.php"> <i class="icon-logout"></i><?php echo Translate::t('logout'); ?> </a></li>
+                <li><a href="<?php echo Config::get('route/updateProfile', true); ?>"><i class="icon-settings"></i><?php echo Translate::t('my_profile'); ?></a></li>
+                <li><a href="<?php echo Config::get('route/logout'); ?>"> <i class="icon-logout"></i><?php echo Translate::t('logout'); ?> </a></li>
             </ul>
         </li>
     </ul>

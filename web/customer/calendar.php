@@ -70,7 +70,7 @@ $(document).ready(function () {
         eventClick:  function(event, jsEvent, view) {
             $("#startTime").html(moment(event.start).format('DD-MM-Y'));
             $("#endTime").html(moment(event.end).format('DD-MM-Y'));
-            $("#title").html(event.title + ' - ' + event.userName);
+            $("#title").html(event.title);
             $("#totalDays").html(event.totalDays);
             $('#eventId').val(event.id);
             $('#userId').val(event.userId);
