@@ -5,7 +5,7 @@
 
 class AC
 {
-    private static $_columns = ['event_id', 'id', 'name', 'offices_id', 'departments_id', 'supervisors_id', 'year', 'month', 'user_id', 'lead_id', 'employees_average_id', 'quantity'];
+    private static $_columns = ['employees_id','event_id', 'id', 'name', 'offices_id', 'departments_id', 'supervisors_id', 'year', 'month', 'user_id', 'lead_id', 'employees_average_id', 'quantity'];
 
     /**
      * @param array $array
@@ -82,23 +82,23 @@ class AC
 
 
     /**
-     * @param $array
+     * @param $conditions
      * @param bool $year
      * @return array
      */
-    public static function condition($array, $year = false)
+    public static function condition($conditions, $year = false)
     {
         //If year is true year = date('Y') -> this is for average
         if ($year) {
             //Current year
             $year = date('Y');
-            list($field, $value) = $array;
+            list($field, $value) = $conditions;
             if (in_array($field, self::$_columns)) {
                 $value = $value . '_' . $year;
                 $record = [$field, '=', $value];
             }
         } else {
-            list($field, $value) = $array;
+            list($field, $value) = $conditions;
             if (in_array($field, self::$_columns)) {
                 $record = [$field, '=', $value];
             }

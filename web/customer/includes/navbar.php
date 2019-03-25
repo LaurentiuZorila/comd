@@ -1,7 +1,7 @@
 <?php
 
 $notificationCount = $leadData->count(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->customerId()], ['response_status', false], ['view', 0]]));
-$notificationData = $leadData->records(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->customerId()], ['response_status', false], ['view', 0]]), ['message', 'user_id', 'date', 'id']);
+$notificationData = $leadData->records(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->customerId()], ['response_status', false], ['view', 0]]), ['message', 'user_id', 'date', 'id', 'title', 'days']);
 if (Input::existsName('get', 'notificationId')) {
     $id = Input::get('notificationId');
     if ($id == 0) {
@@ -52,14 +52,16 @@ if (Input::existsName('get', 'notificationId')) {
                         <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages">
                              <?php } ?>
                         <?php if ($notificationCount > 0) {
-                            foreach ($notificationData as $notification) { ?>
+                            foreach ($notificationData as $notification) {
+                                $days = explode(',', $notification->days); ?>
                                 <a href="<?php echo Config::get('route/calendar'); ?>?status=2&notificationId=<?php echo $notification->id; ?>" class="dropdown-item message d-flex align-items-center">
                                     <div class="profile"><img src="./../common/img/user.png" alt="..." class="img-fluid">
                                         <div class="status online"></div>
                                     </div>
                                     <div class="content">
                                         <span class="d-block"><?php echo Translate::t([$notification->message, 'from'], ['ucfirst']) . ' ' . $leadData->records(Params::TBL_EMPLOYEES, AC::where(['id', $notification->user_id]), ['name'], false)->name; ?></span>
-                                        <small class="date d-block"><?php echo $notification->date; ?></small>
+                                        <small class="date d-block text-white"><?php echo Translate::t(strtolower($notification->title)) . ': ' . current($days) . ' - ' . end($days); ?></small>
+                                        <small class="date d-block"><?php echo 'Added: ' . $notification->date; ?></small>
                                     </div>
                                 </a>
                             <?php } ?>

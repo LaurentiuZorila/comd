@@ -6,6 +6,7 @@ use League\Csv\Reader;
 $allTables = $leadData->records(Params::TBL_OFFICE, ['id', '=', $lead->officesId()], ['tables'], false);
 $allTables = explode(',', $allTables->tables);
 array_map('trim', $allTables);
+array_map('strtolower', $allTables);
 
 
 if (Input::existsName('post', Tokens::getInputName())) {
@@ -41,9 +42,12 @@ if (Input::existsName('post', Tokens::getInputName())) {
             $whereCommon = AC::where([['offices_id', $lead->officesId()], ['month',$update->month], ['year', $update->year]]);
             $whereEvent  = AC::where([['lead_id', $lead->officesId()], ['month',$update->month], ['year', $update->year]]);
 
+            // delete records from common table
             $deleteCommonData       = CustomerDB::getInstance()->delete($update->getTable(), $whereCommon);
+            // delete records from event table
             $deleteEventData        = CustomerDB::getInstance()->delete(Params::TBL_EVENTS, $whereEvent);
 
+            // Check if records has been deleted
             if (!$deleteCommonData && !$deleteEventData) {
                 Errors::setErrorType('danger', Translate::t('Db_error'));
             }
@@ -54,66 +58,138 @@ if (Input::existsName('post', Tokens::getInputName())) {
             $csv = Reader::createFromPath(Session::get(Config::get('files/complete_dirFile')), 'r');
             $csv->setHeaderOffset(0);
 
-            // Check file header
-            if ($update->checkFileHeaders($csv->getHeader())) {
-                foreach ($csv as $records) {
-                    if (!$update->checkColumns($records['Quantity'], $records['Days'])->columnsError()) {
-                        $startDate = Dates::startDate(Dates::makeDateForDb($records['Days'], $month), $year);
-                        $endDate   = Dates::endDate(Dates::makeDateForDb($records['Days'], $month), $year);
-                        try {
-                            $leadDb->getPdo()->beginTransaction();
-                            $lead->insert($update->getTable(), [
-                                'offices_id' => $lead->officesId(),
-                                'departments_id'    => $lead->departmentId(),
-                                'employees_id'      => $records['Id'],
-                                'employees_average_id'  => $records['Id'] . '_' . $year,
-                                'year'  => $year,
-                                'month' => $month,
-                                'quantity' => $records['Quantity'],
-                                'days'     => $records['Days']
-                            ]);
-                            sleep(1);
-                            // Insert data in events table
-                            $lead->insert(Params::TBL_EVENTS, [
-                                'user_id'   => $records['Id'],
-                                'lead_id'   => $lead->customerId(),
-                                'title'     => $title,
-                                'Event_status'  => 'Accepted',
-                                'start'     => $startDate,
-                                'end'       => $endDate,
-                                'days_number'   => $records['Quantity'],
-                                'days'      => Dates::makeDateForDb($records['Days'], $month),
-                                'month'     => $month,
-                                'year'      => $year,
-                                'status'    => 1,
-                                'added'     => date('Y-m-d H:m:s'),
-                                'updated'   => date('Y-m-d H:m:s')
-                            ]);
-                            sleep(1);
-                            $lead->insert(Params::TBL_NOTIFICATION, [
-                                'user_id'   => $records['Id'],
-                                'lead_id'   => $lead->customerId(),
-                                'status'    => 1,
-                                'view'      => 1,
-                                'employee_view'     => 0,
-                                'response'          => 'navNotification',
-                                'response_status'   => 1,
-                                'date'              => date('Y-m-d H:m:s')
-                            ]);
-                            $leadDb->getPdo()->commit();
-                            unlink(Session::get(Config::get('files/complete_dirFile')));
-                        } catch (PDOException $e) {
-                            $leadDb->getPdo()->rollBack();
-                            Errors::setErrorType('danger', $e->getMessage());
-                        }
-
-                    } else {
-                        Errors::setErrorType('danger', Translate::t($update->fileError, ['ucfirst']));
-                    }
-
+            // Check if ids are allowed for this user
+            foreach ($csv as $records) {
+                if (!$update->checkIds($records['Id'])) {
+                    Errors::setErrorType('danger', Translate::t('download_generated_file'));
                 }
             }
+
+            if (!Errors::countAllErrors()) {
+                // Check file header
+                if ($update->checkFileHeaders($csv->getHeader())) {
+                    foreach ($csv as $records) {
+                        // Check if file is for common tables
+                        if ($update->checkCommonTables()) {
+                            // Check columns
+                            if (!$update->checkColumns($records['Quantity'], $records['Days'])->columnsError()) {
+                                $startDate = Dates::startDate(Dates::makeDateForDb($records['Days'], $month), $year);
+                                $endDate   = Dates::endDate(Dates::makeDateForDb($records['Days'], $month), $year);
+                                // Insert in DB
+                                try {
+                                    $leadDb->getPdo()->beginTransaction();
+                                    // Insert records in common table
+                                    $lead->insert($update->getTable(), [
+                                        'offices_id'            => $lead->officesId(),
+                                        'departments_id'        => $lead->departmentId(),
+                                        'employees_id'          => $records['Id'],
+                                        'employees_average_id'  => $records['Id'] . '_' . $year,
+                                        'insert_type'           => Params::INSERT_TYPE['file'],
+                                        'year'                  => $year,
+                                        'month'                 => $month,
+                                        'quantity'              => $records['Quantity'],
+                                        'days'                  => Dates::makeDateForDb($records['Days'], $month)
+                                    ]);
+                                    sleep(0.5);
+                                    // Insert data in events table
+                                    if ($records['Quantity'] > 1) {
+                                        $days = explode(',', $records['Days']);
+                                        foreach ($days as $day) {
+                                            $startDateMultiple = Dates::startDate(Dates::makeDateForDb($day, $month), $year);
+                                            $endDateMultiple   = Dates::endDate(Dates::makeDateForDb($day, $month), $year);
+                                            $lead->insert(Params::TBL_EVENTS, [
+                                                'user_id'       => $records['Id'],
+                                                'lead_id'       => $lead->customerId(),
+                                                'title'         => $title,
+                                                'Event_status'  => 'Accepted',
+                                                'start'         => $startDateMultiple,
+                                                'end'           => $endDateMultiple,
+                                                'days_number'   => 1,
+                                                'days'          => Dates::makeDateForDb($day, $month),
+                                                'month'         => $month,
+                                                'year'          => $year,
+                                                'status'        => 1,
+                                                'added'         => date('Y-m-d H:m:s'),
+                                                'updated'       => date('Y-m-d H:m:s')
+                                            ]);
+                                        }
+                                    } else {
+                                        $lead->insert(Params::TBL_EVENTS, [
+                                            'user_id'       => $records['Id'],
+                                            'lead_id'       => $lead->customerId(),
+                                            'title'         => $title,
+                                            'Event_status'  => 'Accepted',
+                                            'start'         => $startDate,
+                                            'end'           => $endDate,
+                                            'days_number'   => $records['Quantity'],
+                                            'days'          => Dates::makeDateForDb($records['Days'], $month),
+                                            'month'         => $month,
+                                            'year'          => $year,
+                                            'status'        => 1,
+                                            'added'         => date('Y-m-d H:m:s'),
+                                            'updated'       => date('Y-m-d H:m:s')
+                                        ]);
+                                    }
+
+                                    sleep(0.5);
+                                    $lead->insert(Params::TBL_NOTIFICATION, [
+                                        'user_id'           => $records['Id'],
+                                        'lead_id'           => $lead->customerId(),
+                                        'status'            => 1,
+                                        'view'              => 1,
+                                        'employee_view'     => 0,
+                                        'response'          => 'navNotification',
+                                        'response_status'   => 1,
+                                        'date'              => date('Y-m-d H:m:s')
+                                    ]);
+                                    $leadDb->getPdo()->commit();
+
+                                } catch (PDOException $e) {
+                                    $leadDb->getPdo()->rollBack();
+                                    Errors::setErrorType('danger', $e->getMessage());
+                                }
+
+                            } else {
+                                Errors::setErrorType('danger', Translate::t($update->fileError, ['ucfirst']));
+                            }
+                        } else {
+                            try {
+                                $leadDb->getPdo()->beginTransaction();
+                                $lead->insert($update->getTable(), [
+                                    'offices_id'            => $lead->officesId(),
+                                    'departments_id'        => $lead->departmentId(),
+                                    'employees_id'          => $records['Id'],
+                                    'employees_average_id'  => $records['Id'] . '_' . $year,
+                                    'insert_type'           => Params::INSERT_TYPE['file'],
+                                    'year'                  => $year,
+                                    'month'                 => $month,
+                                    'quantity'              => $records['Quantity'],
+                                ]);
+                                sleep(0.5);
+                                $lead->insert(Params::TBL_NOTIFICATION, [
+                                    'user_id'           => $records['Id'],
+                                    'lead_id'           => $lead->customerId(),
+                                    'status'            => 1,
+                                    'view'              => 1,
+                                    'employee_view'     => 0,
+                                    'response'          => 'navNotification',
+                                    'response_status'   => 1,
+                                    'date'              => date('Y-m-d H:m:s')
+                                ]);
+                                $leadDb->getPdo()->commit();
+                            } catch (PDOException $e) {
+                                $leadDb->getPdo()->rollBack();
+                                Errors::setErrorType('danger', $e->getMessage());
+                            }
+                        }
+                    }
+                }
+            }
+
         }
+        // Delete file
+        unlink(Session::get(Config::get('files/complete_dirFile')));
+        Session::delete(Config::get('files/complete_dirFile'));
     }
 
     if (!Errors::countAllErrors()) {
@@ -215,14 +291,18 @@ if (Input::existsName('post', Tokens::getInputName())) {
                               <div class="col-sm-4 tables" style="display: none;">
                                   <select id="tables" name="tables" class="form-control mb-1 <?php if (Input::exists() && empty(Input::post('tables'))) {echo 'is-invalid';} ?>">
                                       <option value=""><?php echo Translate::t('Select_table'); ?></option>
-                                      <?php foreach ($allTables as $table) { ?>
-                                          <option value="<?php echo $table; ?>"><?php echo Translate::t($table, ['strtoupper']); ?></option>
-                                      <?php } ?>
+                                      <?php foreach ($allTables as $table) {
+                                          if (in_array($table, Params::TBL_COMMON)) { ?>
+                                              <option value="<?php echo $table; ?>"><?php echo Translate::t($table, ['strtoupper']); ?></option>
+                                          <?php } else { ?>
+                                              <option value="<?php echo $table; ?>"><?php echo strtoupper($table); ?></option>
+                                          <?php }
+                                      } ?>
                                   </select>
                                   <?php
                                   if (Input::exists() && empty(Input::post('tables'))) { ?>
                                       <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
-                                  <?php }?>
+                                  <?php } ?>
                               </div>
                               <div class="col-sm-12 mt-2 mb-3">
                               <input type="file" name="fileToUpload" id="fileToUpload">
@@ -249,6 +329,7 @@ if (Input::existsName('post', Tokens::getInputName())) {
                       </div>
                       <div class="modal-body">
                           <p> <?php echo Translate::t('Csv_extension', ['ucfirst']); ?> </p>
+                          <p> <?php echo Translate::t('Download_file_from_common', ['ucfirst']); ?>: <a href="downloadCommon.php"><?php echo Translate::t('File'); ?></a></p>
                           <p> <?php echo Translate::t('Download_file_from', ['ucfirst']); ?>: <a href="download.php"><?php echo Translate::t('File'); ?></a></p>
                           <hr />
                           <p> <?php echo Translate::t('completed_csv_file', ['ucfirst']); ?></p>

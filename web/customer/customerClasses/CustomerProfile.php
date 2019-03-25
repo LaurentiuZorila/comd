@@ -25,12 +25,12 @@ class CustomerProfile
      * @param bool $all
      * @return mixed|null
      */
-    public function records($table, array $where, array $column = ['*'], $all = true)
+    public function records($table, array $where, array $column = ['*'], $all = true, $endParams = [])
     {
         if ($all) {
-            return $this->_db->get($table, $where, $column)->results();
+            return $this->_db->get($table, $where, $column, $endParams)->results();
         }
-        return $this->_db->get($table, $where, $column)->first();
+        return $this->_db->get($table, $where, $column, $endParams)->first();
     }
 
 

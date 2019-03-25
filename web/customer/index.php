@@ -1,6 +1,5 @@
 <?php
 require_once 'core/init.php';
-$best   = new Best($lead->officesId());
 
 /** Count all employees */
 $countUsers = $leadData->count(Params::TBL_EMPLOYEES, ['offices_id', '=', $lead->officesId()]);
@@ -25,6 +24,7 @@ $sumFurlough   = $leadData->sum(Params::TBL_FURLOUGH, $where, 'quantity');
 $sumAbsentees  = $leadData->sum(Params::TBL_ABSENTEES, $where, 'quantity');
 $sumUnpaid     = $leadData->sum(Params::TBL_UNPAID, $where, 'quantity');
 $sumMedical    = $leadData->sum(Params::TBL_MEDICAL, $where, 'quantity');
+
 
 /** tables for user */
 $allTables  = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $lead->officesId()]), ['tables'], false);
@@ -59,7 +59,7 @@ if (Input::exists()) {
         $year       = Input::post('year');
         $month      = Input::post('month');
         $officeId   = $lead->officesId();
-        $npTable    = Translate::t(strtolower(Input::post('table')), ['strtolower' => true]);
+        $npTable    = Translate::t(strtolower(Input::post('table')), ['strtolower']);
         $table      = Params::PREFIX . trim(Input::post('table'));
         $quantitySum = [];
 
@@ -79,9 +79,10 @@ if (Input::exists()) {
             $names[] = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['id', $chartNames->employees_id]), ['name'], false)->name;
         }
 
+
         /** Quantity data */
         foreach ($chartData as $data) {
-            $quantity[] = $data->quantity;
+            $quantity[] = is_null($data->quantity) ? 0 : $data->quantity;
         }
 
         // Insert returned values in array
@@ -112,6 +113,9 @@ if (Input::exists()) {
     include '../common/includes/head.php';
     ?>
     <link rel="stylesheet" href="./../common/css/spiner/style.css">
+    <link rel="stylesheet" href="../common/vendor/dataTables/dataTables.bootstrap4.min.css">
+    <script src="../common/vendor/dataTables/datatables.min.js"></script>
+    <script src="../common/vendor/dataTables/dataTables.bootstrap4.min.js"></script>
     <script src="./../common/vendor/chart.js/Chart.min.js"></script>
 </head>
   <body>
@@ -152,50 +156,54 @@ if (Input::exists()) {
                         <div class="col-sm-12">
                             <div class="title"><strong><?php echo Translate::t('Filters'); ?></strong></div>
                         </div>
-                            <div class="col-sm-4">
-                                <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} else { echo 'mb-3';}?>">
-                                    <option value=""><?php echo Translate::t('Select_year', ['strtoupper'=>true]); ?></option>
-                                    <?php
-                                    foreach (Common::getYearsList() as $year) { ?>
-                                        <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
-                                    <?php } ?>
-                                </select>
+                        <div class="col-sm-4">
+                            <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} else { echo 'mb-3';}?>">
+                                <option value="<?php echo Input::exists() && !empty(Input::post('year')) ? Input::post('year') : ''; ?>"><?php echo Input::exists() && !empty(Input::post('year')) ? Input::post('year') : Translate::t('Select_year', ['ucfirst']); ?></option>
                                 <?php
-                                if (Input::exists() && empty(Input::post('year'))) { ?>
-                                    <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
-                                <?php }?>
-                            </div>
+                                foreach (Common::getYearsList() as $year) { ?>
+                                    <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
+                                <?php } ?>
+                            </select>
+                            <?php
+                            if (Input::exists() && empty(Input::post('year'))) { ?>
+                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                            <?php }?>
+                        </div>
 
-                            <div class="col-sm-4">
-                              <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) { echo 'is-invalid'; } else { echo 'mb-3';} ?>">
-                                  <option value=""><?php echo Translate::t('Select_month', ['strtoupper'=>true]); ?></option>
-                                  <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
-                                  <option value="<?php echo $key; ?>"><?php echo strtoupper($value); ?></option>
-                                  <?php } ?>
-                              </select>
-                              <?php
-                              if (Input::exists() && empty(Input::post('month'))) { ?>
-                                  <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
-                              <?php }?>
-                            </div>
+                        <div class="col-sm-4">
+                          <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) { echo 'is-invalid'; } else { echo 'mb-3';} ?>">
+                              <option value="<?php echo Input::exists() && !empty(Input::post('month')) ? Input::post('month') : ''; ?>"><?php echo Input::exists() && !empty(Input::post('month')) ? Common::numberToMonth(Input::post('month'), Session::get('lang')) : Translate::t('Select_month', ['ucfirst']); ?></option>
+                              <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
+                              <option value="<?php echo $key; ?>"><?php echo ucfirst($value); ?></option>
+                              <?php } ?>
+                          </select>
+                          <?php
+                          if (Input::exists() && empty(Input::post('month'))) { ?>
+                              <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                          <?php }?>
+                        </div>
 
-                            <div class="col-sm-4">
-                                <select name="table" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                    <option value=""><?php echo Translate::t('Select_table', ['strtoupper'=>true]); ?></option>
-                                    <?php foreach ($tables as $key => $table) { ?>
-                                        <option value="<?php echo $key; ?>"><?php echo Translate::t($table, ['strtoupper' => true]); ?></option>
-                                    <?php } ?>
-                                </select>
-                                <?php
-                                if (Input::exists() && empty(Input::post('table'))) { ?>
-                                    <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
-                                <?php }?>
-                            </div>
+                        <div class="col-sm-4">
+                            <select name="table" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
+                                <option value="<?php echo Input::exists() && !empty(Input::post('table')) ? Input::post('table') : ''; ?>"><?php echo Input::exists() && !empty(Input::post('table')) ? Translate::t(strtolower(Input::post('table')), ['ucfirst']) : Translate::t('Select_table', ['ucfirst']); ?></option>
+                                <?php foreach ($tables as $key => $table) {
+                                    if (in_array($table, Params::TBL_COMMON)) { ?>
+                                        <option value="<?php echo $key; ?>"><?php echo Translate::t($table, ['ucfirst']); ?></option>
+                                    <?php } else { ?>
+                                        <option value="<?php echo $key; ?>"><?php echo ucfirst($table); ?></option>
+                                    <?php }
+                                } ?>
+                            </select>
+                            <?php
+                            if (Input::exists() && empty(Input::post('table'))) { ?>
+                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                            <?php }?>
+                        </div>
 
-                            <div class="col-sm-2">
-                                <button id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
-                                <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
-                            </div>
+                        <div class="col-sm-2">
+                            <button id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
+                            <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
+                        </div>
                     </div>
                   </form>
               </div>
@@ -288,114 +296,70 @@ if (Input::exists()) {
           <?php
           /** IF FORM IS SUBMITTED */
           if (Input::exists() && !Errors::countAllErrors()) { ?>
-                  <section class="no-padding-bottom">
-                      <div class="container-fluid">
-                          <div class="row">
-                              <div class="col-lg-12">
-                                  <div class="bar-chart block chart">
+          <section class="no-padding-bottom">
+              <div class="container-fluid">
+                  <div class="row">
+                      <div class="col-lg-12">
+                          <div class="bar-chart block chart">
 <!--                                      <ul class="nav nav-pills card-header-pills">-->
 <!--                                          <li class="nav-item"><button class="btn btn-primary mr-1 bar" id="bar" type="button">Bar</button></li>-->
 <!--                                          <li class="nav-item"><button class="btn btn-outline-primary line" id="line" type="button">Line</button></li>-->
 <!--                                      </ul>-->
-                                      <div class="btn-group btn-group-sm float-sm-right" role="group" aria-label="Charts type">
-                                          <button class="btn-sm btn-primary bar" id="bar" type="button"><?php echo Translate::t('Bar'); ?></button>
-                                          <button class="btn-sm btn-outline-primary line" id="line" type="button"><?php echo Translate::t('Line'); ?></button>
-                                      </div>
-                                      <div class="drills-chart block">
-                                          <canvas id="target_customer_chart_bar" height="150" style="display: block;"></canvas>
-                                          <canvas id="target_customer_chart_line" height="150" style="display: none;"></canvas>
-                                      </div>
-                                  </div>
+                              <div class="btn-group btn-group-sm float-sm-right" role="group" aria-label="Charts type">
+                                  <button class="btn-sm btn-primary bar" id="bar" type="button"><?php echo Translate::t('Bar'); ?></button>
+                                  <button class="btn-sm btn-outline-primary line" id="line" type="button"><?php echo Translate::t('Line'); ?></button>
+                              </div>
+                              <div class="drills-chart block">
+                                  <canvas id="target_customer_chart_bar" height="150" style="display: block;"></canvas>
+                                  <canvas id="target_customer_chart_line" height="150" style="display: none;"></canvas>
                               </div>
                           </div>
                       </div>
-                  </section>
+                  </div>
+              </div>
+          </section>
           <!--        ********************       CHARTS   END      ********************   -->
 
-        <section class="no-padding-bottom">
-          <div class="container-fluid">
-              <!--     ********************           FOR BEST OPERATOR ********************    -->
-            <div class="row">
-              <div class="col-lg-2">
-                <div class="user-block block text-center">
-                  <div class="avatar"><img src="./../common/img/user.png" alt="..." class="img-fluid">
-                    <div class="order dashbg-2">1st</div>
-                  </div><a href="#" class="user-title mb-0 dashtext-4"><h3 class="h5"><?php echo $best->getBestEmployeesName(); ?></h3></a>
-                  <div class="contributions mb-2 dashtext-4"><?php echo Translate::t('Best_operator'); ?></div>
-                      <?php
-                      foreach ($best->getCommonData() as $key => $commonData) { ?>
-                          <p class="text-white-50 mb-0"><small><?php echo strtoupper($key) . ' - ' . $commonData; ?></small></p>
-                      <?php } ?>
-                </div>
+          <section class="no-padding-top">
+              <div class="container-fluid">
+                  <div class="row">
+                      <div class="col-lg-12">
+                          <div class="block margin-bottom-sm">
+                                <div class="table-responsive">
+                                  <table class="table" id="employeesTable">
+                                      <thead>
+                                      <tr>
+                                          <th>#</th>
+                                          <th><?php echo Translate::t('Name', ['strtoupper']); ?></th>
+                                          <th><?php echo Translate::t('Data', ['strtoupper']); ?></th>
+                                          <th><?php echo Translate::t(strtolower(Input::post('table')), ['strtoupper']); ?></th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      <tr>
+                                          <?php
+                                          $x = 1;
+                                          foreach ($allData as $key => $value) {
+                                          ?>
+                                          <th scope="row"><?php echo $x; ?></th>
+                                          <td><?php echo $key; ?></td>
+                                          <td><?php echo Common::getMonths($lang)[$month] . ' - ' . Input::post('year'); ?></td>
+                                          <td><?php echo in_array(strtolower($npTable), $tblDataDysplay) && $dataDisplay[strtolower($npTable)] == 'percentage' ? $value . '%' : $value; ?></td>
+                                      </tr>
+                                      <?php $x++; } ?>
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
               </div>
-                <div class="col-lg-5">
-                    <div class="stats-with-chart-1 block" style="height: 91%;">
-                        <div class="title"> <strong class="d-block"><?php echo Translate::t($best->getFirstPriorityTbl(), ['ucfirst' => true]) . ' ' . Translate::t('Average', ['strtolower' => true]); ?></strong></div>
-                        <div class="row d-flex align-items-end justify-content-between">
-                            <div class="col-12">
-                                <div class="bar-chart chart">
-                                    <canvas id="bestFirst" style="display: block; width: 400px; height: 250px;" width="400" height="250"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-5">
-                    <div class="stats-with-chart-1 block" style="height: 91%;">
-                        <div class="title"> <strong class="d-block"><?php echo Translate::t($best->getSecondPriorityTbl(), ['ucfirst' => true]) . ' ' . Translate::t('Average', ['strtolower' => true]);  ?></strong></div>
-                        <div class="row d-flex align-items-end justify-content-between">
-                            <div class="col-12">
-                                <div class="bar-chart chart">
-                                    <canvas id="bestSecond" style="display: block; width: 400px; height: 250px;" width="400" height="250"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-              <!--              BEST OPERATOR END  -->
-              <?php
-                    $x = 1;
-                    foreach ($allData as $key => $value) {
-                        ?>
-                        <div class="public-user-block block">
-                            <div class="row d-flex align-items-center">
-                                <div class="col-lg-4 d-flex align-items-center">
-                                    <div class="order"><?php echo $x; ?></div>
-                                    <div class="avatar"></div>
-                                    <a href="#" class="name" data-toggle="tooltip" data-placement="top" title="Name">
-                                        <strong class="d-block"><?php echo $key; ?></strong>
-                                        <span class="d-block"></span>
-                                    </a>
-                                </div>
-                                <div class="col-lg-4 text-center">
-                                    <div class="contributions" data-toggle="tooltip" data-placement="top" title="Month"><?php echo escape(ucfirst($npTable)) . ' - ' . escape(Common::getMonths($lang)[$month]); ?></div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="details d-flex">
-                                        <div class="item" data-toggle="tooltip" data-placement="top" title="<?php echo ucfirst($npTable); ?>"><i class="icon-chart"></i>
-                                            <strong><?php echo in_array(strtolower($npTable), $tblDataDysplay) && $dataDisplay[$npTable] === 'percentage' ? $value . '%' : $value; ?></strong>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php
-                        $x++;
-                    }
-                }
-            ?>
-          </div>
-        </section>
-          <?php
+          </section>
+          <?php }
           include '../common/includes/footer.php';
           ?>
       </div>
     </div>
-    <!-- JavaScript files-->
-  <?php
-  include "./../common/includes/scripts.php";
-  ?>
 <script>
 
     $('#Submit').click(function(){
@@ -415,11 +379,14 @@ if (Input::exists()) {
         $("#target_customer_chart_line").show();
         $("#target_customer_chart_bar").hide();
     });
+
+    $(document).ready(function() {
+        $('#employeesTable').DataTable();
+    });
 </script>
   <?php
   /** BEST CHART and Form Chart */
   if (Input::exists() && !Errors::countAllErrors()) {
-      include 'charts/bestChart.php';
       include 'charts/target_chart.php';
   }
   ?>

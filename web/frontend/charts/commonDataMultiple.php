@@ -78,7 +78,7 @@
 <script>
     var employees_chart    = $('#employees_chart');
     var employeesChart = new Chart(employees_chart, {
-        type: 'bar',
+        type: 'line',
         options: {
             scales: {
                 xAxes: [{

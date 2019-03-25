@@ -1,6 +1,6 @@
 <?php
 require_once 'core/init.php';
-$allEmployees = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['offices_id', $lead->officesId()]), ['name', 'id']);
+$allEmployees = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['offices_id', $lead->officesId()]), ['name', 'id'], true, ['ORDER BY' => 'name']);
 if (Input::existsName('get', 'notificationId')) {
     $id = Input::get('notificationId');
     if ($id == 0) {
@@ -26,7 +26,6 @@ if (Input::existsName('get', 'notificationId')) {
 include '../common/includes/head.php';
 ?>
 <link rel="stylesheet" href="./../common/css/spiner/style.css">
-<script src="./../common/vendor/fullcalendar/lib/jquery.min.js"></script>
 <script src="./../common/vendor/fullcalendar/lib/moment.min.js"></script>
 <script src="./../common/vendor/fullcalendar/fullcalendar.min.js"></script>
 <script src="./../common/vendor/fullcalendar/locale-all.js"></script>
@@ -96,11 +95,14 @@ $(document).ready(function () {
     });
 });
 
-
 function displayMessage(type, message) {
     $(".response").html('<section class="eventMessage"><div class="row"><div class="col-lg-12"><div class="alert alert-dismissible fade show badge-'+type+'"><p class="text-white mb-0">'+message+'</p></div></div></div></section>');
     setInterval(function() { $(".eventMessage").fadeOut(); }, 5000);
 }
+
+$(document).ready(function() {
+    $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+});
 </script>
 </head>
 <body>
@@ -118,14 +120,14 @@ include 'includes/navbar.php';
     <div class="page-content">
         <div class="page-header mb-0">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom"><?php echo Translate::t('Calendar'); ?></h2>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t('calendar'); ?></h2>
             </div>
         </div>
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t('Home'); ?></a></li>
-                <li class="breadcrumb-item active"><?php echo Translate::t('Calendar'); ?> </li>
+                <li class="breadcrumb-item active"><?php echo Translate::t('calendar'); ?> </li>
             </ul>
         </div>
         <?php
@@ -137,11 +139,11 @@ include 'includes/navbar.php';
             <div class="response"></div>
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-8">
+                    <div class="col-lg-8 p-0">
                         <div class="card-header" style="background-color: rgb(45, 48, 53);">
                             <div class="right-menu list-inline no-margin-bottom">
                                 <div class="list-inline-item logout">
-                                    <a type="button" data-toggle="modal" data-target="#info_calendar" class="btn btn-primary btn-sm float-right" id="info_calendar_pulsate"><i class="fa fa-info-circle"></i></a>
+                                    <button type="button" data-toggle="modal" data-target="#info_calendar" class="btn btn-primary btn-sm float-right" id="info_calendar_pulsate"><i class="fa fa-info-circle"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -149,19 +151,19 @@ include 'includes/navbar.php';
                             <div id="calendar" class="fc fc-bootstrap3 fc-ltr"></div>
                         </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="card-header" style="background-color: rgb(45, 48, 53);">
+                    <div class="col-lg-4 mr-0">
+                        <div class="card-header" style="background-color: rgb(45, 48, 53); border-bottom:transparent;">
                             <h4 class="text-center"><?php echo Translate::t('all', ['ucfirst'=>true]) . ' ' . Translate::t('event_request', ['strtolower'=>true]); ?></h4>
                         </div>
                         <div class="block">
                             <p>
-                                <a class="btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
+                                <button class="btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
                                     <i class="fa fa-angle-down"></i>
-                                </a>
+                                </button>
                             </p>
                             <form method="post" id="filter" class="collapse mb-1" action="calendar-customer/tableStatus.php">
                                 <div class="row">
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-4 mt-1">
                                         <?php
                                         $status = Input::get('status');
                                         $status = empty($status) ? 'all' : $status;
@@ -174,7 +176,7 @@ include 'includes/navbar.php';
                                             <option value="all" <?php echo $status == 'all' ? 'selected' : ''; ?>><?php echo Translate::t('all', ['ucfirst' => true]); ?></option>
                                         </select>
                                     </div>
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-5 mt-1">
                                         <select name="event_month" id="event_month">
                                             <option value=""><?php echo Translate::t('Select_month'); ?></option>
                                             <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
@@ -182,65 +184,17 @@ include 'includes/navbar.php';
                                             <? } ?>
                                         </select>
                                     </div>
-                                </div>
-                                <div class="row mt-1">
-                                    <div class="col-sm-3">
-                                        <button name="eventFilter" id="eventFilter" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
+                                    <div class="col-sm-2">
+                                        <button name="eventFilter" id="eventFilter" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo 'Go'; ?></button>
                                         <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                     </div>
                                 </div>
+<!--                                <div class="mt-1">-->
+
+<!--                                </div>-->
                             </form>
-                            <div class="table-responsive" style="height:519px; overflow-y: scroll;" id="filter-response">
-                                <table class="table">
-                                    <thead>
-                                    <tr role="row">
-                                        <th class="text-primary"><?php echo Translate::t('Request', ['ucfirst'=>true]); ?></th>
-                                        <th class="text-primary"><?php echo Translate::t('Date', ['ucfirst'=>true]); ?></th>
-                                        <th class="text-primary"><?php echo Translate::t('Status', ['ucfirst'=>true]); ?></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php
-                                    if (count($allEvents) > 0) {
-                                    foreach ($allEvents as $allEvent) { ?>
-                                        <tr>
-                                            <td>
-                                                <?php
-                                                $collapseData = $allEvent->status == 2 ? 'data-target=#collapseExample' . $allEvent->id . ' aria-controls=collapseExample' . $allEvent->id : '';
-                                                ?>
-                                                <a class="" style="cursor: pointer;" type="button" data-toggle="collapse" <?php echo $collapseData; ?> aria-expanded="false">
-                                                    <?php echo Translate::t(strtolower($allEvent->title), ['ucfirst'=>true]); ?>
-                                                </a>
-                                            </td>
-                                            <td class="text-small">
-                                                <?php
-                                                $collapseData = $allEvent->status == 2 ? 'data-target=#collapseExample' . $allEvent->id . ' aria-controls=collapseExample' . $allEvent->id : '';
-                                                ?>
-                                                <a class="" style="cursor: pointer;" type="button" data-toggle="collapse" <?php echo $collapseData; ?> aria-expanded="false">
-                                                    <?php
-                                                    $all_days = explode(',', $allEvent->days);
-                                                    if (count($all_days) > 1) {
-                                                        echo current($all_days) . ' - ' . end($all_days);
-                                                    } else {
-                                                        echo $all_days[0];
-                                                    }
-                                                    ?>
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-<?php echo Params::EVENTS_STATUS_COLORS[$allEvent->status]; ?>"><?php echo Params::EVENTS_STATUS[$allEvent->status]; ?></span>
-                                                <div class="collapse" id="collapseExample<?php echo $allEvent->id; ?>">
-                                                    <div class="btn-group btn-group-sm mt-3" role="group" aria-label="Basic example">
-                                                        <a type="" class="btn-sm btn-primary p-1 eventAction" style="cursor: pointer;" id="accepted" data-accepted="1" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>" data-title="<?php echo $allEvent->title; ?>" data-month="<?php echo $allEvent->month; ?>" data-year="<?php echo $allEvent->year; ?>"><small>Accept</small></a>
-                                                        <a type="" class="btn-sm btn-danger p-1 ml-2 eventAction" style="cursor: pointer;" id="declined" data-accepted="3" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>" data-title="<?php echo $allEvent->title; ?>"><small>Decline</small></a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php }
-                                    } ?>
-                                    </tbody>
-                                </table>
+                            <div class="table-responsive" style="height:545px; overflow-y: scroll;" id="filter-response">
+
                             </div>
                         </div>
                     </div>
@@ -305,8 +259,8 @@ include 'includes/navbar.php';
                         Total days: <span id="totalDays"></span><br><br>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn-sm btn-outline-secondary" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                        <button type="submit" class="btn-sm btn-primary deleteEvent" id="deleteEvent">Delete</button>
+                        <button class="btn-sm btn-outline-secondary" data-dismiss="modal" aria-hidden="true"><?php echo Translate::t('close', ['ucfirst']); ?></button>
+                        <button type="submit" class="btn-sm btn-primary deleteEvent" id="deleteEvent"><?php echo Translate::t('delete', ['ucfirst']); ?></button>
                         <input type="hidden" id="eventId" value="" />
                         <input type="hidden" id="userId" value="" />
                         <input type="hidden" id="table" value="" />
@@ -323,14 +277,14 @@ include 'includes/navbar.php';
         <div id="info_calendar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade text-left show" style="display: none;">
             <div role="document" class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-1"><?php echo Translate::t('Info'); ?></strong>
+                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title"><?php echo Translate::t('Info'); ?></strong>
                         <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
                     </div>
                     <div class="modal-body">
                         <p><?php echo Translate::t('calendar_info_lead'); ?></p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" data-dismiss="modal" class="btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Tooltip on top"><?php echo Translate::t('Close'); ?></button>
+                        <button type="button" data-dismiss="modal" class="btn-sm btn-danger"><?php echo Translate::t('Close'); ?></button>
                     </div>
                 </div>
             </div>

@@ -2,11 +2,6 @@
 class Create
 {
     /**
-     * @var CustomerDB|null
-     */
-    private $_db;
-
-    /**
      * @var bool
      */
     private $_toCreate  = true;
@@ -15,15 +10,6 @@ class Create
      * @var
      */
     public $errors      = [];
-
-
-    /**
-     * Create constructor.
-     */
-    public function __construct()
-    {
-        $this->_db = CustomerDB::getInstance();
-    }
 
 
     /**
@@ -48,11 +34,10 @@ class Create
                 departments_id        INT(11),
                 employees_id          INT(11),
                 employees_average_id  VARCHAR(255),
-                event_id              INT(11),
+                insert_type           TINYINT(1),
                 year                  YEAR(4),
                 month                 TINYINT(2),
-                quantity              INT(11),
-                days                  VARCHAR(100)
+                quantity              INT(11)
             )";
                 break;
             case 'float':
@@ -63,17 +48,16 @@ class Create
                 departments_id        INT(11),
                 employees_id          INT(11),
                 employees_average_id  VARCHAR(255),
-                event_id              INT(11),
+                insert_type           TINYINT(1),
                 year                  YEAR(4),
                 month                 TINYINT(2),
-                quantity              FLOAT(5),
-                days                  VARCHAR(100)
+                quantity              FLOAT(5)
             )";
                 break;
         }
 
             try {
-                return $this->_db->execute($sql);
+                return CustomerDB::getInstance()->execute($sql);
             } catch (PDOException $e) {
                 die($e->getMessage());
             }
@@ -125,13 +109,14 @@ class Create
             $sql = "DESCRIBE {$table}";
         }
 
-        if ($this->_db->getPdo()->query($sql)) {
+        if (CustomerDB::getInstance()->getPdo()->query($sql)) {
             $this->addError("{$table} table already exist.");
         }
 
         if (count($this->errors) > 0) {
             $this->_toCreate = false;
         }
+        return $this;
     }
 
 

@@ -57,18 +57,6 @@ try {
     // Begin transaction
     $customerDb->getPdo()->beginTransaction();
 
-    // Insert notification in TBL
-    $insertNotification = $customerDb->insert(Params::TBL_NOTIFICATION, [
-        'event_id'        => $customerDb->lastId(),
-        'user_id'         => $employeeId,
-        'lead_id'         => $userId,
-        'status'          => 1,
-        'common'          => 1,
-        'response'        => 'new_event_added',
-        'response_status' => 1,
-        'date'            => date('Y-m-d H:i:s')
-    ]);
-
     if (count($uniqMonths) > 1) {
         echo 2;
         exit;
@@ -160,6 +148,23 @@ try {
             'added'         => date('Y-m-d H:i:s'),
             'updated'       => date('Y-m-d H:i:s')
         ]);
+
+        // Get last event data
+        $eventData = $customerData->records(Params::TBL_EVENTS, AC::where(['id', $customerDb->lastId()]), ['*'], false);
+
+        // Insert notification in TBL
+        $insertNotification = $customerDb->insert(Params::TBL_NOTIFICATION, [
+            'event_id'        => $customerDb->lastId(),
+            'user_id'         => $employeeId,
+            'lead_id'         => $userId,
+            'status'          => 1,
+            'common'          => 1,
+            'response'        => 'new_event_added',
+            'response_status' => 1,
+            'title'           => ucfirst($title),
+            'days'            => $requestDays,
+            'date'            => date('Y-m-d H:i:s')
+        ]);
     }
     // Commit query
     $customerDb->getPdo()->commit();
@@ -167,10 +172,7 @@ try {
     $customerDb->getPdo()->rollBack();
 }
 
-if ($insertEvent) {
-    // Insert data in common tables
-    $eventData = $customerData->records(Params::TBL_EVENTS, AC::where(['id', $customerDb->lastId()]), ['*'], false);
-
+if ($insertEvent && $insertNotification) {
     /** Table where need to make changes */
     $table = Params::PREFIX . strtolower($title);
 
@@ -256,7 +258,6 @@ if ($insertEvent) {
 //                $customerDb->getPdo()->rollBack();
 //                echo 0;
 //            }
-
         } else {
             // If not result records add new row with data
             $data = $customerDb->insert($table, [
@@ -270,6 +271,7 @@ if ($insertEvent) {
                 'quantity'              => $eventData->days_number,
                 'days'                  => $eventData->days,
             ]);
+
             if (!$data) {
                 echo 0;
                 exit;
@@ -279,5 +281,7 @@ if ($insertEvent) {
             }
         }
     }
+} else {
+    echo 0;
 }
 ?>

@@ -1,83 +1,85 @@
 <?php
 ?>
-
 <script>
     var BEST = $('#bestFirst');
     var bestChart = new Chart(BEST, {
         type: 'bar',
-        options:
-            {
-                scales:
-                    {
-                        xAxes: [{
-                            display: false,
-                            barPercentage: 0.5,
-                            gridLines: {
-                                color: 'transparent'
-                            },
-                        }],
-                        yAxes: [{
-                            display: true,
-                            gridLines: {
-                                color: 'transparent'
-                            },
-                        }],
-                    },
+            options: {
+                animation: {
+                    duration: 4000,
+                    easing: 'linear',
+                },
                 legend: {
-                    display: false
+                    labels:{
+                        fontColor:"#777",
+                        fontSize: 12
+                        }
+                    },
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        gridLines: {
+                            color: 'transparent'
+                        }
+                    }],
+                        yAxes: [{
+                        display: true,
+                        gridLines: {
+                            color: 'transparent'
+                        }
+                    }]
                 }
-            },
+    },
         data: {
-            labels: <?php echo Common::toJson($best->getChartLabel()); ?>,
-            datasets: [
+            labels: <?php echo $best->chartData(['name'], true, false); ?>,
+                datasets: [
                 {
-                    label: "<?php echo ucfirst($best->getFirstPriorityTbl(false)); ?>",
-                    backgroundColor: [<?php echo $best->getChartColor(true)?>],
-                    borderColor: '#723ac3',
-                    borderWidth: 0.3,
-                    data: [<?php echo $best->getChartValues(); ?>]
+                    label: "<?php echo Translate::t($best->getFirstTable(), ['ucfirst']); ?>",
+                    fill: true,
+                    lineTension: 0,
+                    backgroundColor: "rgba(134, 77, 217, 088)",
+                    borderColor: "rgba(134, 77, 217, 088)",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    borderWidth: 1,
+                    pointBorderColor: "rgba(134, 77, 217, 0.88)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(134, 77, 217, 0.88)",
+                    pointHoverBorderColor: "rgba(134, 77, 217, 0.88)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: [<?php echo $best->chartData(['average'], false, true); ?>],
+                    spanGaps: false
+                },
+                {
+                    label: "<?php echo Translate::t($best->getSecondTable(), ['ucfirst']); ?>",
+                    fill: true,
+                    lineTension: 0,
+                    backgroundColor: "#e95f71",
+                    borderColor: "#e95f71",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    borderWidth: 1,
+                    pointBorderColor: "rgba(98, 98, 98, 0.5)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(98, 98, 98, 0.5)",
+                    pointHoverBorderColor: "rgba(98, 98, 98, 0.5)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: [<?php echo $best->chartData(['average'], false, false); ?>],
+                    spanGaps: false
                 }
             ]
         }
     });
-
-    var BESTSECOND    = $('#bestSecond');
-    var bestSecondChart = new Chart(BESTSECOND, {
-        type: 'bar',
-        options:
-            {
-                scales:
-                    {
-                        xAxes: [{
-                            display: false,
-                            barPercentage: 0.5,
-                            gridLines: {
-                                color: 'transparent'
-                            },
-                        }],
-                        yAxes: [{
-                            display: true,
-                            gridLines: {
-                                color: 'transparent'
-                            },
-                        }],
-                    },
-                legend: {
-                    display: false
-                }
-            },
-        data: {
-            labels: <?php echo Common::toJson($best->getChartLabel(false)); ?>,
-            datasets: [
-                {
-                    label: "<?php echo ucfirst($best->getSecondPriorityTbl(false)); ?>",
-                    backgroundColor: [<?php echo $best->getChartColor(false)?>],
-                    borderColor: '#EF8C99',
-                    borderWidth: 0.3,
-                    data: [<?php echo $best->getChartValues(false); ?>]
-                }
-            ]
-        }
-    });
-
 </script>

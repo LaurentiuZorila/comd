@@ -8,7 +8,7 @@ $user   = new CustomerUser();
 $data   = new CustomerProfile();
 
 //we fetch the info from a DB using a PDO object
-$records = $data->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $user->officesId()], ['id', 'name']);
+$records = $data->records(Params::TBL_EMPLOYEES, AC::where(['offices_id', $user->officesId()]), ['id', 'name']);
 foreach ($records as $record) {
     $sth[] = (array)$record;
 }
@@ -16,7 +16,7 @@ foreach ($records as $record) {
 $csv = Writer::createFromFileObject(new SplTempFileObject());
 
 //we insert the CSV header
-$csv->insertOne(['Id', 'Name', 'Quantity', 'Days']);
+$csv->insertOne(['Id', 'Name', 'Quantity']);
 
 // The PDOStatement Object implements the Traversable Interface
 // that's why Writer::insertAll can directly insert

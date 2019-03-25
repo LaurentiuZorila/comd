@@ -94,7 +94,7 @@ include 'includes/navbar.php';
                                     }
                                 } else {
                                     for ($i = 1; $i < 6; $i++) { ?>
-                                        <a class="btn-sm btn-outline-primary" href="userfeedback.php?feedback=<?php echo $i; ?>&leadId=<?php echo $leads->id; ?>&userId=<?php echo $frontUser->userId(); ?>"><span class="fa fa-star"></span></a>
+                                        <a class="btn-sm btn-outline-primary" href="stafffeedback.php?feedback=<?php echo $i; ?>&leadId=<?php echo $leads->id; ?>&userId=<?php echo $frontUser->userId(); ?>"><span class="fa fa-star"></span></a>
                                     <?php }
                                 }?>
                             </div>
@@ -118,10 +118,6 @@ include 'includes/navbar.php';
         ?>
     </div>
 </div>
-<!-- JavaScript files-->
-<?php
-include "./../common/includes/scripts.php";
-?>
 </body>
 </html>
 

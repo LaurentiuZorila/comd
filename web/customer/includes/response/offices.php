@@ -22,7 +22,7 @@ spl_autoload_register(function($class_name){
 
 $data           = new CustomerProfile();
 $departmentId   = Input::get('departments_id');
-$offices        = $data->records(Params::TBL_OFFICE, ['departments_id','=', $departmentId], ['id', 'name']);
+$offices        = $data->records(Params::TBL_OFFICE, AC::where(['departments_id', $departmentId]), ['id', 'name']);
 
 foreach ($offices as $office) {
     $item[$office->id] = $office->name;

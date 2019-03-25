@@ -35,7 +35,6 @@ if (Input::existsName('get', 'notificationId')) {
 include '../common/includes/head.php';
 ?>
 <link rel="stylesheet" href="./../common/css/spiner/style.css">
-<script src="./../common/vendor/fullcalendar/lib/jquery.min.js"></script>
 <script src="./../common/vendor/fullcalendar/lib/moment.min.js"></script>
 <script src="./../common/vendor/fullcalendar/fullcalendar.min.js"></script>
 <script src="./../common/vendor/fullcalendar/locale-all.js"></script>
@@ -237,7 +236,7 @@ include 'includes/navbar.php';
                             </div>
                         </div>
                         <div class="block">
-                            <div id="calendar" class="fc fc-bootstrap4 fc-ltr">
+                            <div id="calendar" class="">
                             </div>
                         </div>
                     </div>

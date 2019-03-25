@@ -8,13 +8,13 @@ if (empty(Input::get('setup')) && !$customer->isLoggedIn()) {
     Redirect::to('../login.php');
 }
 
-$tablesText     = 'By default common tables are created (e.g. furlough, absentees, unpaid leaves, medical leaves). Insert tables names what you want to create followed by comma (e.g target,quality etc..)';
-$condText       = 'For each table inserted you need assign one symbol(>, <). If for first table highest data are best data, you need yo insert symbol \'>\', if lowest data are best data you need to insert symbol \'<\'. Please make attention!';
-$prioritiesText = 'For each table inserted you need assign PRIORITIES (most important table must have assigned 1 value.). For each table assign values for your own priorities. MAKE ATTENTION THIS SETTING IS IMPORTANT TO CALCULATE BEST EMPLOYEES!';
+$tablesText     = 'By default common tables are created (e.g. vacantion, absentees, unpaid leaves, medical leaves). <br /> Insert tables names what you want to create followed by comma (e.g target,quality etc..)';
+$condText       = 'For each table inserted you need assign one symbol(>, <). <br /> If for first table highest data are best data, you need yo insert symbol \'>\', if lowest data are best data you need to insert symbol \'<\'. <br /> Please make attention!';
+$prioritiesText = 'For each table inserted you need assign PRIORITIES (most important table must have assigned 1 value.). <br /> For each table assign values for your own priorities. <br />MAKE ATTENTION THIS SETTING IS IMPORTANT TO CALCULATE DATA FOR BEST EMPLOYEE!';
 $dataDisplayText = 'For each table you need to insert how data are displayed followed by comma e.g (if your table display numbers you need to insert: NUMBER, if your table need display percentage you need to insert: PERCENTAGE.';
 
 $customerId         = Input::get('id');
-$customerDetails    = $records->records(Params::TBL_TEAM_LEAD, ['id', '=', $customerId], ['username', 'name', 'id', 'offices_id', 'password'], false);
+$customerDetails    = $records->records(Params::TBL_TEAM_LEAD, AC::where(['id', $customerId]), ['username', 'name', 'id', 'offices_id', 'password'], false);
 
 // If form is submitted
 if (Input::exists()) {
@@ -94,6 +94,7 @@ if (Input::exists()) {
             /** Tables */
             $tablesToCreate = Common::assocArray($newTables, $displayData);
 
+
             /** User details */
             $customerId         = $customerDetails->id;
             $officesId          = $customerDetails->offices_id;
@@ -121,22 +122,28 @@ if (Input::exists()) {
             $create = new Create();
             /** Create tables */
             foreach ($tablesToCreate as $table => $type) {
-                if ($type === 'number') {
+                if ($type == 'number') {
                     $create->createTable($table, 'int', true);
-                } elseif ($type === 'percentage') {
+                } elseif ($type == 'percentage') {
                     $create->createTable($table, 'float', true);
+                }
+            }
+            foreach ($tablesToCreate as $table => $type) {
+                if ($create->ifExist($table, true)->toCreate()) {
+                    Errors::setErrorType('danger', 'Unable to create tables, please try again!');
                 }
             }
 
             foreach (Params::PREFIX_TBL_COMMON as $commonTables) {
-                $create->createTable($commonTables, 'int');
+                if ($create->ifExist($commonTables)->toCreate()) {
+                    $create->createTable($commonTables, 'int');
+                }
             }
-        }
 
-        if (!Errors::countAllErrors())
-        {
+        }
+        if (!Errors::countAllErrors()) {
             Session::put('success', Translate::t('next_update_db'));
-            Redirect::to('../update_database.php?config='. Tokens::getRoute());
+            Redirect::to('../'. Config::get('route/updateDb') .'?config='. Tokens::getRoute());
         }
 }
 

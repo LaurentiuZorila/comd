@@ -111,6 +111,12 @@ class Params
 
 
     /**
+     * Status table
+     */
+    const TBL_STATS         = 'cmd_status';
+
+
+    /**
      * Allowed files extensions
      */
     const EXTENSIONS        = ['csv'];
@@ -126,10 +132,20 @@ class Params
     const MAX_INPUT         = 50;
 
 
+    /**
+     * Dash text and bg
+     */
     const DASH              = [
                                 'text' => ['dashtext-1', 'dashtext-2', 'dashtext-3', 'dashtext-4'],
                                 'bg'  => ['dashbg-1', 'dashbg-2', 'dashbg-3', 'dashbg-4', 'dashbg-5']
                                ];
+
+    const COMMONTBLSDASHTEXT = [
+        'furlough'    => 'dashtext-4',
+        'absentees'   => 'dashtext-3',
+        'medical'     => 'dashtext-1',
+        'unpaid'      => 'dashtext-2',
+    ];
 
     /**
      * How to display data

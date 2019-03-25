@@ -6,7 +6,7 @@ $allTables = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $lead->offi
 $allTables = explode(',', trim($allTables->tables));
 
 /** All employees for user */
-$allEmployees = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['offices_id', $lead->officesId()]), ['id', 'name']);
+$allEmployees = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['offices_id', $lead->officesId()]), ['id', 'name'], true, ['ORDER BY' => 'name']);
 
 /** Data display */
 $dataDisplay = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $lead->officesId()]), ['data_visualisation'], false)->data_visualisation;
@@ -167,7 +167,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="col-sm-4">
                                 <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} ?>">
-                                    <option value=""><?php echo Translate::t('Select_year'); ?></option>
+                                    <option value="<?php echo Input::exists() ? Input::post('year') : ''; ?>"><?php echo Input::exists() ? Input::post('year') : Translate::t('Select_year'); ?></option>
                                     <?php
                                     foreach (Common::getYearsList() as $year) { ?>
                                         <option><?php echo $year; ?></option>
@@ -180,7 +180,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="col-sm-4">
                                 <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} ?>">
-                                    <option value=""><?php echo Translate::t('Select_month'); ?></option>
+                                    <option value="<?php echo Input::exists() ? Input::post('month') : ''; ?>"><?php echo Input::exists() ? Common::numberToMonth(Input::post('month'), Session::get('lang')) : Translate::t('Select_month'); ?></option>
                                     <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                         <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                     <?php } ?>
@@ -246,12 +246,12 @@ include 'includes/navbar.php';
                                 <div class="stats-2 d-flex">
                                     <div class="stats-2-arrow low"><i class="fa <?php echo in_array($key, Params::TBL_COMMON) ? 'fa-info-circle' : 'fa-line-chart'; ?>"></i></div>
                                     <div class="stats-2-content common" id="" data-toggle="collapse" data-target="<?php echo in_array($key, Params::TBL_COMMON) ? $key : ''; ?>" aria-controls="<?php echo in_array($key, Params::TBL_COMMON) ? $key : ''; ?>" <?php echo in_array($key, Params::TBL_COMMON) ? 'style="cursor: pointer;"' : ''; ?> >
-                                        <strong class="d-block dashtext-1">
+                                        <strong class="d-block">
                                             <?php
-                                            echo in_array($key, $tblDataDysplay) && $dataDisplay[$key] === 'percentage' ? (!in_array($key, Params::TBL_COMMON) ? $value . '%' : $value) : (in_array($key, Params::TBL_COMMON) ? $value . '<small class="text-small">'  . Translate::t('Days', ['strtolower'=>true]) . '</small>' : $value);
+                                            echo in_array($key, $tblDataDysplay) && $dataDisplay[$key] == 'percentage' ? (!in_array($key, Params::TBL_COMMON) ? $value . '%' : $value) : (in_array($key, Params::TBL_COMMON) ? $value . '<small class="text-small">'  . Translate::t('Days', ['strtolower'=>true]) . '</small>' : $value);
                                             ?>
                                         </strong>
-                                        <span class="d-block"><?php echo Translate::t($key, ['strtoupper'=>true]); ?></span>
+                                        <span class="d-block <?php echo in_array($key, Params::TBL_COMMON) ? Params::COMMONTBLSDASHTEXT[$key] : 'dashtext-5'; ?>"><?php echo Translate::t($key, ['strtoupper'=>true]); ?></span>
                                         <div class="progress progress-template progress-small">
                                             <div role="progressbar" style="width: <?php echo $value; ?>%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template progress-bar-small dashbg-2"></div>
                                         </div>
@@ -269,7 +269,7 @@ include 'includes/navbar.php';
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="block">
-                                <div class="title"><strong class="dashtext-1"><?php echo Translate::t($table) . ' - ' . $name; ?></strong>
+                                <div class="title"><strong class="dashtext-5"><?php echo Translate::t($table) . ' - ' . $name; ?></strong>
                                     <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
                                 </div>
                                 <div class="table-responsive">
@@ -328,15 +328,11 @@ include 'includes/navbar.php';
         <?php }
     }?>
     </div>
-    <?php
-    include '../common/includes/head.php';
-    ?>
 </div>
 </div>
 
 <!-- JavaScript files-->
 <?php
-include "./../common/includes/scripts.php";
 if (Input::exists() && !Errors::countAllErrors() || Input::exists('get') && !Errors::countAllErrors()) {
     include './charts/useDataChart.php';
 }

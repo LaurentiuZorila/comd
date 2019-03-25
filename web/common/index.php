@@ -46,8 +46,8 @@
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                     <a class="dropdown-item" href="../backend/login.php">Supervisor</a>
-                                    <a class="dropdown-item" href="../customer/login.php">Team-Leader</a>
-                                    <a class="dropdown-item" href="../frontend/login.php">Customer</a>
+                                    <a class="dropdown-item" href="../customer/login.php">Team Leader</a>
+                                    <a class="dropdown-item" href="../frontend/login.php">Employee</a>
                                 </div>
                             </div>
                         </div>

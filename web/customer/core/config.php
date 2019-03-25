@@ -20,8 +20,8 @@ return [
         'session_supervisor_id' => 'supervisor_id',
         'session_fname'         => 'first_name',
         'session_lname'         => 'last_name',
-        'token'                 => '',
-        'token_hash'            => '',
+        'token'                 => 'token',
+        'token_hash'            => 'token_hash',
         'token_id'              => 'token_id',
         'login_token'           => 'login_token',
     ],
@@ -29,7 +29,8 @@ return [
         'token'                 => 'token',
         'token_hash'            => 'token_hash',
         'submit_token'          => 'submitToken',
-        'filer_submit_token'    => 'filterSubmitToken'
+        'filer_submit_token'    => 'filterSubmitToken',
+        'employee_deleted'      => 'employeeDeleted',
     ],
     'route' => [
         'addUser'   => 'adduser.php',
@@ -44,11 +45,15 @@ return [
         'updateDb'  => 'updatedb.php',
         'updateMyProfile' => 'updateprofile.php',
         'updateUProf'     => 'updateuserprofile.php',
-        'uData'     => 'userdata.php',
+        'uData'           => 'userdata.php',
+        'addEmployees'    => 'insertEmployees.php',
+        'employeeStatus'  => 'employeeStatus.php',
+        'bestEmployee'    => 'best-employee.php',
     ],
     'files' => [
         'file_name'             => 'csvFileName',
         'file_dir'              => __DIR__ . '/filesToUpload/',
         'complete_dirFile'      => 'completeDirToFile',
+        'avatar_dir'            => '../common/img/',
     ]
 ];

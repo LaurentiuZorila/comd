@@ -4,12 +4,19 @@
 <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
     <div class="loader loader-3">
         <div class="card-body d-flex justify-content-center">
-            <div class="sk-wave">
-                <div class="sk-rect sk-rect1"></div>
-                <div class="sk-rect sk-rect2"></div>
-                <div class="sk-rect sk-rect3"></div>
-                <div class="sk-rect sk-rect4"></div>
-                <div class="sk-rect sk-rect5"></div>
+            <div class="sk-circle">
+                <div class="sk-circle1 sk-child"></div>
+                <div class="sk-circle2 sk-child"></div>
+                <div class="sk-circle3 sk-child"></div>
+                <div class="sk-circle4 sk-child"></div>
+                <div class="sk-circle5 sk-child"></div>
+                <div class="sk-circle6 sk-child"></div>
+                <div class="sk-circle7 sk-child"></div>
+                <div class="sk-circle8 sk-child"></div>
+                <div class="sk-circle9 sk-child"></div>
+                <div class="sk-circle10 sk-child"></div>
+                <div class="sk-circle11 sk-child"></div>
+                <div class="sk-circle12 sk-child"></div>
             </div>
         </div>
     </div>

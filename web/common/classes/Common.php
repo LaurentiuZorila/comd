@@ -13,7 +13,7 @@ class Common
      */
     public static function checkValues($items)
     {
-        return array_sum($items) > 0 ? true : false;
+        return array_sum($items) > 0 || array_sum($items) < 0 ? true : false;
     }
 
 
@@ -209,6 +209,51 @@ class Common
     {
         $percentage = $total > 0 ? $divisor / $total * 100 : 0;
         return ($sign) ? self::number($percentage) . '%' : self::number($percentage);
+    }
+
+
+    /**
+     * @param $name
+     * @return string
+     * $username
+     */
+    public static function makeUsername($name)
+    {
+        $uniqId   = uniqid();
+        $postfix  = substr($uniqId,0,5);
+        $username = $name . $postfix;
+        return $username;
+    }
+
+
+    /**
+     * @param $item
+     * @return string
+     */
+    public static function nameForRequestTable($item)
+    {
+        $name = '';
+        $fullName = explode(' ', $item);
+        $fullNames = explode(' ', $item);
+        array_shift($fullName);
+        if ($fullName > 2) {
+            foreach ($fullName as $names) {
+                $initials[] = strtoupper(substr($names, 0, 1));
+            }
+        } else {
+            $initials[] = strtoupper(substr($fullName[0], 0, 1));
+        }
+
+        if (count($initials) > 1) {
+            foreach ($initials as $initial) {
+                $name .= $initial . '. ';
+            }
+            $name = $fullNames[0] . ' ' . $name;
+        } else {
+            $name .= $fullNames[0] . ' ' . $initials[0] . '. ';
+        }
+
+        return $name;
     }
 
 }

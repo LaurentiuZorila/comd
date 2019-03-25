@@ -1,6 +1,6 @@
 <?php
 $notificationCount = $frontDb->get(Params::TBL_NOTIFICATION, AC::where([['user_id', $frontUser->userId()], ['response_status', true], ['employee_view', false]]))->count();
-$notificationData = $frontProfile->records(Params::TBL_NOTIFICATION, AC::where([['user_id', $frontUser->userId()], ['response_status', true], ['employee_view', false]]), ['response', 'status', 'event_id', 'id', 'common'], true);
+$notificationData = $frontProfile->records(Params::TBL_NOTIFICATION, AC::where([['user_id', $frontUser->userId()], ['response_status', true], ['employee_view', false]]), ['response', 'status', 'event_id', 'id', 'common', 'title', 'days'], true);
 if (Input::existsName('get', 'notificationId')) {
     $id = Input::get('notificationId');
     if ($id == 0) {
@@ -52,7 +52,7 @@ if (Input::existsName('get', 'notificationId')) {
                             <?php } ?>
                         <?php if ($notificationCount > 0) {
                         foreach ($notificationData as $notification) {
-                            $url = $notification->common === 1 ? Config::get('route/calendar').'?status=2&notificationId='. $notification->id : Config::get('route/home') .'?officeId='. $frontUser->officeId() . '&userId=' . $frontUser->userId() . '&lastData=' . Tokens::getRoute();
+                            $url = $notification->common == 1 ? Config::get('route/calendar').'?status=2&notificationId='. $notification->id : Config::get('route/home') .'?officeId='. $frontUser->officeId() . '&userId=' . $frontUser->userId() . '&lastData=' . Tokens::getRoute();
                             ?>
                             <a href="<?php echo $url; ?>" class="dropdown-item message d-flex align-items-center">
                                 <div class="profile"><img src="./../common/img/user.png" alt="..." class="img-fluid">
@@ -60,8 +60,9 @@ if (Input::existsName('get', 'notificationId')) {
                                 </div>
                                 <div class="content">
                                     <span class="d-block"><?php echo Translate::t($notification->response, ['ucfirst']);?></span>
-                                    <?php if ($notification->event_id > 0) { ?>
-                                        <small class="date d-block"><?php echo Translate::t($frontProfile->records(Params::TBL_EVENTS, AC::where(['id', $notification->event_id]),['title'], false)->title, ['ucfirst']) . ' - ' . $frontProfile->records(Params::TBL_EVENTS, AC::where(['id', $notification->event_id]),['days'], false)->days; ?></small>
+                                    <?php if ($notification->event_id > 0) {
+                                        $days = explode(',', $notification->days); ?>
+                                        <small class="date d-block"><?php echo Translate::t(strtolower($notification->title)) . ': ' . current($days) . ' - ' . end($days); ?></small>
                                     <?php } ?>
                                 </div>
                             </a>

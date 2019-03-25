@@ -60,6 +60,7 @@ class UpdateDb
 
 
     /**
+     * @param $items
      * @return bool
      */
     public function checkFileHeaders($items)
@@ -127,6 +128,11 @@ class UpdateDb
     }
 
 
+    /**
+     * @param $quantity
+     * @param $days
+     * @return $this
+     */
     public function checkColumns($quantity, $days)
     {
         $days = explode(',',$days);
@@ -141,6 +147,21 @@ class UpdateDb
         }
         return $this;
     }
+
+
+    /**
+     * @param $fileId
+     * @return bool
+     */
+    public function checkIds($fileId)
+    {
+        $ids = $this->_db->get(Params::TBL_EMPLOYEES, AC::where(['offices_id', $this->_userId]), ['id'])->results();
+        foreach ($ids as $id) {
+            $allowedIds[] = $id->id;
+        }
+        return in_array($fileId, $allowedIds);
+    }
+
 
     /**
      * @return bool
@@ -170,8 +191,4 @@ class UpdateDb
         }
         return false;
     }
-
-
-
-
 }

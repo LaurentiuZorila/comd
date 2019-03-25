@@ -69,8 +69,8 @@ class Best
 
 
     /**
+     * @param bool $first
      * @return array
-     * @return array with names and average for all employees
      */
     public function setChart($first = true) :array
     {

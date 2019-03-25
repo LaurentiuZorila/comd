@@ -110,12 +110,12 @@ include 'includes/navbar.php';
                             <div class="card-body text-center"><img src="./../common/img/user.png" class="card-profile-img">
                                 <h4 class="mb-3 text-gray-light"><?php echo $name; ?></h4>
                                 <h5 class="mb-1"><?php echo strtoupper($departmentName->name); ?></h5>
-                                <h5 class="mb-1"><?php echo $officeName->name; ?></h5>
+                                <h5 class="mb-1 text-white-50"><?php echo ucfirst(strtolower($officeName->name)); ?></h5>
                                 <div class="contributions text-monospace text-center">
                                     <?php
                                     for ($i=1;$i<6;$i++) {
                                         if ($i <= $rating) { ?>
-                                            <a class="text-secondary" href="#"><span class="fa fa-star checked"></span></a>
+                                            <a class="text-primary" href="#"><span class="fa fa-star"></span></a>
                                         <?php } else { ?>
                                             <a class="text-secondary" href="#"><span class="fa fa-star"></span></a>
                                         <?php }
