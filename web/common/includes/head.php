@@ -22,8 +22,9 @@
     <link rel="shortcut icon" href="./../common/img/favicon.ico">
 
     <script src="./../common/vendor/jquery/jquery.min.js"></script>
-    <script src="./../common/vendor/popper.js/umd/popper.min.js"></script>
-    <script src="./../common/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--    <script src="./../common/vendor/popper.js/umd/popper.min.js"></script>-->
+<!--    <script src="./../common/vendor/bootstrap/js/bootstrap.min.js"></script>-->
+    <script src="../common/vendor/bootstrap-4.1.3-dist/js/bootstrap.bundle.min.js"></script>
     <script src="./../common/vendor/jquery.cookie/jquery.cookie.js"></script>
     <script src="./../common/vendor/jquery-validation/jquery.validate.min.js"></script>
     <script src="./../common/js/front.js"></script>

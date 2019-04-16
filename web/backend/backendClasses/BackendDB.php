@@ -113,9 +113,10 @@ class BackendDB
      * @param $action
      * @param $table
      * @param array $where
+     * @param array $endParams
      * @return $this|bool
      */
-    public function action($action, $table, $where = [])
+    public function action($action, $table, $where = [], $endParams = [])
     {
         // if value is: $where = ['field', '=', 'value']
         if (is_string($where[0])) {
@@ -125,28 +126,54 @@ class BackendDB
         $operators = array('=', '>', '<', '>=', '<=');
         $condition = [];
         $params    = [];
-        foreach ($where as $item) {
-            if (is_array($item) && count($item) === 3) {
-                list($field, $operator, $value) = $item;
-                if (!in_array($operator, $operators)) {
+
+        if (!empty($where)) {
+            foreach ($where as $item) {
+                if (is_array($item) && count($item) === 3) {
+                    list($field, $operator, $value) = $item;
+                    if (!in_array($operator, $operators)) {
+                        continue;
+                    }
+                    $condition[] = sprintf('`%s` %s ?', $field, $operator);
+                    $params[]    = $value;
                     continue;
                 }
-                $condition[] = sprintf('`%s` %s ?', $field, $operator);
-                $params[]    = $value;
-                continue;
-            }
-            if (is_string($item) && in_array(strtoupper($item), ['AND', 'OR'])) {
-                $condition[] = $item;
-                continue;
-            }
-        }
 
-        if (empty($condition)) {
+                if (is_string($item) && in_array(strtoupper($item), ['AND', 'OR'])) {
+                    $condition[] = $item;
+                    continue;
+                }
+            }
+        } else {
             $condition = ['1 = 1'];
         }
 
         $condition = implode(' ', $condition);
-        $sql = sprintf("%s FROM %s WHERE %s", $action, $table, $condition);
+
+        // If not empty add params to query
+        if (!empty($endParams)) {
+            $param = '';
+            $x = 0;
+            foreach ($endParams as $key => $value) {
+                if (is_array($value)) {
+                    if ($x < count($endParams)) {
+                        $param .= $key . ' ' . implode(' ', $value) . ' ';
+                        continue;
+                    } else {
+                        $param .= $key . ' ' . implode(' ', $value);
+                    }
+                }
+                if ($x < count($endParams)) {
+                    $param .= $key . ' ' . $value . ' ';
+                } else {
+                    $param .= $key . ' ' . $value;
+                }
+                $x++;
+            }
+             $sql = sprintf("%s FROM %s WHERE %s %s", $action, $table, $condition, $param);
+        } else {
+            $sql = sprintf("%s FROM %s WHERE %s", $action, $table, $condition);
+        }
 
         if (!$this->query($sql, $params)->error()) {
             return $this;
@@ -160,11 +187,12 @@ class BackendDB
      * @param $table
      * @param $where
      * @param array $columns
-     * @return bool|BackendDB
+     * @param array $endParams
+     * @return BackendDB|bool
      */
-    public function get($table, $where, $columns = ['*'])
+    public function get($table, $where = [], $columns = ['*'], $endParams = [])
     {
-        return $this->action('SELECT ' . implode(', ', $columns), $table, $where);
+        return $this->action('SELECT ' . implode(', ', $columns), $table, $where, $endParams);
     }
 
 

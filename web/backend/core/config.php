@@ -39,5 +39,12 @@ return [
         'staffProfile'  => 'staffprofile.php',
         'updateProfile' => 'updateprofile.php',
         'updateStaffProfile'    => 'updatestaffprofile.php',
-    ]
+        'updateUserProfile'     => 'updateUserProfile.php',
+    ],
+    'token' => [
+        'employeeDeleted'   => 'employeeDeletedOk',
+    ],
+    'notification'  => [
+        'employeeName'  => 'notificationEmployeeName'
+    ],
 ];

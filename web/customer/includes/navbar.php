@@ -1,7 +1,7 @@
 <?php
 
-$notificationCount = $leadData->count(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->customerId()], ['response_status', false], ['view', 0]]));
-$notificationData = $leadData->records(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->customerId()], ['response_status', false], ['view', 0]]), ['message', 'user_id', 'date', 'id', 'title', 'days']);
+$notificationCount = $leadData->count(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->officesId()], ['response_status', false], ['view', 0]]));
+$notificationData = $leadData->records(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->officesId()], ['response_status', false], ['view', 0]]), ['message', 'user_id', 'date', 'id', 'title', 'days']);
 if (Input::existsName('get', 'notificationId')) {
     $id = Input::get('notificationId');
     if ($id == 0) {
@@ -9,7 +9,7 @@ if (Input::existsName('get', 'notificationId')) {
             [
                 'view' => 1
             ], [
-                'lead_id'   => $lead->customerId()
+                'lead_id'   => $lead->officesId()
             ]);
     } else {
         $leadDb->update(Params::TBL_NOTIFICATION,

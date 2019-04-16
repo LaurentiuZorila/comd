@@ -2,7 +2,7 @@
 require_once 'core/login-init.php';
 
 
-if (Input::exists() && Tokens::tokenVerify()) {
+if (Input::exists()) {
     /** Instantiate validate class */
     $validate = new Validate();
 

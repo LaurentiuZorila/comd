@@ -63,15 +63,15 @@ $allEvents = $frontRecords->records(Params::TBL_EVENTS, $where, ['*'], true);
                     <?php
                     $collapseData = $allEvent->status == 2 ? 'data-target=#collapseExample' . $allEvent->id . ' aria-controls=collapseExample' . $allEvent->id : '';
                     ?>
-                    <a class="" style="cursor: pointer;" type="button" data-toggle="collapse" <?php echo $collapseData; ?> aria-expanded="false">
+                    <span class="badge" data-toggle="collapse" <?php echo $collapseData; ?> aria-expanded="false" style="background-color:<?php echo $allEvent->status == 1 ? Params::EVENTS_TITLE_COLORS[$allEvent->title][1] : '#868e96'; ?>; color: white; cursor: pointer;">
                         <?php echo Translate::t(strtolower($allEvent->title), ['ucfirst'=>true]); ?>
-                    </a>
+                    </span>
                 </td>
-                <td class="text-small">
+                <td class="">
                     <?php
                     $collapseData = $allEvent->status == 2 ? 'data-target=#collapseExample' . $allEvent->id . ' aria-controls=collapseExample' . $allEvent->id : '';
                     ?>
-                    <a class="" style="cursor: pointer;" type="button" data-toggle="collapse" <?php echo $collapseData; ?> aria-expanded="false">
+                    <span class="badge" data-toggle="collapse" <?php echo $collapseData; ?> aria-expanded="false" style="background-color:#868e96; color: white; cursor: pointer;">
                         <?php
                         $all_days = explode(',', $allEvent->days);
                         if (count($all_days) > 1) {
@@ -80,7 +80,7 @@ $allEvents = $frontRecords->records(Params::TBL_EVENTS, $where, ['*'], true);
                             echo $all_days[0];
                         }
                         ?>
-                    </a>
+                    </span>
                 </td>
                 <td>
                     <span class="badge" style="background-color: <?php echo $allEvent->status == 1 ? Params::EVENTS_TITLE_COLORS[$allEvent->title][1] : '#868e96'; ?>"><?php echo Params::EVENTS_STATUS[$allEvent->status]; ?></span>

@@ -1,16 +1,12 @@
 <?php
 require_once 'core/init.php';
 
-$tables = $frontProfile->records(Params::TBL_OFFICE, ['id', '=', $frontUser->officeId()], ['tables'], false);
+$tables = $frontProfile->records(Params::TBL_OFFICE, AC::where(['id', $frontUser->officeId()]), ['tables'], false);
 $tables = explode(',', $tables->tables);
 
 // Get all common data
 foreach (Params::TBL_COMMON as $commonTables) {
-    $commonData[$commonTables] = $frontProfile->records(Params::PREFIX . $commonTables,
-        AC::where([
-                ['employees_id', $frontUser->userId()],
-                ['year', date('Y')]
-        ]), ['month', 'quantity', 'days'], true);
+    $commonData[$commonTables] = $frontProfile->records(Params::PREFIX . $commonTables, AC::where([['employees_id', $frontUser->userId()], ['year', date('Y')]]), ['month', 'quantity', 'days'], true);
 
 }
 
@@ -210,11 +206,8 @@ include 'includes/navbar.php';
                                         </div>
                                         <div class="col-sm-4">
                                             <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} else { echo 'mb-3';}?>">
-                                                <?php if (Input::existsName('post', 'submitFilters')) { ?>
-                                                    <option value="<?php echo Input::post('year'); ?>"><?php echo Input::post('year'); ?></option>
-                                                <?php } else { ?>
-                                                    <option value=""><?php echo Translate::t('Select_year', ['ucfirst'=>true]); ?></option>
-                                                <?php }
+                                                <option value="<?php echo Input::exists() && !empty(Input::post('year')) ? Input::post('year') : ''; ?>"><?php echo Input::exists() && !empty(Input::post('year')) ? Input::post('year') : Translate::t('Select_year', ['ucfirst']); ?></option>
+                                                <?php
                                                 foreach (Common::getYearsList() as $year) { ?>
                                                     <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
                                                 <?php } ?>
@@ -226,16 +219,12 @@ include 'includes/navbar.php';
                                         </div>
 
                                         <div class="col-sm-4">
-                                            <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
-                                                <?php if (Input::existsName('post', 'submitFilters')) { ?>
-                                                    <option value="<?php echo Input::post('month'); ?>"><?php echo Common::getMonths($lang)[Input::post('month')]; ?></option>
-                                                <?php } else { ?>
-                                                    <option value=""><?php echo Translate::t('Select_month', ['ucfirst'=>true]); ?></option>
-                                                <?php }
-                                                foreach (Common::getMonths($lang) as $key => $value) { ?>
-                                                    <option value="<?php echo $key; ?>"><?php echo strtoupper($value); ?></option>
+                                            <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) { echo 'is-invalid'; } else { echo 'mb-3';} ?>">
+                                                <option value="<?php echo Input::exists() && !empty(Input::post('month')) ? Input::post('month') : ''; ?>"><?php echo Input::exists() && !empty(Input::post('month')) && is_numeric(Input::post('month')) ? Common::numberToMonth(Input::post('month'), Session::get('lang')) : Translate::t('Select_month', ['ucfirst']); ?></option>
+                                                <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
+                                                    <option value="<?php echo $key; ?>"><?php echo ucfirst($value); ?></option>
                                                 <?php } ?>
-                                                <option value="All">ALL</option>
+                                                    <option value="All">All</option>
                                             </select>
                                             <?php
                                             if (Input::exists() && empty(Input::post('month'))) { ?>
@@ -374,13 +363,14 @@ include 'includes/navbar.php';
             <section class="margin-bottom-sm">
                 <div class="container-fluid">
                     <div class="row d-flex align-items-stretch">
+                        <?php if (Input::exists() && !Errors::countAllErrors() && $userFurlough > 0) { ?>
                         <div class="col-lg-6">
                             <div class="stats-with-chart-1 block">
                                 <div class="title mb-0"><strong class="d-block"><?php echo Translate::t('furlough'); ?></strong></div>
                                 <div class="row d-flex align-items-end justify-content-between">
                                     <div class="col-5 align-self-center">
-                                        <div class="text"><strong
-                                                    class="d-block dashtext-3"><?php echo $userFurlough; ?>
+                                        <div class="text">
+                                            <strong class="d-block dashtext-3"><?php echo $userFurlough; ?>
                                                 <small><?php echo $day = $userFurlough > 1 ? Translate::t('Days') : Translate::t('Day'); ?></small>
                                             </strong>
                                             <span class="d-block"><?php echo Common::getMonths($lang)[$month] . ' ' . Input::post('year'); ?></span>
@@ -395,6 +385,9 @@ include 'includes/navbar.php';
                                 </div>
                             </div>
                         </div>
+                        <?php }
+                        if (Input::exists() && !Errors::countAllErrors() && $userMedical > 0) {
+                        ?>
 <!--                        MEDICAL LEAVE-->
                         <div class="col-lg-6">
                             <div class="stats-with-chart-1 block">
@@ -417,13 +410,9 @@ include 'includes/navbar.php';
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </section>
-            <section class="margin-bottom-sm">
-                <div class="container-fluid">
-                    <div class="row d-flex align-items-stretch">
+                        <?php } ?>
 <!--                        ABSENTEES-->
+                        <?php if (Input::exists() && !Errors::countAllErrors() && $userAbsentees > 0) { ?>
                         <div class="col-lg-6">
                             <div class="stats-with-chart-1 block">
                                 <div class="title mb-0"><strong class="d-block"><?php echo Translate::t('absentees');  ?></strong></div>
@@ -444,10 +433,12 @@ include 'includes/navbar.php';
                                 </div>
                             </div>
                         </div>
+                        <?php } ?>
                         <!--UNPAID LEAVE-->
+                        <?php if (Input::exists() && !Errors::countAllErrors() && $userUnpaidDays > 0) { ?>
                         <div class="col-lg-6">
                             <div class="stats-with-chart-1 block">
-                                <div class="title mb-0"><strong class="d-block"><?php echo Translate::t('Total_user_unpaid'); ?></strong></div>
+                                <div class="title mb-0"><strong class="d-block"><?php echo Translate::t('unpaid'); ?></strong></div>
                                 <div class="row d-flex align-items-end justify-content-between">
                                     <div class="col-5 align-self-center">
                                         <div class="text"><strong
@@ -466,6 +457,7 @@ include 'includes/navbar.php';
                                 </div>
                             </div>
                         </div>
+                        <?php } ?>
                     </div>
                 </div>
             </section>

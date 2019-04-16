@@ -5,7 +5,7 @@
 
 class AC
 {
-    private static $_columns = ['employees_id','event_id', 'id', 'name', 'offices_id', 'departments_id', 'supervisors_id', 'year', 'month', 'user_id', 'lead_id', 'employees_average_id', 'quantity'];
+    private static $_columns = ['1', 'username', 'employees_id','event_id', 'id', 'name', 'offices_id', 'departments_id', 'supervisors_id', 'year', 'month', 'user_id', 'lead_id', 'employees_average_id', 'quantity'];
 
     /**
      * @param array $array
@@ -20,10 +20,10 @@ class AC
                 $conditions[] = ['AND'];
             }
         } else {
-            // If count conditions is differnt with count array -1
+            // If count conditions is different with count array -1
             if (count($conditions) != count($array) - 1) {
-                $corectNumb = count($array)-1;
-                $diff = $corectNumb - count($conditions);
+                $corectNum = count($array)-1;
+                $diff = $corectNum - count($conditions);
                 if ($diff < 0) {
                     $diffPositive = - $diff;
                     for ($i=0;$i<$diffPositive;$i++) {
@@ -31,7 +31,7 @@ class AC
                     }
                 } elseif ($diff > 0) {
                     for ($i=0;$i<$diff;$i++) {
-                       $conditions[] = ['AND'];
+                        $conditions[] = ['AND'];
                     }
                 }
 
@@ -50,12 +50,13 @@ class AC
         // if value is: $where = ['field', 'value']
         $x = 0;
         foreach ($array as $item) {
-            if (is_string($item)) {
-                list($field, $value) = $array;
-                if (in_array($field, self::$_columns)) {
-                    $where = [$field, '=', $value];
+                if (is_string($item)) {
+                    list($field, $value) = $array;
+                    if (in_array($field, self::$_columns)) {
+                        $where = [$field, '=', $value];
+                    }
                 }
-            }
+
             // if value is: $where = [['field', 'value'], ['field','value']]
             if (is_array($item)) {
                 list($field, $value) = $item;

@@ -1,13 +1,47 @@
 <?php
 ?>
 <script>
+    var items = Array(
+    'linear',
+    'easeInQuad',
+    'easeOutQuad',
+    'easeInOutQuad',
+    'easeInCubic',
+    'easeOutCubic',
+    'easeInOutCubic',
+    'easeInQuart',
+    'easeOutQuart',
+    'easeInOutQuart',
+    'easeInQuint',
+    'easeOutQuint',
+    'easeInOutQuint',
+    'easeInSine',
+    'easeOutSine',
+    'easeInOutSine',
+    'easeInExpo',
+    'easeOutExpo',
+    'easeInOutExpo',
+    'easeInCirc',
+    'easeOutCirc',
+    'easeInOutCirc',
+    'easeInElastic',
+    'easeOutElastic',
+    'easeInOutElastic',
+    'easeInBack',
+    'easeOutBack',
+    'easeInOutBack',
+    'easeInBounce',
+    'easeOutBounce',
+    'easeInOutBounce');
+
+    var item = items[Math.floor(Math.random()*items.length)];
     var BEST = $('#bestFirst');
     var bestChart = new Chart(BEST, {
         type: 'bar',
             options: {
                 animation: {
-                    duration: 4000,
-                    easing: 'linear',
+                    duration: 1000,
+                    easing: item,
                 },
                 legend: {
                     labels:{
@@ -29,7 +63,7 @@
                         }
                     }]
                 }
-    },
+        },
         data: {
             labels: <?php echo $best->chartData(['name'], true, false); ?>,
                 datasets: [

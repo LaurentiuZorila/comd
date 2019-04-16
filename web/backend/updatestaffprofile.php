@@ -1,9 +1,8 @@
 <?php
 require_once 'core/init.php';
-
-$departments    = $backendUserProfile->records(Params::TBL_DEPARTMENT, ['1 = 1'], ['id', 'name']);
-$leads          = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['supervisors_id', '=', $backendUser->userId()], ['id', 'name', 'offices_id']);
-$offices        = $backendUserProfile->records(Params::TBL_OFFICE, ['departments_id', '=', $backendUser->departmentId()]);
+$departments    = $backendUserProfile->records(Params::TBL_DEPARTMENT, [], ['id', 'name']);
+$leads          = $backendUserProfile->records(Params::TBL_TEAM_LEAD, AC::where(['supervisors_id', $backendUser->userId()]), ['id', 'name', 'offices_id']);
+$offices        = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['departments_id', $backendUser->departmentId()]));
 
 
 if (Input::exists() && Tokens::tokenVerify()) {
@@ -52,28 +51,22 @@ include 'includes/navbar.php';
     <!-- Sidebar Navigation-->
     <?php
     include 'includes/sidebar.php';
+    include './../common/includes/preloaders.php';
     ?>
     <!-- Sidebar Navigation end-->
     <div class="page-content">
         <!-- Page Header-->
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
-                <h2 class="h5 no-margin-bottom"><?php echo Translate::t('Update_user_profile'); ?></h2>
-            </div>
-        </div>
-        <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
-            <div class="loader loader-3">
-                <div class="dot dot1"></div>
-                <div class="dot dot2"></div>
-                <div class="dot dot3"></div>
+                <h2 class="h5 no-margin-bottom"><?php echo Translate::t('Update_user_profile', ['ucfirst']); ?></h2>
             </div>
         </div>
         <!-- Breadcrumb-->
         <div class="container-fluid">
             <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t('Home'); ?></a>
+                <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t('Home', ['ucfirst']); ?></a>
                 </li>
-                <li class="breadcrumb-item active"><?php echo Translate::t('Update_user_profile'); ?>
+                <li class="breadcrumb-item active"><?php echo Translate::t('Update_user_profile', ['ucfirst']); ?>
                 </li>
             </ul>
         </div>
@@ -89,7 +82,7 @@ include 'includes/navbar.php';
                     <div class="col-lg-12">
                         <div class="block">
                             <div class="title">
-                                <strong><?php echo Translate::t('Update_user_profile'); ?></strong>
+                                <strong><?php echo Translate::t('Update_user_profile', ['ucfirst']); ?></strong>
                             </div>
                             <div class="block-body">
                                 <form class="form-horizontal" method="post">

@@ -3,7 +3,7 @@ require_once 'core/init.php';
 // All employees ids
 $employeesID = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['offices_id', $lead->officesId()]), ['id']);
 // Statuses
-$stats = $leadDb->get(Params::TBL_STATS,['id', 'name'])->results();
+$stats = $leadDb->get(Params::TBL_STATS,['id', 'status'])->results();
 foreach ($stats as $stat) {
     $allStats[$stat->id] = $stat->status;
 }
@@ -59,7 +59,7 @@ include 'includes/navbar.php';
         <div class="container-fluid">
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t('Home'); ?></a></li>
-                <li class="breadcrumb-item active"><?php echo empty(Input::existsName('get', 'month')) ? Translate::t('Data') . ' ' . Common::getMonths($lang)[$month] : Translate::t('Data') . ' ' . Common::getMonths($lang)[Input::get('month')]; ?></li>
+                <li class="breadcrumb-item active"><?php echo Translate::t('Employees', ['ucfirst']); ?></li>
             </ul>
         </div>
         <section class="no-padding-top">
@@ -133,7 +133,7 @@ include 'includes/navbar.php';
                                                     echo Translate::t($allStats[$statusId], ['ucfirst']);
                                                     ?>
                                                 </td>
-                                                <td
+                                                <td>
                                                     <div class="btn-group-sm dropleft" role="group" aria-label="">
                                                         <button id="btnGroupDrop1" type="button" class="btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                             <?php echo Translate::t('Change_status', ['ucfirst']);?>

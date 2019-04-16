@@ -19,12 +19,6 @@ if (Input::exists() && Tokens::tokenVerify()) {
             'min'       => 2,
             'max'       => 20
         ],
-        'username'       => [
-            'required'  => true,
-            'min'       => 2,
-            'max'       => 20,
-            'unique'    => Params::TBL_TEAM_LEAD
-        ],
         'offices'       => [
                 'required'  => true
         ]
@@ -35,7 +29,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
 
         $fname     = Common::dbValues([Input::post('first_name') => ['trim', 'ucfirst']]);
         $lname     = Common::dbValues([Input::post('last_name') => ['trim', 'ucfirst']]);
-        $username  = Common::dbValues([Input::post('username') => ['trim']]);
+        $username  = Common::makeUsername($fname);
         $name      = $fname . ' ' . $lname;
         $officeId  = Input::post('offices');
 
@@ -48,13 +42,13 @@ if (Input::exists() && Tokens::tokenVerify()) {
                 'lname'            => $lname,
                 'name'             => $name,
                 'username'         => $username,
-                'password'         => password_hash('parola', PASSWORD_DEFAULT)
+                'password'         => password_hash('staffsuperpassword', PASSWORD_DEFAULT)
         ]);
 
         if ($create) {
             Errors::setErrorType('info', Translate::t('Db_success'));
-            Errors::setErrorType('info', Translate::t('default_pass') . ': parola');
-            Errors::setErrorType('info', sprintf("%s: %s - %s: parola", Translate::t('Username'), $username, Translate::t('Pass')));
+            Errors::setErrorType('info', Translate::t('default_pass') . ': staffsuperpassword');
+            Errors::setErrorType('info', sprintf("%s: %s - %s: staffsuperpassword", Translate::t('Username'), $username, Translate::t('Pass')));
         } else {
             Errors::setErrorType('danger', Translate::t('Db_error'));
         }
@@ -101,7 +95,7 @@ include 'includes/navbar.php';
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.php"><?php echo Translate::t('Home'); ?></a>
                 </li>
-                <li class="breadcrumb-item active"><?php echo Translate::t('add_user'); ?>
+                <li class="breadcrumb-item active"><?php echo Translate::t('add_staff'); ?>
                 </li>
             </ul>
         </div>
@@ -117,20 +111,20 @@ include 'includes/navbar.php';
                     <div class="col-lg-12">
                         <div class="block">
                             <div class="title">
-                                <strong><?php echo Translate::t('add_user'); ?></strong>
+                                <strong><?php echo Translate::t('add_staff', ['ucfirst']); ?></strong>
                             </div>
                             <div class="block-body">
                                 <form class="form-horizontal" method="post">
                                     <div class="form-group row">
                                         <label class="col-sm-3 form-control-label">
                                             <?php if (Input::exists() && empty(Input::post('first_name'))) { ?>
-                                            <h6 class="text-danger"><?php echo Translate::t('FN'); ?><i class="fa fa-asterisk text-very-small align-text-top text-danger"></i></h6>
+                                            <h6 class="text-danger"><?php echo Translate::t('FN', ['ucfirst']); ?><i class="fa fa-asterisk text-very-small align-text-top text-danger"></i></h6>
                                             <?php } else { ?>
                                             <h6><?php echo Translate::t('FN'); ?></h6>
                                             <?php } ?>
                                         </label>
                                         <div class="form-group col-sm-9">
-                                            <input type="text" name="first_name" placeholder="<?php echo Translate::t('FN'); ?>" class="form-control <?php if (Input::exists() && empty(Input::post('first_name'))) {echo 'is-invalid';} ?>" value="<?php if (Input::exists() && Errors::countAllErrors('danger')) { echo Input::post('first_name'); }?>">
+                                            <input type="text" name="first_name" placeholder="<?php echo Translate::t('FN', ['ucfirst']); ?>" class="form-control <?php if (Input::exists() && empty(Input::post('first_name'))) {echo 'is-invalid';} ?>" value="<?php if (Input::exists() && Errors::countAllErrors('danger')) { echo Input::post('first_name'); }?>">
                                         </div>
                                     </div>
 
@@ -145,20 +139,6 @@ include 'includes/navbar.php';
                                         </label>
                                         <div class="form-group col-sm-9">
                                             <input type="text" name="last_name" placeholder="<?php echo Translate::t('LN'); ?>" class="form-control <?php if (Input::exists() && empty(Input::post('last_name'))) {echo 'is-invalid';} ?>" value="<?php if (Input::exists() && Errors::countAllErrors('danger')) { echo Input::post('last_name'); }?>">
-                                        </div>
-                                    </div>
-
-                                    <div class="line"></div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-3 form-control-label">
-                                        <?php if (Input::exists() && empty(Input::post('username'))) { ?>
-                                            <h6 class="text-danger"><?php echo Translate::t('Username'); ?><i class="fa fa-asterisk text-very-small align-text-top text-danger"></i></h6>
-                                        <?php } else { ?>
-                                            <h6><?php echo Translate::t('Username'); ?></h6>
-                                        <?php } ?>
-                                        </label>
-                                        <div class="form-group col-sm-9">
-                                            <input type="text" name="username" placeholder="<?php echo Translate::t('Username'); ?>" class="form-control <?php if (Input::exists() && empty(Input::post('username'))) {echo 'is-invalid';} ?>" value="<?php if (Input::exists() && Errors::countAllErrors('danger')) { echo Input::post('username'); }?>">
                                         </div>
                                     </div>
 

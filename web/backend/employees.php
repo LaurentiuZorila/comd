@@ -1,8 +1,10 @@
 <?php
 require_once 'core/init.php';
-
-$allEmployees = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['departments_id', '=', $backendUser->userId()], ['offices_id', 'departments_id', 'name', 'id']);
-
+$allEmployees = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['departments_id',  $backendUser->userId()]), ['offices_id', 'departments_id', 'name', 'id', 'status'], true, ['GROUP BY' => 'name']);
+$status = $backendUserProfile->records(Params::TBL_STATS);
+foreach ($status as $stats) {
+    $allStats[$stats->id] = $stats->status;
+}
 ?>
 
 <!DOCTYPE html>
@@ -11,6 +13,18 @@ $allEmployees = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['department
     <?php
     include '../common/includes/head.php';
     ?>
+    <link rel="stylesheet" href="./../common/css/spiner/style.css">
+    <link rel="stylesheet" href="../common/vendor/dataTables/dataTables.bootstrap4.min.css">
+    <script src="../common/vendor/dataTables/datatables.min.js"></script>
+    <script src="../common/vendor/dataTables/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#employeesTable').DataTable();
+        });
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
 </head>
 <body>
 <?php
@@ -20,9 +34,35 @@ include 'includes/navbar.php';
     <!-- Sidebar Navigation-->
     <?php
     include 'includes/sidebar.php';
+    include './../common/includes/preloaders.php';
     ?>
     <!-- Sidebar Navigation end-->
     <div class="page-content">
+        <!--        *********    DELETE EVENT MODAL START ********* -->
+        <div id="deleteEventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade">
+            <div role="document" class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header"><h3 id="exampleModalLabel" class="modal-title dashtext-3"><?php echo Translate::t('delete_confirmation', ['ucfirst']); ?></h3>
+                        <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+                    </div>
+                    <div class="modal-body text-white-50" id="modalBody">
+                        <span class="text-white-50"><?php echo Translate::t('Name', ['ucfirst']); ?>: </span> <span class="text-white" id="userName"></span>
+                        <br />
+                        <span class="text-white-50"><?php echo Translate::t('Depart',['ucfirst']); ?>:</span> <span class="text-white" id="department"></span>
+                        <br />
+                        <span class="text-white-50"><?php echo Translate::t('Offices',['ucfirst']); ?>:</span> <span class="text-white" id="offices"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-sm btn-outline-secondary" data-dismiss="modal" aria-hidden="true"><?php echo Translate::t('close', ['ucfirst']); ?></button>
+                        <button type="submit" class="btn-sm btn-primary deleteOk" id="deleteOk"><?php echo Translate::t('delete', ['ucfirst']); ?></button>
+                        <input type="hidden" id="employeeId" value="" />
+                        <input type="hidden" id="employeeName" value="" />
+                        <input type="hidden" id="leadofficeid" value="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--        *********    DELETE EVENT MODAL END ********* -->
         <!-- Page Header-->
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
@@ -43,14 +83,15 @@ include 'includes/navbar.php';
                         <div class="block">
                             <div class="title"><strong><?php echo Translate::t('All_employees'); ?></strong></div>
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover">
+                                <table class="table table-striped table-hover" id="employeesTable">
                                     <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th><?php echo Translate::t('Name'); ?></th>
-                                        <th><?php echo Translate::t('Team'); ?></th>
-                                        <th><?php echo Translate::t('Depart'); ?></th>
-                                        <th><?php echo Translate::t('Action'); ?></th>
+                                        <th class="text-primary">#</th>
+                                        <th class="text-primary"><?php echo Translate::t('Name'); ?></th>
+                                        <th class="text-primary"><?php echo Translate::t('Team'); ?></th>
+                                        <th class="text-primary"><?php echo Translate::t('Depart'); ?></th>
+                                        <th class="text-primary"><?php echo Translate::t('Status', ['ucfirst']); ?></th>
+                                        <th class="text-primary text-center"><?php echo Translate::t('Action'); ?></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -59,10 +100,22 @@ include 'includes/navbar.php';
                                     foreach ($allEmployees as $employees) { ?>
                                         <tr>
                                             <th scope="row"><?php echo $x; ?></th>
-                                            <td><a href="employees_data.php?employees_id=<?php echo $employees->id; ?>"><?php echo $employees->name; ?></a></td>
-                                            <td><?php echo $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $employees->offices_id], ['name'], false)->name; ?></td>
-                                            <td><?php echo $backendUserProfile->records(Params::TBL_DEPARTMENT, ['id', '=', $employees->departments_id], ['name'], false)->name ;?></td>
-                                            <td><a href="employees_data.php?employees_id=<?php echo $employees->id; ?>"><i class="fa fa-user"></i></a></td>
+                                            <td><?php echo $employees->name; ?></td>
+                                            <td><?php echo strtoupper($backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $employees->offices_id], ['name'], false)->name); ?></td>
+                                            <td><?php echo strtoupper($backendUserProfile->records(Params::TBL_DEPARTMENT, ['id', '=', $employees->departments_id], ['name'], false)->name);?></td>
+                                            <td>
+                                                <?php
+                                                $statusId = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['id', $employees->id]), ['status'], false)->status;
+                                                echo Translate::t($allStats[$statusId], ['ucfirst']);
+                                                ?>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="list-inline no-margin-bottom">
+                                                    <a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $employees->id; ?>" class="btn-sm btn-bd-download"><i class="icon-chart" data-toggle="tooltip" data-placement="top" title="<?php echo Translate::t('view_data',['ucfirst']) ;?>"></i></a>
+                                                    <a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $employees->id; ?>" class="btn-sm  btn-bd-download"><i class="icon-user-outline text-info mr-1" data-toggle="tooltip" data-placement="top" title="<?php echo Translate::t('edit',['ucfirst']) ;?>"></i></a>
+                                                    <a href="#" class="btn-sm btn-bd-download deleteEmployee" data-offices="<?php echo strtoupper($backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $employees->offices_id], ['name'], false)->name); ?>" data-department="<?php echo strtoupper($backendUserProfile->records(Params::TBL_DEPARTMENT, ['id', '=', $employees->departments_id], ['name'], false)->name );?>" data-employeename="<?php echo $employees->name;?>" data-employeeid="<?php echo $employees->id;?>" data-leadofficeid="<?php echo $employees->offices_id; ?>"><i class="fa fa-trash-o text-danger" data-toggle="tooltip" data-placement="top" title="<?php echo Translate::t('delete',['ucfirst']) ;?>"></i></a>
+                                                </div>
+                                            </td>
                                         </tr>
                                         <?php
                                         $x++;
@@ -83,7 +136,7 @@ include 'includes/navbar.php';
 <!-- JavaScript files-->
 <?php
 include "./../common/includes/scripts.php";
+include "./includes/js/deleteEmployee.php";
 ?>
-
 </body>
 </html>

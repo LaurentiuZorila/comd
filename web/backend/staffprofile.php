@@ -37,7 +37,7 @@ if (Input::existsName('get', 'lead_id') && Input::existsName('get', 'office_id')
     $year               = date('Y');
 
     /** All employees for one lead */
-    $allEmployees = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['offices_id', $officeId]), ['offices_id', 'departments_id', 'name', 'id']);
+    $allEmployees = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['offices_id', $officeId]), ['offices_id', 'departments_id', 'name', 'id'], true, ['ORDER BY' => 'name']);
 
     foreach ($allEmployees as $employees) {
         // Array with employees id
@@ -64,7 +64,7 @@ if (Input::existsName('get', 'lead_id') && Input::existsName('get', 'office_id')
     $officeName         = $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $leadProfile->offices_id], ['name'], false)->name;
 
     /** Icons for tables */
-    $icon               = ['icon-line-chart', 'icon-dashboard', 'icon-chart'];
+    $icon               = ['icon-line-chart', 'icon-dashboard', 'icon-chart', 'fa fa-ambulance'];
 }
 
 if (Input::existsName('post', Tokens::getInputName()) && Tokens::tokenVerify()) {
@@ -127,6 +127,18 @@ if (Input::existsName('post', Tokens::getInputName()) && Tokens::tokenVerify()) 
     ?>
     <link rel="stylesheet" href="./../common/css/spiner/style.css">
     <script src="./../common/vendor/chart.js/Chart.min.js"></script>
+    <link rel="stylesheet" href="../common/vendor/dataTables/dataTables.bootstrap4.min.css">
+    <script src="../common/vendor/dataTables/datatables.min.js"></script>
+    <script src="../common/vendor/dataTables/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#employeesTable').DataTable();
+            $('#furloughTable').DataTable();
+            $('#absenteesTable').DataTable();
+            $('#medicalTable').DataTable();
+            $('#unpaidTable').DataTable();
+        });
+    </script>
 </head>
 <body>
 <?php
@@ -136,6 +148,7 @@ include 'includes/navbar.php';
     <!-- Sidebar Navigation-->
     <?php
     include 'includes/sidebar.php';
+    include './../common/includes/preloaders.php';
     ?>
     <!-- Sidebar Navigation end-->
     <div class="page-content" style="padding-bottom: 70px;">
@@ -143,13 +156,6 @@ include 'includes/navbar.php';
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
                 <h2 class="h5 no-margin-bottom"><?php echo Translate::t('Profile'); ?></h2>
-            </div>
-        </div>
-        <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
-            <div class="loader loader-3">
-                <div class="dot dot1"></div>
-                <div class="dot dot2"></div>
-                <div class="dot dot3"></div>
             </div>
         </div>
         <!-- Breadcrumb-->
@@ -288,7 +294,7 @@ include 'includes/navbar.php';
                                 <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover">
+                                <table class="table table-striped table-hover" id="employeesTable">
                                     <thead>
                                     <tr>
                                         <th>#</th>
@@ -304,10 +310,10 @@ include 'includes/navbar.php';
                                     foreach ($allEmployees as $employees) { ?>
                                         <tr>
                                             <th scope="row"><?php echo $x; ?></th>
-                                            <td><a href="employees_data.php?employees_id=<?php echo $employees->id; ?>"><?php echo $employees->name; ?></a></td>
+                                            <td><a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $employees->id; ?>"><?php echo $employees->name; ?></a></td>
                                             <td><?php echo $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $employees->offices_id], ['name'], false)->name; ?></td>
                                             <td><?php echo $backendUserProfile->records(Params::TBL_DEPARTMENT, ['id', '=', $employees->departments_id], ['name'], false)->name ;?></td>
-                                            <td><a href="employees_data.php?employees_id=<?php echo $employees->id; ?>"><i class="fa fa-user"></i></a></td>
+                                            <td><a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $employees->id; ?>"><i class="fa fa-user"></i></a></td>
                                         </tr>
                                         <?php
                                         $x++;
@@ -330,7 +336,7 @@ include 'includes/navbar.php';
                                 <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover">
+                                <table class="table table-striped table-hover" id="furloughTable">
                                     <thead>
                                     <tr>
                                         <th>#</th>
@@ -346,7 +352,7 @@ include 'includes/navbar.php';
                                     foreach ($employeesFurlough as $employeesData) { ?>
                                         <tr>
                                             <th scope="row"><?php echo $x; ?></th>
-                                            <td><a href="employees_data.php?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
+                                            <td><a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
                                             <td><?php echo (int)$dataCommonTables['furlough'] . ' ' .  Translate::t('Days', ['strtolower'=>true]); ?></td>
                                             <td><?php echo $employeesData['avg'] . ' ' .  Translate::t('Days', ['strtolower'=>true]);?></td>
                                             <td><?php echo Common::percentage($dataCommonTables['furlough'], $employeesData['avg']); ?></td>
@@ -373,7 +379,7 @@ include 'includes/navbar.php';
                                 <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover">
+                                <table class="table table-striped table-hover" id="absenteesTable">
                                     <thead>
                                     <tr>
                                         <th>#</th>
@@ -389,7 +395,7 @@ include 'includes/navbar.php';
                                     foreach ($employeesAbsentees as $employeesData) { ?>
                                         <tr>
                                             <th scope="row"><?php echo $x; ?></th>
-                                            <td><a href="employees_data.php?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
+                                            <td><a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
                                             <td><?php echo (int)$dataCommonTables['absentees'] . ' ' .  Translate::t('Days', ['strtolower'=>true]); ?></td>
                                             <td><?php echo $employeesData['avg'] . ' ' .  Translate::t('Days', ['strtolower'=>true]);?></td>
                                             <td><?php echo Common::percentage($dataCommonTables['absentees'], $employeesData['avg']); ?></td>
@@ -416,7 +422,7 @@ include 'includes/navbar.php';
                                 <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv""><i class="fa fa-close"></i></button>
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover">
+                                <table class="table table-striped table-hover" id="unpaidTable">
                                     <thead>
                                     <tr>
                                         <th>#</th>
@@ -432,7 +438,7 @@ include 'includes/navbar.php';
                                     foreach ($employeesUnpaid as $employeesData) { ?>
                                         <tr>
                                             <th scope="row"><?php echo $x; ?></th>
-                                            <td><a href="employees_data.php?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
+                                            <td><a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
                                             <td><?php echo (int)$dataCommonTables['unpaid'] . ' ' .  Translate::t('Days', ['strtolower'=>true]); ?></td>
                                             <td><?php echo $employeesData['avg'] . ' ' .  Translate::t('Days', ['strtolower'=>true]); ?></td>
                                             <td><?php echo Common::percentage($dataCommonTables['unpaid'], $employeesData['avg']); ?></td>
@@ -459,7 +465,7 @@ include 'includes/navbar.php';
                                 <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv""><i class="fa fa-close"></i></button>
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover">
+                                <table class="table table-striped table-hover" id="medicalTable">
                                     <thead>
                                     <tr>
                                         <th>#</th>
@@ -475,7 +481,7 @@ include 'includes/navbar.php';
                                     foreach ($employeesUnpaid as $employeesData) { ?>
                                         <tr>
                                             <th scope="row"><?php echo $x; ?></th>
-                                            <td><a href="employees_data.php?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
+                                            <td><a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
                                             <td><?php echo (int)$dataCommonTables['medical'] . ' ' .  Translate::t('Days', ['strtolower'=>true]); ?></td>
                                             <td><?php echo $employeesData['avg'] . ' ' . Translate::t('Days', ['strtolower'=>true]); ?></td>
                                             <td><?php echo Common::percentage($dataCommonTables['medical'], $employeesData['avg']); ?></td>
