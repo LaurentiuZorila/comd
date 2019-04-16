@@ -347,8 +347,8 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Docker.php/Dockerfile" />
       <item itemvalue="PHP Script.Tokens.php" />
+      <item itemvalue="Docker.php/Dockerfile" />
     </list>
     <recent_temporary>
       <list>
