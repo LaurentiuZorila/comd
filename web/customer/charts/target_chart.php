@@ -1,7 +1,5 @@
 <?php
 ?>
-
-
 <script>
     var target_chart   = $('#target_customer_chart_bar');
     var target = new Chart(target_chart, {
@@ -113,5 +111,4 @@
             ]
         }
     });
-
 </script>

@@ -5,7 +5,8 @@ spl_autoload_register(function($class_name){
 
     //commonClasses directories
     $directorys = array(
-        'backendClasses/',
+        './backendClasses/',
+        './common/classes',
         '../common/classes/'
     );
 

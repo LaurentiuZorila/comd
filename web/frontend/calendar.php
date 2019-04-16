@@ -231,7 +231,7 @@ include 'includes/navbar.php';
                         <div class="card-header" style="background-color: rgb(45, 48, 53);">
                             <div class="right-menu list-inline no-margin-bottom">
                                 <div class="list-inline-item logout">
-                                    <a type="button" data-toggle="modal" data-target="#info_calendar" class="btn btn-primary btn-sm float-right" id="info_calendar_pulsate"><i class="fa fa-info-circle"></i></a>
+                                    <button type="button" data-toggle="modal" data-target="#info_calendar" class="btn btn-primary btn-sm float-right" id="info_calendar_pulsate"><i class="fa fa-info-circle"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -246,13 +246,13 @@ include 'includes/navbar.php';
                         </div>
                         <div class="block">
                             <p>
-                                <a class="btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
+                                <button class="btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#filter" aria-expanded="false" aria-controls="filter">
                                     <i class="fa fa-angle-down"></i>
-                                </a>
+                                </button>
                             </p>
                             <form method="post" id="filter" class="collapse mb-1" action="calendar/tableStatus.php">
                                 <div class="row">
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-4 mt-1">
                                         <?php
                                         $status = Input::get('status');
                                         $status = empty($status) ? 'all' : $status;
@@ -265,7 +265,7 @@ include 'includes/navbar.php';
                                             <option value="all" <?php echo $status == 'all' ? 'selected' : ''; ?>><?php echo Translate::t('all', ['ucfirst' => true]); ?></option>
                                         </select>
                                     </div>
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-5 mt-1">
                                         <select name="event_month" id="event_month">
                                             <option value=""><?php echo Translate::t('Select_month'); ?></option>
                                             <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
@@ -273,59 +273,14 @@ include 'includes/navbar.php';
                                             <? } ?>
                                         </select>
                                     </div>
-                                </div>
-                                <div class="row mt-1">
-                                    <div class="col-sm-3">
-                                        <button name="eventFilter" id="eventFilter" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
+                                    <div class="col-sm-2">
+                                        <button name="eventFilter" id="eventFilter" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo 'Go'; ?></button>
                                         <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                     </div>
                                 </div>
                             </form>
                             <div class="table-responsive" style="height:519px; overflow-y: scroll;" id="filter-response">
-                                <table class="table">
-                                    <thead>
-                                    <tr role="row">
-                                        <th class="text-primary"><?php echo Translate::t('Request', ['ucfirst'=>true]); ?></th>
-                                        <th class="text-primary"><?php echo Translate::t('Date', ['ucfirst'=>true]); ?></th>
-                                        <th class="text-primary"><?php echo Translate::t('Status', ['ucfirst'=>true]); ?></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php
-                                    if (count($allEvents) > 0) {
-                                        foreach ($allEvents as $allEvent) { ?>
-                                            <tr>
-                                                <td>
-                                                    <?php
-                                                    $collapseData = $allEvent->status == 2 ? 'data-target=#collapseExample' . $allEvent->id . ' aria-controls=collapseExample' . $allEvent->id : '';
-                                                    ?>
-                                                    <a class="" style="cursor: pointer;" type="button" data-toggle="collapse" <?php echo $collapseData; ?> aria-expanded="false">
-                                                        <?php echo Translate::t(strtolower($allEvent->title), ['ucfirst'=>true]); ?>
-                                                    </a>
-                                                </td>
-                                                <td class="text-small">
-                                                    <?php
-                                                    $collapseData = $allEvent->status == 2 ? 'data-target=#collapseExample' . $allEvent->id . ' aria-controls=collapseExample' . $allEvent->id : '';
-                                                    ?>
-                                                    <a class="" style="cursor: pointer;" type="button">
-                                                        <?php
-                                                        $all_days = explode(',', $allEvent->days);
-                                                        if (count($all_days) > 1) {
-                                                            echo current($all_days) . ' - ' . end($all_days);
-                                                        } else {
-                                                            echo $all_days[0];
-                                                        }
-                                                        ?>
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    <span class="badge badge-<?php echo Params::EVENTS_STATUS_COLORS[$allEvent->status]; ?>"><?php echo Params::EVENTS_STATUS[$allEvent->status]; ?></span>
-                                                </td>
-                                            </tr>
-                                        <?php }
-                                    } ?>
-                                    </tbody>
-                                </table>
+
                             </div>
                         </div>
                     </div>
@@ -355,8 +310,8 @@ include 'includes/navbar.php';
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-outline-secondary" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                        <button type="submit" class="btn btn-primary" id="submitButton">Save</button>
+                        <button class="btn-sm btn-outline-secondary" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                        <button type="submit" class="btn-sm btn-primary" id="submitButton">Save</button>
                     </div>
                 </div>
             </div>

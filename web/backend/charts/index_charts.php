@@ -1,45 +1,61 @@
 <?php
 ?>
-
 <script>
-
     // BAR CHART
-
     var INDEXBARCHART    = $('#backendIndexBarChart');
     var indexBarChart = new Chart(INDEXBARCHART, {
         type: 'bar',
         options: {
+            animation: {
+                duration: 1000,
+                easing: 'linear',
+            },
+            legend: {
+                labels:{
+                    fontColor:"#777",
+                    fontSize: 12
+                }
+            },
             scales: {
                 xAxes: [{
-                    display: true,
+                    display: false,
                     gridLines: {
                         color: 'transparent'
-                    },
-                    ticks: {
-                        autoSkip: false
                     }
                 }],
                 yAxes: [{
                     display: true,
                     gridLines: {
                         color: 'transparent'
-                    },
-                    ticks: {
-                        beginAtZero: true
                     }
                 }]
-            },
+            }
         },
         data: {
             labels: <?php echo $chartNames; ?>,
             datasets: [
                 {
                     label: "<?php echo ucfirst(Input::post('table')) . '-' . Common::getMonths($lang)[Input::post('month')]; ?>",
-                    backgroundColor: "#864DD9",
-                    hoverBackgroundColor: "#864DD9",
-                    borderColor: "#864DD9",
-                    borderWidth: 0.5,
+                    fill: true,
+                    lineTension: 0,
+                    backgroundColor: "rgba(134, 77, 217, 088)",
+                    borderColor: "rgba(134, 77, 217, 088)",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    borderWidth: 1,
+                    pointBorderColor: "rgba(134, 77, 217, 0.88)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(134, 77, 217, 0.88)",
+                    pointHoverBorderColor: "rgba(134, 77, 217, 0.88)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
                     data: [<?php echo $chartValues; ?>],
+                    spanGaps: false,
                 },
             ]
         }
@@ -51,37 +67,56 @@
     var indexLineChart = new Chart(INDEXLINECHART, {
         type: 'line',
         options: {
+            animation: {
+                duration: 1000,
+                easing: 'linear',
+            },
+            legend: {
+                labels:{
+                    fontColor:"#777",
+                    fontSize: 12
+                }
+            },
             scales: {
                 xAxes: [{
-                    display: true,
+                    display: false,
                     gridLines: {
                         color: 'transparent'
-                    },
-                    ticks: {
-                        autoSkip: false
                     }
                 }],
                 yAxes: [{
                     display: true,
                     gridLines: {
                         color: 'transparent'
-                    },
-                    ticks: {
-                        beginAtZero: true
                     }
                 }]
-            },
+            }
         },
         data: {
             labels: <?php echo $chartNames; ?>,
             datasets: [
                 {
                     label: "<?php echo ucfirst(Input::post('table')) . '-' . Common::getMonths($lang)[Input::post('month')]; ?>",
-                    backgroundColor: "#864DD9",
-                    hoverBackgroundColor: "#864DD9",
-                    borderColor: "#864DD9",
-                    borderWidth: 0.5,
+                    fill: false,
+                    lineTension: 0,
+                    backgroundColor: "rgba(134, 77, 217, 088)",
+                    borderColor: "rgba(134, 77, 217, 088)",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    borderWidth: 1,
+                    pointBorderColor: "rgba(134, 77, 217, 0.88)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(134, 77, 217, 0.88)",
+                    pointHoverBorderColor: "rgba(134, 77, 217, 0.88)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
                     data: [<?php echo $chartValues; ?>],
+                    spanGaps: false,
                 },
             ]
         }

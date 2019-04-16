@@ -1,8 +1,6 @@
 <?php
 require_once 'core/init.php';
-
-$allLeads = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['departments_id', '=', $backendUser->departmentId()], ['id', 'name', 'offices_id', 'departments_id']);
-
+$allLeads = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['departments_id', '=', $backendUser->departmentId()], ['id', 'name', 'offices_id', 'departments_id'], true, ['ORDER BY' => 'name']);
 ?>
 
 <!DOCTYPE html>

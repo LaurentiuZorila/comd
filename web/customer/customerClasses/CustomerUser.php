@@ -110,13 +110,12 @@ class CustomerUser
     public function find($user)
     {
         $field  = (is_numeric($user)) ? 'id' : 'username';
-        $data   = $this->_customerDB->get(self::CUSTOMER_TBL, [$field, '=', $user]);
+        $data   = $this->_customerDB->get(self::CUSTOMER_TBL, AC::where([$field, $user]));
 
         if ($data->count()) {
             $this->_data = $data->first();
             return true;
         }
-
         return false;
     }
 

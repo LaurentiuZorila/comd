@@ -100,8 +100,15 @@ function displayMessage(type, message) {
     setInterval(function() { $(".eventMessage").fadeOut(); }, 5000);
 }
 
-$(document).ready(function() {
-    $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+$(function() {
+    $( "#startDate" ).datepicker({
+        format: 'yyyy/mm/dd',
+        autoclose: true,
+    });
+    $( "#endDate" ).datepicker({
+        format: 'yyyy/mm/dd',
+        autoclose: true,
+    });
 });
 </script>
 </head>
@@ -163,7 +170,7 @@ include 'includes/navbar.php';
                             </p>
                             <form method="post" id="filter" class="collapse mb-1" action="calendar-customer/tableStatus.php">
                                 <div class="row">
-                                    <div class="col-sm-4 mt-1">
+                                    <div class="col-sm-4 mt-1 mr-0">
                                         <?php
                                         $status = Input::get('status');
                                         $status = empty($status) ? 'all' : $status;

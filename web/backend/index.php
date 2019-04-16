@@ -80,6 +80,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
     <?php
     include '../common/includes/head.php';
     ?>
+    <link rel="stylesheet" href="./../common/css/spiner/style.css">
     <script src="./../common/vendor/chart.js/Chart.min.js"></script>
 </head>
 <body>
@@ -90,19 +91,14 @@ include 'includes/navbar.php';
     <!-- Sidebar Navigation-->
     <?php
     include 'includes/sidebar.php';
+    // LOADING PRELOADER MODAL
+    include './../common/includes/preloaders.php';
     ?>
     <!-- Sidebar Navigation end-->
     <div class="page-content">
         <div class="page-header">
             <div class="container-fluid">
                 <h2 class="h5 no-margin-bottom"><?php echo Translate::t('Dashboard'); ?></h2>
-            </div>
-        </div>
-        <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
-            <div class="loader loader-3">
-                <div class="dot dot1"></div>
-                <div class="dot dot2"></div>
-                <div class="dot dot3"></div>
             </div>
         </div>
         <?php if (Input::exists() && Errors::countAllErrors()) {
@@ -192,7 +188,7 @@ include 'includes/navbar.php';
                             <div class="progress progress-template">
                                 <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-1"></div>
                             </div>
-                            <a href="all_staff.php" class="tile-link"></a>
+                            <a href="<?php echo Config::get('route/allStaff'); ?>" class="tile-link"></a>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-3">
@@ -206,7 +202,7 @@ include 'includes/navbar.php';
                             <div class="progress progress-template">
                                 <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-1"></div>
                             </div>
-                            <a href="all_staff.php" class="tile-link"></a>
+                            <a href="<?php echo Config::get('route/allStaff'); ?>" class="tile-link"></a>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-3">
@@ -220,7 +216,7 @@ include 'includes/navbar.php';
                             <div class="progress progress-template">
                                 <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
                             </div>
-                            <a href="employees.php" class="tile-link"></a>
+                            <a href="<?php echo Config::get('route/employees'); ?>" class="tile-link"></a>
                         </div>
                     </div>
                 </div>

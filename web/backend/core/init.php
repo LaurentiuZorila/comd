@@ -22,6 +22,7 @@ spl_autoload_register(function($class_name){
 
 
 require_once './functions/sanitize.php';
+$backendDB = BackendDB::getInstance();
 $backendUser = new BackendUser();
 $backendUserProfile = new BackendProfile();
 if (!$backendUser->isLoggedIn()) {

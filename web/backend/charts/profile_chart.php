@@ -6,27 +6,30 @@
     var profilebarchart = new Chart(PROFILEBARCHART, {
         type: 'bar',
         options: {
-            legend: {labels:{fontColor:"#777", fontSize: 14}},
+            animation: {
+                duration: 1000,
+                easing: 'linear',
+            },
+            legend: {
+                labels:{
+                    fontColor:"#777",
+                    fontSize: 12
+                }
+            },
             scales: {
                 xAxes: [{
-                    display: true,
+                    display: false,
                     gridLines: {
                         color: 'transparent'
-                    },
-                    ticks: {
-                        autoSkip: false
                     }
                 }],
                 yAxes: [{
                     display: true,
                     gridLines: {
                         color: 'transparent'
-                    },
-                    ticks: {
-                        beginAtZero: true
                     }
                 }]
-            },
+            }
         },
         data: {
             labels: <?php echo $chartNames; ?>,
@@ -61,27 +64,30 @@
     var profilelinechart = new Chart(PROFILELINECHART, {
         type: 'line',
         options: {
-            legend: {labels:{fontColor:"#777", fontSize: 14}},
+            animation: {
+                duration: 1000,
+                easing: 'linear',
+            },
+            legend: {
+                labels:{
+                    fontColor:"#777",
+                    fontSize: 12
+                }
+            },
             scales: {
                 xAxes: [{
-                    display: true,
+                    display: false,
                     gridLines: {
                         color: 'transparent'
-                    },
-                    ticks: {
-                        autoSkip: false
                     }
                 }],
                 yAxes: [{
                     display: true,
                     gridLines: {
                         color: 'transparent'
-                    },
-                    ticks: {
-                        beginAtZero: true
                     }
                 }]
-            },
+            }
         },
         data: {
             labels: <?php echo $chartNames; ?>,

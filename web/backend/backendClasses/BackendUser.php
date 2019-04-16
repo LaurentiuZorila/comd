@@ -48,10 +48,6 @@ class BackendUser
      */
     private $_sessionDepartmentId;
 
-    /**
-     * @var mixed|null
-     */
-    private $_sessionOfficeId;
 
     /**
      * @var bool
@@ -107,7 +103,7 @@ class BackendUser
     public function find($user)
     {
         $field = (is_numeric($user)) ? 'id' : 'username';
-        $data = $this->_db->get(self::BACKEND_TBL, [$field, '=', $user]);
+        $data = $this->_db->get(self::BACKEND_TBL, AC::where([$field, $user]));
 
         if ($data->count()) {
             $this->_data = $data->first();

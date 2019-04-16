@@ -7,7 +7,7 @@
             $.ajax({
                 url: "includes/response/offices.php",
                 dataType: 'Json',
-                data: {'departments':departments},
+                data: {'departments_id':departments},
                 success: function(data) {
                     $('select[name="offices"]').empty();
                     $.each(data, function(key, value) {

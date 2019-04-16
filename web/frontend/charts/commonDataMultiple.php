@@ -6,7 +6,7 @@
         type: 'pie',
         options: {
             legend: {
-                display: false
+                display: true
             }
         },
         data: {
@@ -31,7 +31,7 @@
         type: 'pie',
         options: {
             legend: {
-                display: false
+                display: true
             }
         },
         data: {
@@ -56,7 +56,7 @@
         type: 'pie',
         options: {
             legend: {
-                display: false
+                display: true
             }
         },
         data: {
@@ -76,10 +76,20 @@
     });
 </script>
 <script>
-    var employees_chart    = $('#employees_chart');
+    var employees_chart = $('#employees_chart');
     var employeesChart = new Chart(employees_chart, {
         type: 'line',
         options: {
+            animation: {
+                duration: 1000,
+                easing: 'linear',
+            },
+            legend: {
+                labels:{
+                    fontColor:"#777",
+                    fontSize: 12
+                }
+            },
             scales: {
                 xAxes: [{
                     display: true,
@@ -91,23 +101,35 @@
                     display: true,
                     gridLines: {
                         color: 'transparent'
-                    },
-                    ticks: {
-                        beginAtZero: true
                     }
                 }]
-            },
+            }
         },
         data: {
             labels: <?php echo $chartLabels; ?>,
             datasets: [
                 {
                     label: "<?php if (Input::exists()) { echo Translate::t(Input::post('table'), ['ucfirst' => true]); } ?>",
-                    backgroundColor: "#864DD9",
-                    hoverBackgroundColor: "#864DD9",
-                    borderColor: "#864DD9",
-                    borderWidth: 0.5,
+                    fill: true,
+                    lineTension: 0,
+                    backgroundColor: "rgba(134, 77, 217, 088)",
+                    borderColor: "rgba(134, 77, 217, 088)",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    borderWidth: 1,
+                    pointBorderColor: "rgba(134, 77, 217, 0.88)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(134, 77, 217, 0.88)",
+                    pointHoverBorderColor: "rgba(134, 77, 217, 0.88)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
                     data: [<?php echo $chartValues; ?>],
+                    spanGaps: false,
                 }
             ]
         }

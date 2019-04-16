@@ -219,6 +219,13 @@ class Translate
             'priority_table_details'    => 'Tabelul prioritar',
             'condition_lower'           => 'Valoarea cea mai mica e cea mai buna',
             'condition_highest'         => 'Valoarea cea mai mare e cea mai buna',
+            'team_vacation'     => 'Concedii echipa',
+            'team_absentees'    => 'Absente echipa',
+            'team_unpaid'       => 'Zile neplatite echipa',
+            'team_medical'      => 'Medicale echipa',
+            'bk_employee_deleted'  => sprintf('Userul %s a fost sters', Session::get(Config::get('notification/employeeName'))),
+            'not_found_offices' => 'Nu s-a gasit nici un serviciu',
+            'add_staff'         => 'Adauga staff',
         ];
     }
 
@@ -279,7 +286,7 @@ class Translate
             'Download_file_from_common' => 'File for common tables(vacantion, medical leaves, etc..) download it from here',
             'File'              => 'File',
             'Update_employees_profile' => 'Update employees',
-            'Employees'         => 'Employee',
+            'Employees'         => 'Employees',
             'Given_stars'       => 'Given stars',
             'Click_filter_for_data' => 'Click on Filter button to search another data',
             'Unpaid_h'          => 'Unpaird hours',
@@ -434,6 +441,13 @@ class Translate
             'priority_table_details'    => 'This is your priority table',
             'condition_lower'           => 'Lower data is best',
             'condition_highest'         => 'Highest data is best',
+            'team_vacation'     => 'Team vacation',
+            'team_absentees'    => 'Team absentees',
+            'team_unpaid'       => 'Team unpaid',
+            'team_medical'      => 'Team medical leaves',
+            'bk_employee_deleted'  => sprintf('Employee %s has been deleted', Session::get('notification/employeeName')),
+            'not_found_offices' => 'Not found offices',
+            'add_staff'         => 'Add staff',
         ];
     }
 
@@ -642,11 +656,18 @@ class Translate
             'best_details_tree'         => 'Sotto poi vedere la tua configurazione dei tabelli',
             'your_configuration'        => 'Configurazione tabeli',
             'tables_priority'           => 'Tabele prioritarie',
-            'tables_data_visualisation'        => 'Visualizazzione dati',
+            'tables_data_visualisation' => 'Visualizazzione dati',
             'tables_conditions'         => 'Condizioni tabeli',
             'priority_table_details'    => 'Tabela prioritaria',
             'condition_lower'           => 'Valore più basa è migliore',
             'condition_highest'         => 'Valore più alta è migliore',
+            'team_vacation'     => 'Ferie squadra',
+            'team_absentees'    => 'Assenze squadra',
+            'team_unpaid'       => 'Permesi squadra',
+            'team_medical'      => 'Mallatie squadra',
+            'bk_employee_deleted'  => sprintf('Operatore %s è stato cancelato', Session::get('notification/employeeName')),
+            'not_found_offices' => 'Nessuna sottocomesa',
+            'add_staff'         => 'Inserisci staff',
         ];
     }
 
@@ -740,5 +761,4 @@ class Translate
     {
         return Common::numberToMonth(date('n') - 1, Session::get('lang'));
     }
-
 }
