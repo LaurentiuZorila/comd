@@ -22,7 +22,7 @@ $db = BackendDB::getInstance();
 $employeeId  = Input::get('employeeId');
 $officeId    = Input::get('leadOfficeId');
 $employeeName = Input::get('employeeName');
-$allTables  = $db->get(Params::TBL_OFFICE, AC::where(['id', $leadOfficeId]),['tables'])->first();
+$allTables  = $db->get(Params::TBL_OFFICE, AC::where(['id', $officeId]),['tables'])->first();
 foreach ($allTables as $table) {
     $tables = explode(',', $table);
 }
@@ -39,10 +39,12 @@ try {
         }
     }
     $insetNotification = $db->insert(Params::TBL_NOTIFICATION, [
-        'user_id'   => $employeeId,
-        'lead_id'   => $officeId,
-        'status'    => 2,
-        'message'   => 'bk_employee_deleted'
+        'user_id'           => $employeeId,
+        'lead_id'           => $officeId,
+        'status'            => 2,
+        'from_supervisors'  => 1,
+        'message'           => 'bk_employee_deleted',
+        'date'              => date('Y-m-d h:m:s'),
     ]);
     $db->getPdo()->commit();
     Session::put(Config::get('token/employeeDeleted'), Tokens::getSubmitToken());
@@ -53,6 +55,7 @@ try {
 }
 
 if (Session::exists(Config::get('token/employeeDeleted'))) {
+    Session::delete(Config::get('token/employeeDeleted'));
     echo 1;
 } else {
     echo 0;

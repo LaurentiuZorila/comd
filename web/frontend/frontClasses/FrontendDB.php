@@ -123,9 +123,10 @@ class FrontendDB
      * @param $action
      * @param $table
      * @param array $where
+     * @param array $endParams
      * @return $this|bool
      */
-    public function action($action, $table, $where = [])
+    public function action($action, $table, $where = [], $endParams = [])
     {
         // if value is: $where = ['field', '=', 'value']
         if (is_string($where[0])) {
@@ -151,12 +152,38 @@ class FrontendDB
             }
         }
 
+        // If empty conditions select all
         if (empty($condition)) {
             $condition = ['1 = 1'];
         }
 
+        // condition
         $condition = implode(' ', $condition);
-        $sql = "{$action} FROM `{$table}` WHERE {$condition}";
+
+        // If not empty add params to query
+        if (!empty($endParams)) {
+            $param = '';
+            $x = 0;
+            foreach ($endParams as $key => $value) {
+                if (is_array($value)) {
+                    if ($x < count($endParams)) {
+                        $param .= $key . ' ' . implode(' ', $value) . ' ';
+                        continue;
+                    } else {
+                        $param .= $key . ' ' . implode(' ', $value);
+                    }
+                }
+                if ($x < count($endParams)) {
+                    $param .= $key . ' ' . $value . ' ';
+                } else {
+                    $param .= $key . ' ' . $value;
+                }
+                $x++;
+            }
+            $sql = sprintf("%s FROM %s WHERE %s %s", $action, $table, $condition, $param);
+        } else {
+            $sql = sprintf("%s FROM %s WHERE %s", $action, $table, $condition);
+        }
 
         if (!$this->query($sql, $params)->error()) {
             return $this;
@@ -170,18 +197,19 @@ class FrontendDB
      * @param $table
      * @param $where
      * @param array $columns
+     * @param array $endParams
      * @return bool|FrontendDB
      */
-    public function get($table, $where, $columns = ['*'])
+    public function get($table, $where, array $columns = ['*'], $endParams = [])
     {
-        return $this->action('SELECT ' . implode(', ', $columns), $table, $where);
+        return $this->action('SELECT ' . implode(', ', $columns), $table, $where, $endParams);
     }
 
 
     /**
      * @param $table
      * @param $where
-     * @return bool|BackendDB
+     * @return bool|FrontendDB
      */
     public function delete($table, $where)
     {
@@ -218,8 +246,8 @@ class FrontendDB
 
     /**
      * @param $table
-     * @param $id
-     * @param $fields
+     * @param array $fields
+     * @param array $conditions
      * @return bool
      */
     public function update($table, array $fields, array $conditions)

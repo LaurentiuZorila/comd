@@ -1,5 +1,24 @@
 <?php
-
+$notificationCount = $backendDB->get(Params::TBL_NOTIFICATION, AC::where([['departments_id', $backendUser->departmentId()], ['supervisors_view', false]]))->count();
+$notificationData = $backendUserProfile->records(Params::TBL_NOTIFICATION, AC::where([['departments_id', $backendUser->departmentId()], ['supervisors_view', false]]), ['supervisors_message','user_id', 'id', 'date'], true, ['ORDER BY' => 'date DESC']);
+if (Input::existsName('get', 'notificationId')) {
+    $id = Input::get('notificationId');
+    if ($id == 0) {
+        $backendDB->update(Params::TBL_NOTIFICATION,
+            [
+                'supervisors_view' => 1
+            ], [
+                'departments_id'   => $backendUser->departmentId()
+            ]);
+    } else {
+        $backendDB->update(Params::TBL_NOTIFICATION,
+            [
+                'supervisors_view' => 1
+            ], [
+                'id'   => $id
+            ]);
+    }
+}
 ?>
 
 <header class="header">
@@ -25,23 +44,34 @@
             </div>
             <div class="right-menu list-inline no-margin-bottom">
                 <!--                <div class="list-inline-item"><a href="#" class="search-open nav-link"><i class="icon-magnifying-glass-browser"></i></a></div>-->
-                <div class="list-inline-item dropdown"><a id="navbarDropdownMenuLink1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link messages-toggle"><i class="fa fa-envelope"></i><span class="badge dashbg-1">1</span></a>
-                    <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages">
-                        <a href="#" class="dropdown-item message d-flex align-items-center">
-                            <div class="profile">
-                                <div class="status online"></div>
-                            </div>
-                            <div class="content"><strong class="d-block"><?php echo $backendUser->name(); ?></strong><span class="d-block"><?php echo Translate::t('navNotification'); ?></span>
-                                <small class="date d-block"><?php echo date("h:i A"); ?></small>
-                            </div>
-                        </a>
-                        <a href="#" class="dropdown-item text-center message"><strong><?php echo Translate::t('navEmplData'); ?><i class="fa fa-angle-right"></i></strong></a>
-                        <a href="#" class="dropdown-item text-center message"><strong><?php echo Translate::t('navStaffData'); ?><i class="fa fa-angle-right"></i></strong></a>
+                <div class="list-inline-item dropdown"><a id="navbarDropdownMenuLink1" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link messages-toggle"><i class="fa fa-envelope"></i><span class="badge dashbg-1"><?php echo $notificationCount > 0 ? $notificationCount : ''; ?></span></a>
+                    <?php if ($notificationCount > 4) { ?>
+                    <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages" style="height:419px; overflow-y: scroll;">
+                        <?php } else { ?>
+                        <div aria-labelledby="navbarDropdownMenuLink1" class="dropdown-menu messages">
+                            <?php } ?>
+                            <?php if ($notificationCount > 0) {
+                                foreach ($notificationData as $notification) { ?>
+                                    <a href="<?php echo Config::get('route/emplData'); ?>?status=2&notificationId=<?php echo $notification->id; ?>" class="dropdown-item message d-flex align-items-center">
+                                        <div class="profile"><img src="./../common/img/user.png" alt="..." class="img-fluid">
+                                            <div class="status online"></div>
+                                        </div>
+                                        <div class="content">
+                                            <span class="d-block"><?php echo Translate::t($notification->supervisors_message, ['ucfirst']); ?></span>
+                                            <?php if ($notification->user_id > 0) { ?>
+                                            <small class="date d-block"><?php echo Translate::t('employee', ['ucfirst']) . ': ' . $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['id', $notification->user_id]), ['name'], false)->name; ?></small>
+                                            <small class="date d-block"><?php echo Translate::t('Date', ['ucfirst']) .': ' . $notification->date; ?></small>
+                                            <?php } ?>
+                                        </div>
+                                    </a>
+                                <?php } ?>
+                                <a href="?notificationId=<?php echo 0; ?>" class="dropdown-item text-center message"> <strong><?php echo Translate::t('mark_as_read', ['ucfirst']);?> <i class="fa fa-flag-checkered dashtext-1"></i></strong></a>
+                                <?php
+                            } else { ?>
+                                <a href="javascript:;" class="dropdown-item text-center message"><strong><?php echo Translate::t('notification_not_found', ['ucfirst']); ?></strong></a>
+                            <?php } ?>
+                        </div>
                     </div>
-                </div>
-                <!-- Tasks-->
-
-                <!-- Tasks end-->
                 <!-- Megamenu-->
                 <div class="list-inline-item dropdown menu-large"><a href="#" data-toggle="dropdown" class="nav-link">Mega <i class="fa fa-ellipsis-v"></i></a>
                     <div class="dropdown-menu megamenu">

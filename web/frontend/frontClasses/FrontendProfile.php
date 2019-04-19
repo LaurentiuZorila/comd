@@ -25,14 +25,15 @@ class FrontendProfile
      * @param array $where
      * @param array $column
      * @param bool $all
+     * @param array $endParams
      * @return mixed
      */
-    public function records($table, array $where, array $column, $all = false)
+    public function records($table, array $where, array $column = ['*'], $all = true, $endParams = [])
     {
         if ($all) {
-            return $this->_db->get($table, $where, $column)->results();
+            return $this->_db->get($table, $where, $column, $endParams)->results();
         }
-        return $this->_db->get($table, $where, $column)->first();
+        return $this->_db->get($table, $where, $column, $endParams)->first();
     }
 
 

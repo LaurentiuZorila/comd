@@ -12,7 +12,7 @@ class Translate
     private static function langRO()
     {
         return [
-            'navNotification'   => 'Baza de date a fost actualizata',
+            'navNotification'   => 'Date noi au fost adaugate in baza de date',
             'navEmplData'       => 'Vezi datele anagatilor',
             'navStaffData'      => 'Vezi datele stafului',
             'All_staff'         => 'Staff',
@@ -124,7 +124,6 @@ class Translate
             'Team_furlough'     => 'Concedii echipa',
             'Team_unpaid'       => 'Zile neplatite echipa',
             'Team_absentees'    => 'Absente echipa',
-            'Team_medical'      => 'Medical echipa',
             'view_employees'    => 'Vezi operatori',
             'view_staff'        => 'Vezi staff',
             'view_employees_nav_details'        => 'Din aceasta sectiunde poti vizualiza toti operatorii care apartin departamentului tau',
@@ -226,6 +225,12 @@ class Translate
             'bk_employee_deleted'  => sprintf('Userul %s a fost sters', Session::get(Config::get('notification/employeeName'))),
             'not_found_offices' => 'Nu s-a gasit nici un serviciu',
             'add_staff'         => 'Adauga staff',
+            'move_staff'        => 'Muta staff',
+            'move_employees'    => 'Muta operatori',
+            'create_staff'      => 'Adauga staff',
+            'status_changed'    => 'Statusul a fost schimbat pentru:',
+            'employee'          => 'Operator',
+            'employee_status_changed'   => 'Statsul tau a fost schimbat',
         ];
     }
 
@@ -345,7 +350,6 @@ class Translate
             'Team_furlough'     => 'Team vacation',
             'Team_unpaid'       => 'Team unpaid',
             'Team_absentees'    => 'Team absentees',
-            'Team_medical'      => 'Team medical',
             'view_employees'    => 'View employees',
             'view_staff'        => 'View staff',
             'view_employees_nav_details'        => 'Click on icon below to view all employees belong your department',
@@ -448,6 +452,12 @@ class Translate
             'bk_employee_deleted'  => sprintf('Employee %s has been deleted', Session::get('notification/employeeName')),
             'not_found_offices' => 'Not found offices',
             'add_staff'         => 'Add staff',
+            'move_staff'        => 'Move staff',
+            'move_employees'    => 'Move employees',
+            'create_staff'      => 'Create staff',
+            'status_changed'    => 'Status has been changed for:',
+            'employee'          => 'Employee',
+            'employee_status_changed'   => 'Your status has been changed',
         ];
     }
 
@@ -668,6 +678,12 @@ class Translate
             'bk_employee_deleted'  => sprintf('Operatore %s è stato cancelato', Session::get('notification/employeeName')),
             'not_found_offices' => 'Nessuna sottocomesa',
             'add_staff'         => 'Inserisci staff',
+            'move_staff'        => 'Sposta staff',
+            'move_employees'    => 'Sposta operatori',
+            'create_staff'      => 'Inserisci staff',
+            'status_changed'    => 'Stato è stato aggiornato per:',
+            'employee'          => 'Operatore',
+            'employee_status_changed'   => 'Il tuo stato è stato cambiato',
         ];
     }
 

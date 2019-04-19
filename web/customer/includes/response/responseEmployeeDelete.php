@@ -16,10 +16,12 @@ spl_autoload_register(function($class_name){
         }
     }
 });
-
 $db             = CustomerDB::getInstance();
 $employeeId     = Input::get('employeeId');
 $leadOfficeId   = Input::get('leadOfficeId');
+$officeId       = Input::get('offices_id');
+$departmentsId  = Input::get('departments_id');
+
 $allTables  = $db->get(Params::TBL_OFFICE, AC::where(['id', $leadOfficeId]),['tables'])->first();
 foreach ($allTables as $table) {
     $tables = explode(',', $table);
@@ -36,6 +38,7 @@ try {
             $db->delete(Params::PREFIX . $table, AC::where(['employees_id', $employeeId]));
         }
     }
+
     $db->getPdo()->commit();
     Session::put(Config::get('token/employee_deleted'), Tokens::getSubmitToken());
 } catch (PDOException $e) {
@@ -44,6 +47,7 @@ try {
 }
 
 if (Session::exists(Config::get('token/employee_deleted'))) {
+    Session::delete(Config::get('token/employee_deleted'));
     echo 1;
 } else {
     echo 0;

@@ -138,6 +138,8 @@ if (Input::existsName('post', Tokens::getInputName())) {
                                         'status'            => 1,
                                         'view'              => 1,
                                         'employee_view'     => 0,
+                                        'departments_id'    => $lead->departmentId(),
+                                        'supervisors_view'  => 1,
                                         'response'          => 'navNotification',
                                         'response_status'   => 1,
                                         'date'              => date('Y-m-d H:m:s')
@@ -172,6 +174,8 @@ if (Input::existsName('post', Tokens::getInputName())) {
                                     'status'            => 1,
                                     'view'              => 1,
                                     'employee_view'     => 0,
+                                    'departments_id'    => $lead->departmentId(),
+                                    'supervisors_view'  => 1,
                                     'response'          => 'navNotification',
                                     'response_status'   => 1,
                                     'date'              => date('Y-m-d H:m:s')

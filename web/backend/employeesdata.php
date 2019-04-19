@@ -6,9 +6,9 @@ $user_id        = $backendUser->userId();
 $department_id  = $backendUser->departmentId();
 
 /** All users and staf for one department */
-$allStaff   = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['supervisors_id', '=', $user_id], ['id', 'name', 'offices_id', 'supervisors_id']);
-$offices    = $backendUserProfile->records(Params::TBL_OFFICE, ['departments_id', '=', $department_id], ['id', 'name']);
-$allUsers   = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['supervisors_id', '=', $user_id]);
+$allStaff   = $backendUserProfile->records(Params::TBL_TEAM_LEAD, AC::where( ['supervisors_id', $user_id]), ['id', 'name', 'offices_id', 'supervisors_id']);
+$offices    = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['departments_id', $department_id]), ['id', 'name']);
+$allUsers   = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where( ['supervisors_id', $user_id]));
 
 /** How to display data */
 $dataDisplay = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['departments_id', $backendUser->departmentId()]), ['data_visualisation'], false)->data_visualisation;
@@ -40,13 +40,13 @@ if (Input::exists() && Tokens::tokenVerify()) {
     $team           = Input::post('teams');
 
         /** Employees details */
-        $employeesData  = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['id', '=', $id], ['offices_id', 'name'], false);
+        $employeesData  = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['id', $id]), ['offices_id', 'name'], false);
 
         /** Offices data */
-        $allOfficesData = $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $employeesData->offices_id], ['name', 'tables'], false);
+        $allOfficesData = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['id', $employeesData->offices_id]), ['name', 'tables'], false);
 
         /** All Leads for selected office details */
-        $allLeads       = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['offices_id', '=', $employeesData->offices_id], ['name']);
+        $allLeads       = $backendUserProfile->records(Params::TBL_TEAM_LEAD, AC::where(['offices_id', $employeesData->offices_id]), ['name']);
 
 
         /** Team Leads names */
@@ -73,14 +73,8 @@ if (Input::exists() && Tokens::tokenVerify()) {
             $prefixTables[Params::PREFIX . trim($table)] = $table;
         }
 
-        /** Conditions for action */
-        $where = [
-            ['year', '=', $year],
-            'AND',
-            ['employees_id', '=', $id],
-            'AND',
-            ['month', '=', $month]
-        ];
+        /** Condition for action */
+        $where = AC::where([['year', $year], ['employees_id', $id], ['month', $month]]);
 
         foreach ($prefixTables as $key => $table) {
             /** quantity for all tables */
@@ -110,13 +104,13 @@ if (Input::existsName('get', 'employees_id') && !Input::exists()) {
     $employeesId = Input::get('employees_id');
 
     /** Employees details */
-    $employeesData  = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['id', '=', $employeesId], ['offices_id', 'name'], false);
+    $employeesData  = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['id', $employeesId]), ['offices_id', 'name'], false);
 
     /** Offices data */
-    $allOfficesData = $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $employeesData->offices_id], ['name', 'tables'], false);
+    $allOfficesData = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['id', $employeesData->offices_id]), ['name', 'tables'], false);
 
     /** All Leads for selected office details */
-    $allLeads       = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['offices_id', '=', $employeesData->offices_id], ['name']);
+    $allLeads       = $backendUserProfile->records(Params::TBL_TEAM_LEAD, AC::where(['offices_id',  $employeesData->offices_id]), ['name']);
 
     /** Team Leads names */
     if (!empty($allLeads)) {
@@ -129,8 +123,6 @@ if (Input::existsName('get', 'employees_id') && !Input::exists()) {
 
     /** Employees name */
     $employeesName  = $employeesData->name;
-    /** Month name */
-    $monthName      = Common::numberToMonth($month, $lang);
 
     /** Arrays with tables */
     $tables = explode(',', trim($allOfficesData->tables));
@@ -141,14 +133,8 @@ if (Input::existsName('get', 'employees_id') && !Input::exists()) {
         $prefixTables[Params::PREFIX . trim($table)] = $table;
     }
 
-    /** Conditions for action */
-    $where = [
-        ['year', '=', date('Y')],
-        'AND',
-        ['employees_id', '=', $employeesId],
-        'AND',
-        ['month', '=', date('n')]
-    ];
+    /** Condition for action */
+    $where = AC::where([['year', date('Y')], ['employees_id', $employeesId], ['month', date('n')]]);
 
     foreach ($prefixTables as $key => $table) {
         /** quantity for all tables */
@@ -168,7 +154,6 @@ if (Input::existsName('get', 'employees_id') && !Input::exists()) {
     if (!Common::checkValues($allData)) {
         Errors::setErrorType('info', Translate::t('not_found_current_month') . '. ' . Translate::t('try_search_another', ['ucfirst' => true]));
     }
-
 }
 
 ?>
@@ -190,19 +175,14 @@ include 'includes/navbar.php';
     <!-- Sidebar Navigation-->
     <?php
     include 'includes/sidebar.php';
+    // LOADING PRELOADER MODAL
+    include './../common/includes/preloaders.php';
     ?>
     <div class="page-content" style="padding-bottom: 70px;">
         <!-- Page Header-->
         <div class="page-header no-margin-bottom">
             <div class="container-fluid">
                 <h2 class="h5 no-margin-bottom"><?php echo Translate::t('All_employees'); ?></h2>
-            </div>
-        </div>
-        <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade hide">
-            <div class="loader loader-3">
-                <div class="dot dot1"></div>
-                <div class="dot dot2"></div>
-                <div class="dot dot3"></div>
             </div>
         </div>
         <!-- Breadcrumb-->
@@ -287,7 +267,10 @@ include 'includes/navbar.php';
             </div>
         </section>
 <?php
-if (Input::exists() && !Errors::countAllErrors() || Input::existsName('get', 'employees_id') && !Errors::countAllErrors()) { ?>
+if (Input::exists() && !Errors::countAllErrors() || Input::existsName('get', 'employees_id') && !Errors::countAllErrors()) {
+    $monthName = Input::exists('post') ? $monthName : Common::numberToMonth(date('n'), $lang);
+    $year  = Input::exists('post') ? $year : date('Y');
+    ?>
         <section>
             <div class="col-12 mb-1">
                 <div class="card">
@@ -297,7 +280,7 @@ if (Input::exists() && !Errors::countAllErrors() || Input::existsName('get', 'em
                             <small class="text-muted"><?php echo $allOfficesData->name; ?></small>
                         </footer>
                         <footer class="blockquote-footer">
-                            <small class="text-muted"><?php echo Translate::t('Data') . ' ' . $monthName . ', ' . Input::post('year'); ?></small>
+                            <small class="text-muted"><?php echo Translate::t('Data') . ' ' . $monthName . ', ' . $year; ?></small>
                         </footer>
                         <footer class="blockquote-footer">
                             <small class="text-muted">

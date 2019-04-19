@@ -7,7 +7,7 @@
         $.ajax({
             type: "GET",
             url: "./includes/response/responseEmployeeStats.php",
-            data: '&statsId=' + statsId + '&employeeId=' + employeeId,
+            data: '&statsId=' + statsId + '&employeeId=' + employeeId + '&office_id=<?php echo $lead->officesId(); ?>&departments_id=<?php echo $lead->departmentId();?>',
             success: function (response) {
                 if(parseInt(response) > 0) {
                     setTimeout(function () { window.location.reload(); }, 2000);
@@ -36,7 +36,7 @@
         $.ajax({
             type: "GET",
             url: "./includes/response/responseEmployeeDelete.php",
-            data: 'employeeId=' + employeeId + '&leadOfficeId=' + leadOfficeId,
+            data: 'employeeId=' + employeeId + '&leadOfficeId=' + leadOfficeId + '&office_id=<?php echo $lead->officesId(); ?>&departments_id=<?php echo $lead->departmentId();?>',
             success: function (response) {
                 if(parseInt(response) > 0) {
                     setTimeout(function () { window.location.reload(); }, 2000);

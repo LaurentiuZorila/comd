@@ -33,8 +33,8 @@
         $('#deleteEventModal').modal('hide');
         $.ajax({
             type: "GET",
-            url: "./includes/response/responseEmployeeDelete.php",
-            data: 'employeeId=' + employeeId + '&leadOfficeId=' + leadOfficeId + 'employeeName=' + employeeName,
+            url: "./includes/response/responseEmployeeDeleted.php",
+            data: 'employeeId=' + employeeId + '&leadOfficeId=' + leadOfficeId + '&employeeName=' + employeeName,
             success: function (response) {
                 if(parseInt(response) > 0) {
                     setTimeout(function () { window.location.reload(); }, 2000);

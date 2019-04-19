@@ -1,7 +1,7 @@
 <?php
 require_once 'core/init.php';
-$allEmployees   = $leadData->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $lead->officesId()], ['name', 'offices_id', 'id', 'departments_id']);
-$departments    = $leadData->records(Params::TBL_DEPARTMENT, [], ['id', 'name']);
+$allEmployees   = $leadData->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $lead->officesId()], ['name', 'offices_id', 'id', 'departments_id'], true, ['ORDER BY' => 'name']);
+$departments    = $leadData->records(Params::TBL_DEPARTMENT, [], ['id', 'name'], true, ['ORDER BY' => 'name']);
 
 
 if (Input::exists() && Tokens::tokenVerify()) {

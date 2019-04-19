@@ -21,9 +21,9 @@ require_once 'core/init.php';
         <li><a href="<?php echo Config::get('route/allStaff', true); ?>"> <i class="icon-user-1"></i><?php echo Translate::t('All_staff',['ucfirts']); ?></a></li>
         <li><a href="#update" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i><?php echo Translate::t('update_data',['ucfirts']); ?></a>
             <ul id="update" class="collapse list-unstyled ">
-                <li><a href="<?php echo Config::get('route/updateStaffProfile', true); ?>"> <i class="icon-user"></i><?php echo Translate::t('Update_user_profile',['ucfirts']); ?></a></li>
-                <li><a href="<?php echo Config::get('route/updateUserProfile', true); ?>"> <i class="fa fa-edit"></i><?php echo Translate::t('Update_employees_profile',['ucfirts']); ?></a></li>
-                <li><a href="<?php echo Config::get('route/addUser', true); ?>"> <i class="fa fa-user-plus"></i><?php echo Translate::t('create',['ucfirts']); ?></a></li>
+                <li><a href="<?php echo Config::get('route/updateStaffProfile', true); ?>"> <i class="icon-user"></i><?php echo Translate::t('move_staff',['ucfirts']); ?></a></li>
+                <li><a href="<?php echo Config::get('route/updateUserProfile', true); ?>"> <i class="fa fa-edit"></i><?php echo Translate::t('move_employees',['ucfirts']); ?></a></li>
+                <li><a href="<?php echo Config::get('route/addUser', true); ?>"> <i class="fa fa-user-plus"></i><?php echo Translate::t('create_staff',['ucfirts']); ?></a></li>
             </ul>
         </li>
         <li><a href="#profile" aria-expanded="false" data-toggle="collapse"> <i class="icon-windows"></i><?php echo Translate::t('Profile',['ucfirts']); ?></a>

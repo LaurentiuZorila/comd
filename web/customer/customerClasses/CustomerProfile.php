@@ -23,6 +23,7 @@ class CustomerProfile
      * @param array $where
      * @param array $column
      * @param bool $all
+     * @param array $endParams
      * @return mixed|null
      */
     public function records($table, array $where, array $column = ['*'], $all = true, $endParams = [])

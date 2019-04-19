@@ -123,6 +123,7 @@ class CustomerDB
      * @param $action
      * @param $table
      * @param array $where
+     * @param array $endParams
      * @return $this|bool
      */
     public function action($action, $table, $where = [], $endParams = [])

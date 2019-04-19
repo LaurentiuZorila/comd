@@ -1,7 +1,7 @@
 <?php
 
 $notificationCount = $leadData->count(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->officesId()], ['response_status', false], ['view', 0]]));
-$notificationData = $leadData->records(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->officesId()], ['response_status', false], ['view', 0]]), ['message', 'user_id', 'date', 'id', 'title', 'days']);
+$notificationData = $leadData->records(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->officesId()], ['response_status', false], ['view', 0]]), ['message', 'user_id', 'date', 'id', 'title', 'days', 'form_supervisors'], true, ['ORDER BY' => 'date DESC']);
 if (Input::existsName('get', 'notificationId')) {
     $id = Input::get('notificationId');
     if ($id == 0) {
@@ -59,9 +59,14 @@ if (Input::existsName('get', 'notificationId')) {
                                         <div class="status online"></div>
                                     </div>
                                     <div class="content">
-                                        <span class="d-block"><?php echo Translate::t([$notification->message, 'from'], ['ucfirst']) . ' ' . $leadData->records(Params::TBL_EMPLOYEES, AC::where(['id', $notification->user_id]), ['name'], false)->name; ?></span>
-                                        <small class="date d-block text-white"><?php echo Translate::t(strtolower($notification->title)) . ': ' . current($days) . ' - ' . end($days); ?></small>
-                                        <small class="date d-block"><?php echo 'Added: ' . $notification->date; ?></small>
+                                        <?php if ($notification->form_supervisors) { ?>
+                                            <span class="d-block"><?php echo Translate::t($notification->message, ['ucfirst']); ?></span>
+                                            <small class="date d-block"><?php echo 'Added: ' . $notification->date; ?></small>
+                                        <?php } else { ?>
+                                            <span class="d-block"><?php echo Translate::t([$notification->message, 'from'], ['ucfirst']) . ' ' . $leadData->records(Params::TBL_EMPLOYEES, AC::where(['id', $notification->user_id]), ['name'], false)->name; ?></span>
+                                            <small class="date d-block text-white"><?php echo Translate::t(strtolower($notification->title)) . ': ' . current($days) . ' - ' . end($days); ?></small>
+                                            <small class="date d-block"><?php echo 'Added: ' . $notification->date; ?></small>
+                                        <?php } ?>
                                     </div>
                                 </a>
                             <?php } ?>
@@ -70,11 +75,9 @@ if (Input::existsName('get', 'notificationId')) {
                         } else { ?>
                             <a href="<?php echo Config::get('route/calendar'); ?>" class="dropdown-item text-center message"><strong><?php echo Translate::t('notification_not_found', ['ucfirst']); ?></strong></a>
                         <?php } ?>
+                        </div>
                     </div>
-                </div>
-                <!-- Tasks-->
 
-                <!-- Tasks end-->
                 <!-- Megamenu-->
                 <div class="list-inline-item dropdown menu-large"><a href="#" data-toggle="dropdown" class="nav-link">Mega <i class="fa fa-ellipsis-v"></i></a>
                     <div class="dropdown-menu megamenu">
