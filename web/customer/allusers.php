@@ -52,6 +52,14 @@ $prefix = Params::PREFIX;
     <link rel="stylesheet" href="../common/vendor/dataTables/dataTables.bootstrap4.min.css">
     <script src="../common/vendor/dataTables/datatables.min.js"></script>
     <script src="../common/vendor/dataTables/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $('.changeMonth').click(function(){
+            $('#myModal').modal('show');
+        });
+        $(document).ready(function() {
+            $('#employeesTable').DataTable();
+        } );
+    </script>
 </head>
 <body>
 <?php
@@ -181,14 +189,5 @@ include 'includes/navbar.php';
         ?>
     </div>
 </div>
-<script>
-    $('.changeMonth').click(function(){
-        $('#myModal').modal('show');
-    });
-    $(document).ready(function() {
-        $('#employeesTable').DataTable();
-    } );
-</script>
-
 </body>
 </html>

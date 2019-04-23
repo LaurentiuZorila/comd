@@ -181,7 +181,7 @@ class BestEmployee
                 if ((int) $value['id'] == (int) $this->bestEmployeeData(['id'])) {
                     $colors[] = '\'#9528b9\'';
                 } else {
-                    $colors[] = '';
+                    $colors[] = '\'#c0c4ca\'';
                 }
             }
         } else {
@@ -189,7 +189,7 @@ class BestEmployee
                 if ((int)$value['id'] == (int)$this->bestEmployeeData(['id'])) {
                     $colors[] = '\'#e95f71\'';
                 } else {
-                    $colors[] = '';
+                    $colors[] = '\'#c0c4ca\'';
                 }
             }
         }

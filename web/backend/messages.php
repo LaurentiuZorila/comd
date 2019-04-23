@@ -58,7 +58,7 @@ include 'includes/navbar.php';
                                 <div class="input-group">
                                     <input placeholder="Message" class="form-control" type="text">
                                     <div class="input-group-append">
-                                        <button type="submit" class="btn btn-outline-secondary"><i
+                                        <button type="submit" class="btn-sm btn-outline-secondary"><i
                                                 class="fa fa-send"></i></button>
                                     </div>
                                 </div>

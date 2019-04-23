@@ -41,8 +41,12 @@ return [
         'updateStaffProfile'    => 'updatestaffprofile.php',
         'updateUserProfile'     => 'updateUserProfile.php',
     ],
-    'token' => [
-        'employeeDeleted'   => 'employeeDeletedOk',
+    'token'     => [
+        'token'                 => 'token',
+        'token_hash'            => 'token_hash',
+        'submit_token'          => 'submitToken',
+        'filer_submit_token'    => 'filterSubmitToken',
+        'employee_deleted'      => 'employeeDeleted',
     ],
     'notification'  => [
         'employeeName'  => 'notificationEmployeeName'

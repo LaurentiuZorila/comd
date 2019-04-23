@@ -261,7 +261,7 @@ include 'includes/navbar.php';
                                             <option><?php echo Translate::t('Status'); ?></option>
                                             <?php foreach (Params::EVENTS_STATUS as $key => $value) { ?>
                                                 <option value="<?php echo $key; ?>" <?php echo $key == $status ? 'selected' : ''; ?>><?php echo $value; ?></option>
-                                            <? } ?>
+                                            <?php } ?>
                                             <option value="all" <?php echo $status == 'all' ? 'selected' : ''; ?>><?php echo Translate::t('all', ['ucfirst' => true]); ?></option>
                                         </select>
                                     </div>
@@ -270,7 +270,7 @@ include 'includes/navbar.php';
                                             <option value=""><?php echo Translate::t('Select_month'); ?></option>
                                             <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                                 <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
-                                            <? } ?>
+                                            <?php } ?>
                                         </select>
                                     </div>
                                     <div class="col-sm-2">

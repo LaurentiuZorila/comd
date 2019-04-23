@@ -1,6 +1,5 @@
 <?php
 ?>
-
 <script>
     var target_chart   = $('#all_data');
     var target = new Chart(target_chart, {

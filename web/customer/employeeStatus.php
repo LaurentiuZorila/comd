@@ -25,6 +25,14 @@ foreach ($employeesID as $ids) {
     <script src="../common/vendor/dataTables/datatables.min.js"></script>
     <script src="../common/vendor/dataTables/dataTables.bootstrap4.min.js"></script>
     <script src="./../common/vendor/chart.js/Chart.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#employeesTable').DataTable();
+        });
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
 </head>
 <script>
     function displayMessage(type, message) {
@@ -135,10 +143,8 @@ include 'includes/navbar.php';
                                                     ?>
                                                 </td>
                                                 <td>
-                                                    <div class="btn-group-sm dropleft" role="group" aria-label="">
-                                                        <button id="btnGroupDrop1" type="button" class="btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                            <?php echo Translate::t('Change_status', ['ucfirst']);?>
-                                                        </button>
+                                                    <div class="btn-group-sm dropright" role="group" aria-label="">
+                                                        <a id="btnGroupDrop1" type="button" class="btn-sm btn-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fa fa-edit" data-toggle="tooltip" data-placement="top" title="<?php echo Translate::t('Change_status',['ucfirst']) ;?>"></i></a>
                                                         <div class="dropdown-menu employeeStats" aria-labelledby="btnGroupDrop1">
                                                             <?php
                                                             foreach ($allStats as $ids => $stats) { ?>
@@ -148,8 +154,8 @@ include 'includes/navbar.php';
                                                     </div>
                                                 <td>
                                                     <div class="btn-group-sm" role="group" aria-label="">
-                                                        <a href="<?php echo Config::get('route/updateUProf');?>" class="btn-sm btn-primary"><?php echo Translate::t('Edit', ['ucfirst']);?></a>
-                                                        <button type="button" data-employeename="<?php echo $leadData->records(Params::TBL_EMPLOYEES, AC::where(['id', $id]), ['name'], false)->name;?>" data-employeeid="<?php echo $id;?>" data-leadofficeid="<?php echo $lead->officesId(); ?>" class="btn-sm btn-danger deleteEmployee"><?php echo Translate::t('Delete', ['ucfirst']);?></button>
+                                                        <a href="<?php echo Config::get('route/updateUProf');?>" class="btn-sm btn-primary"><i class="fa fa-user-plus" data-toggle="tooltip" data-placement="top" title="<?php echo Translate::t('Edit', ['ucfirst']);?>"></i></a>
+                                                        <a type="button" data-employeename="<?php echo $leadData->records(Params::TBL_EMPLOYEES, AC::where(['id', $id]), ['name'], false)->name;?>" data-employeeid="<?php echo $id;?>" data-leadofficeid="<?php echo $lead->officesId(); ?>" class="btn-sm btn-danger deleteEmployee" style="cursor: pointer;"><i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="<?php echo Translate::t('Delete', ['ucfirst']);?>"></i></a>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -182,9 +188,6 @@ include "./includes/js/employeeEdit.php";
     $(".deleteEmployee").click(function(){
         $("html, body").animate({ scrollTop: 0 }, "slow");
         return false;
-    });
-    $(document).ready(function() {
-        $('#employeesTable').DataTable();
     });
 </script>
 </body>

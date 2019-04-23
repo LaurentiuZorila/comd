@@ -94,7 +94,7 @@ $allEvents = $leadData->records(Params::TBL_EVENTS, $where, ['*'], true);
                     <?php } ?>
                     <div class="collapse" id="collapseExample<?php echo $allEvent->id; ?>">
                         <div class="btn-group btn-group-sm mt-3" role="group" aria-label="Basic example">
-                            <a type="" class="btn-sm btn-primary p-1 eventAction" style="cursor: pointer;" id="accepted" data-accepted="1" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>" data-title="<?php echo $allEvent->title; ?>" data-month="<?php echo $allEvent->month; ?>" data-year="<?php echo $allEvent->year; ?>"><i class="fa fa-check"></i></small></a>
+                            <a type="" class="btn-sm btn-primary p-1 eventAction" style="cursor: pointer;"  data-accepted="1" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>" data-title="<?php echo $allEvent->title; ?>" data-month="<?php echo $allEvent->month; ?>" data-year="<?php echo $allEvent->year; ?>"><i class="fa fa-check"></i></small></a>
                             <a type="" class="btn-sm btn-danger p-1 ml-2 eventAction" style="cursor: pointer;" id="declined" data-accepted="3" data-employee="<?php echo $allEvent->user_id; ?>" data-eventid="<?php echo $allEvent->id; ?>" data-title="<?php echo $allEvent->title; ?>"><small><i class="icon-close"></i></small></a>
                         </div>
                     </div>

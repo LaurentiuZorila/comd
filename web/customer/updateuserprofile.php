@@ -167,7 +167,7 @@ include 'includes/navbar.php';
                                         <div class="form-group row">
                                             <label class="col-sm-3 form-control-label"></label>
                                             <div class="col-sm-9">
-                                                <button id="Submit" name="<?php echo Tokens::inputName(); ?>" value="<?php echo Translate::t('Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
+                                                <button id="Submit" name="<?php echo Tokens::inputName(); ?>" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
                                                 <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                             </div>
                                         </div>

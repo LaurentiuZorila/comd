@@ -36,7 +36,7 @@ class Translate
             'Data'              => 'Date',
             'Bar'               => 'Bar',
             'Line'              => 'Linii',
-            'Not_found_data'    => sprintf('Pentru %s - %d nu s-au gasit date, selecteaza alta luna si reincearca.', self::currentMonth(), date('Y')),
+            'Not_found_data'    => sprintf('Pentru %s - %d nu s-au gasit date, selecteaza alta luna si reincearca.', self::selectedMonth(), self::selectedYear()),
             'Dashboard'         => 'Dashboard',
             'Select_table'      => 'Selecteaza tabel',
             'Offices'           => 'Serviciu',
@@ -262,7 +262,7 @@ class Translate
             'Data'              => 'Data',
             'Bar'               => 'Bar',
             'Line'              => 'Line',
-            'Not_found_data'    => sprintf('For %s - %d not found data. Please select other values and try again', self::currentMonth(), date('Y')),
+            'Not_found_data'    => sprintf('For %s - %d not found data. Please select other values and try again', self::selectedMonth(), self::selectedYear()),
             'Dashboard'         => 'Dashboard',
             'Select_table'      => 'Select table',
             'Offices'           => 'Offices',
@@ -435,7 +435,7 @@ class Translate
             'employee_deleted'          => 'Employee is successfully deleted',
             'delete_confirmation'       => 'are you sure you want to delete?',
             'show_graph'                => 'Show graph',
-            'best_details'              => 'Click button from right side to view details for best operator',
+            'best_details'              => 'Click button from right side to view best operator details',
             'best_details_second'       => 'Results are calculated based on data inserted in the first steep on profile configuration',
             'best_details_tree'         => 'Bellow you can see your tables configuration',
             'your_configuration'        => 'Tables configuration',
@@ -488,7 +488,7 @@ class Translate
             'Data'              => 'Dati',
             'Bar'               => 'Barre',
             'Line'              => 'Linee',
-            'Not_found_data'    => sprintf('Per %s - %d non sono trovati dati, cerca con altri valori.', self::currentMonth(), date('Y')),
+            'Not_found_data'    => sprintf('Per %s - %d non sono trovati dati, cerca con altri valori.', self::selectedMonth(), self::selectedYear()),
             'Dashboard'         => 'Cruscotto',
             'Select_table'      => 'Seleziona tabella',
             'Offices'           => 'Sottocommessa',
@@ -775,6 +775,22 @@ class Translate
      */
     public static function currentMonth()
     {
-        return Common::numberToMonth(date('n') - 1, Session::get('lang'));
+        return Common::numberToMonth(date('n'), Session::get('lang'));
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function selectedMonth()
+    {
+        return Session::get('selected_month');
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function selectedYear()
+    {
+        return Session::get('selected_year');
     }
 }

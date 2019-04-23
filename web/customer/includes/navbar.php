@@ -38,7 +38,9 @@ if (Input::existsName('get', 'notificationId')) {
         <div class="container-fluid d-flex align-items-center justify-content-between">
             <div class="navbar-header">
                 <!-- Navbar Header--><a href="<?php echo Config::get('route/home'); ?>" class="navbar-brand">
-                    <div class="brand-text brand-big visible text-uppercase"><strong class="text-primary">Cmd</strong><strong>Dashbord</strong></div>
+                    <div class="brand-text brand-big visible text-uppercase">
+                        <strong class="text-primary">Crud</strong><strong>Dashbord</strong>
+                    </div>
                     <div class="brand-text brand-sm"><strong class="text-primary">D</strong><strong>A</strong></div></a>
                 <!-- Sidebar Toggle Btn-->
                 <button class="sidebar-toggle"><i class="fa fa-long-arrow-left"></i></button>

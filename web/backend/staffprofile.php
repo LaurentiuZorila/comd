@@ -291,7 +291,7 @@ include 'includes/navbar.php';
                     <div class="col-lg-12">
                         <div class="block">
                             <div class="title"><strong><?php echo Translate::t('All_employees'); ?></strong>
-                                <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
+                                <button type="button" class="btn-sm btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover" id="employeesTable">
@@ -333,7 +333,7 @@ include 'includes/navbar.php';
                     <div class="col-lg-12">
                         <div class="block">
                             <div class="title"><strong><?php echo Translate::t('furlough'); ?></strong>
-                                <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
+                                <button type="button" class="btn-sm btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover" id="furloughTable">
@@ -376,7 +376,7 @@ include 'includes/navbar.php';
                     <div class="col-lg-12">
                         <div class="block">
                             <div class="title"><strong><?php echo Translate::t('absentees'); ?></strong>
-                                <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
+                                <button type="button" class="btn-sm btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover" id="absenteesTable">
@@ -419,7 +419,7 @@ include 'includes/navbar.php';
                     <div class="col-lg-12">
                         <div class="block">
                             <div class="title"><strong><?php echo Translate::t('unpaid'); ?></strong>
-                                <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv""><i class="fa fa-close"></i></button>
+                                <button type="button" class="btn-sm btn-primary btn-sm float-sm-right closeDiv""><i class="fa fa-close"></i></button>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover" id="unpaidTable">
@@ -462,7 +462,7 @@ include 'includes/navbar.php';
                     <div class="col-lg-12">
                         <div class="block">
                             <div class="title"><strong><?php echo Translate::t('medical'); ?></strong>
-                                <button type="button" class="btn btn-primary btn-sm float-sm-right closeDiv""><i class="fa fa-close"></i></button>
+                                <button type="button" class="btn-sm btn-primary btn-sm float-sm-right closeDiv""><i class="fa fa-close"></i></button>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover" id="medicalTable">

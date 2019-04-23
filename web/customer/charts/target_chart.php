@@ -1,6 +1,18 @@
 <?php
 ?>
 <script>
+
+    var myData = [<?php echo $chartValues; ?>];
+    var myColors=[];
+
+    $.each(myData, function( index,value ) {
+        if(value>0){
+            myColors[index]="rgba(134, 77, 217, 0.88)";
+        }else{
+            myColors[index]="#e95f71";
+        }
+    });
+
     var target_chart   = $('#target_customer_chart_bar');
     var target = new Chart(target_chart, {
         type: 'bar',
@@ -33,8 +45,8 @@
                     label: "<?php echo ucfirst($npTable) . ' - ' . Common::getMonths($lang)[$month] . ' - ' . Input::post('year'); ?>",
                     fill: true,
                     lineTension: 0,
-                    backgroundColor: "rgba(134, 77, 217, 0.88)",
-                    borderColor: "rgba(134, 77, 217, 088)",
+                    backgroundColor: myColors,
+                    borderColor: myColors,
                     borderCapStyle: 'butt',
                     borderDash: [],
                     borderDashOffset: 0.0,
@@ -49,7 +61,7 @@
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 10,
-                    data: [<?php echo $chartValues; ?>],
+                    data: myData,
                     spanGaps: false
                 }
             ]
@@ -87,7 +99,7 @@
             datasets: [
                 {
                     label: "<?php echo ucfirst($npTable) . ' - ' . Common::getMonths($lang)[$month] . ' - ' . Input::post('year'); ?>",
-                    fill: true,
+                    fill: false,
                     lineTension: 0,
                     backgroundColor: "rgba(134, 77, 217, 0.88)",
                     borderColor: "rgba(134, 77, 217, 088)",

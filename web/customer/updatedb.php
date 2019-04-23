@@ -316,7 +316,7 @@ if (Input::existsName('post', Tokens::getInputName())) {
                                   <input type="checkbox" name="confirmUpdate" value="confirmUpdate" />
                               </div>
                               <div class="col-sm-2">
-                                  <button id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
+                                  <button id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
                                   <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                               </div>
                           </div>
@@ -382,7 +382,7 @@ if (Input::existsName('post', Tokens::getInputName())) {
                           </div>
                       </div>
                       <div class="modal-footer">
-                          <button type="button" data-dismiss="modal" class="btn btn-secondary"><?php echo Translate::t('Close'); ?></button>
+                          <button type="button" data-dismiss="modal" class="btn-sm btn-secondary"><?php echo Translate::t('Close'); ?></button>
                       </div>
                   </div>
               </div>

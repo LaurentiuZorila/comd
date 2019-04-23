@@ -35,5 +35,12 @@ return [
         'updateProfile' => 'updateprofile.php',
         'staffFeedback' => 'stafffeedback.php',
         'feedback'  => 'feedback.php'
-    ]
+    ],
+    'token'     => [
+        'token'                 => 'token',
+        'token_hash'            => 'token_hash',
+        'submit_token'          => 'submitToken',
+        'filer_submit_token'    => 'filterSubmitToken',
+        'employee_deleted'      => 'employeeDeleted',
+    ],
 ];

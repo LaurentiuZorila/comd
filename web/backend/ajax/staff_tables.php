@@ -1,6 +1,5 @@
 <?php
-function __autoload($class_name)
-{
+function __autoload($class_name) {
     //commonClasses directories
     $directorys = array(
         '../backendClasses/',
@@ -21,11 +20,14 @@ function __autoload($class_name)
 $common     = new BackendProfile();
 $officeId   = $_GET['office_id'];
 
-$allTables  = $common->records(Params::TBL_OFFICE, ['id', '=', $officeId], ['tables'], false);
+$allTables  = $common->records(Params::TBL_OFFICE, AC::where(['id', $officeId]), ['tables'], false);
 
 $keyTable = explode(',', trim($allTables->tables));
-$valTable = explode(',', strtoupper($allTables->tables));
-$tables = array_combine($keyTable, $valTable);
+$valTable = explode(',', $allTables->tables);
+foreach ($valTable as $valtbl) {
+    $valTables[] = ucfirst($valtbl);
+}
+$tables = array_combine($keyTable, $valTables);
 
 
 echo json_encode($tables);

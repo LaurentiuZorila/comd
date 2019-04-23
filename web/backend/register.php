@@ -67,7 +67,7 @@
                       <label for="register-agree">I agree with the terms and policy</label>
                     </div>
                     <div class="form-group text-center">
-                      <input id="register" type="submit" value="Register" class="btn btn-primary">
+                      <input id="register" type="submit" value="Register" class="btn-sm btn-primary">
                     </div>
                   </form><small>Already have an account? </small><a href="login.php" class="signup">Login</a>
                 </div>

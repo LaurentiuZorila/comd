@@ -7,7 +7,6 @@ $tables = explode(',', $tables->tables);
 // Get all common data
 foreach (Params::TBL_COMMON as $commonTables) {
     $commonData[$commonTables] = $frontProfile->records(Params::PREFIX . $commonTables, AC::where([['employees_id', $frontUser->userId()], ['year', date('Y')]]), ['month', 'quantity', 'days'], true);
-
 }
 
 
@@ -63,8 +62,11 @@ if (Input::exists() && Tokens::tokenVerify()) {
         ]);
 
         /**  One record if is selected one month form form */
-        $data = $frontProfile->records($prefixTbl, $where, ['quantity'])->quantity;
+        $data = $frontProfile->records($prefixTbl, $where, ['quantity'], false)->quantity;
+
         if ($data == '') {
+            Session::put('selected_month', $alfaMonth);
+            Session::put('selected_year', $year);
             Errors::setErrorType('info', Translate::t('Not_found_data'));
             $data = 0;
         }
@@ -250,7 +252,7 @@ include 'includes/navbar.php';
                                         </div>
 
                                         <div class="col-sm-2">
-                                            <button name="submitFilters" id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn btn-outline-primary" type="submit"><?php echo Translate::t('Submit'); ?></button>
+                                            <button name="submitFilters" id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
                                             <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                         </div>
                                     </div>

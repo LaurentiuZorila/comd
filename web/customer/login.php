@@ -77,7 +77,7 @@ if (Input::exists()) {
                     <div class="form-group">
                       <input id="login-password" type="password" name="Password" required data-msg="Please enter your password" class="input-material">
                       <label for="login-password" class="label-material">Password</label>
-                    </div><button type="submit" id="login" class="btn btn-primary" name="login">Login</button>
+                    </div><button type="submit" id="login" class="btn-sm btn-primary" name="login">Login</button>
                       <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                   </form><a href="#" class="forgot-pass">Forgot Password?</a><br>
                 </div>
@@ -87,9 +87,5 @@ if (Input::exists()) {
         </div>
       </div>
     </div>
-    <!-- JavaScript files-->
-     <?php
-     include "./../common/includes/scripts.php";
-     ?>
   </body>
 </html>

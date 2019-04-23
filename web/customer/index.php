@@ -117,6 +117,11 @@ if (Input::exists()) {
     <script src="../common/vendor/dataTables/datatables.min.js"></script>
     <script src="../common/vendor/dataTables/dataTables.bootstrap4.min.js"></script>
     <script src="./../common/vendor/chart.js/Chart.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#employeesTable').DataTable();
+        });
+    </script>
 </head>
   <body>
   <?php
@@ -378,10 +383,6 @@ if (Input::exists()) {
         $('.line').removeClass('btn-outline-primary').addClass('btn-primary');
         $("#target_customer_chart_line").show();
         $("#target_customer_chart_bar").hide();
-    });
-
-    $(document).ready(function() {
-        $('#employeesTable').DataTable();
     });
 </script>
   <?php
