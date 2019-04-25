@@ -29,12 +29,13 @@ include '../common/includes/head.php';
 <script src="./../common/vendor/fullcalendar/lib/moment.min.js"></script>
 <script src="./../common/vendor/fullcalendar/fullcalendar.min.js"></script>
 <script src="./../common/vendor/fullcalendar/locale-all.js"></script>
+<script src="./../common/vendor/jquery.ui.touch/jquery.ui.touch.js"></script>
 <!--DATE PICKER-->
 <link rel="stylesheet" href="./../common/vendor/bootstrap-datepicker-1.6.4-dist/css/bootstrap-datepicker3.css">
 <script src="./../common/vendor/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.min.js"></script>
 <script src="./../common/vendor/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.js"></script>
 <script>
-
+$('element').addTouch();
 $(document).ready(function () {
     var initialLocaleCode = '<?php echo $lead->language(); ?>';
     var calendar = $('#calendar').fullCalendar({

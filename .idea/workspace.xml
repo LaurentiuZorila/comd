@@ -9,40 +9,9 @@
   <component name="ChangeListManager">
     <list default="true" id="710b7c0a-dd02-4dee-91a7-595e34acec84" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/ajax/staff_tables.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/ajax/staff_tables.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/core/config.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/core/config.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/employees.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/employees.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/employeesdata.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/employeesdata.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/login.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/messages.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/messages.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/register.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/register.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/staffprofile.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/staffprofile.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/updatestaffprofile.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/updatestaffprofile.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/common/classes/Translate.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/classes/Translate.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/common/css/style.violet.css" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/css/style.violet.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/common/css/style.violet.premium.css" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/css/style.violet.premium.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/common/includes/footer.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/includes/footer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/common/includes/head.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/includes/head.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/allusers.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/allusers.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/calendar-customer/tableStatus.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/calendar-customer/tableStatus.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/customer/calendar.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/calendar.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/charts/bestChart.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/charts/bestChart.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/charts/target_chart.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/charts/target_chart.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/charts/useDataChart.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/charts/useDataChart.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/customerClasses/BestEmployee.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/customerClasses/BestEmployee.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/employeeStatus.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/employeeStatus.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/includes/navbar.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/includes/navbar.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/login.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/updatedb.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/updatedb.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/updateprofile.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/updateprofile.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/updateuserprofile.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/updateuserprofile.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/customer/userdata.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/customer/userdata.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/frontend/calendar.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/frontend/calendar.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/core/config.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/frontend/core/config.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/frontend/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/frontend/login.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/frontend/feedback.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/frontend/feedback.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -69,11 +38,65 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/web/backend/employees.php">
           <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1343">
+              <caret line="105" column="41" selection-start-line="105" selection-start-column="41" selection-end-line="105" selection-end-column="42" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/common/includes/head.php">
+          <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="323">
-              <caret line="105" column="41" lean-forward="true" selection-start-line="105" selection-start-column="41" selection-end-line="105" selection-end-column="42" />
+              <caret line="19" column="87" selection-start-line="19" selection-start-column="87" selection-end-line="19" selection-end-column="87" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/customer/calendar.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="272">
+              <caret line="37" selection-start-line="37" selection-end-line="37" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/frontend/calendar.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="338">
+              <caret line="46" column="24" lean-forward="true" selection-start-line="46" selection-start-column="24" selection-end-line="46" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/backend/addusers.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="5" selection-start-line="5" selection-end-line="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/customer/login.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="34">
+              <caret line="2" selection-start-line="2" selection-end-line="2" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/web/frontend/feedback.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
             </state>
           </provider>
         </entry>
@@ -81,7 +104,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/web/backend/core/config.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
+            <state relative-caret-position="697">
               <caret line="41" column="26" selection-start-line="41" selection-start-column="9" selection-end-line="41" selection-end-column="26" />
             </state>
           </provider>
@@ -174,8 +197,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/web/backend/backendClasses/BackendDB.php" />
-        <option value="$PROJECT_DIR$/web/backend/updateUserProfile.php" />
         <option value="$PROJECT_DIR$/web/backend/backendClasses/BackendUser.php" />
         <option value="$PROJECT_DIR$/web/backend/includes/sidebar.php" />
         <option value="$PROJECT_DIR$/web/customer/includes/response/responseEmployeeDelete.php" />
@@ -197,14 +218,12 @@
         <option value="$PROJECT_DIR$/web/common/css/style.violet.premium.css" />
         <option value="$PROJECT_DIR$/web/common/errors/errors.php" />
         <option value="$PROJECT_DIR$/web/frontend/index.php" />
-        <option value="$PROJECT_DIR$/web/frontend/calendar.php" />
         <option value="$PROJECT_DIR$/web/customer/allusers.php" />
         <option value="$PROJECT_DIR$/web/customer/best-employee.php" />
         <option value="$PROJECT_DIR$/web/common/classes/Translate.php" />
         <option value="$PROJECT_DIR$/web/customer/charts/bestChart.php" />
         <option value="$PROJECT_DIR$/web/customer/customerClasses/BestEmployee.php" />
         <option value="$PROJECT_DIR$/web/customer/updatedb.php" />
-        <option value="$PROJECT_DIR$/web/customer/login.php" />
         <option value="$PROJECT_DIR$/web/backend/updatestaffprofile.php" />
         <option value="$PROJECT_DIR$/web/backend/login.php" />
         <option value="$PROJECT_DIR$/web/backend/register.php" />
@@ -214,17 +233,21 @@
         <option value="$PROJECT_DIR$/web/customer/updateprofile.php" />
         <option value="$PROJECT_DIR$/web/customer/updateuserprofile.php" />
         <option value="$PROJECT_DIR$/web/customer/includes/navbar.php" />
-        <option value="$PROJECT_DIR$/web/common/includes/head.php" />
         <option value="$PROJECT_DIR$/web/common/includes/footer.php" />
         <option value="$PROJECT_DIR$/web/customer/index.php" />
         <option value="$PROJECT_DIR$/web/customer/charts/target_chart.php" />
         <option value="$PROJECT_DIR$/web/customer/charts/useDataChart.php" />
         <option value="$PROJECT_DIR$/web/customer/userdata.php" />
-        <option value="$PROJECT_DIR$/web/customer/calendar.php" />
         <option value="$PROJECT_DIR$/web/customer/calendar-customer/tableStatus.php" />
         <option value="$PROJECT_DIR$/web/backend/index.php" />
         <option value="$PROJECT_DIR$/web/backend/ajax/staff_tables.php" />
         <option value="$PROJECT_DIR$/web/backend/employees.php" />
+        <option value="$PROJECT_DIR$/web/common/includes/head.php" />
+        <option value="$PROJECT_DIR$/web/customer/calendar.php" />
+        <option value="$PROJECT_DIR$/web/frontend/calendar.php" />
+        <option value="$PROJECT_DIR$/web/backend/addusers.php" />
+        <option value="$PROJECT_DIR$/web/customer/login.php" />
+        <option value="$PROJECT_DIR$/web/frontend/feedback.php" />
       </list>
     </option>
   </component>
@@ -239,7 +262,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -256,12 +278,13 @@
               <item name="comd" type="b2602c69:ProjectViewProjectNode" />
               <item name="comd" type="462c0819:PsiDirectoryNode" />
               <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="backend" type="462c0819:PsiDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -276,19 +299,19 @@
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\laure\Projects\phpStormProjects\comd\web\common\vendor" />
+      <recent name="$PROJECT_DIR$/web/backend/includes/js" />
+      <recent name="$PROJECT_DIR$/web/customer/includes/calendar" />
+      <recent name="$PROJECT_DIR$/web/customer/calendar-customer" />
+      <recent name="$PROJECT_DIR$/web/frontend/calendar" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/web/common/vendor/css" />
       <recent name="$PROJECT_DIR$/web/common/vendor/fullcalendar/lib" />
       <recent name="$PROJECT_DIR$/web/customer/core" />
       <recent name="$PROJECT_DIR$/web/customer" />
       <recent name="$PROJECT_DIR$/web/frontend/calendar" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/web/backend/includes/js" />
-      <recent name="$PROJECT_DIR$/web/customer/includes/calendar" />
-      <recent name="$PROJECT_DIR$/web/customer/calendar-customer" />
-      <recent name="$PROJECT_DIR$/web/frontend/calendar" />
-      <recent name="$PROJECT_DIR$/web/common/vendor/calendar-event" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -420,18 +443,19 @@
       <workItem from="1555567442554" duration="11000" />
       <workItem from="1555567504241" duration="3100000" />
       <workItem from="1555654939695" duration="7083000" />
-      <workItem from="1555917671177" duration="14888000" />
+      <workItem from="1555917671177" duration="14942000" />
+      <workItem from="1556112481291" duration="5126000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1852299000" />
+    <option name="totallyTimeSpent" value="1857479000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49902153" visible="true" weight="0.20042644" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49902153" visible="true" weight="0.20255864" />
       <window_info id="Structure" order="1" sideWeight="0.50097847" side_tool="true" weight="0.20529328" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -444,7 +468,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" weight="0.32871014" />
       <window_info anchor="bottom" id="Database Changes" order="8" weight="0.32784638" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.32921812" />
-      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49713877" visible="true" weight="0.2751896" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" sideWeight="0.49713877" visible="true" weight="0.2751896" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5028612" side_tool="true" weight="0.2857143" />
       <window_info anchor="bottom" id="Inspection Results" order="12" weight="0.32871014" />
       <window_info anchor="bottom" id="Command Line Tools Console" order="13" weight="0.32921812" />
@@ -504,20 +528,6 @@
     </ignored-roots>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/web/frontend/includes/navbar.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="16" selection-start-line="9" selection-start-column="16" selection-end-line="9" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/docker/php/php-ini-overrides.ini">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="19" lean-forward="true" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/docker/php/Dockerfile">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
@@ -566,13 +576,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
           <caret line="12" column="14" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/customer/login.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1173">
-          <caret line="69" column="54" selection-start-line="69" selection-start-column="54" selection-end-line="69" selection-end-column="54" />
         </state>
       </provider>
     </entry>
@@ -646,13 +649,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1819">
           <caret line="260" column="30" lean-forward="true" selection-start-line="260" selection-start-column="30" selection-end-line="260" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/frontend/calendar.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4471">
-          <caret line="263" column="49" selection-start-line="263" selection-start-column="49" selection-end-line="263" selection-end-column="49" />
         </state>
       </provider>
     </entry>
@@ -761,13 +757,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/common/classes/Tokens.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="554">
-          <caret line="126" column="53" lean-forward="true" selection-start-line="126" selection-start-column="53" selection-end-line="126" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/web/customer/userdata.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
@@ -782,20 +771,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/addusers.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2035">
-          <caret line="179" lean-forward="true" selection-start-line="179" selection-end-line="179" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/common/includes/head.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/web/customer/calendar-customer/tableStatus.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1802">
@@ -803,16 +778,6 @@
           <folding>
             <element signature="n#style#0;n#i#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#a#0;n#div#0;n#div#0;n#td#2;n#tr#0;n#tbody#0;n#table#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/customer/calendar.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="25" column="30" lean-forward="true" selection-start-line="25" selection-start-column="30" selection-end-line="25" selection-end-column="30" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#1;n#section#0;n#div#0;n#div#0;n#body#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -838,17 +803,73 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/web/backend/employees.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1343">
+          <caret line="105" column="41" selection-start-line="105" selection-start-column="41" selection-end-line="105" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/web/backend/core/config.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
+        <state relative-caret-position="697">
           <caret line="41" column="26" selection-start-line="41" selection-start-column="9" selection-end-line="41" selection-end-column="26" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/employees.php">
+    <entry file="file://$PROJECT_DIR$/web/common/includes/head.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
-          <caret line="105" column="41" lean-forward="true" selection-start-line="105" selection-start-column="41" selection-end-line="105" selection-end-column="42" />
+          <caret line="19" column="87" selection-start-line="19" selection-start-column="87" selection-end-line="19" selection-end-column="87" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/customer/calendar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="37" selection-start-line="37" selection-end-line="37" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/calendar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="338">
+          <caret line="46" column="24" lean-forward="true" selection-start-line="46" selection-start-column="24" selection-end-line="46" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/customer/customerClasses/CustomerUser.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3026">
+          <caret line="178" column="37" selection-start-line="178" selection-start-column="28" selection-end-line="178" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/common/classes/Tokens.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-517">
+          <caret line="51" lean-forward="true" selection-start-line="51" selection-end-line="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/backend/addusers.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/customer/login.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/frontend/feedback.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
         </state>
       </provider>
     </entry>
