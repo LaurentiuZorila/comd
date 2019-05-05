@@ -6,7 +6,7 @@ $tables = explode(',', $tables->tables);
 
 // Get all common data
 foreach (Params::TBL_COMMON as $commonTables) {
-    $commonData[$commonTables] = $frontProfile->records(Params::PREFIX . $commonTables, AC::where([['employees_id', $frontUser->userId()], ['year', date('Y')]]), ['month', 'quantity', 'days'], true);
+    $commonData[$commonTables] = $frontProfile->records(Params::PREFIX . $commonTables, AC::where([['employees_id', $frontUser->userId()], ['year', date('Y')]]), ['*'], true);
 }
 
 
@@ -242,11 +242,10 @@ include 'includes/navbar.php';
                                                     <option value=""><?php echo Translate::t('Select_table', ['ucfirst'=>true]); ?></option>
                                                 <?php }
                                                 foreach ($tables as $table) { ?>
-                                                    <option value="<?php echo trim($table); ?>"><?php echo Translate::t($table, ['strtoupper' => true]); ?></option>
+                                                    <option value="<?php echo trim($table); ?>"><?php echo Translate::t($table, ['strtoupper']); ?></option>
                                                 <?php } ?>
                                             </select>
-                                            <?php
-                                            if (Input::exists() && empty(Input::post('table'))) { ?>
+                                            <?php if (Input::exists() && empty(Input::post('table'))) { ?>
                                                 <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                             <?php }?>
                                         </div>
@@ -271,8 +270,9 @@ include 'includes/navbar.php';
                     <div class="row">
                         <?php foreach ($frontProfile->sumAllCommonData($whereIndexPage, 'quantity') as $table => $value) {
                             $table = $table === Translate::t('unpaid') ? Translate::t('unpaid_days') : $table;
+                            $col = $table == 'furlough' ? "col-sm-4 col-sm-4" : "col-sm-2 col-sm-2";
                             ?>
-                            <div class="col-lg-3 col-sm-3">
+                            <div class="col-sm-2 col-sm-2">
                                 <div class="statistic-block block">
                                     <div class="progress-details d-flex align-items-end justify-content-between">
                                         <div class="title">

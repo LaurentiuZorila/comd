@@ -15,12 +15,10 @@ foreach ($employeesID as $ids) {
     $employeesId[] = $ids->id;
 }
 
+/** TO REMOVE DATA DISPLAY */
 /** Data display */
 $dataDisplay = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $lead->officesId()]), ['data_visualisation'], false)->data_visualisation;
-$dataDisplay = (array)json_decode($dataDisplay);
-foreach ($dataDisplay as $tableData => $v){
-    $tblDataDisplay[] = $tableData;
-}
+$dataDisplay = Common::toArray($dataDisplay);
 
 // Conditions for action
 $year   = date('Y');
@@ -37,9 +35,6 @@ $prefix = Params::PREFIX;
     foreach ($allTables as $value) {
         $tables[$prefix . trim($value)] = trim($value);
     }
-    // Transform to upper case values of array
-    $tables = array_map('strtoupper', $tables);
-
 ?>
 
 <!DOCTYPE html>
@@ -115,11 +110,8 @@ include 'includes/navbar.php';
                                 </div>
                                 <strong class="text-primary">
                                     <?php
-                                    if (Input::existsName('get', 'month')) {
-                                    echo Translate::t('Data') . ' ' . Translate::t('All_employees', ['strtolower']) . ' - ' . Common::numberToMonth(Input::get('month'), $lang) . ' - ' . date('Y');
-                                    } else {
-                                    echo Translate::t('Data') . ' ' . Translate::t('All_employees', ['strtolower']) . ' - ' . Common::numberToMonth($month, $lang) . ' - ' . date('Y');
-                                    }
+                                    $text = Input::exists('get', 'month') ? Translate::t('Data') . ': ' . Common::numberToMonth(Input::get('month'), $lang) . ' - ' . date('Y') : Translate::t('Data') . ': ' . Common::numberToMonth($month, $lang) . ' - ' . date('Y');
+                                    echo $text;
                                     ?>
                                 </strong>
                             </div>
@@ -129,7 +121,7 @@ include 'includes/navbar.php';
                                         <tr role="row">
                                             <th class="text-primary"><?php echo Translate::t('Name', ['strtoupper']); ?></th>
                                             <?php foreach ($tables as $table) { ?>
-                                            <th class="text-primary"> <?php echo in_array($table, Params::TBL_COMMON) ? Translate::t(strtolower($table), ['strtoupper' => true]) : strtoupper($table); ?> </th>
+                                            <th class="text-primary"> <?php echo in_array($table, Params::TBL_COMMON) ? Translate::t($table, ['strtoupper']) : strtoupper($table); ?> </th>
                                             <?php } ?>
                                         </tr>
                                     </thead>
@@ -146,29 +138,11 @@ include 'includes/navbar.php';
                                                     <td class="text-white-50">
                                                         <?php
                                                         if (Input::existsName('get', 'month')) {
-                                                            if (in_array(strtolower($v), $tblDataDisplay) && $dataDisplay[strtolower($v)] === 'percentage') {
-                                                                echo $leadData->records($k, AC::where([['employees_id', $id], ['month', Input::get('month')], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
-                                                                echo '%';
-                                                            } else {
-                                                                if (in_array(strtolower($v), Params::TBL_COMMON)) {
-                                                                    echo $leadData->records($k, AC::where([['employees_id', $id], ['month', Input::get('month')], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
-                                                                    echo ' <small>' . Translate::t('Days', ['strtolower' => true]) . '</small>';
-                                                                } else {
-                                                                    echo $leadData->records($k, AC::where([['employees_id', $id], ['month', Input::get('month')], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
-                                                                }
-                                                            }
+                                                            echo $leadData->records($k, AC::where([['employees_id', $id], ['month', Input::get('month')], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
+                                                            echo ' <small>' . Translate::t($dataDisplay[$v], ['strtolower']) . '</small>';
                                                         } else {
-                                                            if (in_array(strtolower($v), $tblDataDisplay) && $dataDisplay[strtolower($v)] === 'percentage') {
-                                                                echo $leadData->records($k, AC::where([['employees_id', $id], ['month', date('n')], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
-                                                                echo '%';
-                                                            } else {
-                                                                if (in_array(strtolower($v), Params::TBL_COMMON)) {
-                                                                    echo $leadData->records($k, AC::where([['employees_id', $id], ['month', date('n')], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
-                                                                    echo ' <small>' . Translate::t('Days', ['strtolower' => true]) . '</small>';
-                                                                } else {
-                                                                    echo $leadData->records($k, AC::where([['employees_id', $id], ['month', date('n')], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
-                                                                }
-                                                            }
+                                                            echo $leadData->records($k, AC::where([['employees_id', $id], ['month', date('n')], ['year', date('Y')]]), ['quantity'], false)->quantity ?: 0;
+                                                            echo ' <small>' . Translate::t($dataDisplay[$v], ['strtolower']) . '</small>';
                                                         }
                                                         ?>
                                                     </td>

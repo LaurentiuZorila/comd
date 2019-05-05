@@ -5,7 +5,7 @@
 
 class AC
 {
-    private static $_columns = ['1', 'username', 'employees_id','event_id', 'id', 'name', 'offices_id', 'departments_id', 'supervisors_id', 'year', 'month', 'user_id', 'lead_id', 'employees_average_id', 'quantity'];
+    private static $_columns = ['city_id', '1', 'username', 'employees_id','event_id', 'id', 'name', 'offices_id', 'departments_id', 'supervisors_id', 'year', 'month', 'user_id', 'lead_id', 'employees_average_id', 'quantity'];
 
     /**
      * @param array $array

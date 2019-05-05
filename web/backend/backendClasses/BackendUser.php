@@ -48,6 +48,8 @@ class BackendUser
      */
     private $_sessionDepartmentId;
 
+    private $_sessionCityId;
+
 
     /**
      * @var bool
@@ -79,6 +81,7 @@ class BackendUser
         $this->_fname               = Config::get('session/session_fname');
         $this->_lname               = Config::get('session/session_lname');
         $this->_lang                = Session::get('lang');
+        $this->_sessionCityId       = Config::get('session/session_cityId');
 
         if (!$user) {
             if (Session::exists($this->_sessionUserId)) {
@@ -163,6 +166,7 @@ class BackendUser
             Session::put($this->_sessionDepartmentId, $this->data()->departments_id);
             Session::put($this->_fname, $this->data()->fname);
             Session::put($this->_lname, $this->data()->lname);
+            Session::put($this->_sessionCityId, $this->data()->city_id);
             return true;
         }
 

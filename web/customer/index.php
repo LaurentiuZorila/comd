@@ -20,11 +20,12 @@ if (!Input::existsName('post', Tokens::getInputName())) {
     ]);
 }
 
-$sumFurlough   = $leadData->sum(Params::TBL_FURLOUGH, $where, 'quantity');
-$sumAbsentees  = $leadData->sum(Params::TBL_ABSENTEES, $where, 'quantity');
-$sumUnpaid     = $leadData->sum(Params::TBL_UNPAID, $where, 'quantity');
-$sumMedical    = $leadData->sum(Params::TBL_MEDICAL, $where, 'quantity');
-
+$sumFurlough        = $leadData->sum(Params::TBL_FURLOUGH, $where, 'quantity');
+$sumAbsentees       = $leadData->sum(Params::TBL_ABSENTEES, $where, 'quantity');
+$sumUnpaid          = $leadData->sum(Params::TBL_UNPAID, $where, 'quantity');
+$sumMedical         = $leadData->sum(Params::TBL_MEDICAL, $where, 'quantity');
+$sumUnpaidHours     = $leadData->sum(Params::TBL_UNPAIDHOURS, $where, 'quantity');
+$sumHoursToRecover  = $leadData->sum(Params::TBL_HOURSTORECOVER, $where, 'quantity');
 
 /** tables for user */
 $allTables  = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $lead->officesId()]), ['tables'], false);
@@ -32,7 +33,7 @@ $allTables  = explode(',', trim($allTables->tables));
 
 /** Data display */
 $dataDisplay = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $lead->officesId()]), ['data_visualisation'], false)->data_visualisation;
-$dataDisplay = (array)json_decode($dataDisplay);
+$dataDisplay = Common::toArray($dataDisplay);
 foreach ($dataDisplay as $tableData => $v){
     $tblDataDysplay[] = $tableData;
 }
@@ -231,46 +232,46 @@ if (Input::exists()) {
                     </div>
                 </div>
 
-                <div class="col-md-3 col-sm-6">
+                <div class="col-sm-2 col-sm-2">
                     <div class="statistic-block block">
-                      <div class="progress-details d-flex align-items-end justify-content-between">
-                        <div class="title">
-                          <div class="icon"><i class="icon-info"></i></div><strong><?php echo Translate::t('Total_user_absentees'); ?></strong>
+                        <div class="progress-details d-flex align-items-end justify-content-between">
+                            <div class="title">
+                                <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('Total_user_furlough'); ?></strong>
+                            </div>
+                            <div class="number dashtext-1">
+                                <h5 class="mb-1"><?php echo $sumFurlough > 0 ? $sumFurlough . '<small>' . Translate::t('Days', ['strtolower']) . '</small>' : 0 . '<small>' . Translate::t('Day', ['strtolower']) . '</small>'; ?></h5>
+                            </div>
                         </div>
-                        <div class="number dashtext-3">
-                            <h5 class="mb-1"><?php echo $sumAbsentees > 0 ? $sumAbsentees . '<small>' . Translate::t('Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t('Day', ['strtolower'=>true]) . '</small>'; ?></h5>
+                        <div class="progress progress-template">
+                            <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-1"></div>
                         </div>
-                      </div>
-                      <div class="progress progress-template">
-                        <div role="progressbar" style="width: 100%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
-                      </div>
                     </div>
                 </div>
 
-                <div class="col-md-3 col-sm-6">
+                <div class="col-sm-2 col-sm-2">
                     <div class="statistic-block block">
-                      <div class="progress-details d-flex align-items-end justify-content-between">
-                        <div class="title">
-                          <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('Total_user_furlough'); ?></strong>
+                        <div class="progress-details d-flex align-items-end justify-content-between">
+                            <div class="title">
+                                <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('Total_user_medical'); ?></strong>
+                            </div>
+                            <div class="number dashtext-1">
+                                <h5 class="mb-1"><?php echo $sumMedical > 0 ? $sumMedical . '<small>' . Translate::t('Days', ['strtolower']) . '</small>' : 0 . '<small>' . Translate::t('Day', ['strtolower']) . '</small>'; ?></h5>
+                            </div>
                         </div>
-                        <div class="number dashtext-3">
-                            <h5 class="mb-1"><?php echo $sumFurlough > 0 ? $sumFurlough . '<small>' . Translate::t('Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t('Day', ['strtolower'=>true]) . '</small>'; ?></h5>
+                        <div class="progress progress-template">
+                            <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-1"></div>
                         </div>
-                      </div>
-                      <div class="progress progress-template">
-                        <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
-                      </div>
                     </div>
                 </div>
 
-                <div class="col-md-3 col-sm-6">
+                <div class="col-sm-2 col-sm-2">
                     <div class="statistic-block block">
                         <div class="progress-details d-flex align-items-end justify-content-between">
                             <div class="title">
                                 <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('Total_user_unpaid'); ?></strong>
                             </div>
                             <div class="number dashtext-3">
-                                <h5 class="mb-1"><?php echo $sumUnpaid > 0 ? $sumUnpaid . '<small>' . Translate::t('Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t('Day', ['strtolower'=>true]) . '</small>'; ?></h5>
+                                <h5 class="mb-1"><?php echo $sumUnpaid > 0 ? $sumUnpaid . '<small>' . Translate::t('Days', ['strtolower']) . '</small>' : 0 . '<small>' . Translate::t('Day', ['strtolower']) . '</small>'; ?></h5>
                             </div>
                         </div>
                         <div class="progress progress-template">
@@ -279,14 +280,46 @@ if (Input::exists()) {
                     </div>
                 </div>
 
-                <div class="col-md-3 col-sm-6">
+                <div class="col-sm-2 col-sm-2">
                     <div class="statistic-block block">
                         <div class="progress-details d-flex align-items-end justify-content-between">
                             <div class="title">
-                                <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('Total_user_medical'); ?></strong>
+                                <div class="icon"><i class="icon-info"></i></div><strong><?php echo Translate::t('Total_user_absentees'); ?></strong>
                             </div>
                             <div class="number dashtext-3">
-                                <h5 class="mb-1"><?php echo $sumMedical > 0 ? $sumMedical . '<small>' . Translate::t('Days', ['strtolower'=>true]) . '</small>' : 0 . '<small>' . Translate::t('Day', ['strtolower'=>true]) . '</small>'; ?></h5>
+                                <h5 class="mb-1"><?php echo $sumAbsentees > 0 ? $sumAbsentees . '<small>' . Translate::t('Days', ['strtolower']) . '</small>' : 0 . '<small>' . Translate::t('Day', ['strtolower']) . '</small>'; ?></h5>
+                            </div>
+                        </div>
+                        <div class="progress progress-template">
+                            <div role="progressbar" style="width: 100%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-2 col-sm-2">
+                    <div class="statistic-block block">
+                        <div class="progress-details d-flex align-items-end justify-content-between">
+                            <div class="title">
+                                <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('unpaidHours'); ?></strong>
+                            </div>
+                            <div class="number dashtext-3">
+                                <h5 class="mb-1"><?php echo $sumUnpaidHours > 0 ? $sumUnpaidHours . '<small>' . Translate::t('Hours', ['strtolower']) . '</small>' : 0 . '<small>' . Translate::t('Hours', ['strtolower']) . '</small>'; ?></h5>
+                            </div>
+                        </div>
+                        <div class="progress progress-template">
+                            <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-2 col-sm-2">
+                    <div class="statistic-block block">
+                        <div class="progress-details d-flex align-items-end justify-content-between">
+                            <div class="title">
+                                <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('total_user_hoursToRecover'); ?></strong>
+                            </div>
+                            <div class="number dashtext-3">
+                                <h5 class="mb-1"><?php echo $sumHoursToRecover > 0 ? $sumHoursToRecover . '<small>' . Translate::t('Hours', ['strtolower']) . '</small>' : 0 . '<small>' . Translate::t('Hours', ['strtolower']) . '</small>'; ?></h5>
                             </div>
                         </div>
                         <div class="progress progress-template">

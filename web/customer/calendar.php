@@ -35,7 +35,6 @@ include '../common/includes/head.php';
 <script src="./../common/vendor/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.min.js"></script>
 <script src="./../common/vendor/bootstrap-datepicker-1.6.4-dist/js/bootstrap-datepicker.js"></script>
 <script>
-$('element').addTouch();
 $(document).ready(function () {
     var initialLocaleCode = '<?php echo $lead->language(); ?>';
     var calendar = $('#calendar').fullCalendar({

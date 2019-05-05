@@ -65,6 +65,8 @@ if (Input::exists() && Tokens::tokenVerify()) {
 
             /** Check if exists values */
             if (!Common::checkValues($allData)) {
+                Session::put('selected_month', Common::numberToMonth($month, $lang));
+                Session::put('selected_year', $year);
                 Errors::setErrorType('info', Translate::t('Not_found_data'));
             }
         }
@@ -167,7 +169,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="col-sm-4">
                                 <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} ?>">
-                                    <option value="<?php echo Input::exists() ? Input::post('year') : ''; ?>"><?php echo Input::exists() ? Input::post('year') : Translate::t('Select_year'); ?></option>
+                                    <option value="<?php echo Input::exists() && !empty(Input::post('year')) ? Input::post('year') : ''; ?>"><?php echo Input::exists() && !empty(Input::post('year')) ? Input::post('year') : Translate::t('Select_year'); ?></option>
                                     <?php
                                     foreach (Common::getYearsList() as $year) { ?>
                                         <option><?php echo $year; ?></option>
@@ -180,7 +182,7 @@ include 'includes/navbar.php';
                             </div>
                             <div class="col-sm-4">
                                 <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} ?>">
-                                    <option value="<?php echo Input::exists() ? Input::post('month') : ''; ?>"><?php echo Input::exists() ? Common::numberToMonth(Input::post('month'), Session::get('lang')) : Translate::t('Select_month'); ?></option>
+                                    <option value="<?php echo Input::exists() && !empty(Input::post('month')) ? Input::post('month') : ''; ?>"><?php echo Input::exists() && !empty(Input::post('month')) ? Common::numberToMonth(Input::post('month'), Session::get('lang')) : Translate::t('Select_month'); ?></option>
                                     <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                         <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                     <?php } ?>

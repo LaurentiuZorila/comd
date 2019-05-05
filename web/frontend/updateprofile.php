@@ -112,7 +112,7 @@ include 'includes/navbar.php';
                             <div class="card-body text-center"><img src="./../common/img/user.png" class="card-profile-img">
                                 <h4 class="mb-3 text-gray-light"><?php echo $name; ?></h4>
                                 <h5 class="mb-1"><?php echo strtoupper($departmentName->name); ?></h5>
-                                <h5 class="mb-1"><?php echo $officeName->name; ?></h5>
+                                <h5 class="mb-1"><?php echo strtoupper($officeName->name); ?></h5>
                             </div>
                         </div>
                     </div>
@@ -123,34 +123,47 @@ include 'includes/navbar.php';
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-sm-4 col-md-4">
+                                    <div class="col-sm-4 col-md-4" >
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t('FN'); ?></label>
-                                            <input type="text" name="first_name" placeholder="<?php echo $frontUser->fName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $first_name; }?>">
+                                            <input type="text" name="first_name" placeholder="<?php echo $frontUser->fName(); ?>" class="form-control <?php echo Input::exists('post') && empty(Input::post('first_name')) ? 'is-invalid' : ''; ?>" value="<?php if (Input::exists()) { echo $first_name; }?>">
+                                            <?php if (Input::exists() && empty(Input::post('first_name'))) { ?>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                                            <?php }?>
                                         </div>
                                     </div>
+
                                     <div class="col-sm-8 col-md-8">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t('LN'); ?></label>
-                                            <input type="text" name="last_name" placeholder="<?php echo $frontUser->lName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>">
+                                            <input type="text" name="last_name" placeholder="<?php echo $frontUser->lName(); ?>" class="form-control <?php echo Input::exists('post') && empty(Input::post('last_name')) ? 'is-invalid' : ''; ?>" value="<?php if (Input::exists()) { echo $last_name; }?>">
+                                            <?php if (Input::exists() && empty(Input::post('last_name'))) { ?>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                                            <?php }?>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-3">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t('Username'); ?></label>
-                                            <input type="text" name="username" placeholder="<?php echo $frontUser->userName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>" disabled>
+                                            <input type="text" name="username" placeholder="<?php echo $frontUser->userName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $frontUser->userName(); }?>" disabled>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-4">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t('Pass'); ?></label>
-                                            <input type="text" name="password" placeholder="<?php echo Translate::t('Pass'); ?>" class="form-control">
+                                            <input type="text" name="password" placeholder="<?php echo Translate::t('Pass'); ?>" class="form-control <?php echo Input::exists('post') && empty(Input::post('password')) ? 'is-invalid' : ''; ?>">
+                                            <?php if (Input::exists() && empty(Input::post('password'))) { ?>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                                            <?php }?>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-4">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t('new_pass'); ?></label>
-                                            <input type="text" name="new_password" placeholder="<?php echo Translate::t('new_pass'); ?>" class="form-control">
+                                            <input type="text" name="new_password" placeholder="<?php echo Translate::t('new_pass'); ?>" class="form-control <?php echo Input::exists('post') && empty(Input::post('new_password')) ? 'is-invalid' : ''; ?>">
+                                            <?php if (Input::exists() && empty(Input::post('new_pass'))) { ?>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                                            <?php }?>
                                         </div>
                                     </div>
                                 </div>

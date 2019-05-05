@@ -52,6 +52,8 @@ class CustomerUser
      */
     private $_lname;
 
+    private $_sessionCityId;
+
     /**
      * @var bool
      */
@@ -85,6 +87,7 @@ class CustomerUser
         $this->_sessionSupervisorId = Config::get('session/session_supervisor_id');
         $this->_fname               = Config::get('session/session_fname');
         $this->_lname               = Config::get('session/session_lname');
+        $this->_sessionCityId       = Config::get('session/session_cityId');
 
 
         if (!$user) {
@@ -184,6 +187,7 @@ class CustomerUser
             Session::put($this->_sessionSupervisorId, $this->data()->supervisors_id);
             Session::put($this->_fname, $this->data()->fname);
             Session::put($this->_lname, $this->data()->lname);
+            Session::put($this->_sessionCityId, $this->data()->city_id);
             return true;
         }
 
@@ -295,6 +299,15 @@ class CustomerUser
     {
         return Session::get($this->_sessionDepartmentId);
     }
+
+    /**
+     * @return mixed
+     */
+    public function cityId()
+    {
+        return Session::get($this->_sessionCityId);
+    }
+
 
 
     /**

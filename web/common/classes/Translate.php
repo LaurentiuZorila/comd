@@ -231,6 +231,12 @@ class Translate
             'status_changed'    => 'Statusul a fost schimbat pentru:',
             'employee'          => 'Operator',
             'employee_status_changed'   => 'Statsul tau a fost schimbat',
+            'hoursToRecover'    => 'Ore de recuperat',
+            'unpaidHours'       => 'Ore neplatite',
+            'total_user_hoursToRecover'   => 'H de recuperat',
+            'hours'             => 'Ore',
+            'city'              => 'Oras',
+            'select'            => 'Selecteaza',
         ];
     }
 
@@ -377,7 +383,7 @@ class Translate
             'Team_medical'      => 'Team medical leaves',
             'Calendar_info'     => 'From here you can request leave days. If this are accepted this days will appear here',
             'Request_success'   => 'Your request has been successfully added',
-            'event_deleted'     => 'Event is successfully deleted',
+            'event_deleted'     => 'Event is deleted',
             'event_updated'     => 'Event is successfully updated',
             'event_request'     => 'Request',
             'all'               => 'All',
@@ -457,7 +463,13 @@ class Translate
             'create_staff'      => 'Create staff',
             'status_changed'    => 'Status has been changed for:',
             'employee'          => 'Employee',
-            'employee_status_changed'   => 'Your status has been changed',
+            'employee_status_changed'     => 'Your status has been changed',
+            'hoursToRecover'        => 'hours to recover',
+            'unpaidHours'           => 'Unpaid hours',
+            'total_user_hoursToRecover'   => 'H to recover',
+            'hours'             => 'Hours',
+            'city'              => 'City',
+            'select'            => 'Select',
         ];
     }
 
@@ -684,7 +696,13 @@ class Translate
             'status_changed'    => 'Stato è stato aggiornato per:',
             'employee'          => 'Operatore',
             'employee_status_changed'   => 'Il tuo stato è stato cambiato',
-        ];
+            'hoursToRecover'       => 'Orma',
+            'unpaidHours'       => 'Permeso',
+            'total_user_hoursToRecover'   => 'Ore orma',
+            'hours'             => 'Ore',
+            'city'              => 'Città',
+            'select'            => 'Seleziona',
+            ];
     }
 
     /**

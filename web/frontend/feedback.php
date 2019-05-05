@@ -2,7 +2,7 @@
 require_once 'core/init.php';
 
 /** All leads */
-$teamLeads = $frontProfile->getLeads([['departments_id', $frontUser->departmentId()], ['offices_id', $frontUser->officeId()]], ['name', 'id']);
+$teamLeads = $frontProfile->getLeads([['departments_id', $frontUser->departmentId()], ['offices_id', $frontUser->officeId()], ['city_id', $frontUser->cityId()]], ['name', 'id']);
 
 /** Leads id */
 foreach ($teamLeads as $leads) {

@@ -71,6 +71,11 @@ class FrontendUser
     private $_sessionTeamLeadId;
 
     /**
+     * @var mixed|string|null
+     */
+    private $_sessionCityId;
+
+    /**
      * @var
      */
     private $_success = false;
@@ -96,6 +101,7 @@ class FrontendUser
         $this->_sessionDepartmentId = Config::get('frontSession/session_department');
         $this->_sessionOfficeId     = Config::get('frontSession/session_office');
         $this->_sessionSupervisorId = Config::get('frontSession/session_supervisor');
+        $this->_sessionCityId       = Config::get('frontSession/session_cityId');
 
 
         if (!$user) {
@@ -153,6 +159,7 @@ class FrontendUser
             Session::put($this->_sessionDepartmentId, $this->data()->departments_id);
             Session::put($this->_sessionOfficeId, $this->data()->offices_id);
             Session::put($this->_sessionSupervisorId, $this->data()->supervisors_id);
+            Session::put($this->_sessionCityId, $this->data()->city_id);
             return true;
         }
         return false;
@@ -298,6 +305,15 @@ class FrontendUser
     public function officeId()
     {
         return Session::get($this->_sessionOfficeId);
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function cityId()
+    {
+        return Session::get($this->_sessionCityId);
     }
 
 

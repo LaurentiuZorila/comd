@@ -22,6 +22,7 @@ return [
         'lang_id'               => 'langId',
         'session_fname'         => 'first_name',
         'session_lname'         => 'last_name',
+        'session_cityId'        => 'cityId',
     ],
     'route' => [
         'addUser'   => 'addusers.php',

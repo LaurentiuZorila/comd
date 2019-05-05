@@ -30,7 +30,9 @@ if (Input::exists()) {
                 'departments_id'   => $lead->departmentId(),
                 'offices_id'       => $lead->officesId(),
                 'supervisors_id'   => $lead->supervisorId(),
+                'city_id'          => $lead->cityId(),
                 'lang'             => Params::DEFAULTLANG,
+                'status'           => 1,
                 'fname'            => $fname,
                 'lname'            => $lname,
                 'name'             => $name,
@@ -47,8 +49,6 @@ if (Input::exists()) {
         }
     }
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -135,7 +135,7 @@ include 'includes/navbar.php';
                                         <label class="col-sm-3 form-control-label">
                                         </label>
                                         <div class="form-group col-sm-9">
-                                            <button id="Submit" name="add" value="<?php echo Translate::t('Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t('create'); ?></button>
+                                            <button id="Submit" name="add" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t('create'); ?></button>
                                             <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                         </div>
                                     </div>

@@ -4,11 +4,16 @@ if (Input::existsName('get', 'show')) {
     $best = new BestEmployee($lead->officesId());
 } else {
     $tablesData = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $lead->officesId()]), ['tables_conditions', 'tables_priorities', 'data_visualisation'], false);
-    $tables_conditions    = (array) json_decode($tablesData->tables_conditions);
-    $tables_priorities    = (array) json_decode($tablesData->tables_priorities);
+    $tables_conditions    = Common::toArray($tablesData->tables_conditions);
+    $tables_priorities    = Common::toArray($tablesData->tables_priorities);
     ksort($tables_priorities);
     $tables_priorities    = array_flip($tables_priorities);
-    $tables_visualisation = (array) json_decode($tablesData->data_visualisation);
+    $tables_visualisation = Common::toArray($tablesData->data_visualisation);
+
+/** Remove common tables */
+    foreach (Params::TBL_COMMON as $commonTables) {
+        unset($tables_visualisation[$commonTables]);
+    }
 
     $tablesPriorityMinValue = min($tables_priorities);
 // merge all arrays

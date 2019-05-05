@@ -1,7 +1,7 @@
 <?php
 include './../core/init-calendar.php';
-$leadId  = $customerUser->customerId();
-$results = $customerData->records(Params::TBL_EVENTS, AC::where(['lead_id', $leadId]), ['*'], true);
+$officeId = $customerUser->officesId();
+$results = $customerData->records(Params::TBL_EVENTS, AC::where(['lead_id', $officeId]), ['*'], true);
 
 foreach ($results as $key => $result) {
     switch ($result->status) {

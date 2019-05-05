@@ -16,12 +16,15 @@ class Params
     /**
      * Common tables
      */
-    const TBL_COMMON        = ['furlough', 'absentees', 'unpaid', 'medical'];
+    const TBL_COMMON        = ['furlough', 'absentees', 'unpaid', 'medical', 'unpaidHours', 'hoursToRecover'];
+
+
+    const TBL_COMMON_DISPLAY = ['furlough' => 'day', 'absentees' => 'day', 'unpaid' => 'day', 'medical' => 'day', 'unpaidHours' => 'hours', 'hoursToRecover' => 'hours'];
 
     /**
      * Common tables with prefix
      */
-    const PREFIX_TBL_COMMON = ['cmd_furlough', 'cmd_absentees', 'cmd_unpaid', 'cmd_medical'];
+    const PREFIX_TBL_COMMON = ['cmd_furlough', 'cmd_absentees', 'cmd_unpaid', 'cmd_medical', 'cmd_unpaidHours', 'cmd_hoursToRecover'];
 
     /**
      * Tables prefix
@@ -101,25 +104,30 @@ class Params
     /**
      * Events table
      */
-    const TBL_EVENTS        = 'cmd_events';
+    const TBL_EVENTS            = 'cmd_events';
 
+    const TBL_UNPAIDHOURS       = 'cmd_unpaidHours';
+
+    const TBL_HOURSTORECOVER    =  'cmd_hoursToRecover';
 
     /**
      * Notification table
      */
-    const TBL_NOTIFICATION  = 'cmd_notification';
+    const TBL_NOTIFICATION      = 'cmd_notification';
 
 
     /**
      * Status table
      */
-    const TBL_STATS         = 'cmd_status';
+    const TBL_STATS = 'cmd_status';
+
+    const TBL_CITY = 'cmd_city';
 
 
     /**
      * Allowed files extensions
      */
-    const EXTENSIONS        = ['csv'];
+    const EXTENSIONS    = ['csv'];
 
     /**
      * Min characters allowed
@@ -156,13 +164,13 @@ class Params
     /**
      * Event statuses
      */
-    const EVENTS_STATUS         = ['1' => 'Accepted', '2' => 'Pending', '3' => 'Denied'];
+    const EVENTS_STATUS         = ['1' => 'Accepted', '2' => 'Pending', '3' => 'Denied', '4' => 'Deleted'];
 
 
     /**
      * Events status color
      */
-    const EVENTS_STATUS_COLORS  = ['1' => 'success', '2' => 'secondary', '3' => 'danger'];
+    const EVENTS_STATUS_COLORS  = ['1' => 'success', '2' => 'secondary', '3' => 'danger', '4' => 'danger'];
 
 
     /**

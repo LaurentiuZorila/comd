@@ -13,12 +13,27 @@ $title  = ucfirst(Input::get('table'));
 $table  = strtolower($table);
 $table  = Params::PREFIX . $table;
 
+// Get data which is deleted
+$data = $customerDb->get(Params::TBL_NOTIFICATION, AC::where(['user_id', $userId]), ['*'], false)->first();
 
 // Delete event in TBL Events
 $customerDb->delete(Params::TBL_EVENTS, AC::where(['id', $id]));
 
 // Delete notification in TBL Notification
 $customerDb->delete(Params::TBL_NOTIFICATION, AC::where(['event_id', $id]));
+
+// Insert delete notification
+$customerDb->insert(Params::TBL_NOTIFICATION,
+    [
+        'user_id'   => $data->user_id,
+        'status'    => 4,
+        'common'    => 1,
+        'message'   => 'event_deleted',
+        'title'     => $data->title,
+        'days'      => $data->days,
+        'response_status'   => 1,
+        'date'      => date('Y-m-d H:i:s')
+    ]);
 
     // Cond common table
     $where = AC::where([

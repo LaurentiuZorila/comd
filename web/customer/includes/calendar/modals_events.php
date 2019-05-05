@@ -92,7 +92,7 @@
                         'title': titleEvent,
                         'start': startDate,
                         'end': endDate,
-                        'userId': <?php echo $lead->customerId(); ?>,
+                        'userId': <?php echo $lead->officesId(); ?>,
                     },
                     success: function (response) {
                         if(parseInt(response) === 1) {

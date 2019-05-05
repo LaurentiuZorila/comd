@@ -1,8 +1,8 @@
 <?php
 require_once 'core/init.php';
-$allEmployees   = $leadData->records(Params::TBL_EMPLOYEES, ['offices_id', '=', $lead->officesId()], ['name', 'offices_id', 'id', 'departments_id'], true, ['ORDER BY' => 'name']);
+$allEmployees   = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['offices_id', $lead->officesId()]), ['name', 'offices_id', 'id', 'departments_id'], true, ['ORDER BY' => 'name']);
 $departments    = $leadData->records(Params::TBL_DEPARTMENT, [], ['id', 'name'], true, ['ORDER BY' => 'name']);
-
+$citys          = $leadData->records(Params::TBL_CITY, [], ['id', 'city'], true, ['ORDER BY' => 'city']);
 
 if (Input::exists() && Tokens::tokenVerify()) {
     /** Instantiate validate class */
@@ -10,6 +10,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
     /** Check if all fields are not empty */
     $validation = $validate->check($_POST, [
         'user'          => ['required' => true],
+        'city'          => ['required' => true],
         'department'    => ['required' => true],
         'office'        => ['required' => true]
     ]);
@@ -19,9 +20,10 @@ if (Input::exists() && Tokens::tokenVerify()) {
         $employeesId    = Input::post('user');
         $departmentId   = Input::post('department');
         $officesId      = Input::post('office');
+        $cityId         = Input::post('city');
 
-        $employeesDetails       = $leadData->records(Params::TBL_EMPLOYEES, ['id', '=', $employeesId], ['departments_id', 'offices_id'], false);
-        $employeesRecentTables  = $leadData->records(Params::TBL_OFFICE, ['id', '=', $employeesDetails->offices_id], ['tables'], false);
+        $employeesDetails       = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['id', $employeesId]), ['departments_id', 'offices_id', 'city_id'], false);
+        $employeesRecentTables  = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $employeesDetails->offices_id]), ['tables'], false);
 
         /** Employees tables */
         $empRecentTables  = explode(',', $employeesRecentTables->tables);
@@ -30,41 +32,43 @@ if (Input::exists() && Tokens::tokenVerify()) {
             $tables[] = Params::PREFIX . $allTables;
         }
 
-        $lead->update(Params::TBL_EMPLOYEES, [
-            'departments_id' => $departmentId,
-            'offices_id'     => $officesId
-        ], [
-            'id' => $employeesId
-        ]);
+        try {
+            $leadDb->getPdo()->beginTransaction();
 
+            $lead->update(Params::TBL_EMPLOYEES, [
+                'departments_id' => $departmentId,
+                'offices_id'     => $officesId,
+                'city_id'        => $cityId
+            ], [
+                'id' => $employeesId
+            ]);
 
-        $lead->insert(Params::TBL_CHANGES, [
+            $lead->insert(Params::TBL_CHANGES, [
                 'employees_id'              => $employeesId,
                 'current_departments_id'    => $employeesDetails->departments_id,
                 'current_offices_id'        => $employeesDetails->offices_id,
+                'current_city_id'           => $employeesDetails->city_id,
                 'new_departments_id'        => $departmentId,
-                'new_offices_id'            => $officesId
+                'new_offices_id'            => $officesId,
+                'new_city_id'               => $cityId
             ]);
 
-        foreach ($tables as $table) {
-            $lead->update($table, [
-                'departments_id' => $departmentId,
-                'offices_id'     => $officesId,
-                'employees_average_id'  => $employeesId . '_' . date('Y')
-            ], [
-                'employees_id' => $employeesId
-            ]);
-        }
-
-        if ($lead->success()) {
+            foreach ($tables as $table) {
+                $lead->update($table, [
+                    'departments_id' => $departmentId,
+                    'offices_id'     => $officesId,
+                ], [
+                    'employees_id' => $employeesId
+                ]);
+            }
+            $leadDb->getPdo()->commit();
             Errors::setErrorType('success', Translate::t('Db_success', ['ucfirst'=>true]));
-        } else {
+        } catch (PDOException $e) {
             Errors::setErrorType('danger', Translate::t('Db_error', ['ucfirst'=>true]));
         }
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -134,14 +138,28 @@ include 'includes/navbar.php';
 
                                     <div class="line"></div>
                                     <div class="form-group row">
+                                        <label class="col-sm-3 form-control-label"><?php echo Translate::t(['select', 'city'], ['ucfirst']); ?></label>
+                                        <div class="col-sm-9">
+                                            <select name="city" class="form-control <?php if (Input::exists() && empty(Input::post('department'))) {echo 'is-invalid';} ?>">
+                                                <option value=""><?php echo Translate::t(['select', 'city'], ['ucfirst']); ?></option>
+                                                <?php
+                                                foreach ($citys as $city) { ?>
+                                                    <option value="<?php echo $city->id; ?>"><?php echo strtoupper($city->city); ?></option>
+                                                <?php } ?>
+                                            </select>
+                                            <?php
+                                            if (Input::exists() && empty(Input::post('city'))) { ?>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                                            <?php }?>
+                                        </div>
+                                    </div>
+
+                                    <div class="line"></div>
+                                    <div class="form-group row">
                                         <label class="col-sm-3 form-control-label"><?php echo Translate::t('New_depart'); ?></label>
                                         <div class="col-sm-9">
                                             <select name="department" class="form-control <?php if (Input::exists() && empty(Input::post('department'))) {echo 'is-invalid';} ?>">
-                                                <option value=""><?php echo Translate::t('Select_depart', ['ucfirst'=>true]); ?></option>
-                                                <?php
-                                                foreach ($departments as $department) { ?>
-                                                <option value="<?php echo $department->id; ?>"><?php echo strtoupper($department->name); ?></option>
-                                                <?php } ?>
+                                                <option value=""><?php echo Translate::t('Select_depart', ['ucfirst']); ?></option>
                                             </select>
                                             <?php
                                             if (Input::exists() && empty(Input::post('department'))) { ?>
@@ -155,7 +173,7 @@ include 'includes/navbar.php';
                                         <label class="col-sm-3 form-control-label"><?php echo Translate::t('New_office'); ?></label>
                                         <div class="col-sm-9">
                                             <select name="office" class="form-control <?php if (Input::exists() && empty(Input::post('office'))) {echo 'is-invalid';} ?>">
-                                                <option value=""><?php echo Translate::t('Select_office', ['strttoupper'=>true]); ?></option>
+                                                <option value=""><?php echo Translate::t('Select_office', ['strttoupper']); ?></option>
                                             </select>
                                             <?php
                                             if (Input::exists() && empty(Input::post('office'))) { ?>

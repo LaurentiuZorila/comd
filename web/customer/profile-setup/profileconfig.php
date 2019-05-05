@@ -64,7 +64,7 @@ if (Input::exists()) {
             $defaultPassword    = Input::post('Password');
             $new_password       = Input::post('new_password');
             $confirm_pass       = Input::post('confirm_password');
-            $passwordHash       = password_hash(Input::post('new_password'), PASSWORD_DEFAULT);
+            $passwordHash       = password_hash($new_password, PASSWORD_DEFAULT);
             $bestConditions     = Input::post('tables_conditions');
             $tablePriority      = Input::post('tables_priorities');
             $tableDataDisplay   = Common::dbValues([Input::post('data_display') => ['trim', 'strtolower']]);
@@ -81,7 +81,14 @@ if (Input::exists()) {
             /** Array with priorities */
             $priorities = explode(',', $tablePriority);
             /** Array with displayData */
-            $displayData = explode(',', $tableDataDisplay);
+            foreach (explode(',', $tableDataDisplay) as $dataDisplay) {
+                if ($dataDisplay == 'number') {
+                    $displayData[] = '';
+                } elseif ($dataDisplay == 'percentage') {
+                    $displayData[] = '%';
+                }
+            }
+
             /** Array with tables to create */
             $newTables = explode(',', $newTables);
 
@@ -89,11 +96,15 @@ if (Input::exists()) {
             $tablesConditions = Common::toJson(Common::assocArray($newTables, $conditions));
             /** Json with tables conditions table : priorities */
             $tablesPriorities = Common::toJson(Common::assocArray($priorities, $newTables));
+            /** @var  $tablesDisplay  array with all tables and display value */
+            $tablesDisplay = Common::assocArray($newTables, $displayData);
+
+            $tablesDisplay = array_merge($tablesDisplay, Params::TBL_COMMON_DISPLAY);
             /** Json with tables : data display */
-            $tablesDisplay = Common::toJson(Common::assocArray($newTables, $displayData));
+            $tablesDisplay = Common::toJson($tablesDisplay);
+
             /** Tables */
             $tablesToCreate = Common::assocArray($newTables, $displayData);
-
 
             /** User details */
             $customerId         = $customerDetails->id;
@@ -122,9 +133,9 @@ if (Input::exists()) {
             $create = new Create();
             /** Create tables */
             foreach ($tablesToCreate as $table => $type) {
-                if ($type == 'number') {
+                if ($type == '') {
                     $create->createTable($table, 'int', true);
-                } elseif ($type == 'percentage') {
+                } elseif ($type == '%') {
                     $create->createTable($table, 'float', true);
                 }
             }

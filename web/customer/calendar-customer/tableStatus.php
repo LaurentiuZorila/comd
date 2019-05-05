@@ -15,34 +15,33 @@ $eventStatus = Input::post('event_status');
 if (!empty($eventMonth) && !empty($eventStatus)) {
     if ($eventStatus != 'all') {
         $where = AC::where([
-            ['lead_id', $lead->customerId()],
+            ['lead_id', $lead->officesId()],
             ['status', $eventStatus],
             ['month', $eventMonth]
         ]);
     } elseif ($eventStatus == 'all') {
         $where = AC::where([
-            ['lead_id', $lead->customerId()],
+            ['lead_id', $lead->officesId()],
             ['month', $eventMonth]
         ]);
     } else {
         $where = AC::where([
-            ['lead_id', $lead->customerId()],
+            ['lead_id', $lead->officesId()],
             ['month', $eventMonth]
         ]);
     }
 } else {
-    if ($eventStatus !== 'all') {
+    if ($eventStatus != 'all') {
         $where = AC::where([
-            ['lead_id', $lead->customerId()],
+            ['lead_id', $lead->officesId()],
             ['status', $eventStatus],
         ]);
     } elseif ($eventStatus == 'all') {
         $where = AC::where([
-            'lead_id', $lead->customerId()
+            'lead_id', $lead->officesId()
         ]);
     }
 }
-
 $allEvents = $leadData->records(Params::TBL_EVENTS, $where, ['*'], true);
 ?>
 
@@ -50,9 +49,9 @@ $allEvents = $leadData->records(Params::TBL_EVENTS, $where, ['*'], true);
 <table class="table">
     <thead>
     <tr role="row">
-        <th class="text-white-50" style="margin: 1px; padding-left: 0px; padding-right: 0px;"><?php echo Translate::t('Request', ['ucfirst'=>true]); ?></th>
-        <th class="text-white-50" style="margin: 1px; padding-left: 0px; padding-right: 0px;"><?php echo Translate::t('Date', ['ucfirst'=>true]); ?></th>
-        <th class="text-white-50" style="margin: 1px; padding-left: 0px; padding-right: 0px;"><?php echo Translate::t('Status', ['ucfirst'=>true]); ?></th>
+        <th class="text-white-50" style="margin: 1px; padding-left: 0px; padding-right: 0px;"><?php echo Translate::t('Request', ['ucfirst']); ?></th>
+        <th class="text-white-50" style="margin: 1px; padding-left: 0px; padding-right: 0px;"><?php echo Translate::t('Date', ['ucfirst']); ?></th>
+        <th class="text-white-50" style="margin: 1px; padding-left: 0px; padding-right: 0px;"><?php echo Translate::t('Status', ['ucfirst']); ?></th>
     </tr>
     </thead>
     <tbody>
@@ -68,7 +67,7 @@ $allEvents = $leadData->records(Params::TBL_EVENTS, $where, ['*'], true);
                     $collapseData = $allEvent->status == 2 ? 'data-target=#collapseExample' . $allEvent->id . ' aria-controls=collapseExample' . $allEvent->id : '';
                     ?>
                     <span class="badge" data-toggle="collapse" <?php echo $collapseData; ?> aria-expanded="false" style="background-color:<?php echo $allEvent->status == 1 ? Params::EVENTS_TITLE_COLORS[$allEvent->title][1] : '#868e96'; ?>; color: white; cursor: pointer;">
-                        <?php echo Translate::t(strtolower($allEvent->title), ['ucfirst'=>true]) . ' - ' . $employeeName; ?>
+                        <?php echo Translate::t(strtolower($allEvent->title), ['ucfirst']) . ' - ' . $employeeName; ?>
                     </span>
                 </td>
                 <td class="text-nowrap" style="margin: 1px; padding-left: 1px; padding-right: 0px;">

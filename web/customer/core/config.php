@@ -24,6 +24,7 @@ return [
         'token_hash'            => 'token_hash',
         'token_id'              => 'token_id',
         'login_token'           => 'login_token',
+        'session_cityId'        => 'cityId',
     ],
     'token'     => [
         'token'                 => 'token',

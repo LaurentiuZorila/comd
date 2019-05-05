@@ -4,8 +4,8 @@ return [
     'mysql' => [
         'host'      => 'laur-mysql',
         'username'  => 'laur',
-        'password'  =>  'laur',
-        'db'   => 'laur'
+        'password'  => 'laur',
+        'db'        => 'laur'
     ],
 
     'remember' => [
@@ -23,7 +23,8 @@ return [
         'session_department'    => 'department_id',
         'session_user'          => 'user_id',
         'session_supervisor'    => 'supervisor_id',
-        'token_name'            => 'token'
+        'token_name'            => 'token',
+        'session_cityId'        => 'cityId',
     ],
     'route' => [
         'calendar'  => 'calendar.php',

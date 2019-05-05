@@ -52,7 +52,7 @@ if (Input::existsName('get', 'notificationId')) {
                             <?php } ?>
                         <?php if ($notificationCount > 0) {
                         foreach ($notificationData as $notification) {
-                            $url = $notification->common == 1 ? Config::get('route/calendar').'?status=2&notificationId='. $notification->id : Config::get('route/home') .'?officeId='. $frontUser->officeId() . '&userId=' . $frontUser->userId() . '&lastData=' . Tokens::getRoute();
+                            $url = $notification->common == 1 ? Config::get('route/calendar').'?status='. $notification->status .'&notificationId='. $notification->id : Config::get('route/home') .'?officeId='. $frontUser->officeId() . '&userId=' . $frontUser->userId() . '&lastData=' . Tokens::getRoute();
                             ?>
                             <a href="<?php echo ($notification->common == 2) ? '?notificationId='. $notification->id : $url; ?>" class="dropdown-item message d-flex align-items-center">
                                 <div class="profile"><img src="./../common/img/user.png" alt="..." class="img-fluid">
@@ -60,7 +60,7 @@ if (Input::existsName('get', 'notificationId')) {
                                 </div>
                                 <div class="content">
                                     <span class="d-block"><?php echo Translate::t($notification->response, ['ucfirst']);?></span>
-                                    <?php if ($notification->event_id > 0) {
+                                    <?php if ($notification->event_id > 0 || $notification->common == 1) {
                                         $days = explode(',', $notification->days); ?>
                                         <small class="date d-block"><?php echo Translate::t(strtolower($notification->title)) . ': ' . current($days) . ' - ' . end($days); ?></small>
                                     <?php } else {

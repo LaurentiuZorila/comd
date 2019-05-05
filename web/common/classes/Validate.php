@@ -38,7 +38,7 @@ class Validate
     public function __construct()
     {
         $this->_db = CommonDB::getInstance();
-        $this->_lang = Session::get('lang');
+        $this->_lang = Session::exists('lang') ? Session::get('lang') : 'en';
     }
 
 
@@ -73,12 +73,12 @@ class Validate
                     switch ($rule) {
                         case 'min':
                             if (trim(strlen($value)) < $rule_value) {
-                                Errors::setErrorType('danger', sprintf("%s %s %d %s!", $errorItem, Translate::t($this->_lang, 'validation_minimum'), $rule_value, Translate::t($this->_lang, 'characters')));
+                                Errors::setErrorType('danger', sprintf("%s %s %d %s!", $errorItem, Translate::t('validation_minimum'), $rule_value, Translate::t('characters')));
                             }
                             break;
                         case 'max':
                             if (trim(strlen($value)) > $rule_value) {
-                                Errors::setErrorType('danger', sprintf("%s %s %d %s!", $errorItem, Translate::t($this->_lang, 'validation_max'), $rule_value, Translate::t($this->_lang, 'characters')));
+                                Errors::setErrorType('danger', sprintf("%s %s %d %s!", $errorItem, Translate::t('validation_max'), $rule_value, Translate::t('characters')));
                             }
                             break;
                         case 'matches':
@@ -86,23 +86,23 @@ class Validate
                                 if ($hasErrors) {
                                     Session::put($item, 'has-error');
                                 }
-                                Errors::setErrorType('danger', Translate::t($this->_lang, 'pass_no_match'));
+                                Errors::setErrorType('danger', Translate::t('pass_no_match'));
                             }
                             break;
                         case 'unique':
                             $check = $this->_db->get($rule_value, [$item, '=', $value], [$item]);
                             if ($check->count()) {
-                                Errors::setErrorType('danger', sprintf("%s: %s %s", $errorItem, $value,Translate::t($this->_lang, 'already_exists')));
+                                Errors::setErrorType('danger', sprintf("%s: %s %s", $errorItem, $value, Translate::t('already_exists')));
                             }
                             break;
                         case 'matches_db':
                             foreach ($rule_value as $key => $rule) {
                                 if (!in_array($key, $this->_ruleColumn)) {
-                                    Errors::setErrorType('danger', sprintf("%s", Translate::t($this->_lang, 'rules_not_allowed' )));
+                                    Errors::setErrorType('danger', sprintf("%s", Translate::t('rules_not_allowed' )));
                                 } else {
                                     $getP = $this->_db->get($rule_value['table'], ['id', $rule_value['id']], [$item])->first()->$item;
                                     if (!password_verify($value, $getP)) {
-                                        Errors::setErrorType('danger', sprintf("%s", Translate::t($this->_lang, 'wrong_password')));
+                                        Errors::setErrorType('danger', sprintf("%s", Translate::t('wrong_password')));
                                     }
                                 }
                             }
@@ -126,7 +126,7 @@ class Validate
                             $path = $_FILES['fileToUpload']['name'];
                             $extension  = pathinfo($path, PATHINFO_EXTENSION);
                             if (in_array($extension, $rule_value)) {
-                                Errors::setErrorType('danger', Translate::t($this->_lang, 'Csv_extension'));
+                                Errors::setErrorType('danger', Translate::t('Csv_extension'));
                             }
                             break;
                         case 'fileError':
@@ -161,16 +161,16 @@ class Validate
                                 foreach ($values as $v) {
                                     if (!is_numeric($v) && $hasErrors) {
                                         Session::put($item, 'has-error');
-                                        Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($this->_lang, 'only_numbers')));
+                                        Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t('only_numbers')));
                                     } elseif (!is_numeric($v)) {
-                                        Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($this->_lang, 'only_numbers')));
+                                        Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t('only_numbers')));
                                     }
                                 }
                             } elseif (!is_numeric($value) && $hasErrors) {
                                 Session::put($item, 'has-error');
-                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($this->_lang, 'only_numbers')));
+                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t('only_numbers')));
                             } elseif (!is_numeric($value)) {
-                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t($this->_lang, 'only_numbers')));
+                                Errors::setErrorType('danger', sprintf("%s %s", $errorItem, Translate::t('only_numbers')));
                             }
                             break;
                         case 'dataType':

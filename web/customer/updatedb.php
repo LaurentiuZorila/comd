@@ -289,7 +289,7 @@ if (Input::existsName('post', Tokens::getInputName())) {
                                   </select>
                                   <?php
                                   if (Input::exists() && empty(Input::post('month'))) { ?>
-                                      <div class="invalid-feedback"><?php echo Translate::t('This_field_required', ['strtoupper']); ?></div>
+                                      <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
                                   <?php }?>
                               </div>
                               <div class="col-sm-4 tables" style="display: none;">
@@ -297,7 +297,7 @@ if (Input::existsName('post', Tokens::getInputName())) {
                                       <option value=""><?php echo Translate::t('Select_table'); ?></option>
                                       <?php foreach ($allTables as $table) {
                                           if (in_array($table, Params::TBL_COMMON)) { ?>
-                                              <option value="<?php echo $table; ?>"><?php echo Translate::t($table, ['strtoupper']); ?></option>
+                                              <option value="<?php echo $table; ?>"><?php echo Translate::t($table, ['ucfirst']); ?></option>
                                           <?php } else { ?>
                                               <option value="<?php echo $table; ?>"><?php echo strtoupper($table); ?></option>
                                           <?php }
