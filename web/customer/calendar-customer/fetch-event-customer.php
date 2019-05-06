@@ -6,12 +6,15 @@ $results = $customerData->records(Params::TBL_EVENTS, AC::where(['lead_id', $off
 foreach ($results as $key => $result) {
     switch ($result->status) {
         case 1:
+            $display = 'none';
             $title = Translate::t(strtolower($result->title), ['ucfirst']);
             break;
         case 2:
+            $display = 'block';
             $title = Translate::t(strtolower($result->title), ['ucfirst']) . ' - ' . Translate::t($result->event_status, ['ucfirst']);
             break;
         default:
+            $display = 'block';
             $title = Translate::t(strtolower($result->title), ['ucfirst']);
     }
         $event[] = [
@@ -29,9 +32,11 @@ foreach ($results as $key => $result) {
             'month'     => $result->month,
             'year'      => $result->year,
             'totalDays' => $result->days_number,
+            'statusName'    => Translate::t($result->event_status, ['ucfirst']),
+            'titleForModal' => Translate::t(strtolower($result->title), ['ucfirst']),
+            'modalButton'   => $display,
         ];
 }
-
 echo json_encode($event);
 
 ?>

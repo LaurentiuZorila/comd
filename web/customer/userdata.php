@@ -10,11 +10,10 @@ $allEmployees = $leadData->records(Params::TBL_EMPLOYEES, AC::where(['offices_id
 
 /** Data display */
 $dataDisplay = $leadData->records(Params::TBL_OFFICE, AC::where(['id', $lead->officesId()]), ['data_visualisation'], false)->data_visualisation;
-$dataDisplay = (array)json_decode($dataDisplay);
+$dataDisplay = Common::toArray($dataDisplay);
 foreach ($dataDisplay as $tableData => $v){
     $tblDataDysplay[] = $tableData;
 }
-
 
 if (Input::exists() && Tokens::tokenVerify()) {
     /** Instantiate validation class */
@@ -250,10 +249,10 @@ include 'includes/navbar.php';
                                     <div class="stats-2-content common" id="" data-toggle="collapse" data-target="<?php echo in_array($key, Params::TBL_COMMON) ? $key : ''; ?>" aria-controls="<?php echo in_array($key, Params::TBL_COMMON) ? $key : ''; ?>" <?php echo in_array($key, Params::TBL_COMMON) ? 'style="cursor: pointer;"' : ''; ?> >
                                         <strong class="d-block">
                                             <?php
-                                            echo in_array($key, $tblDataDysplay) && $dataDisplay[$key] == 'percentage' ? (!in_array($key, Params::TBL_COMMON) ? $value . '%' : $value) : (in_array($key, Params::TBL_COMMON) ? $value . '<small class="text-small">'  . Translate::t('Days', ['strtolower'=>true]) . '</small>' : $value);
+                                            echo $value . '<small class="text-small">'  . $dataDisplay[$key] . '</small>';
                                             ?>
                                         </strong>
-                                        <span class="d-block <?php echo in_array($key, Params::TBL_COMMON) ? Params::COMMONTBLSDASHTEXT[$key] : 'dashtext-5'; ?>"><?php echo Translate::t($key, ['strtoupper'=>true]); ?></span>
+                                        <span class="d-block <?php echo in_array($key, Params::TBL_COMMON) ? Params::COMMONTBLSDASHTEXT[$key] : 'dashtext-5'; ?>"><?php echo Translate::t($key, ['strtoupper']); ?></span>
                                         <div class="progress progress-template progress-small">
                                             <div role="progressbar" style="width: <?php echo $value; ?>%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template progress-bar-small dashbg-2"></div>
                                         </div>
@@ -278,12 +277,12 @@ include 'includes/navbar.php';
                                     <table class="table table-striped table-sm">
                                         <thead>
                                         <tr>
-                                            <th><?php echo Translate::t('Year', ['ucfirst'=>true]); ?></th>
-                                            <th><?php echo Translate::t('month',['ucfirst'=>true]); ?></th>
-                                            <th><?php echo Translate::t('quantity',['ucfirst'=>true]); ?></th>
-                                            <th><?php echo Translate::t('Days',['ucfirst'=>true]); ?></th>
+                                            <th><?php echo Translate::t('Year', ['ucfirst']); ?></th>
+                                            <th><?php echo Translate::t('month',['ucfirst']); ?></th>
+                                            <th><?php echo Translate::t('quantity',['ucfirst']); ?></th>
+                                            <th><?php echo Translate::t('Days',['ucfirst']); ?></th>
                                             <?php if ($table === 'furlough') { ?>
-                                            <th><?php echo Translate::t('actions',['ucfirst'=>true]); ?></th>
+                                            <th><?php echo Translate::t('actions',['ucfirst']); ?></th>
                                             <?php } ?>
                                         </tr>
                                         </thead>
@@ -292,7 +291,7 @@ include 'includes/navbar.php';
                                         <tr>
                                             <td><?php echo $field->year; ?></td>
                                             <td><?php echo Common::numberToMonth($field->month, $lang); ?></td>
-                                            <td><?php echo $field->quantity; ?> <small><?php echo $field->quantity > 1 ? Translate::t('Days', ['strtolower'=>true]) : Translate::t('Day', ['strtolower'=>true]); ?></small></td>
+                                            <td><?php echo $field->quantity; ?> <small><?php echo $field->quantity > 1 ? Translate::t('Days', ['strtolower']) : Translate::t('Day', ['strtolower']); ?></small></td>
                                             <td><?php echo $field->days; ?></td>
                                             <?php if ($table === 'furlough') { ?>
                                             <td><a href="print.php?id=<?php echo $field->employees_id;?>&days=<?php echo $field->days;?>" target="_blank"><i class="fa fa-print" style="cursor: pointer;"></i></a></td>
@@ -360,5 +359,8 @@ if (Input::exists() && !Errors::countAllErrors() || Input::exists('get') && !Err
         });
     });
 </script>
+<?php
+include "./includes/js/markAsRead.php";
+?>
 </body>
 </html>

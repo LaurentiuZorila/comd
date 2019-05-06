@@ -177,6 +177,7 @@ include 'includes/navbar.php';
 <!-- JavaScript files-->
 <?php
 include "./includes/js/employeeEdit.php";
+include "./includes/js/markAsRead.php";
 ?>
 <script>
     $('.deleteOk').click(function(){

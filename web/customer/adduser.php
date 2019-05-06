@@ -155,8 +155,7 @@ include 'includes/navbar.php';
 </div>
 <!-- JavaScript files-->
 <?php
-include "./../common/includes/scripts.php";
-
+include "./includes/js/markAsRead.php";
 ?>
 <script>
     $('#Submit').click(function(){

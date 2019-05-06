@@ -149,10 +149,12 @@ class Params
                                ];
 
     const COMMONTBLSDASHTEXT = [
-        'furlough'    => 'dashtext-4',
-        'absentees'   => 'dashtext-3',
-        'medical'     => 'dashtext-1',
-        'unpaid'      => 'dashtext-2',
+        'furlough'          => 'dashtext-4',
+        'absentees'         => 'dashtext-3',
+        'medical'           => 'dashtext-1',
+        'unpaid'            => 'dashtext-2',
+        'unpaidHours'       => 'dashtext-3',
+        'hoursToRecover'    => 'dashtext-3'
     ];
 
     /**

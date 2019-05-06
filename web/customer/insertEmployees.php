@@ -173,6 +173,9 @@ include 'includes/navbar.php';
     });
     $("#info_upload").pulsate({color:"#633b70;"});
 </script>
+<?php
+include "./includes/js/markAsRead.php";
+?>
 </body>
 </html>
 

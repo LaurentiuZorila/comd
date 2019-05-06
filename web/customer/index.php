@@ -399,7 +399,6 @@ if (Input::exists()) {
       </div>
     </div>
 <script>
-
     $('#Submit').click(function(){
         $('#myModal').modal('show');
     });
@@ -418,6 +417,9 @@ if (Input::exists()) {
         $("#target_customer_chart_bar").hide();
     });
 </script>
+  <?php
+  include "./includes/js/markAsRead.php";
+  ?>
   <?php
   /** BEST CHART and Form Chart */
   if (Input::exists() && !Errors::countAllErrors()) {

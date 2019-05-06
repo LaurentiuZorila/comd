@@ -231,12 +231,13 @@ class Translate
             'status_changed'    => 'Statusul a fost schimbat pentru:',
             'employee'          => 'Operator',
             'employee_status_changed'   => 'Statsul tau a fost schimbat',
-            'hoursToRecover'    => 'Ore de recuperat',
-            'unpaidHours'       => 'Ore neplatite',
+            'hoursToRecover'    => 'H de recuperat',
+            'unpaidHours'       => 'H neplatite',
             'total_user_hoursToRecover'   => 'H de recuperat',
             'hours'             => 'Ore',
             'city'              => 'Oras',
             'select'            => 'Selecteaza',
+            'confirm'           => 'Confirma',
         ];
     }
 
@@ -464,12 +465,13 @@ class Translate
             'status_changed'    => 'Status has been changed for:',
             'employee'          => 'Employee',
             'employee_status_changed'     => 'Your status has been changed',
-            'hoursToRecover'        => 'hours to recover',
-            'unpaidHours'           => 'Unpaid hours',
+            'hoursToRecover'        => 'H to recover',
+            'unpaidHours'           => 'Unpaid h',
             'total_user_hoursToRecover'   => 'H to recover',
             'hours'             => 'Hours',
             'city'              => 'City',
             'select'            => 'Select',
+            'confirm'           => 'Confirm',
         ];
     }
 
@@ -698,10 +700,11 @@ class Translate
             'employee_status_changed'   => 'Il tuo stato è stato cambiato',
             'hoursToRecover'       => 'Orma',
             'unpaidHours'       => 'Permeso',
-            'total_user_hoursToRecover'   => 'Ore orma',
+            'total_user_hoursToRecover'   => 'H orma',
             'hours'             => 'Ore',
             'city'              => 'Città',
             'select'            => 'Seleziona',
+            'confirm'           => 'Conferma',
             ];
     }
 

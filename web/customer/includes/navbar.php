@@ -4,21 +4,12 @@ $notificationCount = $leadData->count(Params::TBL_NOTIFICATION, AC::where([['lea
 $notificationData = $leadData->records(Params::TBL_NOTIFICATION, AC::where([['lead_id', $lead->officesId()], ['response_status', false], ['view', 0]]), ['message', 'user_id', 'date', 'id', 'title', 'days', 'form_supervisors'], true, ['ORDER BY' => 'date DESC']);
 if (Input::existsName('get', 'notificationId')) {
     $id = Input::get('notificationId');
-    if ($id == 0) {
-        $leadDb->update(Params::TBL_NOTIFICATION,
-            [
-                'view' => 1
-            ], [
-                'lead_id'   => $lead->officesId()
-            ]);
-    } else {
-        $leadDb->update(Params::TBL_NOTIFICATION,
-            [
-                'view' => 1
-            ], [
-                'id'   => $id
-            ]);
-    }
+    $leadDb->update(Params::TBL_NOTIFICATION,
+        [
+            'view' => 1
+        ], [
+            'id'   => $id
+        ]);
 }
 ?>
 
@@ -72,7 +63,7 @@ if (Input::existsName('get', 'notificationId')) {
                                     </div>
                                 </a>
                             <?php } ?>
-                            <a href="?notificationId=<?php echo 0; ?>" class="dropdown-item text-center message"> <strong><?php echo Translate::t('mark_as_read', ['ucfirst']);?> <i class="fa fa-flag-checkered dashtext-1"></i></strong></a>
+                            <a href="javascript:;" class="dropdown-item text-center message markasread" data-lead="<?php echo $lead->officesId(); ?>"> <strong><?php echo Translate::t('mark_as_read', ['ucfirst']);?> <i class="fa fa-flag-checkered dashtext-1"></i></strong></a>
                             <?php
                         } else { ?>
                             <a href="<?php echo Config::get('route/calendar'); ?>" class="dropdown-item text-center message"><strong><?php echo Translate::t('notification_not_found', ['ucfirst']); ?></strong></a>
@@ -143,13 +134,13 @@ if (Input::existsName('get', 'notificationId')) {
                         </a>
                     <?php } ?>
                     <div aria-labelledby="languages" class="dropdown-menu">
-                        <a rel="nofollow" href="language.php?lang=2" class="dropdown-item">
+                        <a rel="nofollow" href="javascript:;" class="dropdown-item">
                             <img src="/../common/img/flag/IT.png" alt="English" class="mr-2"><span><?php echo Translate::t('italian'); ?><small> (not present)</small></span>
                         </a>
-                        <a rel="nofollow" href="language.php?lang=3" class="dropdown-item">
+                        <a rel="nofollow" href="javascript:;" class="dropdown-item">
                             <img src="/../common/img/flag/RO.png" alt="English" class="mr-2"><span><?php echo Translate::t('romanian'); ?><small> (not present)</small></span>
                         </a>
-                        <a rel="nofollow" href="language.php?lang=1" class="dropdown-item">
+                        <a rel="nofollow" href="javascript:;" class="dropdown-item">
                             <img src="/../common/img/flag/_england.png" alt="English" class="mr-2"><span><?php echo Translate::t('english'); ?><small></small></span>
                         </a>
                     </div>

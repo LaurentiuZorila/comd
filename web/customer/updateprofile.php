@@ -179,8 +179,9 @@ include 'includes/navbar.php';
     </div>
 </div>
 <?php
-include "./../common/includes/scripts.php";
+include "./includes/js/markAsRead.php";
 ?>
+
 <script>
     $('#Submit').click(function(){
         $('#myModal').modal('show');

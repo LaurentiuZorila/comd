@@ -192,6 +192,9 @@ include 'includes/navbar.php';
         ?>
     </div>
 </div>
+<?php
+include "./includes/js/markAsRead.php";
+?>
 <script>
     $('.showGrpah').click(function(){
         $('#myModal').modal('show');

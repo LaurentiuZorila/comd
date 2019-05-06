@@ -63,6 +63,42 @@
         });
     });
 
+    $(document).on('click', '.acceptEvent', function () {
+        $('#deleteEventModal').modal('hide');
+        var $this       = $(this);
+        var employeeId  = $('#userId').val();
+        var eventId     = $('#eventId').val();
+        var statusEvent = 1;
+        var titleEvent  = $('#table').val();
+        var month       = $('#month').val();
+        var year        = $('#year').val();
+
+        if (employeeId && eventId) {
+            $.ajax({
+                url: "./calendar-customer/update-event-customer.php",
+                dataType: 'Json',
+                data: {
+                    'eventId': eventId,
+                    'employeeId': employeeId,
+                    'statusEvent': statusEvent,
+                    'title': titleEvent,
+                    'month': month,
+                    'year': year
+                },
+                success: function (response) {
+                    if(parseInt(response) > 0) {
+                        $('#myModal').modal('show');
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                        displayMessage("success", "<?php echo Translate::t('event_updated', ['ucfirst'=>true]); ?>");
+                    } else {
+                        displayMessage("danger", "<?php echo Translate::t('Db_error', ['ucfirst'=>true]); ?>");
+                    }
+                }
+            });
+        }
+    });
 
     // Add event
     $(document).on('click', '#submitButton', function () {

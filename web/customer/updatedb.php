@@ -394,10 +394,10 @@ if (Input::existsName('post', Tokens::getInputName())) {
       </div>
     </div>
     <!-- JavaScript files-->
-  <?php
-  include "./../common/includes/scripts.php";
-  include "./includes/js/monthExists.php";
-  ?>
+<?php
+include "./includes/js/markAsRead.php";
+include "./includes/js/monthExists.php";
+?>
   <script src="./../common/vendor/pulsate/jquery.pulsate.js"></script>
   <script>
       $('#Submit').click(function(){

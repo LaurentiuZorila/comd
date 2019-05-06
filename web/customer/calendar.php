@@ -67,10 +67,18 @@ $(document).ready(function () {
 
         },
         eventClick:  function(event, jsEvent, view) {
-            $("#startTime").html(moment(event.start).format('DD-MM-Y'));
-            $("#endTime").html(moment(event.end).format('DD-MM-Y'));
-            $("#title").html(event.title);
+            $('#startTime').html(moment(event.start).format('DD-MM-Y'));
+            $('#endTime').html(moment(event.end).format('DD-MM-Y'));
+            $('#title').html(event.userName);
+            $('#statusName').html(event.titleForModal + ": " + event.statusName);
+            $('.modalContributions').css({
+                'background-color': event.color,
+                'color' : 'white'
+            });
             $("#totalDays").html(event.totalDays);
+            $('.acceptEvent').css({
+                'display': event.modalButton
+            });
             $('#eventId').val(event.id);
             $('#userId').val(event.userId);
             $('#table').val(event.table);
@@ -79,7 +87,7 @@ $(document).ready(function () {
             $('#year').val(event.year);
             $('#deleteEventModal').modal('show');
         },
-        editable: true,
+        editable: false,
         eventDrop: function (event, delta) {
                     var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
                     var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm:ss");
@@ -220,7 +228,7 @@ include 'includes/navbar.php';
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                        <label class="form-control-label"><?php echo Translate::t('Select_Employees', ['ucfirst'=>true]); ?></label>
+                        <label class="form-control-label"><?php echo Translate::t('Select_Employees', ['ucfirst']); ?></label>
                         <select name="employees" class="form-control" id="employees">
                             <option value=""></option>
                             <?php foreach ($allEmployees as $employees) { ?>
@@ -247,8 +255,8 @@ include 'includes/navbar.php';
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                        <button type="submit" class="btn btn-primary" id="submitButton">Save</button>
+                        <button class="btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                        <button type="submit" class="btn-sm btn-primary" id="submitButton">Save</button>
                     </div>
                 </div>
             </div>
@@ -259,24 +267,29 @@ include 'includes/navbar.php';
         <div id="deleteEventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" class="modal fade">
             <div role="document" class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header"><strong id="exampleModalLabel" class="modal-title dashtext-3"><?php echo Translate::t('delete_event_modal'); ?></strong>
+                    <div class="modal-header">
                         <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
                     </div>
                     <div class="modal-body text-white-50" id="modalBody">
-                        <h4 id="title"></h4>
-                        Start: <span id="startTime"></span><br>
-                        End: <span id="endTime"></span><br><br>
-                        Total days: <span id="totalDays"></span><br><br>
+                        <div class="user-block block text-center">
+                            <h3 class="h5" id="title"></h3>
+                            <div class="contributions modalContributions" id="statusName"></div>
+                            <div class="details d-flex">
+                                <div class="item">Start: <span id="startTime"></span></div>
+                                <div class="item">End: <span id="endTime"></span></div>
+                                <div class="item">Total days: <span id="totalDays"></span></div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn-sm btn-outline-secondary" data-dismiss="modal" aria-hidden="true"><?php echo Translate::t('close', ['ucfirst']); ?></button>
-                        <button type="submit" class="btn-sm btn-primary deleteEvent" id="deleteEvent"><?php echo Translate::t('delete', ['ucfirst']); ?></button>
                         <input type="hidden" id="eventId" value="" />
                         <input type="hidden" id="userId" value="" />
                         <input type="hidden" id="table" value="" />
                         <input type="hidden" id="status" value="" />
                         <input type="hidden" id="month" value="" />
                         <input type="hidden" id="year" value="" />
+                        <button type="submit" class="btn-sm btn-primary acceptEvent"><?php echo Translate::t('confirm', ['ucfirst']); ?></button>
+                        <button type="submit" class="btn-sm btn-danger deleteEvent" id="deleteEvent"><?php echo Translate::t('delete', ['ucfirst']); ?></button>
                     </div>
                 </div>
             </div>
@@ -310,6 +323,7 @@ include '../common/includes/footer.php';
 <script src="./../common/vendor/pulsate/jquery.pulsate.js"></script>
 <?php
 require 'includes/calendar/modals_events.php';
+include "./includes/js/markAsRead.php";
 ?>
 </body>
 </html>
