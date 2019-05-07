@@ -26,6 +26,9 @@ class Params
      */
     const PREFIX_TBL_COMMON = ['cmd_furlough', 'cmd_absentees', 'cmd_unpaid', 'cmd_medical', 'cmd_unpaidHours', 'cmd_hoursToRecover'];
 
+
+    const ASSOC_PREFIX_TBL = ['furlough' => 'cmd_furlough', 'absentees' => 'cmd_absentees', 'unpaid' => 'cmd_unpaid', 'medical' => 'cmd_medical', 'unpaidHours' => 'cmd_unpaidHours', 'hoursToRecover' => 'cmd_hoursToRecover'];
+
     /**
      * Tables prefix
      */

@@ -2,7 +2,6 @@
 require_once 'core/init.php';
 $allLeads = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['departments_id', '=', $backendUser->departmentId()], ['id', 'name', 'offices_id', 'departments_id'], true, ['ORDER BY' => 'name']);
 ?>
-
 <!DOCTYPE html>
 <html>
 <!--HEAD-->
@@ -40,22 +39,22 @@ include 'includes/navbar.php';
                 <div class="container-fluid">
                     <div class="row">
                         <?php foreach ($allLeads as $lead) {
-                            $rating = $backendUserProfile->rating(['user_id', '=', $lead->id]);
+                            $rating = $backendUserProfile->rating(AC::where(['user_id', $lead->id]));
                             ?>
                         <div class="col-md-6 col-xl-4">
                             <div class="card">
                                 <div class="card-body">
                                     <div class="media align-items-center"><h1 class="dashtext-1"><?php echo Common::makeAvatar($lead->name); ?></h1>
                                         <div class="media-body overflow-hidden">
-                                            <h3 class="card-text mb-0 text-center dashtext-2" style="color: #9055A2;"><?php echo $lead->name; ?></h3>
-                                            <p class="card-text mb-0 text-uppercase font-weight-bold text-secondary text-center"><?php echo $backendUserProfile->records(Params::TBL_DEPARTMENT, ['id', '=', $lead->departments_id], ['name'], false)->name; ?></p>
-                                            <p class="card-text mb-3 text-uppercase font-weight-bold text-secondary text-center"><?php echo $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $lead->offices_id], ['name'], false)->name; ?></p>
+                                            <h3 class="card-text mb-0 text-center text-secondary" style="color: #9055A2;"><?php echo $lead->name; ?></h3>
+                                            <p class="card-text mb-0 text-uppercase font-weight-bold text-secondary text-center"><?php echo $backendUserProfile->records(Params::TBL_DEPARTMENT, AC::where(['id', $lead->departments_id]), ['name'], false)->name; ?></p>
+                                            <p class="card-text mb-3 text-uppercase font-weight-bold text-secondary text-center"><?php echo $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['id', $lead->offices_id]), ['name'], false)->name; ?></p>
                                             <p class="card-text mb-0 font-weight-bold text-secondary text-center"><?php echo Translate::t('Rating'); ?></p>
                                             <p class="card-text m-b-0 font-weight-bold text-secondary text-center">
                                                 <?php
                                                 for ($i=1;$i<6;$i++) {
                                                     if ($i <= $rating) { ?>
-                                                        <a class="text-primary" href="#"><span class="fa fa-star checked"></span></a>
+                                                        <a class="dashtext-2" href="#"><span class="fa fa-star checked"></span></a>
                                                     <?php } else { ?>
                                                         <a class="text-secondary" href="#"><span class="fa fa-star"></span></a>
                                                     <?php }
@@ -65,7 +64,7 @@ include 'includes/navbar.php';
                                             </p>
                                         </div>
                                     </div>
-                                    <a href="<?php echo Config::get('route/staffProfile');?>?office_id=<?php echo $lead->offices_id;?>&lead_id=<?php echo $lead->id; ?>&token=<?php echo ''; ?>&lang=<?= $lang; ?> " class="tile-link"></a>
+                                    <a href="<?php echo Config::get('route/staffProfile');?>?office_id=<?php echo $lead->offices_id;?>&lead_id=<?php echo $lead->id; ?>&token=<?php echo ''; ?>&lang=<?php echo $lang; ?> " class="tile-link"></a>
                                 </div>
                             </div>
                         </div>

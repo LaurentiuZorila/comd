@@ -3,7 +3,14 @@ class BackendProfile
 {
     private $_db;
 
-
+    public $forTranslate = [
+        'absentees'     => 'Total_user_absentees',
+        'unpaid'        => 'Total_user_unpaid',
+        'medical'       => 'Total_user_medical',
+        'furlough'      => 'Total_user_furlough',
+        'unpaidHours'   => 'unpaidHours',
+        'hoursToRecover' => 'total_user_hoursToRecover'
+    ];
     /**
      * ProfileDetails constructor.
      */
@@ -61,6 +68,39 @@ class BackendProfile
     {
         $rating = $this->_db->average(Params::TBL_RATING, $where, 'rating')->first()->average;
         return (float)$rating;
+    }
+
+
+    /**
+     * @param array $where
+     * @param bool $assoc
+     * @return array
+     */
+    public function getSumForCommonTables(array $where, $assoc = false)
+    {
+        if ($assoc) {
+            foreach (Params::ASSOC_PREFIX_TBL as $tables => $prefixTables) {
+                $commonData[$tables] = $this->sum($prefixTables, $where, 'quantity');
+            }
+        } else {
+            foreach (Params::ASSOC_PREFIX_TBL as $tables => $prefixTables) {
+                $commonData[] = $this->sum($prefixTables, $where, 'quantity');
+            }
+        }
+        return $commonData;
+    }
+
+
+    /**
+     * @param array $where
+     * @return array
+     */
+    public function getRecordsForCommonTables(array $where)
+    {
+        foreach (Params::ASSOC_PREFIX_TBL as $tables => $prefixTables) {
+            $commonData[$tables] = $this->records($prefixTables, $where, ['quantity']);
+        }
+        return $commonData;
     }
 
 

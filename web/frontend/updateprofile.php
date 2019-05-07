@@ -187,5 +187,8 @@ include 'includes/navbar.php';
         $('#myModal').modal('show');
     });
 </script>
+<?php
+include './includes/js/markAsRead.php';
+?>
 </body>
 </html>

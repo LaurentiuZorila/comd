@@ -135,31 +135,43 @@ include 'includes/navbar.php';
                                     <div class="col-sm-4 col-md-4">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t('FN'); ?></label>
-                                            <input type="text" name="first_name" placeholder="<?php echo $lead->fName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $first_name; }?>">
+                                            <input type="text" name="first_name" placeholder="<?php echo $lead->fName(); ?>" class="form-control <?php echo Input::exists('post') && empty(Input::post('first_name')) ? 'is-invalid' : '';?>" value="<?php if (Input::exists()) { echo $first_name; }?>">
+                                            <?php if (Input::exists() && empty(Input::post('first_name'))) { ?>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                                            <?php }?>
                                         </div>
                                     </div>
                                     <div class="col-sm-8 col-md-8">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t('LN'); ?></label>
-                                            <input type="text" name="last_name" placeholder="<?php echo $lead->lName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>">
+                                            <input type="text" name="last_name" placeholder="<?php echo $lead->lName(); ?>" class="form-control <?php echo Input::exists('post') && empty(Input::post('last_name')) ? 'is-invalid' : '';?>" value="<?php if (Input::exists()) { echo $last_name; }?>">
+                                            <?php if (Input::exists() && empty(Input::post('last_name'))) { ?>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                                            <?php }?>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 col-md-3">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t('Username'); ?></label>
-                                            <input type="text" name="username" placeholder="<?php echo $lead->uName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $last_name; }?>" disabled>
+                                            <input type="text" name="username" placeholder="<?php echo $lead->uName(); ?>" class="form-control" value="<?php if (Input::exists()) { echo $username; }?>" disabled>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-4">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t('current_pass'); ?></label>
-                                            <input type="text" name="password" placeholder="<?php echo Translate::t('current_pass'); ?>" class="form-control">
+                                            <input type="text" name="password" placeholder="<?php echo Translate::t('current_pass'); ?>" class="form-control <?php echo Input::exists('post') && empty(Input::post('password')) ? 'is-invalid' : '';?>">
+                                            <?php if (Input::exists() && empty(Input::post('password'))) { ?>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                                            <?php }?>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-4">
                                         <div class="form-group mb-4">
                                             <label class="form-label"><?php echo Translate::t('new_pass'); ?></label>
-                                            <input type="text" name="new_password" placeholder="<?php echo Translate::t('new_pass'); ?>" class="form-control">
+                                            <input type="text" name="new_password" placeholder="<?php echo Translate::t('new_pass'); ?>" class="form-control <?php echo Input::exists('post') && empty(Input::post('new_password')) ? 'is-invalid' : '';?>">
+                                            <?php if (Input::exists() && empty(Input::post('new_password'))) { ?>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                                            <?php }?>
                                         </div>
                                     </div>
                                 </div>

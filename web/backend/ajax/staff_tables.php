@@ -1,10 +1,15 @@
 <?php
-function __autoload($class_name) {
+spl_autoload_register(function($class_name){
     //commonClasses directories
     $directorys = array(
-        '../backendClasses/',
-        '../../common/classes/'
+        './backendClasses/',
+        './common/classes/',
+        './../backendClasses/',
+        './../common/classes/',
+        './../../backendClasses/',
+        './../../common/classes/',
     );
+
     //for each directory
     foreach($directorys as $directory)
     {
@@ -15,19 +20,13 @@ function __autoload($class_name) {
             return;
         }
     }
+});
+$records    = new BackendProfile();
+$officeId   = Input::get('office_id');
+$allTables  = $records->records(Params::TBL_OFFICE, AC::where(['id', $officeId]), ['tables'], false);
+$tables = explode(',', trim($allTables->tables));
+foreach ($tables as $table) {
+    $data[$table] = in_array($table, Params::TBL_COMMON) ? Translate::t($table,['ucfirst']) : ucfirst($table);
 }
 
-$common     = new BackendProfile();
-$officeId   = $_GET['office_id'];
-
-$allTables  = $common->records(Params::TBL_OFFICE, AC::where(['id', $officeId]), ['tables'], false);
-
-$keyTable = explode(',', trim($allTables->tables));
-$valTable = explode(',', $allTables->tables);
-foreach ($valTable as $valtbl) {
-    $valTables[] = ucfirst($valtbl);
-}
-$tables = array_combine($keyTable, $valTables);
-
-
-echo json_encode($tables);
+echo json_encode($data);

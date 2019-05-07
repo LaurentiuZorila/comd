@@ -132,13 +132,13 @@ if (Input::existsName('get', 'notificationId')) {
                     </a>
                     <?php } ?>
                     <div aria-labelledby="languages" class="dropdown-menu">
-                        <a rel="nofollow" href="language.php?lang=2" class="dropdown-item">
+                        <a rel="nofollow" href="javascript:;" class="dropdown-item">
                             <img src="/../common/img/flag/IT.png" alt="English" class="mr-2"><span><?php echo Translate::t('italian'); ?><small> (not present)</small></span>
                         </a>
-                        <a rel="nofollow" href="language.php?lang=3" class="dropdown-item">
+                        <a rel="nofollow" href="javascript:;" class="dropdown-item">
                             <img src="/../common/img/flag/RO.png" alt="English" class="mr-2"><span><?php echo Translate::t('romanian'); ?><small> (not present)</small></span>
                         </a>
-                        <a rel="nofollow" href="language.php?lang=1" class="dropdown-item">
+                        <a rel="nofollow" href="javascript:;" class="dropdown-item">
                             <img src="/../common/img/flag/_england.png" alt="English" class="mr-2"><span><?php echo Translate::t('english'); ?><small></small></span>
                         </a>
                     </div>

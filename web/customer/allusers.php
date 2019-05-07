@@ -89,7 +89,7 @@ include 'includes/navbar.php';
                     <div class="col-lg-12">
                         <div class="block margin-bottom-sm">
                             <div class="title text-center">
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="btn-group btn-block" id="changeMonth">
                                         <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <?php

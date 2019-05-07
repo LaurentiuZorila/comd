@@ -6,15 +6,14 @@
 class Js
 {
     /**
-     * @param $obj
-     * @return array with names
-     * @uses on object
+     * @param $items
+     * @param $column
+     * @return array
      */
     public static function chartLabel($items, $column)
     {
-        $values = [];
         foreach ($items as $item) {
-            array_push($values, $item->$column);
+            $values[] = $item->$column;
         }
         return $values;
     }
@@ -60,15 +59,15 @@ class Js
 
 
     /**
-     * @param $items
+     * @param array $items
      * @param array $params
      * @return string
      */
-    public static function key($items, $params = [])
+    public static function key(array $items,array $params)
     {
         $lang = Session::get('lang');
 
-        if (count($items) > 0) {
+        if (!empty($items)) {
             foreach ($items as $key => $value) {
                 if (!empty($params)) {
                     $keys[] = Translate::t($key, $params);
@@ -82,16 +81,18 @@ class Js
 
 
     /**
-     * @param $array
-     * @return mixed
-     * @uses on array
+     * @param array $items
+     * @param array $rules
+     * @return string
      */
-    public static function values($items, $upper = false)
+    public static function values(array $items, array $rules)
     {
-        if (count($items) > 0) {
+        if (!empty($items)) {
             foreach ($items as $key => $value) {
-                if ($upper) {
-                    $values[] = strtoupper($value);
+                if (!empty($rules)) {
+                    foreach ($rules as $rule) {
+                        $values[] = $rule($value);
+                    }
                 }
                 $values[] = $value;
             }

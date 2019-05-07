@@ -364,7 +364,9 @@ include '../common/includes/footer.php';
         }, 'html');
         return false;
     }).trigger('submit');
-
 </script>
+<?php
+include './includes/js/markAsRead.php';
+?>
 </body>
 </html>

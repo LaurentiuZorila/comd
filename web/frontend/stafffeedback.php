@@ -6,8 +6,6 @@ $frontUser    = new FrontendUser();
 if (!$frontUser->isLoggedIn()) {
     Redirect::to('login.php');
 }
-
-
 if (Input::exists('get')) {
     if (!empty(Input::get('feedback')) && !empty(Input::get('leadId')) && !empty(Input::get('userId'))) {
         $db       = FrontendDB::getInstance();
@@ -33,7 +31,6 @@ if (Input::exists('get')) {
 } else {
     Redirect::to('feedback.php');
 }
-
 ?>
 
 

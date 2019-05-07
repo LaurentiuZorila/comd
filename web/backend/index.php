@@ -1,26 +1,27 @@
 <?php
 require_once 'core/init.php';
 /** All offices (id, name) */
-$offices        = $backendUserProfile->records(Params::TBL_OFFICE, ['departments_id', '=', $backendUser->departmentId()], ['id', 'name']);
+$offices        = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['departments_id', $backendUser->departmentId()]), ['id', 'name']);
 
 /** All users */
-$allUsers       = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['departments_id', '=', $backendUser->userId()], ['offices_id', 'departments_id', 'supervisors_id', 'name']);
+$allUsers       = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['departments_id', $backendUser->departmentId()]), ['offices_id', 'departments_id', 'supervisors_id', 'name']);
 
-$countEmployees = $backendUserProfile->count(Params::TBL_EMPLOYEES, ['departments_id', '=', $backendUser->userId()]);
-$countStaff     = $backendUserProfile->count(Params::TBL_TEAM_LEAD, ['supervisors_id', '=', $backendUser->userId()]);
-$countOffices   = $backendUserProfile->count(Params::TBL_OFFICE, ['departments_id', '=', $backendUser->departmentId()]);
+$countEmployees = $backendUserProfile->count(Params::TBL_EMPLOYEES, AC::where(['departments_id', $backendUser->departmentId()]));
+$countStaff     = $backendUserProfile->count(Params::TBL_TEAM_LEAD, AC::where(['departments_id', $backendUser->departmentId()]));
+$countOffices   = $backendUserProfile->count(Params::TBL_OFFICE, AC::where(['departments_id', $backendUser->departmentId()]));
 
 /** Condition for action */
-$where = AC::where(['departments_id', $backendUser->userId()]);
-
-/** Total data for common tables */
-$furlough   = $backendUserProfile->records(Params::TBL_FURLOUGH, $where, ['quantity']);
-$absentees  = $backendUserProfile->records(Params::TBL_ABSENTEES, $where, ['quantity']);
-$unpaid     = $backendUserProfile->records(Params::TBL_UNPAID, $where, ['quantity']);
-
+$where = AC::where(['departments_id', $backendUser->departmentId()]);
+//
+///** Total data for common tables */
+//$furlough   = $backendUserProfile->records(Params::TBL_FURLOUGH, $where, ['quantity']);
+//$absentees  = $backendUserProfile->records(Params::TBL_ABSENTEES, $where, ['quantity']);
+//$unpaid     = $backendUserProfile->records(Params::TBL_UNPAID, $where, ['quantity']);
+//$unpaidHours = $backendUserProfile->records(Params::TBL_UNPAIDHOURS, $where, ['quantity']);
+//$hoursToRecover = $backendUserProfile->records(Params::TBL_HOURSTORECOVER, $where, ['quantity']);
 
 /** If form is submitted */
-if (Input::exists() && Tokens::tokenVerify()) {
+if (Input::exists()) {
     /** Instantiate validation class */
     $validate = new Validate();
 
@@ -38,7 +39,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
         $month          = Input::post('month');
         $officeId       = Input::post('teams');
         $table          = strtolower(trim(Input::post('table')));
-        $table          = Params::PREFIX.$table;
+        $table          = Params::ASSOC_PREFIX_TBL[$table];
 
         /** Conditions for action */
         $where = AC::where([['year', $year], ['offices_id', $officeId], ['month', $month]]);
@@ -46,34 +47,23 @@ if (Input::exists() && Tokens::tokenVerify()) {
         /** Array with all results for one FTE */
         $chartData      = $backendUserProfile->records($table, $where, ['employees_id', 'quantity']);
 
-        /** Total furlough , absentees, unpaid for selected user */
-        $countFurlough  = $backendUserProfile->sum(Params::TBL_FURLOUGH, $where, 'quantity');
-        $countAbsentees = $backendUserProfile->sum(Params::TBL_ABSENTEES, $where, 'quantity');
-        $countUnpaid    = $backendUserProfile->sum(Params::TBL_UNPAID, $where, 'quantity');
-        $countMedical   = $backendUserProfile->sum(Params::TBL_MEDICAL, $where, 'quantity');
-
-        /** Check if search return records */
-        foreach ($chartData as $value) {
-            $quantitySum[] = $value->quantity;
+        foreach ($chartData as $record) {
+            $name = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['id', $record->employees_id]), ['name'], false)->name;
+            $records[$name] = $record->quantity;
         }
 
-        /** Get names for chart */
-        foreach ($chartData as $data) {
-            $names[] = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['id', '=', $data->employees_id], ['name'], false)->name;
-        }
-
-        if (count($quantitySum) > 1) {
-            $chartNames     = Js::toJson($names);
-            $chartValues    = Js::chartValues($chartData, 'quantity');
-            $pieCommonData  = $countFurlough . ', ' . $countAbsentees . ', ' . $countUnpaid . ',' . $countMedical;
+        if (!empty($records)) {
+            $chartNames     = Js::toJson(array_keys($records));
+            $chartValues    = implode(',',$records);
+            $pieCommonData  = implode(',', $backendUserProfile->getSumForCommonTables($where));
         } else {
-            Errors::setErrorType('warning', Translate::t('Not_found_data'));
+            Session::put('selected_month', Common::numberToMonth($month, $backendUser->language()));
+            Session::put('selected_year', $year);
+            Errors::setErrorType('info', Translate::t('Not_found_data'));
         }
     }
 }
-
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -226,59 +216,21 @@ include 'includes/navbar.php';
             <section class="no-padding-top no-padding-bottom">
                 <div class="container-fluid">
                     <div class="row">
+                        <?php foreach ($backendUserProfile->getSumForCommonTables($where, true) as $table => $records) { ?>
                         <div class="col-md-3 col-sm-3">
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
-                                        <div class="icon"><i class="icon-info"></i></div><strong><?php echo Translate::t('Total_user_absentees'); ?></strong>
+                                        <div class="icon"><i class="icon-info"></i></div><strong><?php echo Translate::t($backendUserProfile->forTranslate[$table]); ?></strong>
                                     </div>
-                                    <div class="number dashtext-3"><?php echo $countAbsentees; ?></div>
+                                    <div class="number dashtext-3"><?php echo $records; ?></div>
                                 </div>
                                 <div class="progress progress-template">
                                     <div role="progressbar" style="width: 100%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-3">
-                            <div class="statistic-block block">
-                                <div class="progress-details d-flex align-items-end justify-content-between">
-                                    <div class="title">
-                                        <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('Total_user_furlough'); ?></strong>
-                                    </div>
-                                    <div class="number dashtext-3"><?php echo $countFurlough; ?></div>
-                                </div>
-                                <div class="progress progress-template">
-                                    <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-3">
-                            <div class="statistic-block block">
-                                <div class="progress-details d-flex align-items-end justify-content-between">
-                                    <div class="title">
-                                        <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('Total_user_unpaid'); ?></strong>
-                                    </div>
-                                    <div class="number dashtext-3"><?php echo $countUnpaid; ?></div>
-                                </div>
-                                <div class="progress progress-template">
-                                    <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3 col-sm-3">
-                            <div class="statistic-block block">
-                                <div class="progress-details d-flex align-items-end justify-content-between">
-                                    <div class="title">
-                                        <div class="icon"><i class="icon-list-1"></i></div><strong><?php echo Translate::t('Total_user_medical'); ?></strong>
-                                    </div>
-                                    <div class="number dashtext-3"><?php echo $countMedical; ?></div>
-                                </div>
-                                <div class="progress progress-template">
-                                    <div role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
-                                </div>
-                            </div>
-                        </div>
+                        <?php } ?>
                     </div>
                 </div>
             </section>

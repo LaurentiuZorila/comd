@@ -284,7 +284,7 @@ include 'includes/navbar.php';
                                         <div role="progressbar" style="width: 100%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
                                     </div>
                                     <div class="mt-2">
-                                        <button class="btn-sm btn-outline-secondary col-sm-6 common" type="button" data-toggle="collapse" data-target="<?= $table; ?>" id="">
+                                        <button class="btn-sm btn-outline-secondary col-sm-6 common" type="button" data-toggle="collapse" data-target="<?php echo $table; ?>" id="">
                                             <?php echo Translate::t('show'); ?>
                                         </button>
                                     </div>
@@ -528,7 +528,9 @@ if (Input::noPost() && Input::existsName('get', 'lastData') && !Errors::countAll
             $(this).fadeOut(3000);
         });
     });
-
 </script>
+<?php
+include './includes/js/markAsRead.php';
+?>
 </body>
 </html>

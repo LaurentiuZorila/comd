@@ -118,6 +118,9 @@ include 'includes/navbar.php';
         ?>
     </div>
 </div>
+<?php
+include './includes/js/markAsRead.php';
+?>
 </body>
 </html>
 

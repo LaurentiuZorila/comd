@@ -3,24 +3,14 @@ $notificationCount = $frontDb->get(Params::TBL_NOTIFICATION, AC::where([['user_i
 $notificationData = $frontProfile->records(Params::TBL_NOTIFICATION, AC::where([['user_id', $frontUser->userId()], ['response_status', true], ['employee_view', false]]), ['response', 'status', 'event_id', 'id', 'common', 'title', 'days', 'user_id', 'date'], true, ['ORDER BY' => 'date DESC']);
 if (Input::existsName('get', 'notificationId')) {
     $id = Input::get('notificationId');
-    if ($id == 0) {
-        $frontUser->update(Params::TBL_NOTIFICATION,
-            [
-                    'employee_view' => 1
-            ], [
-                    'user_id'   => $frontUser->userId()
-            ]);
-    } else {
-        $frontUser->update(Params::TBL_NOTIFICATION,
-            [
-                'employee_view' => 1
-            ], [
-                'id'   => $id
-            ]);
-    }
+    $frontUser->update(Params::TBL_NOTIFICATION,
+        [
+            'employee_view' => 1
+        ], [
+            'id'   => $id
+        ]);
 }
 ?>
-
 <header class="header">
     <nav class="navbar navbar-expand-lg">
         <!--        <div class="search-panel">-->
@@ -72,7 +62,8 @@ if (Input::existsName('get', 'notificationId')) {
                                 </div>
                             </a>
                         <?php } ?>
-                            <a href="?notificationId=<?php echo 0; ?>" class="dropdown-item text-center message"> <strong><?php echo Translate::t('mark_as_read', ['ucfirst']);?> <i class="fa fa-flag-checkered"></i></strong></a>
+
+                            <a href="javascript:;" class="dropdown-item text-center message markasread" data-employee="<?php echo $frontUser->userId(); ?>"> <strong><?php echo Translate::t('mark_as_read', ['ucfirst']);?> <i class="fa fa-flag-checkered dashtext-1"></i></strong></a>
                         <?php } else { ?>
                             <a href="<?php echo Config::get('route/calendar'); ?>" class="dropdown-item text-center message"><strong><?php echo Translate::t('notification_not_found', ['ucfirst']); ?></strong></a>
                         <?php } ?>
@@ -136,13 +127,13 @@ if (Input::existsName('get', 'notificationId')) {
                         </a>
                     <?php } ?>
                     <div aria-labelledby="languages" class="dropdown-menu">
-                        <a rel="nofollow" href="language.php?lang=2" class="dropdown-item">
+                        <a rel="nofollow" href="javascript:;" class="dropdown-item">
                             <img src="/../common/img/flag/IT.png" alt="English" class="mr-2"><span><?php echo Translate::t('italian'); ?><small> (not present)</small></span>
                         </a>
-                        <a rel="nofollow" href="language.php?lang=3" class="dropdown-item">
+                        <a rel="nofollow" href="javascript:;" class="dropdown-item">
                             <img src="/../common/img/flag/RO.png" alt="English" class="mr-2"><span><?php echo Translate::t('romanian'); ?><small> (not present)</small></span>
                         </a>
-                        <a rel="nofollow" href="language.php?lang=1" class="dropdown-item">
+                        <a rel="nofollow" href="javascript:;" class="dropdown-item">
                             <img src="/../common/img/flag/_england.png" alt="English" class="mr-2"><span><?php echo Translate::t('english'); ?><small></small></span>
                         </a>
                     </div>
