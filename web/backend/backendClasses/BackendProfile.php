@@ -3,6 +3,8 @@ class BackendProfile
 {
     private $_db;
 
+    private $_backUser;
+
     public $forTranslate = [
         'absentees'     => 'Total_user_absentees',
         'unpaid'        => 'Total_user_unpaid',
@@ -17,6 +19,7 @@ class BackendProfile
     public function __construct()
     {
         $this->_db = BackendDB::getInstance();
+        $this->_backUser = new BackendUser();
     }
 
 
@@ -105,50 +108,55 @@ class BackendProfile
 
 
     /**
-     * @param $table
-     * @param array $where
-     * @param array $columns
-     * @return array key => values
-     * @uses first column is key and second is value only for 2 columns
+     * @param string $index
+     * @return mixed
      */
-    public function arrayMultipleRecords($table, array $where, array $columns)
+    public function getAssocTables($index = '')
     {
-        if (count($columns) == 2) {
-            $key[]          = $columns[0];
-            $value[]        = $columns[1];
-            $keyColumn      = $columns[0];
-            $valueColumn    = $columns[1];
-            $dataKeys       = [];
-            $objDataKey     = $this->_db->get(Params::PREFIX . $table, $where, $key)->results();
-            $objDataValues  = $this->_db->get(Params::PREFIX . $table, $where, $value)->results();
-
-            foreach ($objDataKey as $dataKey) {
-                $dataKeys[] = Common::getMonths($lang)[$dataKey->$keyColumn];
-            }
-
-            foreach ($objDataValues as $dataValue) {
-                $dataValues[] = $dataValue->$valueColumn;
-            }
-
-            return array_combine($dataKeys, $dataValues);
+        $string = $this->records(Params::TBL_OFFICE, AC::where(['departments_id', $this->_backUser->departmentId()]),['tables'], false);
+        $tables = explode(',', $string->tables);
+        foreach ($tables as $table) {
+            $assocTables[$table] = Params::PREFIX . $table;
         }
+        if (empty($index)) {
+            return $assocTables;
+        }
+        return $assocTables[$index];
     }
 
 
     /**
-     * @param $string
-     * @return string
+     * @param array $col
+     * @return mixed
      */
-    public static function makeAvatar($string)
+    public function getOffices($col = [])
     {
-        $string = explode(' ', $string);
-        $string = array_reverse($string);
-        $value = '';
-        foreach ($string as $item) {
-            $value .= substr($item, 0, 1);
-        }
-        return $value;
+        return $this->records(Params::TBL_OFFICE, AC::where(['departments_id', $this->_backUser->departmentId()]), $col);
     }
 
 
+    /**
+     * @return int
+     */
+    public function countOffices()
+    {
+        return $this->count(Params::TBL_OFFICE, AC::where(['departments_id', $this->_backUser->departmentId()]));
+    }
+
+
+    /**
+     * @return int
+     */
+    public function countStaff()
+    {
+        return $this->count(Params::TBL_TEAM_LEAD, AC::where(['departments_id', $this->_backUser->departmentId()]));
+    }
+
+    /**
+     * @return int
+     */
+    public function countEmployees()
+    {
+        return $this->count(Params::TBL_EMPLOYEES, AC::where(['departments_id', $this->_backUser->departmentId()]));
+    }
 }

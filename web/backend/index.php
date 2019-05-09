@@ -1,24 +1,5 @@
 <?php
 require_once 'core/init.php';
-/** All offices (id, name) */
-$offices        = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['departments_id', $backendUser->departmentId()]), ['id', 'name']);
-
-/** All users */
-$allUsers       = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['departments_id', $backendUser->departmentId()]), ['offices_id', 'departments_id', 'supervisors_id', 'name']);
-
-$countEmployees = $backendUserProfile->count(Params::TBL_EMPLOYEES, AC::where(['departments_id', $backendUser->departmentId()]));
-$countStaff     = $backendUserProfile->count(Params::TBL_TEAM_LEAD, AC::where(['departments_id', $backendUser->departmentId()]));
-$countOffices   = $backendUserProfile->count(Params::TBL_OFFICE, AC::where(['departments_id', $backendUser->departmentId()]));
-
-/** Condition for action */
-$where = AC::where(['departments_id', $backendUser->departmentId()]);
-//
-///** Total data for common tables */
-//$furlough   = $backendUserProfile->records(Params::TBL_FURLOUGH, $where, ['quantity']);
-//$absentees  = $backendUserProfile->records(Params::TBL_ABSENTEES, $where, ['quantity']);
-//$unpaid     = $backendUserProfile->records(Params::TBL_UNPAID, $where, ['quantity']);
-//$unpaidHours = $backendUserProfile->records(Params::TBL_UNPAIDHOURS, $where, ['quantity']);
-//$hoursToRecover = $backendUserProfile->records(Params::TBL_HOURSTORECOVER, $where, ['quantity']);
 
 /** If form is submitted */
 if (Input::exists()) {
@@ -38,8 +19,8 @@ if (Input::exists()) {
         $year           = Input::post('year');
         $month          = Input::post('month');
         $officeId       = Input::post('teams');
-        $table          = strtolower(trim(Input::post('table')));
-        $table          = Params::ASSOC_PREFIX_TBL[$table];
+        $tbl            = strtolower(trim(Input::post('table')));
+        $table          = $backendUserProfile->getAssocTables($tbl);
 
         /** Conditions for action */
         $where = AC::where([['year', $year], ['offices_id', $officeId], ['month', $month]]);
@@ -112,7 +93,7 @@ include 'includes/navbar.php';
                                 <div class="col-sm-3">
                                     <select name="teams" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
                                         <option value=""><?php echo Translate::t('Select_team'); ?></option>
-                                        <?php foreach ($offices as $office) { ?>
+                                        <?php foreach ($backendUserProfile->getOffices(['id', 'name']) as $office) { ?>
                                             <option value="<?php echo $office->id; ?>"><?php echo $office->name; ?></option>
                                         <?php } ?>
                                     </select>
@@ -173,7 +154,7 @@ include 'includes/navbar.php';
                                 <div class="title">
                                     <div class="icon"><i class="icon-list"></i></div><strong><?php echo Translate::t('Offices'); ?></strong>
                                 </div>
-                                <div class="number dashtext-1"><?php echo $countOffices; ?></div>
+                                <div class="number dashtext-1"><?php echo $backendUserProfile->countOffices(); ?></div>
                             </div>
                             <div class="progress progress-template">
                                 <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-1"></div>
@@ -187,7 +168,7 @@ include 'includes/navbar.php';
                                 <div class="title">
                                     <div class="icon"><i class="icon-user"></i></div><strong><?php echo Translate::t('All_staff'); ?></strong>
                                 </div>
-                                <div class="number dashtext-1"><?php echo $countStaff; ?></div>
+                                <div class="number dashtext-1"><?php echo $backendUserProfile->countStaff(); ?></div>
                             </div>
                             <div class="progress progress-template">
                                 <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-1"></div>
@@ -201,7 +182,7 @@ include 'includes/navbar.php';
                                 <div class="title">
                                     <div class="icon"><i class="icon-user-1"></i></div><strong><?php echo Translate::t('All_employees'); ?></strong>
                                 </div>
-                                <div class="number dashtext-2"><?php echo $countEmployees; ?></div>
+                                <div class="number dashtext-2"><?php echo $backendUserProfile->countEmployees(); ?></div>
                             </div>
                             <div class="progress progress-template">
                                 <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
