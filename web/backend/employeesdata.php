@@ -8,7 +8,7 @@ $department_id  = $backendUser->departmentId();
 /** All users and staf for one department */
 $allStaff   = $backendUserProfile->records(Params::TBL_TEAM_LEAD, AC::where( ['supervisors_id', $user_id]), ['id', 'name', 'offices_id', 'supervisors_id']);
 $offices    = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['departments_id', $department_id]), ['id', 'name']);
-$allUsers   = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where( ['supervisors_id', $user_id]));
+$allUsers   = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['departments_id', $department_id]));
 
 /** How to display data */
 $dataDisplay = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['departments_id', $backendUser->departmentId()]), ['data_visualisation'], false)->data_visualisation;

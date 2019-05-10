@@ -35,7 +35,7 @@
             labels: <?php echo $chartNames; ?>,
             datasets: [
                 {
-                    label: "<?php echo ucfirst(Input::post('table')) . '-' . Common::getMonths($lang)[Input::post('month')]; ?>",
+                    label: "<?php echo $chartLabel . '-' . Common::getMonths($lang)[Input::post('month')]; ?>",
                     fill: true,
                     lineTension: 0,
                     backgroundColor: "rgba(134, 77, 217, 088)",
@@ -96,7 +96,7 @@
             labels: <?php echo $chartNames; ?>,
             datasets: [
                 {
-                    label: "<?php echo ucfirst(Input::post('table')) . '-' . Common::getMonths($lang)[Input::post('month')]; ?>",
+                    label: "<?php echo $chartLabel . '-' . Common::getMonths($lang)[Input::post('month')]; ?>",
                     fill: false,
                     lineTension: 0,
                     backgroundColor: "rgba(134, 77, 217, 088)",
@@ -136,26 +136,17 @@
         },
         data: {
             labels: [
-                "Furlough",
-                "Absentees",
-                "Unpaid",
-                "Medical"
+             <?php echo $pieLabel; ?>
             ],
             datasets: [
                 {
                     data: [<?php echo $pieCommonData; ?>],
                     borderWidth: 0,
                     backgroundColor: [
-                        "#864DD9",
-                        '#723ac3',
-                        "#9762e6",
-                        "#9f58ff"
+                        <?php echo $pieBgColors; ?>
                     ],
                     hoverBackgroundColor: [
-                        "#864DD9",
-                        '#723ac3',
-                        "#9762e6",
-                        "#a357ff"
+                        <?php echo $pieBgColors; ?>
                     ]
                 }]
         }

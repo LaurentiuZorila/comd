@@ -21,6 +21,12 @@ a {
 .dashtext-4 {
  color:#7127AC !important
 }
+.dashtext-5 {
+ color:#d9864d !important
+}
+.dashtext-6 {
+ color:#4dd986 !important
+}
 .dashbg-1 {
  background:#864DD9
 }
@@ -32,6 +38,12 @@ a {
 }
 .dashbg-4 {
  background:#7127AC
+}
+.dashbg-5 {
+ background: #d9864d;
+}
+.dashbg-6 {
+background: #4dd986;
 }
 .text-bold {
  font-weight:700

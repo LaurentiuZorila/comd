@@ -18,7 +18,15 @@ class Params
      */
     const TBL_COMMON        = ['furlough', 'absentees', 'unpaid', 'medical', 'unpaidHours', 'hoursToRecover'];
 
+    /**
+     * Common tables translated
+     */
+    const TBL_COMMON_TRANSLATED = ['Vacation', 'Absentees', 'Unpaid', 'Medical', 'Unpaid h', 'H to recover'];
 
+
+    /**
+     * Records display for common tables
+     */
     const TBL_COMMON_DISPLAY = ['furlough' => 'day', 'absentees' => 'day', 'unpaid' => 'day', 'medical' => 'day', 'unpaidHours' => 'hours', 'hoursToRecover' => 'hours'];
 
     /**
@@ -28,6 +36,34 @@ class Params
 
 
     const ASSOC_PREFIX_TBL = ['furlough' => 'cmd_furlough', 'absentees' => 'cmd_absentees', 'unpaid' => 'cmd_unpaid', 'medical' => 'cmd_medical', 'unpaidHours' => 'cmd_unpaidHours', 'hoursToRecover' => 'cmd_hoursToRecover'];
+
+
+    const BACKEND_ASSOC_PREFIX_TBL = [
+        'furlough' => [
+            'table' => 'cmd_furlough',
+            'pie_chart_color' => '#864dd9'
+        ],
+        'absentees' => [
+            'table' => 'cmd_absentees',
+            'pie_chart_color' => '#e95f71'
+        ],
+        'unpaid' => [
+            'table' =>  'cmd_unpaid',
+            'pie_chart_color' => '#a0d94d'
+        ],
+        'medical' => [
+            'table' =>  'cmd_medical',
+            'pie_chart_color' => '#4dd986'
+        ],
+        'unpaidHours' => [
+            'table' =>  'cmd_unpaidHours',
+            'pie_chart_color' => '#4da0d9'
+        ],
+        'hoursToRecover' => [
+            'table' => 'cmd_hoursToRecover',
+            'color' => '#b18ce6'
+        ]
+    ];
 
     /**
      * Tables prefix
@@ -109,8 +145,15 @@ class Params
      */
     const TBL_EVENTS            = 'cmd_events';
 
+    /**
+     * Unpaid hours table
+     */
     const TBL_UNPAIDHOURS       = 'cmd_unpaidHours';
 
+
+    /**
+     * Hours to recover table
+     */
     const TBL_HOURSTORECOVER    =  'cmd_hoursToRecover';
 
     /**
@@ -124,6 +167,10 @@ class Params
      */
     const TBL_STATS = 'cmd_status';
 
+
+    /**
+     * City table
+     */
     const TBL_CITY = 'cmd_city';
 
 
@@ -147,8 +194,8 @@ class Params
      * Dash text and bg
      */
     const DASH              = [
-                                'text' => ['dashtext-1', 'dashtext-2', 'dashtext-3', 'dashtext-4'],
-                                'bg'  => ['dashbg-1', 'dashbg-2', 'dashbg-3', 'dashbg-4', 'dashbg-5']
+                                'text' => ['dashtext-1', 'dashtext-2', 'dashtext-3', 'dashtext-4', 'dashtext-5', 'dashtext-6'],
+                                'bg'  => ['dashbg-1', 'dashbg-2', 'dashbg-3', 'dashbg-4', 'dashbg-5', 'dashbg-6']
                                ];
 
     const COMMONTBLSDASHTEXT = [
@@ -156,8 +203,8 @@ class Params
         'absentees'         => 'dashtext-3',
         'medical'           => 'dashtext-1',
         'unpaid'            => 'dashtext-2',
-        'unpaidHours'       => 'dashtext-3',
-        'hoursToRecover'    => 'dashtext-3'
+        'unpaidHours'       => 'dashtext-5',
+        'hoursToRecover'    => 'dashtext-6'
     ];
 
     /**
@@ -188,10 +235,12 @@ class Params
      * Events title colors for calendar
      */
     const EVENTS_TITLE_COLORS = [
-        'Furlough' => ['1' => '#864dd9', '2' => '#8a8d93', '3' => '#bb414d'],
-            'Absentees' => ['1' => '#bb414d', '2' => '#bb414d', '3' => '#bb414d'],
-                'Unpaid' => ['1' => '#e58080', '2' => '#8a8d93'],
-                    'Medical' => ['1' => '#cf53f9', '2' => '#8a8d93'],
+        'Furlough'      => ['1' => '#864dd9', '2' => '#8a8d93', '3' => '#bb414d'],
+        'Absentees'     => ['1' => '#bb414d', '2' => '#bb414d', '3' => '#bb414d'],
+        'Unpaid'        => ['1' => '#e58080', '2' => '#8a8d93'],
+        'Medical'       => ['1' => '#cf53f9', '2' => '#8a8d93'],
+        'hToRecover'    => ['1' => '#72282f', '2' => '#8a8d93'],
+        'unpaidHours'   => ['1' => '#72282f', '2' => '#8a8d93'],
     ];
 
 

@@ -79,7 +79,7 @@ class BackendProfile
      * @param bool $assoc
      * @return array
      */
-    public function getSumForCommonTables(array $where, $assoc = false)
+    public function getSumFormCommonTables(array $where, $assoc = false)
     {
         if ($assoc) {
             foreach (Params::ASSOC_PREFIX_TBL as $tables => $prefixTables) {
@@ -98,7 +98,7 @@ class BackendProfile
      * @param array $where
      * @return array
      */
-    public function getRecordsForCommonTables(array $where)
+    public function getRecordsFormCommonTables(array $where)
     {
         foreach (Params::ASSOC_PREFIX_TBL as $tables => $prefixTables) {
             $commonData[$tables] = $this->records($prefixTables, $where, ['quantity']);
@@ -108,12 +108,13 @@ class BackendProfile
 
 
     /**
+     * @param string $officeId
      * @param string $index
      * @return mixed
      */
-    public function getAssocTables($index = '')
+    public function getAssocTables($officeId = '' ,$index = '')
     {
-        $string = $this->records(Params::TBL_OFFICE, AC::where(['departments_id', $this->_backUser->departmentId()]),['tables'], false);
+        $string = $this->records(Params::TBL_OFFICE, AC::where(['id', $officeId]),['tables'], false);
         $tables = explode(',', $string->tables);
         foreach ($tables as $table) {
             $assocTables[$table] = Params::PREFIX . $table;
@@ -158,5 +159,41 @@ class BackendProfile
     public function countEmployees()
     {
         return $this->count(Params::TBL_EMPLOYEES, AC::where(['departments_id', $this->_backUser->departmentId()]));
+    }
+
+
+    public function getAllEmployees($col = [], $params = [])
+    {
+        if (empty($params)) {
+            return $this->records(Params::TBL_EMPLOYEES, AC::where(['departments_id',  $this->_backUser->departmentId()]), $col);
+        } else {
+            return $this->records(Params::TBL_EMPLOYEES, AC::where(['departments_id',  $this->_backUser->departmentId()]), $col, true, ['GROUP BY' => 'name']);
+        }
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getStatus()
+    {
+        $status = $this->records(Params::TBL_STATS);
+            foreach ($status as $stats) {
+                $allStats[$stats->id] = $stats->status;
+            }
+        return $allStats;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function pieBgColors()
+    {
+        foreach (Params::BACKEND_ASSOC_PREFIX_TBL as $key => $value) {
+                $colors[] = $value['pie_chart_color'];
+        }
+        $stringColors = '"' . implode('","',$colors) . '"';
+        return $stringColors;
     }
 }

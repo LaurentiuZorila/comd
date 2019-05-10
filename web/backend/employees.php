@@ -1,10 +1,5 @@
 <?php
 require_once 'core/init.php';
-$allEmployees = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['departments_id',  $backendUser->userId()]), ['offices_id', 'departments_id', 'name', 'id', 'status'], true, ['GROUP BY' => 'name']);
-$status = $backendUserProfile->records(Params::TBL_STATS);
-foreach ($status as $stats) {
-    $allStats[$stats->id] = $stats->status;
-}
 ?>
 
 <!DOCTYPE html>
@@ -97,7 +92,7 @@ include 'includes/navbar.php';
                                     <tbody>
                                     <?php
                                     $x = 1;
-                                    foreach ($allEmployees as $employees) { ?>
+                                    foreach ($backendUserProfile->getAllEmployees(['offices_id', 'departments_id', 'name', 'id', 'status'], ['GROUP BY' => 'name']) as $employees) { ?>
                                         <tr>
                                             <th scope="row"><?php echo $x; ?></th>
                                             <td><?php echo $employees->name; ?></td>
@@ -106,7 +101,7 @@ include 'includes/navbar.php';
                                             <td>
                                                 <?php
                                                 $statusId = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['id', $employees->id]), ['status'], false)->status;
-                                                echo Translate::t($allStats[$statusId], ['ucfirst']);
+                                                echo Translate::t($backendUserProfile->getStatus()[$statusId], ['ucfirst']);
                                                 ?>
                                             </td>
                                             <td class="text-center">

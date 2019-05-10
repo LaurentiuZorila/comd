@@ -20,7 +20,7 @@ if (Input::exists()) {
         $month          = Input::post('month');
         $officeId       = Input::post('teams');
         $tbl            = strtolower(trim(Input::post('table')));
-        $table          = $backendUserProfile->getAssocTables($tbl);
+        $table          = $backendUserProfile->getAssocTables($officeId, $tbl);
 
         /** Conditions for action */
         $where = AC::where([['year', $year], ['offices_id', $officeId], ['month', $month]]);
@@ -36,7 +36,10 @@ if (Input::exists()) {
         if (!empty($records)) {
             $chartNames     = Js::toJson(array_keys($records));
             $chartValues    = implode(',',$records);
-            $pieCommonData  = implode(',', $backendUserProfile->getSumForCommonTables($where));
+            $pieCommonData  = implode(',', $backendUserProfile->getSumFormCommonTables($where));
+            $chartLabel     = in_array($table, Params::PREFIX_TBL_COMMON) ? Translate::t($tbl, ['ucfirst']) : ucfirst($tbl);
+            $pieLabel       = '"' . implode('","',Params::TBL_COMMON_TRANSLATED) . '"';
+            $pieBgColors    = $backendUserProfile->pieBgColors();
         } else {
             Session::put('selected_month', Common::numberToMonth($month, $backendUser->language()));
             Session::put('selected_year', $year);
@@ -154,10 +157,10 @@ include 'includes/navbar.php';
                                 <div class="title">
                                     <div class="icon"><i class="icon-list"></i></div><strong><?php echo Translate::t('Offices'); ?></strong>
                                 </div>
-                                <div class="number dashtext-1"><?php echo $backendUserProfile->countOffices(); ?></div>
+                                <div class="number dashtext-2"><?php echo $backendUserProfile->countOffices(); ?></div>
                             </div>
                             <div class="progress progress-template">
-                                <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-1"></div>
+                                <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
                             </div>
                             <a href="<?php echo Config::get('route/allStaff'); ?>" class="tile-link"></a>
                         </div>
@@ -168,10 +171,10 @@ include 'includes/navbar.php';
                                 <div class="title">
                                     <div class="icon"><i class="icon-user"></i></div><strong><?php echo Translate::t('All_staff'); ?></strong>
                                 </div>
-                                <div class="number dashtext-1"><?php echo $backendUserProfile->countStaff(); ?></div>
+                                <div class="number dashtext-2"><?php echo $backendUserProfile->countStaff(); ?></div>
                             </div>
                             <div class="progress progress-template">
-                                <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-1"></div>
+                                <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
                             </div>
                             <a href="<?php echo Config::get('route/allStaff'); ?>" class="tile-link"></a>
                         </div>
@@ -197,17 +200,17 @@ include 'includes/navbar.php';
             <section class="no-padding-top no-padding-bottom">
                 <div class="container-fluid">
                     <div class="row">
-                        <?php foreach ($backendUserProfile->getSumForCommonTables($where, true) as $table => $records) { ?>
-                        <div class="col-md-3 col-sm-3">
+                        <?php foreach ($backendUserProfile->getSumFormCommonTables($where, true) as $table => $records) { ?>
+                        <div class="col-md-2 col-sm-3">
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
-                                        <div class="icon"><i class="icon-info"></i></div><strong><?php echo Translate::t($backendUserProfile->forTranslate[$table]); ?></strong>
+                                        <div class="icon"><i class="icon-info"></i></div><strong style="color: <?php echo Params::BACKEND_ASSOC_PREFIX_TBL[$table]['pie_chart_color']; ?>;"><?php echo Translate::t($backendUserProfile->forTranslate[$table]); ?></strong>
                                     </div>
-                                    <div class="number dashtext-3"><?php echo $records; ?></div>
+                                    <div class="number" style="color: <?php echo Params::BACKEND_ASSOC_PREFIX_TBL[$table]['pie_chart_color']; ?>;"><?php echo $records; ?></div>
                                 </div>
                                 <div class="progress progress-template">
-                                    <div role="progressbar" style="width: 100%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-3"></div>
+                                    <div role="progressbar" style="width: 100%; background: <?php echo Params::BACKEND_ASSOC_PREFIX_TBL[$table]['pie_chart_color']; ?>;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template"></div>
                                 </div>
                             </div>
                         </div>
@@ -235,7 +238,7 @@ include 'includes/navbar.php';
                         <div class="col-md-4">
                             <div class="bar-chart block chart">
                                 <div class="drills-chart block">
-                                    <canvas id="totalCommonTables" height="408"></canvas>
+                                    <canvas id="totalCommonTables" style="height: 280px;" height="280"></canvas>
                                 </div>
                             </div>
                         </div>
