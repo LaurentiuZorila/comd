@@ -226,6 +226,16 @@ class BackendProfile
 
 
     /**
+     * @param $officeId
+     * @return array
+     */
+    public function leadTables($officeId)
+    {
+        $tables  = $this->records(Params::TBL_OFFICE, AC::where(['id', $officeId]), ['tables'], false)->tables;
+        return explode(',', $tables);
+    }
+
+    /**
      * @param $leadId
      * @param array $col
      * @return object

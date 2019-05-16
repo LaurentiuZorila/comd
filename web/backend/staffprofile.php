@@ -3,15 +3,6 @@ require_once 'core/init.php';
 $leadId         = Input::get('lead_id');
 $officeId       = Input::get('office_id');
 
-/** Lead data */
-$lead       = $backendUserProfile->records(Params::TBL_TEAM_LEAD, AC::where(['id', $leadId]), ['name', 'id', 'offices_id', 'supervisors_id'], false);
-/** Lead name */
-$leadName   = $lead->name;
-/** All tables */
-$allTables  = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['id', $lead->offices_id]), ['tables'], false)->tables;
-$allTables  = explode(',', $allTables);
-
-
 /** Sum common data if get exist and if submit button is clicked */
 if (Input::existsName('get', 'lead_id') && Input::existsName('get', 'office_id') && !Input::existsName('post', Tokens::getInputName())) {
     $year = date('Y');
@@ -35,7 +26,6 @@ if (Input::existsName('get', 'lead_id') && Input::existsName('get', 'office_id')
     $officeId           = Input::get('office_id');
     $language           = Input::get('lang');
     $year               = date('Y');
-
     /** Icons for tables */
     $icon               = ['icon-line-chart', 'icon-dashboard', 'icon-chart', 'fa fa-ambulance'];
 }
@@ -57,7 +47,7 @@ if (Input::existsName('post', Tokens::getInputName()) && Tokens::tokenVerify()) 
         $table      = Params::PREFIX . trim(Input::post('table'));
         $year       = Input::post('year');
         $month      = Input::post('month');
-        $tableForChart  = Translate::t(strtolower(Input::post('table')), ['ucfirst' => true]);
+        $tableForChart  = Translate::t(strtolower(Input::post('table')), ['ucfirst']);
 
         /** Conditions for action */
         $where = AC::where([
@@ -159,8 +149,8 @@ include 'includes/navbar.php';
                                         <div class="col-sm-4">
                                             <select name="table" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
                                                 <option value=""><?php echo Translate::t('Select_table'); ?></option>
-                                                <?php foreach ($allTables as $table) { ?>
-                                                    <option value="<?php echo escape(trim($table)); ?>"><?php echo Translate::t($table, ['ucfirst'=>true]); ?></option>
+                                                <?php foreach ($backendUserProfile->leadTables($officeId) as $table) { ?>
+                                                    <option value="<?php echo trim($table); ?>"><?php echo Translate::t($table, ['ucfirst']); ?></option>
                                                 <?php } ?>
                                             </select>
                                             <?php
@@ -204,7 +194,7 @@ include 'includes/navbar.php';
                     <div class="col-lg-12">
                         <div class="card">
                             <blockquote class="blockquote mb-0 card-body">
-                                <h3><?php echo $leadName; ?></h3>
+                                <h3><?php echo $backendUserProfile->leadProfile($leadId)->name; ?></h3>
                                 <footer class="blockquote-footer">
                                     <small class="text-muted"><?php echo strtoupper($backendUserProfile->leadDepartName($leadId)); ?></small>
                                 </footer>
