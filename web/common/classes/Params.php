@@ -207,6 +207,15 @@ class Params
         'hoursToRecover'    => 'dashtext-6'
     ];
 
+    const COMMONTBLSDASHBG = [
+        'furlough'          => 'dashbg-4',
+        'absentees'         => 'dashbg-3',
+        'medical'           => 'dashbg-1',
+        'unpaid'            => 'dashbg-2',
+        'unpaidHours'       => 'dashbg-5',
+        'hoursToRecover'    => 'dashbg-6'
+    ];
+
     /**
      * How to display data
      */

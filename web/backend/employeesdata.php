@@ -1,25 +1,6 @@
 <?php
 require_once 'core/init.php';
 
-/** User and department id*/
-$user_id        = $backendUser->userId();
-$department_id  = $backendUser->departmentId();
-
-/** All users and staf for one department */
-$allStaff   = $backendUserProfile->records(Params::TBL_TEAM_LEAD, AC::where( ['supervisors_id', $user_id]), ['id', 'name', 'offices_id', 'supervisors_id']);
-$offices    = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['departments_id', $department_id]), ['id', 'name']);
-$allUsers   = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['departments_id', $department_id]));
-
-/** How to display data */
-$dataDisplay = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['departments_id', $backendUser->departmentId()]), ['data_visualisation'], false)->data_visualisation;
-// table with data display
-$dataDisplay = (array)json_decode($dataDisplay);
-// Only tables
-foreach ($dataDisplay as $tableData => $v){
-    $tblDataDysplay[] = $tableData;
-}
-
-
 if (Input::exists() && Tokens::tokenVerify()) {
     /** Instantiate validation class */
     $validate = new Validate();
@@ -46,7 +27,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
         $allOfficesData = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['id', $employeesData->offices_id]), ['name', 'tables'], false);
 
         /** All Leads for selected office details */
-        $allLeads       = $backendUserProfile->records(Params::TBL_TEAM_LEAD, AC::where(['offices_id', $employeesData->offices_id]), ['name']);
+        $allLeads       = $backendUserProfile->leadsName($employeesData->offices_id, ['name']);
 
 
         /** Team Leads names */
@@ -92,7 +73,9 @@ if (Input::exists() && Tokens::tokenVerify()) {
 
         /** Check if exists values for selected options */
         if (!Common::checkValues($allData)) {
-            Errors::setErrorType('warning', 'No data found. Please select other values and try again!');
+            Session::put('selected_month', Common::numberToMonth($month, $backendUser->language()));
+            Session::put('selected_year', $year);
+            Errors::setErrorType('info', Translate::t('Not_found_data',  ['ucfirst']));
         }
     }
 }
@@ -152,7 +135,7 @@ if (Input::existsName('get', 'employees_id') && !Input::exists()) {
 
     /** Check if exists values for selected options */
     if (!Common::checkValues($allData)) {
-        Errors::setErrorType('info', Translate::t('not_found_current_month') . '. ' . Translate::t('try_search_another', ['ucfirst' => true]));
+        Errors::setErrorType('info', Translate::t('not_found_current_month') . '. ' . Translate::t('try_search_another', ['ucfirst']));
     }
 }
 
@@ -214,7 +197,7 @@ include 'includes/navbar.php';
                             <div class="col-sm-6">
                                 <select name="teams" class="form-control <?php if (Input::exists() && empty(Input::post('teams'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
                                     <option value=""><?php echo Translate::t('Select_team'); ?></option>
-                                    <?php foreach ($offices as $office) { ?>
+                                    <?php foreach ($backendUserProfile->getOffices(['id', 'name']) as $office) { ?>
                                         <option value="<?php echo $office->id; ?>"><?php echo $office->name; ?></option>
                                     <?php } ?>
                                 </select>
@@ -312,9 +295,9 @@ if (Input::exists() && !Errors::countAllErrors() || Input::existsName('get', 'em
                                     <div class="stats-2-arrow low"><i class="fa fa-line-chart"></i></div>
                                     <div class="stats-2-content">
                                         <strong class="d-block dashtext-1">
-                                        <?php echo in_array($key, $tblDataDysplay) && $dataDisplay[$key] === 'percentage' ? (!in_array($key, Params::TBL_COMMON) ? $value . '%' : $value) : (in_array($key, Params::TBL_COMMON) ? $value . '<small class="text-small">'  . Translate::t('Days', ['strtolower'=>true]) . '</small>' : $value); ?>
+                                        <?php echo  $value . '<small class="text-small">'  . Translate::t($backendUserProfile->tablesDisplay()[$key], ['strtolower']) . '</small>'; ?>
                                         </strong>
-                                        <span class="d-block"><?php echo strtoupper($key); ?></span>
+                                        <span class="d-block"><?php echo in_array($key, Params::TBL_COMMON) ? Translate::t($key, ['strtoupper']) : strtoupper($key); ?></span>
                                         <div class="progress progress-template progress-small">
                                             <?php
                                             if ($value < 0) {

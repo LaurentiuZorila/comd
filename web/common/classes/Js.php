@@ -85,7 +85,7 @@ class Js
      * @param array $rules
      * @return string
      */
-    public static function values(array $items, array $rules)
+    public static function values(array $items, array $rules = [])
     {
         if (!empty($items)) {
             foreach ($items as $key => $value) {

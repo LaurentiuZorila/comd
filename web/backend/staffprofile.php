@@ -36,33 +36,6 @@ if (Input::existsName('get', 'lead_id') && Input::existsName('get', 'office_id')
     $language           = Input::get('lang');
     $year               = date('Y');
 
-    /** All employees for one lead */
-    $allEmployees = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['offices_id', $officeId]), ['offices_id', 'departments_id', 'name', 'id'], true, ['ORDER BY' => 'name']);
-
-    foreach ($allEmployees as $employees) {
-        // Array with employees id
-        $employeesId[$employees->id] = $employees->name;
-    }
-
-    /** Common data for lead employees  */
-    foreach ($employeesId as $employeeId => $employeesName) {
-        $employeesFurlough[]  = ['name' =>$employeesName,'avg' => $backendUserProfile->sum(Params::TBL_FURLOUGH, AC::condition(['employees_average_id', $employeeId], true), 'quantity'), 'id' => $employeeId];
-        $employeesAbsentees[] = ['name' =>$employeesName, 'avg' => $backendUserProfile->sum(Params::TBL_ABSENTEES, AC::condition(['employees_average_id', $employeeId . '_' . date('Y')]), 'quantity'), 'id' => $employeeId];
-        $employeesUnpaid[]    = ['name' =>$employeesName, 'avg' => $backendUserProfile->sum(Params::TBL_UNPAID, AC::condition(['employees_average_id', $employeeId . '_' . date('Y')]), 'quantity'), 'id' => $employeeId];
-    }
-
-    /** Staff details */
-    $leadProfile        = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['id', '=', $leadId],['name', 'id', 'supervisors_id', 'offices_id'], false);
-
-    /** Count employees */
-    $totalEmployees     = $backendUserProfile->count(Params::TBL_EMPLOYEES, ['offices_id', '=', $officeId]);
-
-    /** Department name */
-    $departmentName     = $backendUserProfile->records(Params::TBL_DEPARTMENT, ['id', '=', $leadProfile->supervisors_id], ['name'], false)->name;
-
-    /** Office name */
-    $officeName         = $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $leadProfile->offices_id], ['name'], false)->name;
-
     /** Icons for tables */
     $icon               = ['icon-line-chart', 'icon-dashboard', 'icon-chart', 'fa fa-ambulance'];
 }
@@ -210,6 +183,9 @@ include 'includes/navbar.php';
                                         <div class="col-sm-4">
                                             <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
                                                 <option value=""><?php echo Translate::t('Select_month'); ?></option>
+                                                <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
+                                                    <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                                                <?php } ?>
                                             </select>
                                             <?php
                                             if (Input::exists() && empty(Input::post('month'))) { ?>
@@ -230,10 +206,10 @@ include 'includes/navbar.php';
                             <blockquote class="blockquote mb-0 card-body">
                                 <h3><?php echo $leadName; ?></h3>
                                 <footer class="blockquote-footer">
-                                    <small class="text-muted"><?php echo strtoupper($departmentName); ?></small>
+                                    <small class="text-muted"><?php echo strtoupper($backendUserProfile->leadDepartName($leadId)); ?></small>
                                 </footer>
                                 <footer class="blockquote-footer">
-                                    <small class="text-muted"><?php echo strtoupper($officeName); ?></small>
+                                    <small class="text-muted"><?php echo strtoupper($backendUserProfile->leadOfficeName($leadId)); ?></small>
                                 </footer>
                             </blockquote>
                         </div>
@@ -244,7 +220,7 @@ include 'includes/navbar.php';
                                 <div class="title">
                                     <div class="icon"><i class="icon-user-1"></i></div><strong><?php echo Translate::t('Total_employees'); ?></strong>
                                 </div>
-                                <div class="number dashtext-2"><?php echo $totalEmployees; ?></div>
+                                <div class="number dashtext-2"><?php echo $backendUserProfile->totalLeadEmployees($leadId); ?></div>
                             </div>
                             <div class="progress progress-template">
                                 <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
@@ -259,19 +235,19 @@ include 'includes/navbar.php';
                     <?php
                     $x = 0;
                     foreach ($dataCommonTables as $table => $quantity) { ?>
-                        <div class="col-md-3 col-sm-3">
+                        <div class="col-md-2 col-sm-3">
                             <div class="statistic-block block pb-1">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
-                                        <div class="icon"><i class="<?php echo $icon[$x]; ?>"></i></div><strong><?php echo Translate::t('Total') . ' ' . Translate::t($table); ?></strong>
+                                        <div class="icon"><i class="<?php echo $icon[$x]; ?>"></i></div><strong><?php echo Translate::t('Total') . ' ' . Translate::t($table, ['ucfirst']); ?></strong>
                                     </div>
-                                    <div class="number <?php echo Params::DASH['text'][$x]; ?>"><?php echo $quantity; ?></div>
+                                    <div class="number <?php echo Params::COMMONTBLSDASHTEXT[$table]; ?>"><?php echo $quantity; ?></div>
                                 </div>
                                 <div class="progress progress-template">
-                                    <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template <?php echo Params::DASH['bg'][$x]; ?>"></div>
+                                    <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template <?php echo Params::COMMONTBLSDASHBG[$table]; ?>"></div>
                                 </div>
                                 <div class="mt-2 mb-1">
-                                    <button class="btn-sm btn-outline-secondary col-sm-6 common" type="button" data-toggle="collapse" data-target="<?= $x; ?>" id="">
+                                    <button class="btn-sm btn-outline-secondary col-sm-6 common" type="button" data-toggle="collapse" data-target="<?php echo $x; ?>" id="">
                                         <?php echo Translate::t('show'); ?> <i class="<?php echo $icon[$x]; ?>"></i>
                                     </button>
                                 </div>
@@ -285,7 +261,7 @@ include 'includes/navbar.php';
         </section>
 
         <!--        Collapse Employees table -->
-        <section class="no-padding-top collapse allCollapse" id="4">
+        <section class="no-padding-top collapse allCollapse" id="9">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
@@ -326,14 +302,18 @@ include 'includes/navbar.php';
                 </div>
             </div>
         </section>
+
         <!--        Collapse furlough  -->
-        <section class="no-padding-top collapse allCollapse" id="0">
+        <?php
+        $x = 0;
+        foreach (Params::ASSOC_PREFIX_TBL as $table => $pTable) { ?>
+        <section class="no-padding-top collapse allCollapse" id="<?php echo $x ; ?>">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="block">
-                            <div class="title"><strong><?php echo Translate::t('furlough'); ?></strong>
-                                <button type="button" class="btn-sm btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
+                            <div class="title"><strong class="<?php echo Params::COMMONTBLSDASHTEXT[$table]?>"><?php echo Translate::t($table, ['ucfirst']); ?></strong>
+                                <button type="button" class="btn-sm btn-outline-primary float-sm-right closeDiv"><i class="fa fa-close"></i></button>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover" id="furloughTable">
@@ -342,23 +322,24 @@ include 'includes/navbar.php';
                                         <th>#</th>
                                         <th><?php echo Translate::t('Name'); ?></th>
                                         <th><?php echo Translate::t('Team_furlough'); ?></th>
-                                        <th><?php echo Translate::t('furlough'); ?></th>
-                                        <th><?php echo Translate::t('percentage', ['ucfirst' => true]); ?></th>
+                                        <th><?php echo Translate::t($table, ['ucfirst']); ?></th>
+                                        <th><?php echo Translate::t('percentage', ['ucfirst']); ?></th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <?php
-                                    $x = 1;
-                                    foreach ($employeesFurlough as $employeesData) { ?>
+                                    $y = 1;
+                                    foreach ($backendUserProfile->getCommonData(['order', 'name'], AC::where(['offices_id', $officeId]), $pTable) as $key => $values) {
+                                        foreach ($values as $records) { ?>
                                         <tr>
-                                            <th scope="row"><?php echo $x; ?></th>
-                                            <td><a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
-                                            <td><?php echo (int)$dataCommonTables['furlough'] . ' ' .  Translate::t('Days', ['strtolower'=>true]); ?></td>
-                                            <td><?php echo $employeesData['avg'] . ' ' .  Translate::t('Days', ['strtolower'=>true]);?></td>
-                                            <td><?php echo Common::percentage($dataCommonTables['furlough'], $employeesData['avg']); ?></td>
+                                            <th scope="row"><?php echo $y; ?></th>
+                                            <td><a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $records['id']; ?>"><?php echo $records['name']; ?></a></td>
+                                            <td><?php echo (int)$dataCommonTables[$table] . ' ' .  Translate::t(Params::TBL_COMMON_DISPLAY[$table], ['strtolower']); ?></td>
+                                            <td><?php echo $records['avg'] . ' ' .  Translate::t(Params::TBL_COMMON_DISPLAY[$table], ['strtolower']) ;?></td>
+                                            <td><?php echo Common::percentage($dataCommonTables[$table], $records['avg']); ?></td>
                                         </tr>
-                                        <?php
-                                        $x++;
+                                    <?php }
+                                    $y++;
                                     } ?>
                                     </tbody>
                                 </table>
@@ -368,135 +349,7 @@ include 'includes/navbar.php';
                 </div>
             </div>
         </section>
-
-        <!--        Collapse absentees -->
-        <section class="no-padding-top collapse allCollapse" id="1">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="block">
-                            <div class="title"><strong><?php echo Translate::t('absentees'); ?></strong>
-                                <button type="button" class="btn-sm btn-primary btn-sm float-sm-right closeDiv"><i class="fa fa-close"></i></button>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover" id="absenteesTable">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th><?php echo Translate::t('Name'); ?></th>
-                                        <th><?php echo Translate::t('Team_absentees'); ?></th>
-                                        <th><?php echo Translate::t('absentees'); ?></th>
-                                        <th><?php echo Translate::t('percentage', ['ucfirst' => true]); ?></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php
-                                    $x = 1;
-                                    foreach ($employeesAbsentees as $employeesData) { ?>
-                                        <tr>
-                                            <th scope="row"><?php echo $x; ?></th>
-                                            <td><a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
-                                            <td><?php echo (int)$dataCommonTables['absentees'] . ' ' .  Translate::t('Days', ['strtolower'=>true]); ?></td>
-                                            <td><?php echo $employeesData['avg'] . ' ' .  Translate::t('Days', ['strtolower'=>true]);?></td>
-                                            <td><?php echo Common::percentage($dataCommonTables['absentees'], $employeesData['avg']); ?></td>
-                                        </tr>
-                                        <?php
-                                        $x++;
-                                    } ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!--        Collapse unpaid -->
-        <section class="no-padding-top collapse allCollapse" id="2">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="block">
-                            <div class="title"><strong><?php echo Translate::t('unpaid'); ?></strong>
-                                <button type="button" class="btn-sm btn-primary btn-sm float-sm-right closeDiv""><i class="fa fa-close"></i></button>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover" id="unpaidTable">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th><?php echo Translate::t('Name'); ?></th>
-                                        <th><?php echo Translate::t('Team_unpaid'); ?></th>
-                                        <th><?php echo Translate::t('unpaid'); ?></th>
-                                        <th><?php echo Translate::t('percentage', ['ucfirst' => true]); ?></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php
-                                    $x = 1;
-                                    foreach ($employeesUnpaid as $employeesData) { ?>
-                                        <tr>
-                                            <th scope="row"><?php echo $x; ?></th>
-                                            <td><a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
-                                            <td><?php echo (int)$dataCommonTables['unpaid'] . ' ' .  Translate::t('Days', ['strtolower'=>true]); ?></td>
-                                            <td><?php echo $employeesData['avg'] . ' ' .  Translate::t('Days', ['strtolower'=>true]); ?></td>
-                                            <td><?php echo Common::percentage($dataCommonTables['unpaid'], $employeesData['avg']); ?></td>
-                                        </tr>
-                                        <?php
-                                        $x++;
-                                    } ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!--        Collapse medical -->
-        <section class="no-padding-top collapse allCollapse" id="3">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="block">
-                            <div class="title"><strong><?php echo Translate::t('medical'); ?></strong>
-                                <button type="button" class="btn-sm btn-primary btn-sm float-sm-right closeDiv""><i class="fa fa-close"></i></button>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover" id="medicalTable">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th><?php echo Translate::t('Name'); ?></th>
-                                        <th><?php echo Translate::t('Team_medical'); ?></th>
-                                        <th><?php echo Translate::t('medical'); ?></th>
-                                        <th><?php echo Translate::t('percentage', ['ucfirst' => true]); ?></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php
-                                    $x = 1;
-                                    foreach ($employeesUnpaid as $employeesData) { ?>
-                                        <tr>
-                                            <th scope="row"><?php echo $x; ?></th>
-                                            <td><a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $employeesData['id']; ?>"><?php echo $employeesData['name']; ?></a></td>
-                                            <td><?php echo (int)$dataCommonTables['medical'] . ' ' .  Translate::t('Days', ['strtolower'=>true]); ?></td>
-                                            <td><?php echo $employeesData['avg'] . ' ' . Translate::t('Days', ['strtolower'=>true]); ?></td>
-                                            <td><?php echo Common::percentage($dataCommonTables['medical'], $employeesData['avg']); ?></td>
-                                        </tr>
-                                        <?php
-                                        $x++;
-                                    } ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <?php $x++; } ?>
 
         <?php
         if (Input::exists() && !Errors::countAllErrors()) { ?>
@@ -577,7 +430,6 @@ include 'includes/navbar.php';
     });
 </script>
 <?php
-include 'includes/js/ajax_user_profile.php';
 
 if (Input::exists() && !Errors::countAllErrors()) {
     include 'charts/profile_chart.php';

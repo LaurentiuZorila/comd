@@ -11,13 +11,11 @@
     <list default="true" id="710b7c0a-dd02-4dee-91a7-595e34acec84" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/backend/backendClasses/BackendProfile.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/backendClasses/BackendProfile.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/charts/index_charts.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/charts/index_charts.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/employees.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/employees.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/backend/employeesdata.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/employeesdata.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/backend/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/backend/includes/js/ajax_user_profile.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/includes/js/ajax_user_profile.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/backend/staffprofile.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/backend/staffprofile.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/common/classes/Js.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/classes/Js.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/common/classes/Params.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/classes/Params.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/common/classes/Translate.php" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/classes/Translate.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/common/css/style.violet.premium.css" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/css/style.violet.premium.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/common/vendor/jquery.ui.touch" beforeDir="false" afterPath="$PROJECT_DIR$/web/common/vendor/jquery.ui.touch" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -49,19 +47,37 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/web/backend/backendClasses/BackendProfile.php">
+        <entry file="file://$PROJECT_DIR$/web/backend/index.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="298">
-              <caret line="177" column="29" selection-start-line="177" selection-start-column="20" selection-end-line="177" selection-end-column="29" />
+            <state relative-caret-position="434">
+              <caret line="132" column="40" selection-start-line="132" selection-start-column="40" selection-end-line="134" selection-end-column="50" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/web/backend/employeesdata.php">
+        <entry file="file://$PROJECT_DIR$/web/backend/staffprofile.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="18" column="35" lean-forward="true" selection-start-line="18" selection-start-column="35" selection-end-line="18" selection-end-column="35" />
+            <state relative-caret-position="400">
+              <caret line="178" column="41" lean-forward="true" selection-start-line="178" selection-start-column="41" selection-end-line="178" selection-end-column="41" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/backend/includes/response/profile_months.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="7" column="6" lean-forward="true" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/common/classes/Translate.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="11832">
+              <caret line="701" column="24" selection-start-line="701" selection-start-column="13" selection-end-line="701" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -77,17 +93,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>$tablesToCreate</find>
-      <find>$sumHoursToRecover</find>
-      <find>total_user_hoursToRecover</find>
-      <find>unpaidHours</find>
-      <find>matches_db</find>
-      <find>createEventModal</find>
-      <find>startTime</find>
-      <find>accept</find>
-      <find>$tblDataDysplay</find>
-      <find>hoursToRecover</find>
-      <find>create</find>
       <find>tool</find>
       <find>changeMonth</find>
       <find>$pieCommonData</find>
@@ -98,7 +103,6 @@
       <find>$furlough</find>
       <find>$offices</find>
       <find>$countEmployees</find>
-      <find>$allUsers</find>
       <find>$countStaff</find>
       <find>$countOffices</find>
       <find>getRecordsForCommonTables</find>
@@ -107,6 +111,18 @@
       <find>dashbg-3</find>
       <find>864dd9</find>
       <find>dashtext-1</find>
+      <find>$allStaff</find>
+      <find>$allUsers</find>
+      <find>$tblDataDysplay</find>
+      <find>not_found</find>
+      <find>target</find>
+      <find>getEmployeesData</find>
+      <find>$employeesFurlough</find>
+      <find>$commonData</find>
+      <find>$leadProfile</find>
+      <find>$totalEmployees</find>
+      <find>$departmentName</find>
+      <find>allCollapse</find>
     </findStrings>
     <replaceStrings>
       <replace>Furlough</replace>
@@ -143,8 +159,8 @@
       <dir>$PROJECT_DIR$/web</dir>
       <dir>$PROJECT_DIR$</dir>
       <dir>C:\Users\laure\Projects\phpStormProjects\comd\web\customer</dir>
-      <dir>C:\Users\laure\Projects\phpStormProjects\comd\web\backend</dir>
       <dir>C:\Users\laure\Projects\phpStormProjects\comd</dir>
+      <dir>C:\Users\laure\Projects\phpStormProjects\comd\web\backend</dir>
     </dirStrings>
   </component>
   <component name="Git.Settings">
@@ -153,8 +169,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/web/backend/core/config.php" />
-        <option value="$PROJECT_DIR$/web/frontend/frontClasses/FrontendUser.php" />
         <option value="$PROJECT_DIR$/web/customer/login.php" />
         <option value="$PROJECT_DIR$/web/customer/includes/js/offices.php" />
         <option value="$PROJECT_DIR$/web/common/classes/AC.php" />
@@ -194,16 +208,18 @@
         <option value="$PROJECT_DIR$/web/backend/allstaff.php" />
         <option value="$PROJECT_DIR$/web/backend/ajax/staff_tables.php" />
         <option value="$PROJECT_DIR$/web/common/classes/Common.php" />
-        <option value="$PROJECT_DIR$/web/common/classes/Js.php" />
         <option value="$PROJECT_DIR$/web/backend/core/init.php" />
         <option value="$PROJECT_DIR$/web/common/classes/Translate.php" />
         <option value="$PROJECT_DIR$/web/common/css/style.violet.premium.css" />
         <option value="$PROJECT_DIR$/web/backend/charts/index_charts.php" />
-        <option value="$PROJECT_DIR$/web/common/classes/Params.php" />
         <option value="$PROJECT_DIR$/web/backend/index.php" />
-        <option value="$PROJECT_DIR$/web/backend/backendClasses/BackendProfile.php" />
         <option value="$PROJECT_DIR$/web/backend/employees.php" />
+        <option value="$PROJECT_DIR$/web/common/classes/Js.php" />
         <option value="$PROJECT_DIR$/web/backend/employeesdata.php" />
+        <option value="$PROJECT_DIR$/web/backend/backendClasses/BackendProfile.php" />
+        <option value="$PROJECT_DIR$/web/common/classes/Params.php" />
+        <option value="$PROJECT_DIR$/web/backend/includes/js/ajax_user_profile.php" />
+        <option value="$PROJECT_DIR$/web/backend/staffprofile.php" />
       </list>
     </option>
   </component>
@@ -218,7 +234,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -262,6 +277,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -431,18 +447,23 @@
       <workItem from="1557321814800" duration="1376000" />
       <workItem from="1557326543715" duration="907000" />
       <workItem from="1557427437935" duration="3595000" />
-      <workItem from="1557486007003" duration="7198000" />
+      <workItem from="1557486007003" duration="7237000" />
+      <workItem from="1557731642362" duration="5594000" />
+      <workItem from="1557816849484" duration="6249000" />
+      <workItem from="1557900392803" duration="11742000" />
+      <workItem from="1557995733375" duration="9000" />
+      <workItem from="1557995758854" duration="803000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1923573000" />
+    <option name="totallyTimeSpent" value="1948009000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49902153" visible="true" weight="0.2260128" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49902153" visible="true" weight="0.23880596" />
       <window_info id="Structure" order="1" sideWeight="0.50097847" side_tool="true" weight="0.20529328" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -455,7 +476,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" weight="0.32871014" />
       <window_info anchor="bottom" id="Database Changes" order="8" weight="0.32784638" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.32921812" />
-      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49713877" visible="true" weight="0.2751896" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" sideWeight="0.49713877" visible="true" weight="0.2751896" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5028612" side_tool="true" weight="0.2857143" />
       <window_info anchor="bottom" id="Inspection Results" order="12" weight="0.32871014" />
       <window_info anchor="bottom" id="Command Line Tools Console" order="13" weight="0.32921812" />
@@ -515,27 +536,6 @@
     </ignored-roots>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/web/customer/updatedb.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
-          <caret line="398" column="40" lean-forward="true" selection-start-line="398" selection-start-column="40" selection-end-line="398" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/customer/updateuserprofile.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="207" column="2" selection-start-line="207" selection-start-column="2" selection-end-line="207" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/customer/calendar-customer/tableStatus.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="664">
-          <caret line="86" column="21" lean-forward="true" selection-start-line="86" selection-start-column="21" selection-end-line="86" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/web/customer/calendar-customer/update-event-customer.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -735,13 +735,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/backendClasses/BackendUser.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="333">
-          <caret line="264" lean-forward="true" selection-start-line="264" selection-end-line="264" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/web/customer/includes/response/departments.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -756,24 +749,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/common/classes/Js.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="326">
-          <caret line="33" lean-forward="true" selection-start-line="33" selection-end-line="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/web/backend/allstaff.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="146">
           <caret line="42" column="30" lean-forward="true" selection-start-line="42" selection-start-column="30" selection-end-line="42" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/common/classes/Common.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="104" column="37" selection-start-line="104" selection-start-column="27" selection-end-line="104" selection-end-column="37" />
         </state>
       </provider>
     </entry>
@@ -798,24 +777,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/backendClasses/BackendDB.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="38" lean-forward="true" selection-start-line="38" selection-end-line="38" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/web/common/css/style.violet.premium.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="18" column="14" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/common/classes/Translate.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="261">
-          <caret line="456" column="49" lean-forward="true" selection-start-line="456" selection-start-column="49" selection-end-line="456" selection-end-column="49" />
         </state>
       </provider>
     </entry>
@@ -826,20 +791,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/index.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="29">
-          <caret line="270" column="11" selection-start-line="270" selection-start-column="11" selection-end-line="270" selection-end-column="11" />
-          <folding>
-            <element signature="n#style#0;n#strong#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#section#2;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#section#2;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#section#2;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#canvas#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#section#3;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#canvas#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#section#3;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/web/backend/employees.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
@@ -847,24 +798,83 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/common/classes/Params.php">
+    <entry file="file://$PROJECT_DIR$/web/common/classes/Js.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="29">
-          <caret line="32" column="32" lean-forward="true" selection-start-line="32" selection-start-column="32" selection-end-line="32" selection-end-column="32" />
+        <state relative-caret-position="282">
+          <caret line="91" column="37" lean-forward="true" selection-start-line="91" selection-start-column="37" selection-end-line="91" selection-end-column="37" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/backend/backendClasses/BackendProfile.php">
+    <entry file="file://$PROJECT_DIR$/web/backend/backendClasses/BackendUser.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="177" column="29" selection-start-line="177" selection-start-column="20" selection-end-line="177" selection-end-column="29" />
+        <state relative-caret-position="333">
+          <caret line="264" lean-forward="true" selection-start-line="264" selection-end-line="264" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/web/backend/employeesdata.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="35" lean-forward="true" selection-start-line="18" selection-start-column="35" selection-end-line="18" selection-end-column="35" />
+        <state relative-caret-position="-838">
+          <caret line="299" column="157" selection-start-line="299" selection-start-column="147" selection-end-line="299" selection-end-column="157" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/backend/backendClasses/BackendDB.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="118" column="20" selection-start-line="118" selection-start-column="20" selection-end-line="118" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/common/classes/Common.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="520">
+          <caret line="95" column="9" lean-forward="true" selection-start-line="95" selection-start-column="9" selection-end-line="95" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/common/classes/Params.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="452">
+          <caret line="214" column="42" lean-forward="true" selection-start-line="214" selection-start-column="42" selection-end-line="214" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/backend/backendClasses/BackendProfile.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="266" lean-forward="true" selection-start-line="266" selection-end-line="266" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/common/classes/Translate.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="11832">
+          <caret line="701" column="24" selection-start-line="701" selection-start-column="13" selection-end-line="701" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/backend/includes/response/profile_months.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="6" lean-forward="true" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/backend/includes/js/ajax_user_profile.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/backend/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="434">
+          <caret line="132" column="40" selection-start-line="132" selection-start-column="40" selection-end-line="134" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/backend/staffprofile.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="178" column="41" lean-forward="true" selection-start-line="178" selection-start-column="41" selection-end-line="178" selection-end-column="41" />
         </state>
       </provider>
     </entry>
