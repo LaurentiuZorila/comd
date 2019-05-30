@@ -6,9 +6,9 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="all,follow">
-    <!-- Bootstrap CSS-->
+<!-- Bootstrap CSS-->
     <link rel="stylesheet" href="./../common/vendor/bootstrap-4.1.3-dist/css/bootstrap.css">
-    <!-- Font Awesome CSS-->
+<!-- Font Awesome CSS-->
 <!--    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">-->
     <link rel="stylesheet" href="./../common/vendor/font-awesome/css/font-awesome.min.css">
     <!-- Custom Font Icons CSS-->
@@ -18,9 +18,10 @@
     <!-- theme stylesheet-->
     <link rel="stylesheet" href="./../common/css/style.violet.premium.css" id="theme-stylesheet">
     <link rel="stylesheet" href="./../common/vendor/fullcalendar/fullcalendar.min.css">
-    <!-- Favicon-->
+<!-- Favicon-->
     <link rel="shortcut icon" href="./../common/img/favicon.ico">
-
+<!--    Bootstrap selectpicker-->
+    <link rel="stylesheet" href="../common/vendor/bootstrap-select/dist/css/bootstrap-select.css">
     <script src="./../common/vendor/jquery/jquery.min.js"></script>
 <!--    <script src="./../common/vendor/popper.js/umd/popper.min.js"></script>-->
 <!--    <script src="./../common/vendor/bootstrap/js/bootstrap.min.js"></script>-->
@@ -28,6 +29,8 @@
     <script src="./../common/vendor/jquery.cookie/jquery.cookie.js"></script>
     <script src="./../common/vendor/jquery-validation/jquery.validate.min.js"></script>
     <script src="./../common/js/front.js"></script>
+<!--    Bootstrap selectpicker-->
+    <script src="../common/vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
 
 
 

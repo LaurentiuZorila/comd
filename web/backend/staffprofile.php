@@ -6,28 +6,19 @@ $officeId       = Input::get('office_id');
 /** Sum common data if get exist and if submit button is clicked */
 if (Input::existsName('get', 'lead_id') && Input::existsName('get', 'office_id') && !Input::existsName('post', Tokens::getInputName())) {
     $year = date('Y');
-    foreach (Params::PREFIX_TBL_COMMON as $table) {
-        $commonData[] = $backendUserProfile->sum($table, AC::where([['offices_id', $officeId], ['year',$year]]), 'quantity');
-    }
     /** Array with tables and sum of quantity for each table */
-    $dataCommonTables = array_combine(Params::TBL_COMMON, $commonData);
+    $dataCommonTables = $backendUserProfile->getSumFormCommonTables(AC::where([['offices_id', $officeId], ['year',$year]]), true);
 } elseif (Input::existsName('post', Tokens::getInputName())) {
     $year = Input::post('year');
-    foreach (Params::PREFIX_TBL_COMMON as $table) {
-        $commonData[] = $backendUserProfile->sum($table, AC::where([['offices_id', $officeId], ['year',$year]]), 'quantity');
-    }
     /** Array with tables and sum of quantity for each table */
-    $dataCommonTables = array_combine(Params::TBL_COMMON, $commonData);
+    $dataCommonTables = $backendUserProfile->getSumFormCommonTables(AC::where([['offices_id', $officeId], ['year',$year]]), true);
 }
-
 
 if (Input::existsName('get', 'lead_id') && Input::existsName('get', 'office_id')) {
     $leadId             = Input::get('lead_id');
     $officeId           = Input::get('office_id');
     $language           = Input::get('lang');
     $year               = date('Y');
-    /** Icons for tables */
-    $icon               = ['icon-line-chart', 'icon-dashboard', 'icon-chart', 'fa fa-ambulance'];
 }
 
 if (Input::existsName('post', Tokens::getInputName()) && Tokens::tokenVerify()) {
@@ -44,7 +35,7 @@ if (Input::existsName('post', Tokens::getInputName()) && Tokens::tokenVerify()) 
     /** Check if validation passed */
     if ($validation->passed()) {
         $officeId   = Input::get('office_id');
-        $table      = Params::PREFIX . trim(Input::post('table'));
+        $table      = Params::ASSOC_PREFIX_TBL[Input::post('table')];
         $year       = Input::post('year');
         $month      = Input::post('month');
         $tableForChart  = Translate::t(strtolower(Input::post('table')), ['ucfirst']);
@@ -61,7 +52,7 @@ if (Input::existsName('post', Tokens::getInputName()) && Tokens::tokenVerify()) 
 
         /** Employees names */
         foreach ($chartData as $chartNames) {
-            $names[] = $backendUserProfile->records(Params::TBL_EMPLOYEES, ['id', '=', $chartNames->employees_id], ['name'], false)->name;
+            $names[] = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['id', $chartNames->employees_id]), ['name'], false)->name;
         }
 
         /** Employees chart names */
@@ -96,10 +87,12 @@ if (Input::existsName('post', Tokens::getInputName()) && Tokens::tokenVerify()) 
     <script>
         $(document).ready(function() {
             $('#employeesTable').DataTable();
-            $('#furloughTable').DataTable();
-            $('#absenteesTable').DataTable();
-            $('#medicalTable').DataTable();
-            $('#unpaidTable').DataTable();
+            $('#furlough').DataTable();
+            $('#absentees').DataTable();
+            $('#medical').DataTable();
+            $('#unpaid').DataTable();
+            $('#unpaidHours').DataTable();
+            $('#hoursToRecover').DataTable();
         });
     </script>
 </head>
@@ -147,7 +140,7 @@ include 'includes/navbar.php';
                                 <form method="post">
                                     <div class="row">
                                         <div class="col-sm-4">
-                                            <select name="table" class="form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
+                                            <select class="selectpicker show-tick form-control <?php if (Input::exists() && empty(Input::post('table'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>" data-live-search="false" name="table" data-size="7">
                                                 <option value=""><?php echo Translate::t('Select_table'); ?></option>
                                                 <?php foreach ($backendUserProfile->leadTables($officeId) as $table) { ?>
                                                     <option value="<?php echo trim($table); ?>"><?php echo Translate::t($table, ['ucfirst']); ?></option>
@@ -158,11 +151,11 @@ include 'includes/navbar.php';
                                                 <div class="invalid-feedback mb-3"><?php echo Translate::t('This_field_required'); ?></div>
                                             <?php }?>
                                         </div>
-                                        <div class="col-sm-4">
-                                            <select name="year" class="form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
+                                        <div class="col-sm-3">
+                                            <select class="selectpicker show-tick form-control <?php if (Input::exists() && empty(Input::post('year'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>" data-live-search="false" name="year" data-size="7">
                                                 <option value=""><?php echo Translate::t('Select_year'); ?></option>
                                                 <?php foreach (Common::getYearsList() as $year) { ?>
-                                                <option value="<?php echo  $year; ?>"><?php echo $year; ?></option>
+                                                <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
                                                 <?php } ?>
                                             </select>
                                             <?php
@@ -171,7 +164,7 @@ include 'includes/navbar.php';
                                             <?php }?>
                                         </div>
                                         <div class="col-sm-4">
-                                            <select name="month" class="form-control <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
+                                            <select class="selectpicker show-tick form-control <?php if (Input::exists() && empty(Input::post('month'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>" data-live-search="false" name="month" data-size="7">
                                                 <option value=""><?php echo Translate::t('Select_month'); ?></option>
                                                 <?php foreach (Common::getMonths($lang) as $key => $value) { ?>
                                                     <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
@@ -182,7 +175,7 @@ include 'includes/navbar.php';
                                                 <div class="invalid-feedback mb-3"><?php echo Translate::t('This_field_required'); ?></div>
                                             <?php }?>
                                         </div>
-                                        <div class="col-sm-12 mb-0">
+                                        <div class="col-sm-1 mb-0 mt-1">
                                             <button id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
                                             <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                         </div>
@@ -208,7 +201,7 @@ include 'includes/navbar.php';
                         <div class="statistic-block block pb-1">
                             <div class="progress-details d-flex align-items-end justify-content-between">
                                 <div class="title">
-                                    <div class="icon"><i class="icon-user-1"></i></div><strong><?php echo Translate::t('Total_employees'); ?></strong>
+                                    <div class="icon"><i class="fa fa-users"></i></div><strong><?php echo Translate::t('Total_employees'); ?></strong>
                                 </div>
                                 <div class="number dashtext-2"><?php echo $backendUserProfile->totalLeadEmployees($leadId); ?></div>
                             </div>
@@ -216,8 +209,8 @@ include 'includes/navbar.php';
                                 <div role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-template dashbg-2"></div>
                             </div>
                             <div class="mt-2 mb-1">
-                                <button class="btn-sm btn-outline-secondary col-sm-2" type="button" data-toggle="collapse" data-target="4"  aria-expanded="false" aria-controls="filter" id="employeeTable">
-                                    <?php echo Translate::t('show'); ?> <i class="fa fa-user-o"></i>
+                                <button class="btn-sm btn-outline-secondary col-sm-2" type="button" data-toggle="collapse" data-target="9"  aria-expanded="false" aria-controls="filter" id="employeeTable">
+                                    <?php echo Translate::t('show'); ?> <i class="fa fa-users"></i>
                                 </button>
                             </div>
                         </div>
@@ -229,7 +222,7 @@ include 'includes/navbar.php';
                             <div class="statistic-block block pb-1">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
-                                        <div class="icon"><i class="<?php echo $icon[$x]; ?>"></i></div><strong><?php echo Translate::t('Total') . ' ' . Translate::t($table, ['ucfirst']); ?></strong>
+                                        <div class="icon"><i class="<?php echo $backendUserProfile->icon[$table]; ?>"></i></div><strong><?php echo Translate::t('Total') . ' ' . Translate::t($table, ['ucfirst']); ?></strong>
                                     </div>
                                     <div class="number <?php echo Params::COMMONTBLSDASHTEXT[$table]; ?>"><?php echo $quantity; ?></div>
                                 </div>
@@ -238,7 +231,7 @@ include 'includes/navbar.php';
                                 </div>
                                 <div class="mt-2 mb-1">
                                     <button class="btn-sm btn-outline-secondary col-sm-6 common" type="button" data-toggle="collapse" data-target="<?php echo $x; ?>" id="">
-                                        <?php echo Translate::t('show'); ?> <i class="<?php echo $icon[$x]; ?>"></i>
+                                        <?php echo Translate::t('show'); ?> <i class="<?php echo$backendUserProfile->icon[$table]; ?>"></i>
                                     </button>
                                 </div>
                             </div>
@@ -273,13 +266,13 @@ include 'includes/navbar.php';
                                     <tbody>
                                     <?php
                                     $x = 1;
-                                    foreach ($allEmployees as $employees) { ?>
+                                    foreach ($backendUserProfile->getEmployeesData(['order','name'], AC::where(['offices_id', $officeId]), [], true) as $employees) { ?>
                                         <tr>
                                             <th scope="row"><?php echo $x; ?></th>
                                             <td><a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $employees->id; ?>"><?php echo $employees->name; ?></a></td>
-                                            <td><?php echo $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $employees->offices_id], ['name'], false)->name; ?></td>
-                                            <td><?php echo $backendUserProfile->records(Params::TBL_DEPARTMENT, ['id', '=', $employees->departments_id], ['name'], false)->name ;?></td>
-                                            <td><a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $employees->id; ?>"><i class="fa fa-user"></i></a></td>
+                                            <td><?php echo $backendUserProfile->getEmployeeOfficeData($employees->offices_id, ['name'])->name; ?></td>
+                                            <td><?php echo $backendUserProfile->getEmployeeDepartmentData($employees->departments_id, ['name'])->name; ?></td>
+                                            <td><a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $employees->id; ?>"><i class="fa fa-user" data-toggle="tooltip" data-placement="top" title="<?php echo Translate::t('view_data',['ucfirst']) ;?>"></i></a></td>
                                         </tr>
                                         <?php
                                         $x++;
@@ -303,15 +296,14 @@ include 'includes/navbar.php';
                     <div class="col-lg-12">
                         <div class="block">
                             <div class="title"><strong class="<?php echo Params::COMMONTBLSDASHTEXT[$table]?>"><?php echo Translate::t($table, ['ucfirst']); ?></strong>
-                                <button type="button" class="btn-sm btn-outline-primary float-sm-right closeDiv"><i class="fa fa-close"></i></button>
+                                <button type="button" class="btn-sm btn-primary float-sm-right closeDiv"><i class="fa fa-close"></i></button>
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover" id="furloughTable">
+                                <table class="table table-striped table-hover" id="<?php echo $table; ?>">
                                     <thead>
                                     <tr>
                                         <th>#</th>
                                         <th><?php echo Translate::t('Name'); ?></th>
-                                        <th><?php echo Translate::t('Team_furlough'); ?></th>
                                         <th><?php echo Translate::t($table, ['ucfirst']); ?></th>
                                         <th><?php echo Translate::t('percentage', ['ucfirst']); ?></th>
                                     </tr>
@@ -324,9 +316,8 @@ include 'includes/navbar.php';
                                         <tr>
                                             <th scope="row"><?php echo $y; ?></th>
                                             <td><a href="<?php echo Config::get('route/emplData'); ?>?employees_id=<?php echo $records['id']; ?>"><?php echo $records['name']; ?></a></td>
-                                            <td><?php echo (int)$dataCommonTables[$table] . ' ' .  Translate::t(Params::TBL_COMMON_DISPLAY[$table], ['strtolower']); ?></td>
                                             <td><?php echo $records['avg'] . ' ' .  Translate::t(Params::TBL_COMMON_DISPLAY[$table], ['strtolower']) ;?></td>
-                                            <td><?php echo Common::percentage($dataCommonTables[$table], $records['avg']); ?></td>
+                                            <td><?php echo Common::percentage($dataCommonTables[$table], $records['avg']); ?> <small></small></td>
                                         </tr>
                                     <?php }
                                     $y++;
@@ -420,11 +411,9 @@ include 'includes/navbar.php';
     });
 </script>
 <?php
-
 if (Input::exists() && !Errors::countAllErrors()) {
     include 'charts/profile_chart.php';
 }
 ?>
-
 </body>
 </html>

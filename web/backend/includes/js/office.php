@@ -1,6 +1,27 @@
 <?php
 ?>
 <script>
+    $( "select[name='city']" ).change(function () {
+        var cityId = $(this).val();
+        if(cityId) {
+            $.ajax({
+                url: "includes/response/departments.php",
+                dataType: 'Json',
+                data: {'city_id':cityId},
+                success: function(data) {
+                    $('select[name="department"]').empty();
+                    $.each(data, function(key, value) {
+                        $('select[name="department"]').append('<option value="'+ key +'">'+ value +'</option>');
+                    });
+                    $('.selectpicker').selectpicker('refresh');
+                }
+            });
+        }else{
+            $('select[name="department"]').empty();
+            $('.selectpicker').selectpicker('refresh');
+        }
+    });
+
     $( "select[name='department']" ).change(function () {
         var departmentId = $(this).val();
         if(departmentId) {
@@ -13,10 +34,12 @@
                     $.each(data, function(key, value) {
                         $('select[name="office"]').append('<option value="'+ key +'">'+ value +'</option>');
                     });
+                    $('.selectpicker').selectpicker('refresh');
                 }
             });
         }else{
             $('select[name="office"]').empty();
+            $('.selectpicker').selectpicker('refresh');
         }
     });
 </script>

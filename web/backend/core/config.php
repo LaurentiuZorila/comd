@@ -52,4 +52,7 @@ return [
     'notification'  => [
         'employeeName'  => 'notificationEmployeeName'
     ],
+     'errors'   => [
+         'office_not_configured' => 'officenotconfigured'
+     ],
 ];

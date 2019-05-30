@@ -1,9 +1,5 @@
 <?php
 require_once 'core/init.php';
-$departments    = $backendUserProfile->records(Params::TBL_DEPARTMENT, [], ['id', 'name']);
-$leads          = $backendUserProfile->records(Params::TBL_TEAM_LEAD, AC::where(['supervisors_id', $backendUser->userId()]), ['id', 'name', 'offices_id']);
-$offices        = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['departments_id', $backendUser->departmentId()]));
-
 
 if (Input::exists() && Tokens::tokenVerify()) {
     /** Instantiate validate class */
@@ -21,14 +17,22 @@ if (Input::exists() && Tokens::tokenVerify()) {
     $leadId     = Input::post('leads');
     $department = Input::post('departments');
     $offices    = Input::post('offices');
+    $cityId     = Input::post('city');
 
         $backendUser->update(Params::TBL_TEAM_LEAD, [
             'departments_id'    => $department,
             'offices_id'        => $offices,
-            'supervisors_id'    => $department
+            'supervisors_id'    => $department,
+            'city_id'           => $cityId
         ], [
             'id' => $leadId
         ]);
+
+        if ($backendUser->errors()) {
+            Errors::setErrorType('danger', Translate::t('Db_error', ['ucfirst']));
+        } else {
+            Errors::setErrorType('success', Translate::t('Db_success', ['ucfirst']));
+        }
     }
 }
 
@@ -89,13 +93,35 @@ include 'includes/navbar.php';
                                     <div class="form-group row">
                                         <label class="col-sm-3 form-control-label"><?php echo Translate::t('Select_leader'); ?></label>
                                         <div class="col-sm-9">
-                                            <select name="leads" class="form-control <?php if (Input::exists() && empty(Input::post('leads'))) {echo 'is-invalid';} else { echo 'mb-3';}?>">
+                                            <select class="selectpicker show-tick form-control <?php if (Input::exists() && empty(Input::post('leads'))) {echo 'is-invalid';} else { echo 'mb-3';}?>" data-live-search="true" name="leads" data-size="10">
                                                 <option value=""><?php echo Translate::t('Select_leader'); ?></option>
                                                 <?php
-                                                foreach ($leads as $lead) { ?>
-                                                    <option value="<?php echo $lead->id; ?>"><?php echo $lead->name; ?><small> (<?php echo $backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $lead->offices_id], ['name'], false)->name;?>)</small></option>
+                                                foreach ($backendUserProfile->leadData() as $lead) { ?>
+                                                    <option value="<?php echo $lead->id; ?>"><?php echo $lead->name; ?><small> (<?php echo $backendUserProfile->leadDepartName($lead->id) . ' - ' . $backendUserProfile->leadOfficeName($lead->id) ;?>)</small></option>
                                                 <?php } ?>
                                             </select>
+                                            <?php
+                                            if (Input::exists() && empty(Input::post('city'))) { ?>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                                            <?php }?>
+                                        </div>
+                                    </div>
+
+                                    <div class="line"></div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 form-control-label"><?php echo Translate::t(['select', 'city'], ['ucfirst']); ?></label>
+                                        <div class="col-sm-9">
+                                            <select class="selectpicker show-tick form-control <?php if (Input::exists() && empty(Input::post('leads'))) {echo 'is-invalid';} else { echo 'mb-3';}?>" data-live-search="true" name="city" data-size="10">
+                                                <option value=""><?php echo Translate::t(['select', 'city'], ['ucfirst']); ?></option>
+                                                <?php
+                                                foreach ($backendUserProfile->getCity() as $city) { ?>
+                                                    <option value="<?php echo $city->id; ?>"><?php echo strtoupper($city->city); ?></option>
+                                                <?php } ?>
+                                            </select>
+                                            <?php
+                                            if (Input::exists() && empty(Input::post('city'))) { ?>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                                            <?php }?>
                                         </div>
                                     </div>
 
@@ -103,13 +129,13 @@ include 'includes/navbar.php';
                                     <div class="form-group row">
                                         <label class="col-sm-3 form-control-label"><?php echo Translate::t('New_depart'); ?></label>
                                         <div class="col-sm-9">
-                                            <select name="departments" class="form-control <?php if (Input::exists() && empty(Input::post('departments'))) {echo 'is-invalid';} else { echo 'mb-3';}?>">
+                                            <select name="departments" class="selectpicker show-tick form-control <?php if (Input::exists() && empty(Input::post('departments'))) {echo 'is-invalid';} else { echo 'mb-3';}?>" data-live-search="true" data-size="10">
                                                 <option value=""><?php echo Translate::t('Select_depart'); ?></option>
-                                                <?php
-                                                foreach ($departments as $department) { ?>
-                                                <option value="<?php echo $department->id; ?>"><?php echo strtoupper($department->name); ?></option>
-                                                <?php } ?>
                                             </select>
+                                            <?php
+                                            if (Input::exists() && empty(Input::post('departments'))) { ?>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                                            <?php }?>
                                         </div>
                                     </div>
 
@@ -117,16 +143,23 @@ include 'includes/navbar.php';
                                     <div class="form-group row">
                                         <label class="col-sm-3 form-control-label"><?php echo Translate::t('New_office'); ?></label>
                                         <div class="col-sm-9">
-                                            <select name="offices" class="form-control <?php if (Input::exists() && empty(Input::post('offices'))) {echo 'is-invalid';} else { echo 'mb-3';}?>">
+                                            <select name="offices" class="selectpicker show-tick form-control <?php if (Input::exists() && empty(Input::post('offices'))) {echo 'is-invalid';} else { echo 'mb-3';}?>"  data-live-search="false" data-size="10">
                                                 <option value=""><?php echo Translate::t('Select_office'); ?></option>
                                             </select>
+                                            <?php
+                                            if (Input::exists() && empty(Input::post('offices'))) { ?>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                                            <?php }?>
                                         </div>
                                     </div>
 
                                     <div class="line"></div>
-                                    <div class="col-sm-9 ml-auto">
-                                        <button id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
-                                        <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 form-control-label"></label>
+                                        <div class="col-sm-9">
+                                            <button id="Submit" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-primary" type="submit"><?php echo Translate::t('Submit'); ?></button>
+                                            <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
+                                        </div>
                                     </div>
                                 </div>
                             </form>

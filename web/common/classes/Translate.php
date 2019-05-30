@@ -66,6 +66,7 @@ class Translate
             'File'              => 'File',
             'Update_employees_profile' => 'Actualizeaza OP',
             'Employees'         => 'Operatori',
+            'Employee'          => 'Operator',
             'Given_stars'       => 'Feedback dat',
             'Click_filter_for_data' => 'Apasa pe filtru pentru a cauta alte date',
             'Unpaid_h'          => 'Ore neplatite',
@@ -223,7 +224,8 @@ class Translate
             'team_unpaid'       => 'Zile neplatite echipa',
             'team_medical'      => 'Medicale echipa',
             'bk_employee_deleted'  => sprintf('Userul %s a fost sters', Session::get(Config::get('notification/employeeName'))),
-            'not_found_offices' => 'Nu s-a gasit nici un serviciu',
+            'not_found_offices' => 'Nu exista office pentru departamentul selectat',
+            'not_found_departments' => 'Nu s-au gasit departamente pentru acest oras',
             'add_staff'         => 'Adauga staff',
             'move_staff'        => 'Muta staff',
             'move_employees'    => 'Muta operatori',
@@ -238,6 +240,10 @@ class Translate
             'city'              => 'Oras',
             'select'            => 'Selecteaza',
             'confirm'           => 'Confirma',
+            'profile_not_configured'    => sprintf('Office-ul %s nu rezulta configurat, pentru a rezolva aceasta situatie un team leader trebuie sa se logheze si sa urmeze passi de configurare.', self::office()),
+            'records_for'       => 'Datele pentru',
+            'team_total'        => 'Total echipa',
+            'off_not_configured'    => 'Accest office nu este configurat',
         ];
     }
 
@@ -299,6 +305,7 @@ class Translate
             'File'              => 'File',
             'Update_employees_profile' => 'Update employees',
             'Employees'         => 'Employees',
+            'Employee'          => 'Employee',
             'Given_stars'       => 'Given stars',
             'Click_filter_for_data' => 'Click on Filter button to search another data',
             'Unpaid_h'          => 'Unpaird hours',
@@ -457,7 +464,8 @@ class Translate
             'team_unpaid'       => 'Team unpaid',
             'team_medical'      => 'Team medical leaves',
             'bk_employee_deleted'  => sprintf('Employee %s has been deleted', Session::get('notification/employeeName')),
-            'not_found_offices' => 'Not found offices',
+            'not_found_offices' => 'Not found offices for this department',
+            'not_found_departments' => 'Not found departments for this city',
             'add_staff'         => 'Add staff',
             'move_staff'        => 'Move staff',
             'move_employees'    => 'Move employees',
@@ -472,6 +480,10 @@ class Translate
             'city'              => 'City',
             'select'            => 'Select',
             'confirm'           => 'Confirm',
+            'profile_not_configured'    => sprintf('Office %s is not configured, to solve this issue one lead must login and proceed with profile configuration.', self::office()),
+            'records_for'       => 'Records for',
+            'team_total'        => 'Team total',
+            'off_not_configured'    => 'Office not configured',
         ];
     }
 
@@ -531,7 +543,8 @@ class Translate
             'Download_file_from_common' => 'Files per tabele comune(ferie, malatia, etc..) scarica da qui',
             'File'              => 'File',
             'Update_employees_profile' => 'Aggiorna dipendente',
-            'Employees'         => 'Dipenteni',
+            'Employees'         => 'Operatori',
+            'Employee'          => 'Operatore',
             'Given_stars'       => 'Tuo feedback',
             'Click_filter_for_data' => 'Clicca filtro per cerccare altri dati',
             'Unpaid_h'          => 'Ore permeso',
@@ -690,7 +703,8 @@ class Translate
             'team_unpaid'       => 'Permesi squadra',
             'team_medical'      => 'Mallatie squadra',
             'bk_employee_deleted'  => sprintf('Operatore %s è stato cancelato', Session::get('notification/employeeName')),
-            'not_found_offices' => 'Nessuna sottocomesa',
+            'not_found_offices' => 'Nessuna sottocomesa trovata per questa dipartimento',
+            'not_found_departments' => 'Nessun dipartimento trovato per questa cita',
             'add_staff'         => 'Inserisci staff',
             'move_staff'        => 'Sposta staff',
             'move_employees'    => 'Sposta operatori',
@@ -705,6 +719,10 @@ class Translate
             'city'              => 'Città',
             'select'            => 'Seleziona',
             'confirm'           => 'Conferma',
+            'profile_not_configured'    => sprintf('Probabilmente sottocomesa %s non risulta configurata, per configurazione un leader deve esseguire step dal inizzio.', self::office()),
+            'records_for'       => 'Dati per',
+            'team_total'        => 'Totale squadra',
+            'off_not_configured'    => 'Sottocomesa non risulta configurata',
             ];
     }
 
@@ -813,5 +831,13 @@ class Translate
     public static function selectedYear()
     {
         return Session::get('selected_year');
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function office()
+    {
+        return Session::get(Config::get('errors/office_not_configured'));
     }
 }

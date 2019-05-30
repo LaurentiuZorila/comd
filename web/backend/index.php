@@ -2,7 +2,7 @@
 require_once 'core/init.php';
 
 /** If form is submitted */
-if (Input::exists()) {
+if (Input::exists() && Tokens::tokenVerify()) {
     /** Instantiate validation class */
     $validate = new Validate();
 

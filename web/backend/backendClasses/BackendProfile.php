@@ -16,6 +16,27 @@ class BackendProfile
 
     private $_defaultCol = ['name', 'id', 'departments_id', 'offices_id'];
 
+    private $_orderValue = 'order';
+
+    public $icon         = [
+        'furlough'          => 'icon-line-chart',
+        'absentees'         => 'fa fa-exclamation-triangle',
+        'unpaid'            => 'icon-chart',
+        'medical'           => 'fa fa-ambulance',
+        'unpaidHours'       => 'icon-dashboard' ,
+        'hoursToRecover'    => 'fa fa-hand-lizard-o'
+    ];
+
+
+    public $employeeId;
+
+    private $_employeeName;
+
+    private $_employeeOfficeId;
+
+    private $_records;
+
+
     /**
      * ProfileDetails constructor.
      */
@@ -35,7 +56,7 @@ class BackendProfile
         if (!empty($column)) {
             foreach ($column as $col) {
                 if (!in_array($col, $this->_defaultCol)) {
-                    array_push($col, $this->_defaultCol);
+                    array_push($this->_defaultCol, $col);
                 }
             }
         }
@@ -148,12 +169,39 @@ class BackendProfile
 
 
     /**
-     * @param array $col
      * @return mixed
      */
-    public function getOffices($col = [])
+    public function getCity()
     {
+        return $this->records(Params::TBL_CITY, [], ['*'], true,['ORDER BY' => 'city']);
+    }
+
+
+    /**
+     * @param array $col
+     * @param bool $all
+     * @return mixed
+     */
+    public function getOffices($col = [], $all = false)
+    {
+        if ($all) {
+            return $this->records(Params::TBL_OFFICE, ['*'], $col);
+        }
         return $this->records(Params::TBL_OFFICE, AC::where(['departments_id', $this->_backUser->departmentId()]), $col);
+    }
+
+
+    /**
+     * @param array $col
+     * @param bool $all
+     * @return mixed
+     */
+    public function getDepartments($col = [], $all = false)
+    {
+        if ($all) {
+            return $this->records(Params::TBL_DEPARTMENT, [], $col);
+        }
+        return $this->records(Params::TBL_DEPARTMENT, AC::where(['departments_id', $this->_backUser->departmentId()]), $col);
     }
 
 
@@ -187,21 +235,62 @@ class BackendProfile
      * @param array $order
      * @param array $where
      * @param array $col
-     * @return object
+     * @param bool $first
+     * @return mixed
      */
-    public function getEmployeesData($order = [], $where = [], $col = [])
+    public function getEmployeesData($order = [], $where = [], $col = [], $first = false)
     {
         $columns = $this->addColumns($col);
-        if (!empty($order) && $order[0] == 'order') {
+        if (!empty($order) && $order[0] == $this->_orderValue) {
             $ordered = ['ORDER BY' => $order[1]];
         } else {
             $ordered = $order;
         }
-        if (!empty($order)) {
-            return $this->records(Params::TBL_EMPLOYEES, $where, $columns, true, $ordered);
-        } else {
-            return $this->records(Params::TBL_EMPLOYEES, $where, $columns);
+        if (empty($where)) {
+            $where = AC::where(['departments_id', $this->_backUser->departmentId()]);
         }
+        if (!empty($order)) {
+              return $this->records(Params::TBL_EMPLOYEES, $where, $columns, $first, $ordered);
+        } else {
+            return $this->records(Params::TBL_EMPLOYEES, $where, $columns, $first);
+        }
+    }
+
+
+    /**
+     * @param $id
+     * @param array $col
+     * @return mixed
+     */
+    public function getEmployeeDataById($id, $col =[])
+    {
+        return $this->records(Params::TBL_EMPLOYEES, AC::where(['id', $id]), $col, false);
+    }
+
+
+    public function getAllEmployeeData()
+    {
+        $this->_records = $this->records(Params::TBL_EMPLOYEES, AC::where(['id', $this->employeeId]), ['*'], false);
+        $this->_employeeOfficeId = $this->_records->offices_id;
+        $this->_employeeName     = $this->_records->name;
+        return $this;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function employeeName()
+    {
+        return $this->getAllEmployeeData()->_employeeName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function employeeOfficeId()
+    {
+        return $this->_employeeOfficeId;
     }
 
 
@@ -213,7 +302,7 @@ class BackendProfile
      */
     public function getCommonData(array $order, array $where, $table)
     {
-        foreach ($this->getEmployeesData($order, $where) as $employeeRecords) {
+        foreach ($this->getEmployeesData($order, $where, [], true) as $employeeRecords) {
             $avgParam = $employeeRecords->id . '_' . $this->currentYear();
             $employeeId = $employeeRecords->id;
             $names = $employeeRecords->name;
@@ -232,7 +321,10 @@ class BackendProfile
     public function leadTables($officeId)
     {
         $tables  = $this->records(Params::TBL_OFFICE, AC::where(['id', $officeId]), ['tables'], false)->tables;
-        return explode(',', $tables);
+        if (strlen($tables) > 1) {
+            return explode(',', $tables);
+        }
+        return array();
     }
 
     /**
@@ -248,12 +340,46 @@ class BackendProfile
 
 
     /**
+     * @param array $col
+     * @param array $order
+     * @return mixed
+     */
+    public function leadData($col = [], $order = [])
+    {
+        if (!empty($col)) {
+            $col = $this->addColumns($col);
+        } else {
+            $col = $this->_defaultCol;
+        }
+        if (!empty($order) && $order[0] = $this->_orderValue) {
+            $order = ['ORDER BY' => $order[1]];
+            return $this->records(Params::TBL_TEAM_LEAD, AC::where(['departments_id', $this->_backUser->departmentId()]), $col,true, $order);
+        }
+       return $this->records(Params::TBL_TEAM_LEAD, AC::where(['departments_id', $this->_backUser->departmentId()]), $col);
+    }
+
+
+    /**
      * @param $leadId
      * @return int
      */
     public function totalLeadEmployees($leadId)
     {
        return (int)$this->count(Params::TBL_EMPLOYEES, AC::where(['offices_id', $this->leadProfile($leadId)->offices_id]));
+    }
+
+
+    /**
+     * @param $officesId
+     * @param bool $obj
+     * @return int
+     */
+    public function countEmployeeLeads($officesId, $obj = true)
+    {
+        if ($obj) {
+            return (int)$this->count(Params::TBL_TEAM_LEAD, AC::where(['offices_id', $officesId->offices_id]));
+        }
+        return (int)$this->count(Params::TBL_TEAM_LEAD, AC::where(['offices_id', $officesId]));
     }
 
 
@@ -297,12 +423,54 @@ class BackendProfile
 
 
     /**
+     * @param $departmentId
+     * @param $columns
+     * @return mixed
+     */
+    public function getEmployeeDepartmentData($departmentId, $columns = [])
+    {
+        if (!empty($columns)) {
+            $columns = ['*'];
+        }
+        return $this->records(Params::TBL_DEPARTMENT, AC::where(['id', $departmentId]), $columns, false);
+    }
+
+
+    /**
+     * @param $officeId
+     * @param array $columns
+     * @return mixed
+     */
+    public function getEmployeeOfficeData($officeId, $columns = [])
+    {
+        if (!empty($columns)) {
+            $columns = ['*'];
+        }
+        return $this->records(Params::TBL_OFFICE, AC::where(['id', $officeId]),  $columns, false);
+    }
+
+
+    /**
      * @return array
      */
     public function tablesDisplay()
     {
         $dataDisplay = $this->records(Params::TBL_OFFICE, AC::where(['departments_id', $this->_backUser->departmentId()]), ['data_visualisation'], false)->data_visualisation;
         return (array)json_decode($dataDisplay);
+    }
+
+
+    /**
+     * @param $officeId
+     * @param array $col
+     * @return mixed
+     */
+    public function getOfficeDataById($officeId, $col = [])
+    {
+        if (empty($col)) {
+            $col = ['*'];
+        }
+        return $this->records(Params::TBL_OFFICE, AC::where(['id', $officeId]), $col, false);
     }
 
 

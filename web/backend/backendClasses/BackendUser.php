@@ -48,6 +48,10 @@ class BackendUser
      */
     private $_sessionDepartmentId;
 
+
+    /**
+     * @var mixed|string|null
+     */
     private $_sessionCityId;
 
 
@@ -123,9 +127,11 @@ class BackendUser
      * @return bool
      * @throws Exception
      */
-    public function update($table, $fields = array(), $conditions = array())
+    public function update($table, $fields = [], $conditions = [])
     {
+        $this->_error = false;
         if (!$this->_db->update($table, $fields, $conditions)) {
+            $this->_error = true;
             throw new Exception('There was a problem, please try again!');
         }
         return true;
@@ -138,7 +144,7 @@ class BackendUser
      * @return bool
      * @throws Exception
      */
-    public function create($table, $fields = array())
+    public function create($table, $fields = [])
     {
         $this->_error = false;
         if (!$this->_db->insert($table, $fields)) {
@@ -184,6 +190,7 @@ class BackendUser
         Session::delete($this->_sessionDepartmentId);
         Session::delete($this->_lname);
         Session::delete($this->_fname);
+        Session::delete($this->_sessionCityId);
         Redirect::to('../index.php');
         exit;
     }
@@ -248,6 +255,15 @@ class BackendUser
     public function uName()
     {
         return $this->data()->username;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function cityId()
+    {
+        return $this->data()->city_id;
     }
 
 

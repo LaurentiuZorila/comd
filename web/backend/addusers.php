@@ -1,8 +1,5 @@
 <?php
 require_once 'core/init.php';
-$where = AC::where(['departments_id', $backendUser->departmentId()]);
-$offices = $backendUserProfile->records(Params::TBL_OFFICE, $where, ['id', 'name']);
-
 
 if (Input::exists() && Tokens::tokenVerify()) {
     /** Instantiate validate class */
@@ -36,6 +33,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
         $create = $backendUser->create(Params::TBL_TEAM_LEAD, [
                 'departments_id'   => $backendUser->departmentId(),
                 'offices_id'       => $officeId,
+                'city_id'          => $backendUser->cityId(),
                 'supervisors_id'   => $backendUser->userId(),
                 'lang'             => Params::DEFAULTLANG,
                 'fname'            => $fname,
@@ -152,9 +150,9 @@ include 'includes/navbar.php';
                                         <?php } ?>
                                         </label>
                                         <div class="form-group col-sm-9">
-                                            <select name="offices" class="form-control <?php if (Input::exists() && empty(Input::post('offices'))) {echo 'is-invalid';} ?>">
-                                                <option value="" class="text-white-50"><?php echo Translate::t('Select_office', ['ucfirst' => true]); ?></option>
-                                                <?php foreach ($offices as $office) { ?>
+                                            <select class="selectpicker show-tick form-control <?php if (Input::exists() && empty(Input::post('offices'))) {echo 'is-invalid';} else { echo 'mb-3';}?>" data-live-search="true" name="offices" data-size="10">
+                                                <option value="" class="text-white-50"><?php echo Translate::t('Select_office', ['ucfirst']); ?></option>
+                                                <?php foreach ($backendUserProfile->getOffices(['id', 'name']) as $office) { ?>
                                                 <option value="<?php echo $office->id; ?>"><?php echo $office->name; ?></option>
                                                 <?php } ?>
                                             </select>
@@ -163,9 +161,10 @@ include 'includes/navbar.php';
                                     </div>
 
                                     <div class="line"></div>
-                                    <div class="col-sm-9 ml-auto">
-                                        <div class="form-group row">
-                                            <button id="Submit" name="add" value="<?php echo Translate::t('Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t('create'); ?></button>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 form-control-label"></label>
+                                        <div class="col-sm-9">
+                                            <button id="Submit" name="add" class="btn-sm btn-primary" type="submit"><?php echo Translate::t('create'); ?></button>
                                             <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                         </div>
                                     </div>

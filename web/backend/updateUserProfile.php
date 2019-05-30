@@ -1,9 +1,5 @@
 <?php
 require_once 'core/init.php';
-$allEmployees   = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['departments_id', $backendUser->departmentId()]), ['name', 'offices_id', 'id', 'departments_id'], true, ['ORDER BY' => 'name']);
-$departments    = $backendUserProfile->records(Params::TBL_DEPARTMENT, [], ['id', 'name'], true, ['ORDER BY' => 'name']);
-$offices        = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['departments_id', $backendUser->departmentId()]), ['id', 'name'], true, ['ORDER BY' => 'name']);
-
 
 if (Input::exists()) {
     /** Instantiate validate class */
@@ -12,7 +8,8 @@ if (Input::exists()) {
     $validation = $validate->check($_POST, [
         'user'          => ['required' => true],
         'department'    => ['required' => true],
-        'office'        => ['required' => true]
+        'office'        => ['required' => true],
+        'city'          => ['required' => true],
     ]);
 
     /** Check if validation passed */
@@ -20,28 +17,16 @@ if (Input::exists()) {
         $employeesId    = Input::post('user');
         $departmentId   = Input::post('department');
         $officesId      = Input::post('office');
+        $cityId         = Input::post('city');
 
-        $employeesDetails       = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['id', $employeesId]), ['departments_id', 'offices_id'], false);
-        $employeesRecentTables  = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['id', $employeesDetails->offices_id]), ['tables'], false);
-        $staffIds               = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['departments_id', $backendUser->departmentId()]), ['id'], true);
-
-        // Array with staff ids
-        foreach ($staffIds as $staffId) {
-            $staffIDs[] = $staffId->id;
-        }
-
-        /** Employees tables */
-        $empRecentTables  = explode(',', $employeesRecentTables->tables);
-
-        foreach ($empRecentTables as $allTables) {
-            $tables[] = Params::PREFIX . $allTables;
-        }
+        $employeesDetails       = $backendUserProfile->getEmployeesData([],AC::where(['id', $employeesId]), ['city_id']);
 
         try {
             $backendDB->getPdo()->beginTransaction();
             $backendUser->update(Params::TBL_EMPLOYEES, [
                 'departments_id' => $departmentId,
-                'offices_id'     => $officesId
+                'offices_id'     => $officesId,
+                'city_id'        => $cityId
             ], [
                 'id' => $employeesId
             ]);
@@ -50,18 +35,21 @@ if (Input::exists()) {
                 'employees_id'              => $employeesId,
                 'current_departments_id'    => $employeesDetails->departments_id,
                 'current_offices_id'        => $employeesDetails->offices_id,
+                'current_city_id'           => $employeesDetails->city_id,
                 'new_departments_id'        => $departmentId,
-                'new_offices_id'            => $officesId
+                'new_offices_id'            => $officesId,
+                'new_city_id'               => $cityId,
             ]);
 
             $backendUser->create(Params::TBL_NOTIFICATION, [
-               'lead_id'    => $employeesDetails->offices_id,
+                'lead_id'    => $employeesDetails->offices_id,
                 'status'    => 1,
                 'message'   => 'employee_moved',
             ]);
 
-            foreach ($tables as $table) {
-                $backendUser->update($table, [
+            foreach ($backendUserProfile->leadTables($employeesDetails->offices_id) as $table) {
+                $tbl = in_array($table, Params::ASSOC_PREFIX_TBL) ? Params::ASSOC_PREFIX_TBL[$table] : Params::PREFIX . $table;
+                $backendUser->update($tbl, [
                     'departments_id' => $departmentId,
                     'offices_id'     => $officesId
                 ], [
@@ -70,11 +58,11 @@ if (Input::exists()) {
             }
 
             $backendDB->getPdo()->commit();
-            Errors::setErrorType('success', Translate::t('Db_success', ['ucfirst'=>true]));
+            Errors::setErrorType('success', Translate::t('Db_success', ['ucfirst']));
 
         } catch (PDOException $e) {
             $backendDB->getPdo()->rollBack();
-            Errors::setErrorType('danger', Translate::t('Db_error', ['ucfirst'=>true]));
+            Errors::setErrorType('danger', Translate::t('Db_error', ['ucfirst']));
         }
     }
 }
@@ -133,11 +121,11 @@ include 'includes/navbar.php';
                                     <div class="form-group row">
                                         <label class="col-sm-3 form-control-label"><?php echo Translate::t('Select_Employees'); ?></label>
                                         <div class="col-sm-9">
-                                            <select name="user" class="form-control <?php if (Input::exists() && empty(Input::post('user'))) {echo 'is-invalid';} ?>">
+                                            <select class="selectpicker show-tick form-control" data-live-search="true" name="user" data-size="10">
                                                 <option value=""><?php echo Translate::t('Select_Employees'); ?></option>
                                                 <?php
-                                                foreach ($allEmployees as $employees) { ?>
-                                                    <option value="<?php echo $employees->id; ?>"><?php echo $employees->name; ?><small>(<?php echo escape($backendUserProfile->records(Params::TBL_OFFICE, AC::where(['id', $employees->offices_id]), ['name'], false)->name); ?>)</small></option>
+                                                foreach ($backendUserProfile->getEmployeesData(['order', 'name'],[],[],true) as $employees) { ?>
+                                                    <option value="<?php echo $employees->id; ?>" data-tokens="<?php echo $employees->name; ?>"><?php echo $employees->name; ?><small> (<?php echo $backendUserProfile->getEmployeeDepartmentData($employees->departments_id, ['name'])->name; ?>)</small></option>
                                                 <?php } ?>
                                             </select>
                                             <?php
@@ -149,14 +137,28 @@ include 'includes/navbar.php';
 
                                     <div class="line"></div>
                                     <div class="form-group row">
+                                        <label class="col-sm-3 form-control-label"><?php echo Translate::t(['select', 'city'], ['ucfirst']); ?></label>
+                                        <div class="col-sm-9">
+                                            <select class="selectpicker show-tick form-control <?php if (Input::exists() && empty(Input::post('city'))) {echo 'is-invalid';} ?>" data-live-search="true" name="city" data-size="10">
+                                                <option value=""><?php echo Translate::t(['select', 'city'], ['ucfirst']); ?></option>
+                                                <?php
+                                                foreach ($backendUserProfile->getCity() as $city) { ?>
+                                                    <option value="<?php echo $city->id; ?>" data-tokens="<?php echo strtoupper($city->city); ?>"><?php echo strtoupper($city->city); ?></option>
+                                                <?php } ?>
+                                            </select>
+                                            <?php
+                                            if (Input::exists() && empty(Input::post('city'))) { ?>
+                                                <div class="invalid-feedback"><?php echo Translate::t('This_field_required'); ?></div>
+                                            <?php }?>
+                                        </div>
+                                    </div>
+
+                                    <div class="line"></div>
+                                    <div class="form-group row">
                                         <label class="col-sm-3 form-control-label"><?php echo Translate::t('New_depart'); ?></label>
                                         <div class="col-sm-9">
-                                            <select name="department" class="form-control <?php if (Input::exists() && empty(Input::post('department'))) {echo 'is-invalid';} ?>">
-                                                <option value=""><?php echo Translate::t('Select_depart', ['ucfirst'=>true]); ?></option>
-                                                <?php
-                                                foreach ($departments as $department) { ?>
-                                                    <option value="<?php echo $department->id; ?>"><?php echo strtoupper($department->name); ?></option>
-                                                <?php } ?>
+                                            <select class="selectpicker show-tick form-control <?php if (Input::exists() && empty(Input::post('department'))) {echo 'is-invalid';} ?>" data-live-search="true" name="department" data-size="10">
+                                                <option value=""><?php echo Translate::t('Select_depart', ['ucfirst']); ?></option>
                                             </select>
                                             <?php
                                             if (Input::exists() && empty(Input::post('department'))) { ?>
@@ -169,8 +171,8 @@ include 'includes/navbar.php';
                                     <div class="form-group row">
                                         <label class="col-sm-3 form-control-label"><?php echo Translate::t('New_office'); ?></label>
                                         <div class="col-sm-9">
-                                            <select name="office" class="form-control <?php if (Input::exists() && empty(Input::post('office'))) {echo 'is-invalid';} ?>">
-                                                <option value=""><?php echo Translate::t('Select_office', ['strttoupper'=>true]); ?></option>
+                                            <select class="selectpicker show-tick form-control <?php if (Input::exists() && empty(Input::post('office'))) {echo 'is-invalid';} ?>" data-live-search="true" name="office" data-size="10">
+                                                <option value=""><?php echo Translate::t('Select_office', ['strttoupper']); ?></option>
                                             </select>
                                             <?php
                                             if (Input::exists() && empty(Input::post('office'))) { ?>
@@ -182,7 +184,7 @@ include 'includes/navbar.php';
                                     <div class="form-group row">
                                         <label class="col-sm-3 form-control-label"></label>
                                         <div class="col-sm-9">
-                                            <button id="Submit" name="<?php echo Tokens::inputName(); ?>" value="<?php echo Translate::t('Submit'); ?>" class="btn btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
+                                            <button id="Submit" name="<?php echo Tokens::inputName(); ?>" value="<?php echo Translate::t('Submit'); ?>" class="btn-sm btn-outline-secondary" type="submit"><?php echo Translate::t('Submit'); ?></button>
                                             <input type="hidden" name="<?php echo Tokens::getInputName(); ?>" value="<?php echo Tokens::getSubmitToken(); ?>">
                                         </div>
                                     </div>

@@ -92,15 +92,15 @@ include 'includes/navbar.php';
                                     <tbody>
                                     <?php
                                     $x = 1;
-                                    foreach ($backendUserProfile->getAllEmployees(['offices_id', 'departments_id', 'name', 'id', 'status'], ['GROUP BY' => 'name']) as $employees) { ?>
+                                    foreach ($backendUserProfile->getEmployeesData(['order','name'],[],['status'], true) as $employees) { ?>
                                         <tr>
                                             <th scope="row"><?php echo $x; ?></th>
                                             <td><?php echo $employees->name; ?></td>
-                                            <td><?php echo strtoupper($backendUserProfile->records(Params::TBL_OFFICE, ['id', '=', $employees->offices_id], ['name'], false)->name); ?></td>
-                                            <td><?php echo strtoupper($backendUserProfile->records(Params::TBL_DEPARTMENT, ['id', '=', $employees->departments_id], ['name'], false)->name);?></td>
+                                            <td><?php echo $backendUserProfile->getEmployeeOfficeData($employees->offices_id, ['name'])->name; ?></td>
+                                            <td><?php echo $backendUserProfile->getEmployeeDepartmentData($employees->departments_id, ['name'])->name;?></td>
                                             <td>
                                                 <?php
-                                                $statusId = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['id', $employees->id]), ['status'], false)->status;
+                                                $statusId = $backendUserProfile->getEmployeesData([], AC::where(['id', $employees->id]), ['status', true])->status;
                                                 echo Translate::t($backendUserProfile->getStatus()[$statusId], ['ucfirst']);
                                                 ?>
                                             </td>

@@ -1,6 +1,5 @@
 <?php
 require_once 'core/init.php';
-$allLeads = $backendUserProfile->records(Params::TBL_TEAM_LEAD, ['departments_id', '=', $backendUser->departmentId()], ['id', 'name', 'offices_id', 'departments_id'], true, ['ORDER BY' => 'name']);
 ?>
 <!DOCTYPE html>
 <html>
@@ -38,7 +37,7 @@ include 'includes/navbar.php';
             <section>
                 <div class="container-fluid">
                     <div class="row">
-                        <?php foreach ($allLeads as $lead) {
+                        <?php foreach ($backendUserProfile->leadData() as $lead) {
                             $rating = $backendUserProfile->rating(AC::where(['user_id', $lead->id]));
                             ?>
                         <div class="col-md-6 col-xl-4">
@@ -47,8 +46,8 @@ include 'includes/navbar.php';
                                     <div class="media align-items-center"><h1 class="dashtext-1"><?php echo Common::makeAvatar($lead->name); ?></h1>
                                         <div class="media-body overflow-hidden">
                                             <h3 class="card-text mb-0 text-center text-secondary" style="color: #9055A2;"><?php echo $lead->name; ?></h3>
-                                            <p class="card-text mb-0 text-uppercase font-weight-bold text-secondary text-center"><?php echo $backendUserProfile->records(Params::TBL_DEPARTMENT, AC::where(['id', $lead->departments_id]), ['name'], false)->name; ?></p>
-                                            <p class="card-text mb-3 text-uppercase font-weight-bold text-secondary text-center"><?php echo $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['id', $lead->offices_id]), ['name'], false)->name; ?></p>
+                                            <p class="card-text mb-0 text-uppercase font-weight-bold text-secondary text-center"><?php echo $backendUserProfile->leadDepartName($lead->id); ?></p>
+                                            <p class="card-text mb-3 text-uppercase font-weight-bold text-secondary text-center"><?php echo $backendUserProfile->leadOfficeName($lead->id); ?></p>
                                             <p class="card-text mb-0 font-weight-bold text-secondary text-center"><?php echo Translate::t('Rating'); ?></p>
                                             <p class="card-text m-b-0 font-weight-bold text-secondary text-center">
                                                 <?php

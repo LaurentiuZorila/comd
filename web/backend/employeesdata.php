@@ -19,6 +19,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
     $month          = Input::post('month');
     $id             = Input::post('employees');
     $team           = Input::post('teams');
+    $backendUserProfile->employeeId = Input::post('employees');
 
         /** Employees details */
         $employeesData  = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['id', $id]), ['offices_id', 'name'], false);
@@ -36,7 +37,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
                 $leadsName[] = $leads->name;
             }
         } else {
-            $leadsName[] = Translate::t('not_found_leads', ['ucfirst' => true]);
+            $leadsName[] = Translate::t('not_found_leads', ['ucfirst']);
         }
 
 
@@ -47,7 +48,6 @@ if (Input::exists() && Tokens::tokenVerify()) {
 
         /** Arrays with tables */
         $tables = explode(',', trim($allOfficesData->tables));
-
 
         /** Tables with prefix */
         foreach ($tables as $table) {
@@ -68,7 +68,7 @@ if (Input::exists() && Tokens::tokenVerify()) {
         /** Array with tables and values(quantity) */
         $allData = array_combine($prefixTables, $values);
 
-        $chartLabels = Js::key($allData, ['strtoupper' => true]);
+        $chartLabels = Js::key($allData, ['strtoupper']);
         $chartValues = Js::values($allData);
 
         /** Check if exists values for selected options */
@@ -83,8 +83,13 @@ if (Input::exists() && Tokens::tokenVerify()) {
 
 // FOR GET
 if (Input::existsName('get', 'employees_id') && !Input::exists()) {
+
+    $backendUserProfile->employeeId = Input::get('employees_id');
+
     // Employees id
-    $employeesId = Input::get('employees_id');
+    $employeesId      = Input::get('employees_id');
+    $employeeOfficeId = $backendUserProfile->getEmployeeDataById($employeesId, ['offices_id'])->offices_id;
+    $employeeName     = $backendUserProfile->getEmployeeDataById($employeesId, ['name'])->name;
 
     /** Employees details */
     $employeesData  = $backendUserProfile->records(Params::TBL_EMPLOYEES, AC::where(['id', $employeesId]), ['offices_id', 'name'], false);
@@ -92,49 +97,46 @@ if (Input::existsName('get', 'employees_id') && !Input::exists()) {
     /** Offices data */
     $allOfficesData = $backendUserProfile->records(Params::TBL_OFFICE, AC::where(['id', $employeesData->offices_id]), ['name', 'tables'], false);
 
-    /** All Leads for selected office details */
-    $allLeads       = $backendUserProfile->records(Params::TBL_TEAM_LEAD, AC::where(['offices_id',  $employeesData->offices_id]), ['name']);
-
     /** Team Leads names */
-    if (!empty($allLeads)) {
-        foreach ($allLeads as $leads) {
+    if ($backendUserProfile->countEmployeeLeads($employeeOfficeId, false) > 0) {
+        foreach ($backendUserProfile->leadsName($backendUserProfile->getEmployeeDataById($employeesId, ['offices_id'])->offices_id, ['name']) as $leads) {
             $leadsName[] = $leads->name;
         }
     } else {
-        $leadsName[] = Translate::t('not_found_leads', ['ucfirst' => true]);
+        $leadsName[] = Translate::t('not_found_leads', ['ucfirst']);
     }
 
     /** Employees name */
     $employeesName  = $employeesData->name;
 
-    /** Arrays with tables */
-    $tables = explode(',', trim($allOfficesData->tables));
-
-
     /** Tables with prefix */
-    foreach ($tables as $table) {
-        $prefixTables[Params::PREFIX . trim($table)] = $table;
-    }
-
-    /** Condition for action */
-    $where = AC::where([['year', date('Y')], ['employees_id', $employeesId], ['month', date('n')]]);
-
-    foreach ($prefixTables as $key => $table) {
-        /** quantity for all tables */
-        if (is_null($backendUserProfile->records($key, $where, ['quantity'], false)->quantity)) {
-            $values[] = 0;
-        } else {
-            $values[] = $backendUserProfile->records($key, $where, ['quantity'], false)->quantity;
+    if (!empty($backendUserProfile->leadTables($employeeOfficeId))) {
+        foreach ($backendUserProfile->leadTables($employeeOfficeId) as $table) {
+            $prefixTables[Params::PREFIX . trim($table)] = $table;
         }
-    }
-    /** Array with tables and values(quantity) */
-    $allData = array_combine($prefixTables, $values);
+        /** Condition for action */
+        $where = AC::where([['year', date('Y')], ['employees_id', $employeesId], ['month', date('n')]]);
 
-    $chartLabels = Js::key($allData, ['strtoupper' => true]);
-    $chartValues = Js::values($allData);
+        foreach ($prefixTables as $key => $table) {
+            /** quantity for all tables */
+            if (is_null($backendUserProfile->records($key, $where, ['quantity'], false)->quantity)) {
+                $values[] = 0;
+            } else {
+                $values[] = $backendUserProfile->records($key, $where, ['quantity'], false)->quantity;
+            }
+        }
+        /** Array with tables and values(quantity) */
+        $allData = array_combine($prefixTables, $values);
+        $chartLabels = Js::key($allData, ['strtoupper' => true]);
+        $chartValues = Js::values($allData);
+    } else {
+        $allData = [];
+        Session::put(Config::get('errors/office_not_configured'), $backendUserProfile->leadOfficeName($employeeOfficeId));
+        Errors::setErrorType('info', Translate::t('profile_not_configured'));
+    }
 
     /** Check if exists values for selected options */
-    if (!Common::checkValues($allData)) {
+    if (!Common::checkValues($allData) && !Errors::countAllErrors('info')) {
         Errors::setErrorType('info', Translate::t('not_found_current_month') . '. ' . Translate::t('try_search_another', ['ucfirst']));
     }
 }
@@ -197,9 +199,13 @@ include 'includes/navbar.php';
                             <div class="col-sm-6">
                                 <select name="teams" class="form-control <?php if (Input::exists() && empty(Input::post('teams'))) {echo 'is-invalid';} else { echo 'mb-3';} ?>">
                                     <option value=""><?php echo Translate::t('Select_team'); ?></option>
-                                    <?php foreach ($backendUserProfile->getOffices(['id', 'name']) as $office) { ?>
-                                        <option value="<?php echo $office->id; ?>"><?php echo $office->name; ?></option>
-                                    <?php } ?>
+                                    <?php foreach ($backendUserProfile->getOffices(['id', 'name', 'configured']) as $office) {
+                                        if ($office->configured) { ?>
+                                            <option value="<?php echo $office->id; ?>"><?php echo $office->name; ?></option>
+                                        <?php } else { ?>
+                                            <option value=""><?php echo $office->name; ?><small> (<?php echo Translate::t('off_not_configured', ['ucfirst']) ; ?>) </small></option>
+                                       <?php }
+                                    }?>
                                 </select>
                                 <?php
                                 if (Input::exists() && empty(Input::post('teams'))) { ?>
@@ -251,31 +257,24 @@ include 'includes/navbar.php';
         </section>
 <?php
 if (Input::exists() && !Errors::countAllErrors() || Input::existsName('get', 'employees_id') && !Errors::countAllErrors()) {
-    $monthName = Input::exists('post') ? $monthName : Common::numberToMonth(date('n'), $lang);
-    $year  = Input::exists('post') ? $year : date('Y');
+    $monthName = Input::exists('post') ? Common::numberToMonth(Input::post('month'), $lang) : Common::numberToMonth(date('n'), $lang);
+    $year      = Input::exists('post') ? Input::post('year') : date('Y');
     ?>
         <section>
             <div class="col-12 mb-1">
                 <div class="card">
                     <blockquote class="blockquote mb-0 card-body">
-                            <h3><?php echo Translate::t('Employees') . ': ' . $employeesName; ?></h3>
+                            <h3><?php echo Translate::t('Employee') . ': ' . $backendUserProfile->employeeName(); ?></h3>
                         <footer class="blockquote-footer">
                             <small class="text-muted"><?php echo $allOfficesData->name; ?></small>
                         </footer>
                         <footer class="blockquote-footer">
-                            <small class="text-muted"><?php echo Translate::t('Data') . ' ' . $monthName . ', ' . $year; ?></small>
+                            <small class="text-muted"><?php echo Translate::t('records_for', ['ucfirst']) . ' ' . $monthName . ', ' . $year; ?></small>
                         </footer>
                         <footer class="blockquote-footer">
                             <small class="text-muted">
                                 <?php echo Translate::t('Leads'); ?>:
                                 <?php
-                                foreach ($leadsName as $leadName) {
-                                    if (count($leadsName) > 1) {
-                                        $leadNames[] = $leadName . ' ';
-                                    } elseif (count($leadsName) < 2) {
-                                        $leadNames[] = $leadName;
-                                    }
-                                }
                                 echo implode(', ', $leadsName);
                                 ?>
                             </small>
